@@ -2502,3 +2502,46 @@ next sync unless it is carried into the upstream document.** I made it because 4
 and I am naming the cost rather than letting it disappear quietly.
 
 **Owed.** Unchanged. Nothing further from session 19.
+
+---
+
+## 2026-08-01 · session 21 · context 8, and the sync hazard proving itself
+
+**Did.** Synced `docs/` to context 8 and carried 47/48 back into the field tables. Nothing
+built; nothing deployed. **Charter design v0.3 is design only, per the instruction — the
+Inferred attribution section is proposed and awaiting ratification, and I built none of it.**
+
+### The hazard I flagged last session happened on the very next sync
+
+The incoming `aao-field-tables-v0_10.md` is byte-identical to context 7's. It does not carry
+the collision list, and it does not carry 47 or 48 — the version number did not move, so a
+wholesale replace silently reverted them. **The only genuine upstream change in the whole
+folder is charter design v0.2 → v0.3.** I re-applied the corrections on top rather than
+letting the sync eat them.
+
+**This will keep happening.** The field tables are the object record and they drift behind
+the org every time a ruling lands, because rulings arrive here and the doc is authored
+elsewhere. Two edits now live only in the repo's copy.
+
+### Carried back in, and worth naming because the tables are the object record
+
+- **`AAO_Source__c` is no longer Required on Candidate or Claim.** The tables still said
+  Required, which is now wrong in the direction that matters: someone reading them would
+  conclude a state-derived row is impossible, which is exactly the belief 47 overturned.
+- **`AAO_Candidate__c.AAO_Basis__c`** added, with why it is nullable at field level (pre-47
+  rows must stay updatable; the trigger enforces it on insert and can say why).
+- **`AAO_Answer__c.AAO_Basis__c`** added as ratified, union semantics stated in the row
+  itself, and the read-as-Transcript rule for pre-48 rows.
+- **The collision list**, five entries, split by how each fails.
+
+**Owed, new.** These four corrections need to reach the authored field tables upstream, or
+the next sync reverts them again and the repo's copy diverges further. That is a question
+about where the tables are authored, not something I can fix from here.
+
+**Read, not acted on.** Charter design v0.3 proposes a fourth diarization class, `Inferred`,
+sitting between Attributed and Unsegmented, with attribution carrying its own cue as a
+citation and degradation handled by the existing speaker requirement. It also states that
+the speaker gate should record which attribution source it relied on — **which session 18
+already built** for the map-versus-roster case, and 48 extended to `not applicable` for basis
+State. The third source, `inferred + cue`, would slot into the same sentence. Recorded
+because it is the one place the proposal touches shipped code; still building nothing.

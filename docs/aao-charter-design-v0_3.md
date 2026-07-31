@@ -1,6 +1,6 @@
 # AAO Charter Design
 
-**v0.2 · 1 August 2026 · DRAFT — People charter open, self-report ruled, Identification ratified**
+**v0.3 · 1 August 2026 · DRAFT — People charter nearly closed; Inferred attribution proposed**
 
 **Changed in v0.2.** Self-report ruled: sentiment moves one rung conservatively; terminal rungs (Mentor, Enemy) are earned across multiple separate sources and lost the same way; no behavioral-pattern inference for support — stated sentiment and human input only; a human write watermarks the dimension forever (existing precedence law). The Identification flag is RATIFIED as the fifth type, its own thing: not Ratification (which asks permission for a known write), linked to whatever red its resolution would release. New surfacing law from Matthew: a red that is one answer away from clearing is surfaced proactively regardless of tier or value. PENDING ONE RULING: Source optional on Candidate and Claim, with the evidence-family law (words → Source required; state → Claim Basis rows required; both → both) — recommended, awaiting Matthew's word; the P route is blocked on it.
 
@@ -66,10 +66,23 @@ The way a human would do it. **Clear, sustained sentiment on a call moves a pers
 
 Fifth flag type, confirmed. Not Ratification (permission for a known write); this is missing knowledge. Where its answer would clear a red, the two are linked and **the red is surfaced proactively regardless of tier or value** — Matthew's nearly-clearable law: the cheapest red to clear is the one one answer away. First concrete priority rule the surfacing design owns.
 
+### Inferred attribution · PROPOSED 1 Aug, awaiting Matthew's ratification
+
+Matthew's constraint: orgs with unstructured transcripts are unstructured forever (tech-stack fact), so never-moving-dials on those orgs is unaffordable. Research grounding: LLM post-processing corrects who-said-what from text alone with 45-55% relative error reduction (DiarizationLM, Google 2024; generalized 2025); side-level (buyer/seller) classification from lexical cues is industry-standard and highly reliable; named-identity attribution is recoverable when anchored to cues (self-introductions, vocatives, first-person commitments) against a closed candidate set.
+
+**The design:**
+- **Fourth diarization class: `Inferred`**, between Attributed and Unsegmented. Normalization runs an attribution pass on unsegmented sources: model proposes turn boundaries + per-turn speaker at two tiers — side (buyer/seller) and identity (named person). The same pass upgrades Segmented sources (mapping "Speaker 1" to names).
+- **Every attribution carries its own cue as a citation** (the "this is Dana" span). Attribution with receipts, contestable like any machine judgment.
+- **Closed candidate set:** roster, calendar, CRM, existing map. Assign from the list or say unknown; never invent.
+- **Annotation layer, not evidence mutation:** attribution lives beside the frozen bytes like the small-talk boundary — mutable, versioned, re-markable corpus-wide with no re-ingestion.
+- **Degradation is automatic via the existing speaker requirement:** Any_Participant propositions flow at full power (nothing given up). Buyer_Side satisfied by side-tier inference. Dispositional claims require identity-tier attribution anchored to a cited cue in the same source; unanchored → UNVERIFIED with receipts, held for accumulation, never lost. Sentiment moves on anchored identity; terminal-rung stickiness protects the extremes.
+- The speaker gate records which attribution source it relied on (map / roster / inferred+cue), extending session 18's reason-naming.
+
+**Honest cost:** on text-only stacks, unanchored dispositional claims wait instead of landing, and attribution is machine judgment, weaker than a native roster, contestable, never silently trusted.
+
 ### Open, next in line
 
-1. What this charter may do on Unsegmented sources, where no words can be attributed to anyone.
-2. Output schema (the JSON the charter emits), after the above closes.
+1. Output schema (the JSON the charter emits), after Inferred attribution is ruled.
 
 ---
 

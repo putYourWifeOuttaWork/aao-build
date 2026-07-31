@@ -105,7 +105,9 @@ Per proposition, per version of its text. Rule data, derived at runtime from the
 
 | Field | Type | Constraints | Written by | Read by |
 |---|---|---|---|---|
-| `AAO_Evidence_Contract__c` / `AAO_Source__c` | Lookup | Required | Extraction | Which question; which evidence |
+| `AAO_Evidence_Contract__c` | Lookup | Required | Extraction | Which question |
+| `AAO_Source__c` | Lookup | **Nullable since 47** | Extraction | Which evidence, when the evidence is an artifact. Null on a state-derived row, and the evidence-family law requires it to be null there |
+| `AAO_Basis__c` | Picklist: `State`/`Transcript`/`Both` | Restricted, nullable | Whoever proposes | **Ruled 47.** Which family of evidence this rests on, and therefore what shape it must have. Not required at field level so pre-47 rows stay updatable; enforced on insert by the trigger, which can say why |
 | `AAO_Opportunity__c` / `AAO_Account__c` | Lookup | Required | Extraction | Scoping; the per-opportunity lease |
 | `AAO_Subject_Type__c` | Picklist | Restricted, required | Extraction | Mirrors Answer's discriminator |
 | `AAO_Subject_Contact__c`, `_Shadow_Person__c`, `_Insight_Card__c`, `_Qualifier__c`, `_Decision_Criterion__c` | Lookup | One populated | Extraction | The subject. Same typed shape as Answer, which forces one row per person on a per-person question |
@@ -137,6 +139,7 @@ Per proposition, per version of its text. Rule data, derived at runtime from the
 | `AAO_Subject_Contact__c`, `_Shadow_Person__c`, `_Insight_Card__c`, `_Qualifier__c`, `_Decision_Criterion__c` | Lookup | One populated | Commit | Traversal, reporting by related record, lookup filters. **Null-and-flag on subject delete** |
 | `AAO_Answer_Key__c` | Text(120) | **Unique, External ID, case-sensitive** | Trigger, frozen composer over subject type plus the populated lookup plus the contract | **The failure detector for the read-before-write that human precedence depends on.** `DUPLICATE_VALUE` is a merge path, never an error path: catch, re-read the colliding row, apply precedence, proceed |
 | `AAO_Verdict__c` | Picklist: `TRUE`/`FALSE`/`UNVERIFIED` | Restricted, required | Commit | The answer. Abstention and not-addressed never reach here |
+| `AAO_Basis__c` | Picklist: `State`/`Transcript`/`Both` | Restricted, nullable | Commit | **Ratified 48.** THE UNION OF THE CLAIMS THAT BUILT IT: established from a call and later reinforced by a state read reads `Both`, which is what `Both` has always meant. Decides what counts as this answer's citation — spans for `Transcript`, the claim's cited rows for `State`. Pre-48 rows are READ as `Transcript`, never backfilled |
 | `AAO_Spans__c` | Long Text, JSON | — | Commit, **accumulating across claims** | The current evidence set. This is what lets call two say there was already partial evidence and now it is sufficient |
 | `AAO_Element_Coverage__c` | Long Text, JSON | — | Commit | What is covered and what is missing. **The flag over partial coverage reads this** to say here is what stands and here is the piece still needed |
 | `AAO_Interpretation__c` | Long Text | Nullable | Commit | The interpretation behind the current verdict |
@@ -163,7 +166,7 @@ Per proposition, per version of its text. Rule data, derived at runtime from the
 |---|---|---|---|---|
 | `AAO_Answer__c` | Lookup | Required | Commit | Which answer this moved. Claims relate to each other by sharing this. **No claim-to-claim parentage** |
 | `AAO_Candidate__c` | Lookup | Required | Commit | The proposal this came from, with its stage, outcome and reasons |
-| `AAO_Source__c` | Lookup | Required | Commit | The evidence. Singular and correct |
+| `AAO_Source__c` | Lookup | **Nullable since 47** | Commit | The evidence, when the evidence is an artifact. Singular and correct. Null on a state claim, which cites rows instead |
 | `AAO_Evidence_Contract__c` | Lookup | Required | Commit | Which question, at which version |
 | `AAO_Opportunity__c` | Lookup | Required | Commit | **Key one of four** |
 | `AAO_Account__c` | Lookup | Required | Commit | **Key two.** Opens every account-grain question |

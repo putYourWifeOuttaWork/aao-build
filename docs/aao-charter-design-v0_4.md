@@ -1,6 +1,6 @@
 # AAO Charter Design
 
-**v0.3 · 1 August 2026 · DRAFT — People charter nearly closed; Inferred attribution proposed**
+**v0.4 · 1 August 2026 · People charter CLOSED except output schema; Inferred attribution ruled, gated on measurement**
 
 **Changed in v0.2.** Self-report ruled: sentiment moves one rung conservatively; terminal rungs (Mentor, Enemy) are earned across multiple separate sources and lost the same way; no behavioral-pattern inference for support — stated sentiment and human input only; a human write watermarks the dimension forever (existing precedence law). The Identification flag is RATIFIED as the fifth type, its own thing: not Ratification (which asks permission for a known write), linked to whatever red its resolution would release. New surfacing law from Matthew: a red that is one answer away from clearing is surfaced proactively regardless of tier or value. PENDING ONE RULING: Source optional on Candidate and Claim, with the evidence-family law (words → Source required; state → Claim Basis rows required; both → both) — recommended, awaiting Matthew's word; the P route is blocked on it.
 
@@ -66,7 +66,9 @@ The way a human would do it. **Clear, sustained sentiment on a call moves a pers
 
 Fifth flag type, confirmed. Not Ratification (permission for a known write); this is missing knowledge. Where its answer would clear a red, the two are linked and **the red is surfaced proactively regardless of tier or value** — Matthew's nearly-clearable law: the cheapest red to clear is the one one answer away. First concrete priority rule the surfacing design owns.
 
-### Inferred attribution · PROPOSED 1 Aug, awaiting Matthew's ratification
+### Inferred attribution · RULED 1 Aug, gated on measurement
+
+Ratified by Matthew with a condition that is a gate, not a sentiment: best-known mechanisms, and tested hard before anything leans on it. **The gate:** a strip-and-restore harness — take Attributed transcripts, strip the speaker labels, run the attributor on naked text, compare against the stripped truth. Ground truth by construction; every attributed transcript from any org is a free test case forever. Three metrics: side-tier accuracy, identity-tier accuracy, and **anchored-identity precision** (when it says "Dana said this, cue attached," how often is that right) — the number dispositional claims stand on. Thresholds are measured, never guessed; no document carries one until the harness produces it. **Until the bar is met, Inferred sources run at Any_Participant power only.**
 
 Matthew's constraint: orgs with unstructured transcripts are unstructured forever (tech-stack fact), so never-moving-dials on those orgs is unaffordable. Research grounding: LLM post-processing corrects who-said-what from text alone with 45-55% relative error reduction (DiarizationLM, Google 2024; generalized 2025); side-level (buyer/seller) classification from lexical cues is industry-standard and highly reliable; named-identity attribution is recoverable when anchored to cues (self-introductions, vocatives, first-person commitments) against a closed candidate set.
 

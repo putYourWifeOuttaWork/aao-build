@@ -2545,3 +2545,56 @@ the speaker gate should record which attribution source it relied on — **which
 already built** for the map-versus-roster case, and 48 extended to `not applicable` for basis
 State. The third source, `inferred + cue`, would slot into the same sentence. Recorded
 because it is the one place the proposal touches shipped code; still building nothing.
+
+---
+
+## 2026-08-02 · session 22 · context 9, and the sync drift given a handle
+
+**Did.** Synced `docs/` to context 9. **Nothing built, nothing deployed** — charter design
+v0.4 is design only, per the instruction.
+
+**Third sync running, same shape:** the only genuine upstream change is charter design
+v0.3 → v0.4. `aao-field-tables-v0_10.md` arrived byte-identical again, so a wholesale
+replace reverted 47, 48 and the collision list for the third time.
+
+### So I stopped re-applying them by hand
+
+`scripts/carry_forward_docs.py`. It re-applies the five corrections after a sync, and the
+part that matters is what it does when it cannot: **each edit asserts its target and exits
+loudly if the upstream text has moved.** A real upstream fix breaks the script rather than
+silently double-applying, or worse, papering over a change somebody made on purpose. Re-run
+after every sync; it is idempotent and reports which corrections were already carried.
+
+**It is a patch over a divergence and it says so in its own header, including when to delete
+it:** the moment the authored tables carry these. The journal is the record. This only keeps
+`docs/` from contradicting it.
+
+Verified by re-running it twice and against the previous commit: the carried tables come out
+byte-identical to what I had hand-edited, so nothing was lost or drifted in the automation.
+
+### Inferred attribution, ruled — read, not built
+
+The People charter is closed except its output schema. Inferred attribution is **ruled with
+a condition that is a gate rather than a sentiment**, and the gate is the interesting part:
+
+> a **strip-and-restore harness** — take Attributed transcripts, strip the speaker labels,
+> run the attributor on naked text, compare against the stripped truth.
+
+**Ground truth by construction.** Every attributed transcript any org already holds becomes a
+free test case, forever, with no labelling pass and no judgment call about what the right
+answer was. That is the same move the byte check makes on spans and the state check makes on
+map rows: find the thing that is already true and check against it, rather than asking
+something to score itself.
+
+Three metrics, and the one that carries the weight is **anchored-identity precision** —
+when it says *Dana said this, cue attached*, how often is that right. That is the number
+dispositional claims would stand on. **Thresholds are measured, never guessed; no document
+carries one until the harness produces it.** Until the bar is met, Inferred sources run at
+`Any_Participant` power only.
+
+**Where it touches shipped code, when it lands.** The speaker gate already names its source —
+session 18 built the map-versus-roster case, 48 added *not applicable* for basis State. A
+third value, `inferred + cue`, goes in the same sentence. Recorded, not built.
+
+**Owed.** Unchanged, plus the upstream field-tables question from session 21, now with a
+script holding the line until it is answered.

@@ -398,16 +398,17 @@ private class AAO_ExtractTest {
         Test.stopTest();
 
         System.assertEquals(6, o.abstentions, 'Nothing was proposed, so every row abstains.');
-        System.assertEquals(2, o.modelMissed, 'Two were discussed and not resolved.');
+        System.assertEquals(2, o.modelDeclined, 'Two were discussed and not resolved.');
         System.assertEquals(4, o.nobodySaid, 'Four were never spoken to.');
+        System.assertEquals(0, o.notReturned, 'The reader reported all six.');
         System.assertEquals(
             2,
             [
                 SELECT COUNT()
                 FROM AAO_Candidate__c
-                WHERE AAO_Source__c = :src.Id AND AAO_Abstention_Reason__c = 'model_missed'
+                WHERE AAO_Source__c = :src.Id AND AAO_Abstention_Reason__c = 'model_declined'
             ],
-            'model_missed is reachable now that something actually reads the transcript.'
+            'model_declined is reachable now that something actually reads the transcript.'
         );
     }
 
@@ -437,11 +438,33 @@ private class AAO_ExtractTest {
         Test.stopTest();
 
         System.assertEquals(5, o.extraction.unanswered.size(), 'Five were never answered.');
-        System.assertEquals(6, o.abstentions, 'The ledger is still complete.');
+        System.assertEquals(
+            6,
+            [SELECT COUNT() FROM AAO_Candidate__c WHERE AAO_Source__c = :src.Id],
+            'The ledger is still complete: a row per proposition considered.'
+        );
         System.assertEquals(
             5,
-            o.modelMissed,
-            'An unanswered proposition is the model missing it, not nobody speaking to it.'
+            o.notReturned,
+            'A proposition the reader never reported is not_returned. It is a fact about ' +
+            'the charter, not a judgment about evidence.'
+        );
+        System.assertEquals(
+            1,
+            o.abstentions,
+            'And it is NOT counted as an abstention. Only the one genuine nobody_said is, ' +
+            'because an abstention rate that includes unreported propositions measures ' +
+            'schema compliance and calls it something else.'
+        );
+        System.assertEquals(
+            5,
+            [
+                SELECT COUNT()
+                FROM AAO_Candidate__c
+                WHERE AAO_Source__c = :src.Id AND AAO_Abstention_Reason__c = 'not_returned'
+            ],
+            'The reason is on the row, so the two cases are distinguishable after the fact. ' +
+            'They were not on 31 July, which is why that run could not be diagnosed.'
         );
     }
 
@@ -945,5 +968,185 @@ private class AAO_ExtractTest {
             'missing confirmation on 31 July.'
         );
         System.assert(prompt.contains('I cannot tell you yet'), 'Named, because it happened.');
+    }
+
+    // ================================================ attribution and interpretation
+
+    /**
+     * Ratified 31 July: both readers are named on every row a model pass writes, including
+     * the abstentions. Coverage routes the verdict, the second reader decides coverage, and
+     * a coverage decision nobody can attribute is an answer nobody can attribute.
+     */
+    @IsTest
+    static void bothReadersAreNamedOnEveryRowAModelPassWrites() {
+        Id oppId = stageDeal();
+        AAO_Source__c src = theSource(oppId);
+
+        AAO_Extract.overrideConfig = blindConfig();
+        Test.setMock(
+            HttpCalloutMock.class,
+            new SeqMock(
+                new List<String>{
+                    theSpecimen(),
+                    blindEnvelope(
+                        new List<Object>{
+                            review(
+                                'AAO_T1',
+                                new List<Object>{
+                                    elem('e1', true, 'asserted'),
+                                    elem('e2', true, 'asserted'),
+                                    elem('e3', false, 'declined')
+                                }
+                            )
+                        }
+                    )
+                }
+            )
+        );
+
+        Test.startTest();
+        AAO_Pipeline.runForSource(
+            src.Id,
+            new Set<String>{ 'altify.example' },
+            AAO_Pipeline.FROM_MODEL
+        );
+        Test.stopTest();
+
+        List<AAO_Candidate__c> rows = [
+            SELECT
+                AAO_Charter__c,
+                AAO_Charter_Version__c,
+                AAO_Blind_Charter__c,
+                AAO_Blind_Charter_Version__c,
+                AAO_Outcome__c
+            FROM AAO_Candidate__c
+            WHERE AAO_Source__c = :src.Id
+        ];
+        System.assertEquals(6, rows.size(), 'One row per proposition considered.');
+        for (AAO_Candidate__c r : rows) {
+            System.assertEquals('AAO_Extract_Evidence', r.AAO_Charter__c, 'the proposer');
+            System.assertEquals('1.0.0', r.AAO_Charter_Version__c);
+            System.assertEquals(
+                'AAO_Blind_Reader',
+                r.AAO_Blind_Charter__c,
+                'Every row, abstentions included, names the second reader that ran on the ' +
+                'pass. Outcome was ' + r.AAO_Outcome__c
+            );
+            System.assertEquals('1.0.0', r.AAO_Blind_Charter_Version__c);
+        }
+    }
+
+    /** With no second reader, the blind fields are null rather than misleadingly filled. */
+    @IsTest
+    static void withNoSecondReaderTheBlindFieldsAreNull() {
+        Id oppId = stageDeal();
+        AAO_Source__c src = theSource(oppId);
+
+        AAO_Extract.overrideConfig = testConfig();
+        Test.setMock(HttpCalloutMock.class, new Mock(theSpecimen()));
+
+        Test.startTest();
+        AAO_Pipeline.runForSource(
+            src.Id,
+            new Set<String>{ 'altify.example' },
+            AAO_Pipeline.FROM_MODEL
+        );
+        Test.stopTest();
+
+        for (AAO_Candidate__c r : [
+            SELECT AAO_Blind_Charter__c
+            FROM AAO_Candidate__c
+            WHERE AAO_Source__c = :src.Id
+        ]) {
+            System.assertEquals(
+                null,
+                r.AAO_Blind_Charter__c,
+                'Null means no second reader ran, which for a model row means coverage ' +
+                'fell back to counting located spans.'
+            );
+        }
+    }
+
+    /**
+     * Item 31, the plumbing half. AAO_Interpretation__c has come back empty from every real
+     * call so far, which is the good case and also means the path has never been exercised
+     * by live data. This proves the path carries a populated interpretation to the row, so
+     * that if a real one ever arrives it lands rather than being dropped.
+     */
+    @IsTest
+    static void aPopulatedInterpretationReachesTheCandidateRow() {
+        Id oppId = stageDeal();
+        AAO_Source__c src = theSource(oppId);
+
+        String reading =
+            'Read "current fiscal year" as the customer\'s fiscal year rather than ours, ' +
+            'because the proposition is about their budget.';
+        Map<String, Object> f = finding(
+            'AAO_T1',
+            'addressed',
+            'UNVERIFIED',
+            new List<Object>{ span(Q_APPROVED, 'dana', 'e1') }
+        );
+        f.put('interpretation', reading);
+
+        AAO_Extract.overrideConfig = testConfig();
+        Test.setMock(
+            HttpCalloutMock.class,
+            new Mock(
+                envelope(
+                    JSON.serialize(new Map<String, Object>{ 'findings' => new List<Object>{ f } }),
+                    'end_turn'
+                )
+            )
+        );
+
+        Test.startTest();
+        AAO_Pipeline.runForSource(
+            src.Id,
+            new Set<String>{ 'altify.example' },
+            AAO_Pipeline.FROM_MODEL
+        );
+        Test.stopTest();
+
+        AAO_Candidate__c cand = [
+            SELECT AAO_Interpretation__c
+            FROM AAO_Candidate__c
+            WHERE AAO_Source__c = :src.Id AND AAO_Outcome__c != 'Abstained'
+            LIMIT 1
+        ];
+        System.assertEquals(
+            reading,
+            cand.AAO_Interpretation__c,
+            'The interpretation is the field that made the session 7 miss diagnosable. It ' +
+            'must survive the trip from the charter to the row.'
+        );
+    }
+
+    /** The schema still demands it, so a charter cannot quietly stop emitting it. */
+    @IsTest
+    static void theSchemaStillRequiresAnInterpretationField() {
+        AAO_Ingest.AUTO = false;
+        AAO_Demo.scaffold();
+        List<AAO_Evidence_Contract__c> ecs = [
+            SELECT
+                Id,
+                AAO_Proposition_Code__c,
+                AAO_Proposition_Short__c,
+                AAO_Proposition_Text__c,
+                AAO_Guidance_Text__c,
+                AAO_Elements__c,
+                AAO_Speaker_Requirement__c,
+                AAO_Per_Person_Source__c
+            FROM AAO_Evidence_Contract__c
+        ];
+        String sch = JSON.serialize(
+            AAO_ExtractCharter.schema(ecs, new Map<String, AAO_Model.Speaker>())
+        );
+        System.assert(sch.contains('"interpretation"'), 'Still in the schema.');
+        System.assert(
+            sch.contains('under-specified-question list'),
+            'And still described as what it is for, so the reason to fill it survives ' +
+            'charter edits.'
+        );
     }
 }

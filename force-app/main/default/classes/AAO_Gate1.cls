@@ -267,9 +267,29 @@ public class AAO_Gate1 {
         Id oppId = opps[0].Id;
         Map<String, Object> fixture = AAO_Seed.fixture();
 
+        // Claims keyed by source and proposition, so what the GATES decided can be graded
+        // alongside what the reader PROPOSED. Session 8 graded proposals only, and two
+        // readers that reach the same answer by different proposals read as disagreeing.
+        Map<String, String> adjudicated = new Map<String, String>();
+        for (AAO_Claim__c cl : [
+            SELECT
+                AAO_Source__c,
+                AAO_Evidence_Contract__r.AAO_Proposition_Code__c,
+                AAO_Verdict_After__c
+            FROM AAO_Claim__c
+            WHERE AAO_Opportunity__c = :oppId
+        ]) {
+            adjudicated.put(
+                cl.AAO_Source__c + '|' + cl.AAO_Evidence_Contract__r.AAO_Proposition_Code__c,
+                cl.AAO_Verdict_After__c
+            );
+        }
+
         List<String> out = new List<String>();
         Integer agree = 0;
         Integer differ = 0;
+        Integer outcomeAgree = 0;
+        Integer outcomeDiffer = 0;
 
         for (AAO_Source__c src : [
             SELECT Id, AAO_Source_Ref__c, AAO_Artifact_SHA256__c
@@ -348,6 +368,31 @@ public class AAO_Gate1 {
                     differ++;
                 }
 
+                // ---- and now the thing that actually matters: what was established.
+                // Coverage routes the verdict, so a proposal of TRUE with a missing
+                // element adjudicates to UNVERIFIED. That is the number to grade.
+                String expectedOutcome;
+                if (truth == null) {
+                    expectedOutcome = '(none)';
+                } else {
+                    List<String> stagedMissing = AAO_Seed.strings(
+                        (List<Object>) truth.get('missing')
+                    );
+                    expectedOutcome = stagedMissing.isEmpty()
+                        ? (String) truth.get('proposedVerdict')
+                        : 'UNVERIFIED';
+                }
+                String gotOutcome = adjudicated.get(src.Id + '|' + code);
+                if (gotOutcome == null) {
+                    gotOutcome = '(none)';
+                }
+                Boolean outcomeMatches = expectedOutcome == gotOutcome;
+                if (outcomeMatches) {
+                    outcomeAgree++;
+                } else {
+                    outcomeDiffer++;
+                }
+
                 out.add(
                     '  ' +
                     (same ? 'agree ' : 'DIFFER') +
@@ -363,6 +408,13 @@ public class AAO_Gate1 {
                     gotCovered +
                     ']  gate=' +
                     (actual == null ? '-' : actual.AAO_Outcome__c) +
+                    '  established[' +
+                    (outcomeMatches ? '=' : 'X') +
+                    ' staged=' +
+                    expectedOutcome +
+                    ' actual=' +
+                    gotOutcome +
+                    ']' +
                     (actual != null && String.isNotBlank(actual.AAO_Interpretation__c)
                         ? '\n         interpretation: ' + actual.AAO_Interpretation__c
                         : '')
@@ -398,7 +450,20 @@ public class AAO_Gate1 {
         }
 
         out.add('');
-        out.add('AGREE ' + agree + '   DIFFER ' + differ);
+        out.add(
+            'PROPOSALS  ' +
+            agree +
+            '/' +
+            (agree + differ) +
+            '   what each reader put forward'
+        );
+        out.add(
+            'OUTCOMES   ' +
+            outcomeAgree +
+            '/' +
+            (outcomeAgree + outcomeDiffer) +
+            '   what the gates established, which is the number that matters'
+        );
         return 'GATE1 COMPARE' + String.join(out, '\n');
     }
 

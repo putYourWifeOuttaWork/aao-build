@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Blind_Charter_Version__c</fullName>
+    <description>Written by: the pipeline, alongside AAO_Blind_Charter__c. Read by: any analysis grouping results by which second reader produced them. Without it a coverage decision cannot be attributed, and coverage is what routes the verdict, so an unattributable coverage decision is an unattributable answer.</description>
+    <label>BlindCharterVersion</label>
+    <inlineHelpText>Written by: the pipeline, alongside AAO_Blind_Charter__c. Read by: any analysis grouping results by which second reader produced them. Without it a coverage decision cannot be attributed, and coverage is what routes the verdict, so an unattributable coverage decision is an unattributable answer.</inlineHelpText>
+    <type>Text</type>
+    <length>20</length>
+    <required>false</required>
+    <unique>false</unique>
+</CustomField>

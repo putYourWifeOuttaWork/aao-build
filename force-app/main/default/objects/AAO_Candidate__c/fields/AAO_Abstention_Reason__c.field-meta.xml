@@ -1,7 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+<!--
+  Split into three on 31 July, session 9, because the previous two values collapsed a
+  judgment about evidence together with a fact about the reader.
+
+    nobody_said     the reader read the artifact and nothing in it bears on this
+                    proposition. A judgment about the evidence, and the honest majority
+                    case.
+    model_declined  the reader read the artifact, found the proposition discussed, and
+                    could not reach a verdict. Also a judgment about the evidence.
+    not_returned    the reader never reported this proposition at all. NOT a judgment
+                    about anything. It is a charter-quality signal and it must never be
+                    counted as an abstention: a rate that includes it measures how well a
+                    charter follows its own output schema, not how often evidence was silent.
+
+  model_missed is RETIRED and kept in the set only so rows written before the split stay
+  valid. Nothing writes it. It was ambiguous between the last two values above, which is
+  exactly what made the 31 July pass-one result impossible to diagnose after the fact.
+  Ruled: backfill nothing, the enum starts clean, old rows keep what they were written with.
+
+  KNOWN GAP, recorded rather than quietly worked around. AAO_Outcome__c has no value meaning
+  "the reader did not report this", so a not_returned row still carries Outcome = Abstained.
+  Any query counting abstentions by outcome therefore overcounts, and the correct query
+  filters on this field. Adding a value to that picklist changes a CLOSED table and needs
+  ratifying.
+-->
     <fullName>AAO_Abstention_Reason__c</fullName>
-    <description>Written by: Extraction. Read by: The abstention-rate detector.</description>
+    <description>Written by: Extraction. Read by: the abstention-rate detector, which must exclude not_returned because that value is a charter-quality signal and not a judgment about evidence. model_missed is retired and kept only so pre-split rows stay valid.</description>
     <label>Abstention Reason</label>
     <type>Picklist</type>
     <required>false</required>
@@ -10,14 +35,24 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>model_missed</fullName>
-                <default>false</default>
-                <label>model_missed</label>
-            </value>
-            <value>
                 <fullName>nobody_said</fullName>
                 <default>false</default>
                 <label>nobody_said</label>
+            </value>
+            <value>
+                <fullName>model_declined</fullName>
+                <default>false</default>
+                <label>model_declined</label>
+            </value>
+            <value>
+                <fullName>not_returned</fullName>
+                <default>false</default>
+                <label>not_returned</label>
+            </value>
+            <value>
+                <fullName>model_missed</fullName>
+                <default>false</default>
+                <label>model_missed (retired)</label>
             </value>
         </valueSetDefinition>
     </valueSet>

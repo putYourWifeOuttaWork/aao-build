@@ -21,7 +21,7 @@ recorded as a finding is how a wrong belief becomes load-bearing.
 Wave 1 plus Flag is live: seven objects (136 fields), five triggers, three frozen key
 composers, span verification, the speaker rule, commit, replay, the mini-rubric and the
 dummy transcripts, plus two charters, the credential scaffolding they call through, and the
-second reader that decides coverage. **105 AAO tests, 105 passing.** One pre-existing sandbox
+second reader that decides coverage. **109 AAO tests, 109 passing.** One pre-existing sandbox
 test still fails on a customer validation rule, and that failure is not ours.
 
 **The rehearsal is durable.** `AAO Demo - Tungsten Rehearsal` carries two claims and one
@@ -82,8 +82,9 @@ blind reader receives the proposition, its elements and the located spans, never
 transcript and never the first verdict, and its no overrides claimed coverage. On
 `AAO Gate1 - Blind Reader` it refused the element whose quote refuted it, coverage fell to
 partial, and the run wrote `UNVERIFIED -> TRUE` with the first claim untouched, which is the
-staged ground truth. `AGREE 11 DIFFER 1`, and the one difference is a comparison artifact
-rather than a model error. Read the session 8 entry before quoting any of it.
+staged ground truth. Graded two ways, `PROPOSALS 11/12` and `OUTCOMES 12/12`: the single
+proposal difference disappears at the outcome line, which is the correct reading of it. Read
+sessions 8 and 9 before quoting any of it.
 
 **Session 7's defect is fixed. Rows written before it was are still in the org**, on
 `AAO Gate1 - Model Round Two`, deliberately, because the proof register cites them.
@@ -1428,3 +1429,97 @@ model reading a transcript.
 - **Row 19, blind reader catch rate, has its first data point.** One specimen, caught.
 - **Row 14 has its caching measurement**: 3,137 input tokens to 175, with 3,187 read from
   cache, on the second artifact of a pass.
+
+---
+
+## 2026-07-31 · session 9 · three reasons, two named readers, two grades
+
+**Did.** Items 28 to 31. **109 AAO tests, 109 passing.**
+
+**28. The abstention enum is three values.** `nobody_said` and `model_declined` are judgments
+about evidence. `not_returned` is not a judgment about anything: the reader never reported
+the proposition, and it is a charter-quality signal. It is counted separately and excluded
+from `abstentions` on the Outcome, because a rate that includes it measures how well a
+charter follows its own output schema and then calls that number an abstention rate.
+
+`model_missed` is retired and left in the picklist so that rows written before the split stay
+valid. Nothing writes it. Backfilled nothing, as ruled.
+
+**KNOWN GAP, recorded rather than worked around.** `AAO_Outcome__c` has no value meaning "the
+reader did not report this", so a `not_returned` row still carries `Outcome = Abstained`. Any
+query that counts abstentions by outcome therefore overcounts, and the correct query filters
+on the reason field. Adding a value to that picklist changes a CLOSED table and needs
+ratifying. This is the second time a value has had to live somewhere that does not quite fit
+it, and both times the cost was a number that reads plausibly and means something else.
+
+**29. Candidate names both readers, on every row a model pass writes.**
+`AAO_Blind_Charter__c` and `AAO_Blind_Charter_Version__c`, ratified. `AAO_Charter__c` names
+the reader that **proposed**; the new pair names the reader that **adjudicated coverage**.
+One field could not carry both: they are separate charters versioned independently, coverage
+routes the verdict, and a coverage decision nobody can attribute is an answer nobody can
+attribute. Null on the blind fields means no second reader ran, which for a model row means
+coverage fell back to counting located spans. Abstention rows carry the pair too, because it
+is the pass that was adjudicated under those charters.
+
+**30. `compare()` grades both, and reports two lines.** On the last run, unchanged data:
+
+```
+PROPOSALS  11/12   what each reader put forward
+OUTCOMES   12/12   what the gates established, which is the number that matters
+```
+
+The expected outcome is derived from the staged coverage rather than asserted: missing empty
+means the staged verdict, anything missing means `UNVERIFIED`, because coverage is what
+routes the verdict. Session 8's single DIFFER survives at the proposal line and disappears at
+the outcome line, which is the correct reading of it: staged proposes `TRUE` with a missing
+element and leans on the gate, the model proposes `UNVERIFIED` directly, and both establish
+`UNVERIFIED`.
+
+**31. Confirmed: `AAO_Interpretation__c` is still emitted, and the FALSE bar did not suppress
+it.** A read-only call on transcript one under charter 1.1.0:
+
+```
+charter=1.1.0 findings=6 unanswered=()
+AAO_T1 addressed/UNVERIFIED interpretation="" len=0
+AAO_T2..T6 not_addressed/NONE interpretation="" len=0
+```
+
+**The distinction is the whole answer.** The value is the empty string, not null. The key is
+present in every finding, so the schema is being followed and the reader is answering the
+question; it has nothing to report because these propositions need no reading beyond their
+own text. Null would have meant the field had stopped being returned, and that would have
+been the regression. It is not one.
+
+The honest limit: the field has never been non-empty in a live run, so only the plumbing is
+proven, by a test that mocks a populated interpretation and asserts it reaches the row. The
+mini-rubric has no under-specified proposition, so nothing in it should produce one.
+
+**Read from the org (verbatim).**
+
+- `Invalid XML tags or unable to find matching parent xml file for CustomField
+  "AAO_Abstention_Reason__c"`. A comment before the root element is fine in an object file
+  and breaks a decomposed field file. Moved inside the root.
+- `Error parsing file: Element fieldPermissions is duplicated at this location in type
+  PermissionSet`. The permission set XSD wants each element type grouped; appending
+  `fieldPermissions` after `objectPermissions` fails even though the XML is well formed.
+- `usage in=213 out=715 cacheRead=0 cacheWrite=3187` on the interpretation check. The cache
+  had expired between runs, so this call re-wrote it rather than reading it.
+
+**Assumed, not verified.**
+
+- **The new enum values are proven in tests and have not been seen in a live run.** The blind
+  deal's rows predate the split and still read `model_missed`, correctly, since nothing was
+  backfilled. The next real pass will write the new values. Not spending four model calls to
+  watch it happen.
+- The five-minute cache TTL means session 8's caching measurement holds only for passes close
+  together. A pass an hour later pays full price and writes the cache again. The measurement
+  is real and the conditions belong next to it.
+
+**Owed.**
+
+1. **`AAO_Outcome__c` has no value for "not reported".** Needs ratifying, see above.
+2. **`compare()` still treats two abstentions as matching regardless of reason.** Now that
+   there are three reasons and one of them is not an abstention at all, that leniency hides
+   more than it did.
+3. Everything on session 4's list, unchanged, still led by the artifact hash over the path
+   label and `isFull()` never consulting the element list.

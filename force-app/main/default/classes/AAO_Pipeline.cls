@@ -83,9 +83,18 @@ public class AAO_Pipeline {
         public Id claimId;
         public String claimOutcome;
         public Id internalPerson;
+        /** Judgments about evidence only. not_returned is deliberately excluded. */
         public Integer abstentions = 0;
         public Integer nobodySaid = 0;
-        public Integer modelMissed = 0;
+        public Integer modelDeclined = 0;
+        /**
+         * Propositions the reader never reported. A charter-quality signal, counted apart
+         * from the abstentions because folding it in would make the abstention rate
+         * measure schema compliance rather than the silence of evidence.
+         */
+        public Integer notReturned = 0;
+        public String blindCharter;
+        public String blindCharterVersion;
         public List<SpanDrop> spanDrops = new List<SpanDrop>();
         /** Populated only on the model path. */
         public AAO_Extract.Result extraction;
@@ -113,9 +122,10 @@ public class AAO_Pipeline {
                 abstentions +
                 ' (nobody_said=' +
                 nobodySaid +
-                ' model_missed=' +
-                modelMissed +
-                ')' +
+                ' model_declined=' +
+                modelDeclined +
+                ') notReturned=' +
+                notReturned +
                 ' spansDropped=' +
                 spanDrops.size() +
                 ' blindOverrides=' +
@@ -239,14 +249,19 @@ public class AAO_Pipeline {
                 mark,
                 o.charter,
                 o.charterVersion,
+                o.blindCharter,
+                o.blindCharterVersion,
                 abstentionByContract
             );
-            o.abstentions = abstained.size();
             for (AAO_Candidate__c a : abstained) {
-                if (a.AAO_Abstention_Reason__c == 'model_missed') {
-                    o.modelMissed++;
+                if (a.AAO_Abstention_Reason__c == 'not_returned') {
+                    o.notReturned++;
+                } else if (a.AAO_Abstention_Reason__c == 'model_declined') {
+                    o.modelDeclined++;
+                    o.abstentions++;
                 } else {
                     o.nobodySaid++;
+                    o.abstentions++;
                 }
             }
         } finally {
@@ -299,9 +314,11 @@ public class AAO_Pipeline {
      * AAO_BlindCharter says that span establishes it. Session 7 counted any located span,
      * which credited a quote that refuted its element; see the session 7 addendum.
      *
-     * not_addressed and abstained stay distinct. They become nobody_said and model_missed
-     * on the abstention ledger. Collapsing them would make the abstention rate measure
-     * nothing, which is the whole reason the enum has two values.
+     * The three abstention reasons stay distinct. not_addressed becomes nobody_said and
+     * abstained becomes model_declined, both judgments about evidence. A proposition the
+     * reader never reported becomes not_returned, which is a fact about the reader and is
+     * counted apart from the other two: an abstention rate that includes it measures how
+     * well a charter follows its own output schema.
      */
     private static List<Proposal> fromModel(
         AAO_Extract.Result ex,
@@ -316,9 +333,10 @@ public class AAO_Pipeline {
         for (String code : contracts.keySet()) {
             AAO_ExtractCharter.Finding f = ex.findings.get(code);
             if (f == null) {
-                // Asked and not answered. Treated as an abstention the model owes us
-                // rather than silently skipped.
-                abstentionByContract.put(contracts.get(code).Id, 'model_missed');
+                // Asked and never reported. NOT an abstention: the reader made no
+                // judgment about this proposition at all, so counting it as one would
+                // measure schema compliance and call the number an abstention rate.
+                abstentionByContract.put(contracts.get(code).Id, 'not_returned');
                 continue;
             }
             if (f.status == 'not_addressed') {
@@ -326,7 +344,8 @@ public class AAO_Pipeline {
                 continue;
             }
             if (f.status == 'abstained') {
-                abstentionByContract.put(contracts.get(code).Id, 'model_missed');
+                // Read the artifact, found the proposition discussed, could not resolve it.
+                abstentionByContract.put(contracts.get(code).Id, 'model_declined');
                 continue;
             }
 
@@ -354,6 +373,8 @@ public class AAO_Pipeline {
         if (!reviews.isEmpty() && AAO_Extract.config().blindEnabled) {
             AAO_Extract.BlindResult br = AAO_Extract.review(reviews);
             o.blind = br;
+            o.blindCharter = br.charter;
+            o.blindCharterVersion = br.charterVersion;
             verdicts = br.verdicts;
             blindRan = true;
         }
@@ -523,6 +544,13 @@ public class AAO_Pipeline {
             AAO_Outcome__c = 'Pending',
             AAO_Charter__c = o.charter,
             AAO_Charter_Version__c = o.charterVersion,
+            // Ratified 31 July. The first names the reader that PROPOSED, the second names
+            // the reader that ADJUDICATED COVERAGE, and coverage is what routes the
+            // verdict. One field cannot carry both: they are separate charters, versioned
+            // independently, and an unattributable coverage decision is an unattributable
+            // answer.
+            AAO_Blind_Charter__c = o.blindCharter,
+            AAO_Blind_Charter_Version__c = o.blindCharterVersion,
             AAO_Publication_State__c = 'Live',
             AAO_Synthetic__c = mark
         );
@@ -545,6 +573,8 @@ public class AAO_Pipeline {
         Boolean mark,
         String charter,
         String charterVersion,
+        String blindCharter,
+        String blindCharterVersion,
         Map<Id, String> reasonByContract
     ) {
         Set<Id> proposedFor = new Set<Id>();
@@ -572,11 +602,13 @@ public class AAO_Pipeline {
                     AAO_Stage__c = 'Adjudicated',
                     AAO_Outcome__c = 'Abstained',
                     // On the fixture path this is asserted, not determined: only something
-                    // that actually read the transcript can tell nobody_said from
-                    // model_missed, and until session 7 nothing did.
+                    // that actually read the transcript can tell the three reasons apart,
+                    // and the fixture reads nothing.
                     AAO_Abstention_Reason__c = reason == null ? 'nobody_said' : reason,
                     AAO_Charter__c = charter,
                     AAO_Charter_Version__c = charterVersion,
+                    AAO_Blind_Charter__c = blindCharter,
+                    AAO_Blind_Charter_Version__c = blindCharterVersion,
                     AAO_Publication_State__c = 'Live',
                     AAO_Synthetic__c = mark
                 )

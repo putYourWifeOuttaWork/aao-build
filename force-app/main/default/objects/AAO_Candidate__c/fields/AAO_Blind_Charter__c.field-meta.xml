@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Blind_Charter__c</fullName>
+    <description>Written by: the pipeline, on every row a model pass produces, when the second reader ran. Read by: anyone asking which reader set this row's coverage. Ratified 31 July: AAO_Charter__c names the reader that PROPOSED, this names the reader that ADJUDICATED COVERAGE, and one field cannot carry both because they are different charters versioned independently. Null means no second reader ran, which for a model row means coverage fell back to counting located spans.</description>
+    <label>BlindCharter</label>
+    <inlineHelpText>Written by: the pipeline, on every row a model pass produces, when the second reader ran. Read by: anyone asking which reader set this row's coverage. Ratified 31 July: AAO_Charter__c names the reader that PROPOSED, this names the reader that ADJUDICATED COVERAGE, and one field cannot carry both because they are different charters versioned independently. Null means no second reader ran, which for a model row means coverage fell back to counting located spans.</inlineHelpText>
+    <type>Text</type>
+    <length>80</length>
+    <required>false</required>
+    <unique>false</unique>
+</CustomField>

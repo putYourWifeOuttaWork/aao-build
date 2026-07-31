@@ -55,6 +55,37 @@ public class AAO_EvidenceContractTriggerHandler {
         }
     }
 
+    /**
+     * Ratified 31 July, session 14. Contracts were deletable by anything that could run a
+     * DML statement, and the only thing standing between a live contract and a delete was
+     * a WHERE clause in the purge that happened to filter on the synthetic marker. That is
+     * a filter pretending to be a guard, and session 13 proved it: the filter was wrong,
+     * six contracts survived every purge, and nothing complained.
+     *
+     * The reason a contract must not be deletable is the same reason a claim must not be.
+     * Every claim carries the contract key it was adjudicated under. Delete the contract
+     * and those claims still name it, so the words a verdict was judged against are gone
+     * while the verdict remains, and no replay can ever explain it again.
+     *
+     * SUPERSEDE IS THE RETIREMENT PATH. AAO_Superseded_By__c and AAO_Contract_State__c
+     * exist for exactly this: a contract that should no longer be used stops being used
+     * and keeps existing, so the claims that rest on it stay legible.
+     */
+    public static void beforeDelete(List<AAO_Evidence_Contract__c> rows) {
+        for (AAO_Evidence_Contract__c ec : rows) {
+            if (AAO_Synthetic.deletable(ec.AAO_Synthetic__c)) {
+                continue;
+            }
+            ec.addError(
+                'AAO_Evidence_Contract__c is not deletable on the live path. Every claim ' +
+                'stamped with this contract was adjudicated against its words, and those ' +
+                'claims still name it: deleting it leaves verdicts that nothing can ' +
+                'explain. Supersede it instead, with AAO_Superseded_By__c and a contract ' +
+                'state of Superseded, which retires it without destroying what rests on it.'
+            );
+        }
+    }
+
     private static void validate(AAO_Evidence_Contract__c ec) {
         // The number of parts is never unknown.
         if (ec.AAO_Element_Count__c == null || ec.AAO_Element_Count__c < 1) {

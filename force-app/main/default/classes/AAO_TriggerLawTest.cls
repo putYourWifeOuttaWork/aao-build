@@ -514,4 +514,113 @@ private class AAO_TriggerLawTest {
             'token, which is why AAO_ContractKey carries none.'
         );
     }
+
+    // ============================================ Evidence Contract is not deletable
+
+    /**
+     * Ratified session 14. Until then the only thing between a live contract and a delete
+     * was a WHERE clause in a purge, and session 13 proved that filter could be wrong
+     * without anything complaining.
+     */
+    @IsTest
+    static void contractsCannotBeDeletedOnTheLivePath() {
+        AAO_Seed.Loaded s = load();
+        AAO_Evidence_Contract__c ec = [
+            SELECT Id, AAO_Synthetic__c FROM AAO_Evidence_Contract__c LIMIT 1
+        ];
+
+        // Marked synthetic by the seed, but PURGING is false, so this is the live path.
+        System.assertEquals(false, AAO_Synthetic.PURGING);
+        try {
+            delete ec;
+            System.assert(
+                false,
+                'A deletable contract leaves every claim stamped with it naming words that ' +
+                'no longer exist.'
+            );
+        } catch (DmlException e) {
+            System.assert(e.getMessage().contains('not deletable'), e.getMessage());
+            System.assert(
+                e.getMessage().contains('Supersede'),
+                'The error must name the retirement path that does exist. Got: ' +
+                e.getMessage()
+            );
+        }
+    }
+
+    /**
+     * And the purge path still works, because the rehearsal has to be removable in one
+     * action. The law needs BOTH the marker and the context, so this builds a marked
+     * contract rather than assuming the seed marks its own.
+     *
+     * Worth recording: the seed does NOT mark contracts on the AAO_Seed.load path. It does
+     * on the demo path, because AAO_Pipeline sets the marker from the Source before calling
+     * ensureContracts. So a contract's marker depends on which entry created it, and with
+     * the delete law in place that now decides whether the purge can remove it.
+     */
+    @IsTest
+    static void thePurgeContextCanStillRetireAMarkedContract() {
+        AAO_Seed.Loaded s = load();
+        AAO_Evidence_Contract__c source = [
+            SELECT
+                AAO_Proposition_Code__c,
+                AAO_Proposition_Short__c,
+                AAO_Proposition_Text__c,
+                AAO_Guidance_Text__c,
+                AAO_Elements__c,
+                AAO_Element_Count__c,
+                AAO_Elements_Basis__c,
+                AAO_Route__c,
+                AAO_Speaker_Requirement__c,
+                AAO_Decay_Class__c,
+                AAO_Contract_State__c,
+                AAO_Rubric_Version__c
+            FROM AAO_Evidence_Contract__c
+            LIMIT 1
+        ];
+
+        AAO_Synthetic.MARK = true;
+        AAO_Evidence_Contract__c marked = new AAO_Evidence_Contract__c(
+            AAO_Question_Record_Id__c = 'PURGE_LAW_SPECIMEN',
+            AAO_Proposition_Code__c = 'PURGE_LAW',
+            AAO_Proposition_Short__c = source.AAO_Proposition_Short__c,
+            AAO_Proposition_Text__c = 'A contract that exists only to be purged.',
+            AAO_Guidance_Text__c = source.AAO_Guidance_Text__c,
+            AAO_Elements__c = source.AAO_Elements__c,
+            AAO_Element_Count__c = source.AAO_Element_Count__c,
+            AAO_Elements_Basis__c = source.AAO_Elements_Basis__c,
+            AAO_Route__c = source.AAO_Route__c,
+            AAO_Speaker_Requirement__c = source.AAO_Speaker_Requirement__c,
+            AAO_Decay_Class__c = source.AAO_Decay_Class__c,
+            AAO_Contract_State__c = source.AAO_Contract_State__c,
+            AAO_Rubric_Version__c = source.AAO_Rubric_Version__c
+        );
+        insert marked;
+        AAO_Synthetic.MARK = false;
+
+        System.assertEquals(
+            true,
+            [SELECT AAO_Synthetic__c FROM AAO_Evidence_Contract__c WHERE Id = :marked.Id]
+                .AAO_Synthetic__c
+        );
+
+        // Marked but no purge context: still refused.
+        try {
+            delete marked;
+            System.assert(false, 'The marker alone is not permission.');
+        } catch (DmlException e) {
+            System.assert(e.getMessage().contains('not deletable'), e.getMessage());
+        }
+
+        AAO_Synthetic.PURGING = true;
+        try {
+            delete marked;
+        } finally {
+            AAO_Synthetic.PURGING = false;
+        }
+        System.assertEquals(
+            0,
+            [SELECT COUNT() FROM AAO_Evidence_Contract__c WHERE Id = :marked.Id]
+        );
+    }
 }

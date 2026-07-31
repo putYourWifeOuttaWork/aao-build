@@ -341,11 +341,47 @@ public with sharing class AAO_PipelineViewController {
         }
 
         // ---- flags
-        s.flags.count = [SELECT COUNT() FROM AAO_Flag__c WHERE AAO_Opportunity__c = :opportunityId];
-        s.flags.hasAny = s.flags.count > 0;
-        s.flags.sentence = s.flags.hasAny
-            ? 'Flags standing against this opportunity.'
-            : 'No flags. Nothing raises them yet — the object and its law exist, the raise path does not. An empty list here is the honest state, not a clean bill of health.';
+        // Day-one red, live since session 14. Every gating proposition stands red from
+        // deal creation and only establishment clears it, so an empty list here now means
+        // something rather than meaning the raise path does not exist.
+        Integer standing = [
+            SELECT COUNT()
+            FROM AAO_Flag__c
+            WHERE
+                AAO_Opportunity__c = :opportunityId
+                AND AAO_Type__c = 'Methodological'
+                AND AAO_State__c = 'Standing'
+        ];
+        Integer cleared = [
+            SELECT COUNT()
+            FROM AAO_Flag__c
+            WHERE
+                AAO_Opportunity__c = :opportunityId
+                AND AAO_Type__c = 'Methodological'
+                AND AAO_State__c = 'Cleared'
+        ];
+        s.flags.count = standing;
+        s.flags.hasAny = standing > 0;
+        if (standing > 0) {
+            s.flags.sentence =
+                standing +
+                ' gating ' +
+                (standing == 1 ? 'proposition stands' : 'propositions stand') +
+                ' red on this deal' +
+                (cleared > 0 ? ', ' + cleared + ' already cleared by evidence' : '') +
+                '. A gating red is raised at deal creation, not when something goes wrong, ' +
+                'and only establishment clears it.';
+        } else if (cleared > 0) {
+            s.flags.sentence =
+                'No gating proposition stands red. All ' +
+                cleared +
+                ' were cleared by evidence, which is the only thing that clears one.';
+        } else {
+            s.flags.sentence =
+                'No gating flags on this deal, which means the rubric it is adjudicated ' +
+                'under carries no gating propositions. That is a fact about the rubric, ' +
+                'not a clean bill of health for the deal.';
+        }
 
         // ---- projection, off
         s.projection.sentence =

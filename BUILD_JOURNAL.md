@@ -21,7 +21,7 @@ recorded as a finding is how a wrong belief becomes load-bearing.
 Wave 1 plus Flag is live: seven objects (136 fields), five triggers, three frozen key
 composers, span verification, the speaker rule, commit, replay, the mini-rubric and the
 dummy transcripts, plus two charters, the credential scaffolding they call through, and the
-second reader that decides coverage. **110 AAO tests, 110 passing.** One pre-existing sandbox
+second reader that decides coverage, discovery, and day-one red. **125 AAO tests, 125 passing.** One pre-existing sandbox
 test still fails on a customer validation rule, and that failure is not ours.
 
 **The rehearsal is durable.** `AAO Demo - Tungsten Rehearsal` carries two claims and one
@@ -1930,3 +1930,100 @@ they run on the seeded rubric. Anyone describing the speaker rule as working "fr
 customer's own rubric" would be wrong.
 
 **Owed.** The setup-time inference pass, and everything remaining on session 4's list.
+
+---
+
+## 2026-07-31 · session 14 · a filter becomes a law, and the Flag tab goes honest
+
+**Did.** Items 39 and 40. **125 AAO tests, 125 passing.**
+
+### 39. Evidence Contract is not deletable
+
+Ratified and enforced. `AAO_EvidenceContractTrigger` gains `before delete`, and the handler
+refuses unless the row is marked synthetic **and** the purge context is open, matching Source,
+Claim and Flag.
+
+The reason is the same as Claim's. Every claim carries the contract key it was adjudicated
+under and still names it after the contract is gone, so deleting one leaves verdicts that
+nothing can explain and no replay can reconstruct. **Supersede is the retirement path**, and
+the error message names it: `AAO_Superseded_By__c` plus a contract state of `Superseded`
+retires a contract without destroying what rests on it.
+
+Session 13 had it exactly right that the marker was a filter pretending to be a guard. Two
+tests now separate the two halves: the marker alone is refused, and the marker plus the purge
+context succeeds.
+
+**A finding while testing it.** The seed does **not** mark its contracts on the
+`AAO_Seed.load` path, and does on the demo path, because `AAO_Pipeline` sets the marker from
+the Source before calling `ensureContracts`. So a contract's marker depends on which entry
+created it, and with a delete law in place that now decides whether the purge can remove it.
+Recorded rather than fixed, because changing the seed's marking is a separate decision.
+
+### 40. Day-one red
+
+Every gating proposition stands red from the moment the deal exists.
+
+```
+--- AAO Demo - Live               candidates=0  sources=0  redsStanding=2
+--- AAO Demo - Tungsten Rehearsal answer AAO_T1 = TRUE     redsStanding=1
+--- Tungsten (seller said it)     answer AAO_T1 = UNVERIFIED  redsStanding=2
+```
+
+`Methodological`, state `Standing`, cause `Gating_Unmet`, and **`AAO_Raised_At__c` is the
+opportunity's `CreatedDate`**, never `now()`. That is what makes age mean "how long has this
+deal stood unanswered" rather than "how long since we noticed". The Flag trigger stamps
+`now()` when the field is null, so it is set explicitly.
+
+Establishment of `TRUE` clears it and records what cleared it. `FALSE` holds it and changes
+the cause to `Established_False`, because a gating condition that is actively false is worse
+than one nobody has evidence for and a count that treated them alike would measure the wrong
+thing. `UNVERIFIED` holds it unchanged: partial evidence is not establishment. Clearance is
+called from `AAO_Commit`, which is the single writer of the answer.
+
+**The demo beat.** `AAO Demo - Live` opens with two reds standing. Ingest one leaves them
+standing, because partial evidence establishes nothing. Ingest two clears one. The
+seller-said-it deal keeps both reds **with full element coverage**, which is the sharpest
+version of the speaker rule anyone will see: every part was said, and nothing was established,
+so nothing cleared.
+
+`AAO_Demo.status()` now prints `redsStanding=` per deal, and the pipeline view's flag sentence
+has been rewritten. It used to read *"Nothing raises them yet"*. It now distinguishes three
+genuinely different states: reds standing, all cleared by evidence, and a rubric that carries
+no gating propositions at all, which "is a fact about the rubric, not a clean bill of health
+for the deal."
+
+**Decided, and why.**
+
+- **Not a trigger on Opportunity.** "Raise on deal creation" sounds like a trigger and cannot
+  be one: Opportunity is a standard object and the constraint is absolute. Raising is called
+  by the paths that create deals, and `raiseFor` is idempotent so calling it twice is free.
+  In production the caller is whatever provisions a deal into AAO. **That is a real
+  difference from the design's wording** and it is recorded rather than glossed.
+
+**Read from the org, and the two failures that taught the most.**
+
+- **The first raise produced four reds per deal where two were theirs.** Once discovery has
+  run, an org holds **more than one rubric at a time**: the seeded `mini-0.1.0` and the
+  derived `discovered-v1`. A raise path that asked only "which contracts are gating" flagged
+  every deal against every rubric in the org. `raiseFor` now takes a rubric version. **A deal
+  is red against the rubric it is adjudicated under, not against every rubric that exists**,
+  and nothing in the design had said so because until session 12 there was only ever one.
+- **Raising ran before the contracts existed.** `AAO_Demo.scaffold` raised flags before the
+  rubric was loaded, so it raised nothing, silently. It passed in the org because a previous
+  run had left contracts behind, and failed in a test, which is the right way round to find
+  it. `ensureContracts` now runs first.
+
+**Assumed, not verified.** That `Not_Returned` and the new flag counts render sensibly on the
+pipeline view. The controller was changed and its tests updated, but nothing has been looked
+at on screen since session 6.
+
+**Owed.**
+
+1. **Nothing raises `Escalated`.** `AAO_Escalation_Threshold__c` sits on the contract and no
+   code reads it, so a red stands forever at the same weight however old it is.
+2. **Contention and Ratification flags still have no raise path.** Day-one red is the
+   Methodological one only.
+3. **The demo deals now carry flags**, which changes what the Flag tab shows from empty to
+   populated. The run sheet's line *"if he clicks the Flag tab, it is empty"* is now wrong and
+   the sheet needs a bump.
+4. Everything remaining on session 4's list.

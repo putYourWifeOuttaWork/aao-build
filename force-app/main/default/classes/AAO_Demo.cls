@@ -152,6 +152,22 @@ public class AAO_Demo {
             c.oppByDeal.put(n, oppByName.get(n).Id);
         }
 
+        // Day-one red. Raised here because Opportunity is a standard object and we do not
+        // put triggers on objects we do not own, so "on deal creation" is the caller's
+        // job. Idempotent, so scaffolding twice raises nothing twice.
+        //
+        // THE CONTRACTS HAVE TO EXIST FIRST. The rubric is what says which propositions
+        // gate, so raising before it is loaded raises nothing at all and does it silently.
+        // That passed against an org where a previous run had already left contracts
+        // behind, and failed against a test, which is the right way round to find it.
+        AAO_Synthetic.MARK = true;
+        try {
+            c.contractByCode = AAO_Seed.ensureContracts(c.fixture);
+            AAO_Flags.raiseFor(new Set<Id>(c.oppByDeal.values()), AAO_Seed.RUBRIC_VERSION);
+        } finally {
+            AAO_Synthetic.MARK = false;
+        }
+
         // ---- the roster, as contacts
         List<Object> people = (List<Object>) c.fixture.get('people');
         Map<String, String> emailByKey = new Map<String, String>();
@@ -353,7 +369,9 @@ public class AAO_Demo {
                 ] +
                 ')' +
                 ' sources=' +
-                [SELECT COUNT() FROM AAO_Source__c WHERE AAO_Opportunity__c = :o.Id]
+                [SELECT COUNT() FROM AAO_Source__c WHERE AAO_Opportunity__c = :o.Id] +
+                ' redsStanding=' +
+                AAO_Flags.standing(o.Id)
             );
         }
         return out.isEmpty() ? 'Nothing seeded.' : String.join(out, '\n');

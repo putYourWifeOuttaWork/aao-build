@@ -91,12 +91,24 @@ private class AAO_PipelineViewControllerTest {
         System.assertEquals(true, s.answers[0].complete);
         System.assertEquals('MACHINE', s.answers[0].establishedBy);
 
-        // ---- flags, and the sentence that stops an empty list reading as a clean bill
-        System.assertEquals(0, s.flags.count);
-        System.assertEquals(false, s.flags.hasAny);
+        // ---- flags. Session 14: day-one red is live, so this deal is not flagless. The
+        // gating proposition that was established is cleared and the one nothing has
+        // spoken to still stands, which is the whole point of the count.
+        System.assertEquals(
+            1,
+            s.flags.count,
+            'AAO_T2 gates and nothing has established it, so it stands red.'
+        );
+        System.assertEquals(true, s.flags.hasAny);
         System.assert(
-            s.flags.sentence.contains('raise path does not'),
-            'An empty flag list must say why it is empty. Got: ' + s.flags.sentence
+            s.flags.sentence.contains('raised at deal creation'),
+            'The sentence must say a red is raised at deal creation rather than when ' +
+            'something goes wrong. Got: ' + s.flags.sentence
+        );
+        System.assert(
+            s.flags.sentence.contains('already cleared by evidence'),
+            'And it must show that establishment cleared one, which is the number the ' +
+            'demo watches fall. Got: ' + s.flags.sentence
         );
 
         // ---- projection, off

@@ -207,6 +207,11 @@ public class AAO_Commit {
         answer.AAO_Last_Claim__c = claim.Id;
         update answer;
 
+        // Day-one red. TRUE clears the gating flag, FALSE holds it with a changed cause.
+        // Here rather than in a trigger on Answer because commit is the single writer and
+        // the clearance is part of establishing, not a side effect of a row changing.
+        AAO_Flags.reconcile(cand.AAO_Opportunity__c, cand.AAO_Evidence_Contract__c);
+
         r.answer = answer;
         r.claim = claim;
         r.candidateStage = 'Committed';

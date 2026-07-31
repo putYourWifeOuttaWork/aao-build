@@ -88,13 +88,25 @@ public class AAO_Discovery {
             new Set<String>(codes)
         );
         List<ALTF__Assessment_Question__c> toInsert = new List<ALTF__Assessment_Question__c>();
+        List<ALTF__Assessment_Question__c> toUpdate = new List<ALTF__Assessment_Question__c>();
         Integer order = 1;
 
         for (Object o : rubric) {
             Map<String, Object> q = (Map<String, Object>) o;
             String code = (String) q.get('code');
-            if (existing.containsKey(code)) {
-                order++;
+            ALTF__Assessment_Question__c row = existing.get(code);
+            if (row != null) {
+                // Re-author in place. ALTF__AltifyId__c is unique, so a second insert is a
+                // DUPLICATE_VALUE, and the point of re-authoring is to move the sentence
+                // from Criterion_Text into Long_Question.
+                row.Name = (String) q.get('short');
+                row.ALTF__Criterion_Text__c = (String) q.get('short');
+                row.ALTF__Long_Question__c = (String) q.get('proposition');
+                row.ALTF__Help__c = helpTextFor(q);
+                row.ALTF__Order_Number__c = order++;
+                row.ALTF__Active__c = true;
+                row.ALTF__Mandatory__c = (Boolean) q.get('gating');
+                toUpdate.add(row);
                 continue;
             }
             toInsert.add(
@@ -106,8 +118,14 @@ public class AAO_Discovery {
                     ALTF__AltifyId__c = code,
                     // Required, restricted to five values, and it is the CATEGORY.
                     ALTF__Question__c = categoryFor(code),
-                    // Required. This is where the question text actually lives.
-                    ALTF__Criterion_Text__c = (String) q.get('proposition'),
+                    // Criterion Text is the SHORT TITLE, "Budget Confirmed" style, and
+                    // Long Question carries the sentence. The field labelled "Question
+                    // Text" in this org is ALTF__Long_Question__c, and production's
+                    // glossary rules it the proposition. Noted in the journal: this org's
+                    // inline help on Criterion_Text disagrees, so discovery reads Long
+                    // Question and falls back rather than assuming either convention.
+                    ALTF__Criterion_Text__c = (String) q.get('short'),
+                    ALTF__Long_Question__c = (String) q.get('proposition'),
                     ALTF__Help__c = helpTextFor(q),
                     ALTF__Order_Number__c = order++,
                     ALTF__Active__c = true,
@@ -119,6 +137,9 @@ public class AAO_Discovery {
         }
         if (!toInsert.isEmpty()) {
             insert toInsert;
+        }
+        if (!toUpdate.isEmpty()) {
+            update toUpdate;
         }
 
         // The plan-type chain. A NEW row, so the nine the customer configured are left
@@ -152,6 +173,8 @@ public class AAO_Discovery {
 
         return 'AUTHORED\n  questions inserted ' +
             toInsert.size() +
+            ', re-authored ' +
+            toUpdate.size() +
             '\n  questions present ' +
             questionsByCode(new Set<String>(codes)).size() +
             '\n  plan type "' +
@@ -208,6 +231,7 @@ public class AAO_Discovery {
                 ALTF__AltifyId__c,
                 ALTF__Question__c,
                 ALTF__Criterion_Text__c,
+                ALTF__Long_Question__c,
                 ALTF__Help__c,
                 ALTF__Active__c,
                 ALTF__Mandatory__c,
@@ -263,6 +287,33 @@ public class AAO_Discovery {
         d.notes.add('plan type ' + PLAN_TYPE + ' lists ' + codes.size() + ' codes');
 
         Map<String, ALTF__Assessment_Question__c> byCode = questionsByCode(wanted);
+
+        // ITEM 37. "The table has no rows" and "my query matched none of them" are
+        // different facts and only one of them is the customer's fault. Reporting an
+        // empty rubric for the second is how the LIKE defect hid: a filter bug looks
+        // exactly like an org nobody has configured, and it looks like it silently.
+        if (byCode.isEmpty()) {
+            Integer inTable = [SELECT COUNT() FROM ALTF__Assessment_Question__c];
+            if (inTable > 0) {
+                throw new DiscoveryException(
+                    'DISCOVERY FILTER FAULT, not an empty rubric. ' +
+                    'ALTF__Assessment_Question__c holds ' +
+                    inTable +
+                    ' rows and the plan type "' +
+                    PLAN_TYPE +
+                    '" lists ' +
+                    wanted.size() +
+                    ' codes (' +
+                    String.join(new List<String>(wanted), ',') +
+                    '), and none of them matched ALTF__AltifyId__c. The rubric exists and ' +
+                    'this query cannot see it. Do not report this as an unconfigured org.'
+                );
+            }
+            throw new DiscoveryException(
+                'The rubric is genuinely empty: ALTF__Assessment_Question__c holds no ' +
+                'rows at all. This is the cold-start condition, not a fault.'
+            );
+        }
         List<AAO_Evidence_Contract__c> toInsert = new List<AAO_Evidence_Contract__c>();
 
         for (String c : codes) {
@@ -280,7 +331,28 @@ public class AAO_Discovery {
                 continue;
             }
 
-            Elements el = parseElements(q.ALTF__Help__c, q.ALTF__Criterion_Text__c);
+            // The proposition is the SENTENCE. This org labels ALTF__Long_Question__c
+            // "Question Text" and production's glossary rules it the proposition, with
+            // Criterion Text a short title. But this org's own inline help on
+            // Criterion_Text says the opposite, so the read falls back rather than
+            // assuming, and says which field it used.
+            String propositionText = String.isNotBlank(q.ALTF__Long_Question__c)
+                ? q.ALTF__Long_Question__c
+                : q.ALTF__Criterion_Text__c;
+            String shortTitle = String.isNotBlank(q.ALTF__Long_Question__c)
+                ? q.ALTF__Criterion_Text__c
+                : q.Name;
+            if (String.isBlank(q.ALTF__Long_Question__c)) {
+                d.notes.add(
+                    code +
+                    ': Long Question is empty, so the proposition was read from ' +
+                    'Criterion Text. In an org that authors the sentence there, that is ' +
+                    'correct; in an org that authors a short title there, this contract ' +
+                    'carries a title where a proposition belongs.'
+                );
+            }
+
+            Elements el = parseElements(q.ALTF__Help__c, propositionText);
             if (el.basis == 'Authored') {
                 d.authored++;
             } else {
@@ -293,10 +365,10 @@ public class AAO_Discovery {
                     // was the fixture code because there was no record to point at.
                     AAO_Question_Record_Id__c = q.Id,
                     AAO_Proposition_Code__c = code,
-                    AAO_Proposition_Short__c = q.Name,
+                    AAO_Proposition_Short__c = shortTitle,
                     // Verbatim. Not summarised, not reformatted. The content hash covers
                     // this text and an edit upstream must surface as a new contract.
-                    AAO_Proposition_Text__c = q.ALTF__Criterion_Text__c,
+                    AAO_Proposition_Text__c = propositionText,
                     AAO_Guidance_Text__c = q.ALTF__Help__c,
                     AAO_Elements__c = JSON.serialize(el.elements),
                     AAO_Element_Count__c = el.elements.size(),
@@ -319,7 +391,19 @@ public class AAO_Discovery {
         if (toInsert.isEmpty()) {
             throw new DiscoveryException('Discovery produced no contracts.');
         }
-        insert toInsert;
+        // Marked, because these are rehearsal rows on a rehearsal deal and the purge is
+        // marker-guarded. Unmarked, they survived the purge and the next run collided on
+        // AAO_Contract_Key__c. Worth noting what that collision proved: the key is
+        // questionRecordId plus content hash, the CONTENT did not change when the
+        // proposition moved from Criterion Text to Long Question, so identity held. That
+        // is the composer behaving exactly as designed.
+        Boolean prior = AAO_Synthetic.MARK;
+        AAO_Synthetic.MARK = true;
+        try {
+            insert toInsert;
+        } finally {
+            AAO_Synthetic.MARK = prior;
+        }
         for (AAO_Evidence_Contract__c ec : toInsert) {
             d.byCode.put(ec.AAO_Proposition_Code__c, ec);
         }
@@ -588,9 +672,15 @@ public class AAO_Discovery {
                     WHERE AAO_Opportunity__c IN :ids AND AAO_Synthetic__c = TRUE
                 ]));
             }
+            // By rubric version alone. AAO_Evidence_Contract__c carries no delete law,
+            // unlike Source, Claim and Flag, so the synthetic marker here was only ever a
+            // query filter and not a guard. "discovered-v1" is our namespace by
+            // construction, which makes it the honest ownership test. The first version of
+            // this filtered on the marker as well and stranded six unmarked contracts from
+            // an earlier run, which then collided on AAO_Contract_Key__c.
             out.add('derived contracts ' + del([
                 SELECT Id FROM AAO_Evidence_Contract__c
-                WHERE AAO_Rubric_Version__c = :RUBRIC_VERSION AND AAO_Synthetic__c = TRUE
+                WHERE AAO_Rubric_Version__c = :RUBRIC_VERSION
             ]));
         } finally {
             AAO_Synthetic.PURGING = false;

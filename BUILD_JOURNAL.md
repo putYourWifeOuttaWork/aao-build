@@ -1800,3 +1800,133 @@ exists.
    is `Yes` / `No` / `Unknown` and ours is `TRUE` / `FALSE` / `UNVERIFIED`; the mapping is a
    decision, not a translation.
 4. Everything on session 4's list that remains.
+
+---
+
+## 2026-07-31 · session 13 · the trap, the guard, and where rule data actually lives
+
+**Did.** Items 36, 37, 38. **117 AAO tests, 117 passing**, and the discovery exit test still
+green after re-authoring.
+
+### 36. The describe, verbatim, and it does not fully agree with the glossary
+
+`ALTF__Long_Question__c` **is present**. Here is the org, unedited:
+
+```
+--- Name
+    label = 'Assessment Criterion Name'      type = 'string'    length = 80
+--- ALTF__Question__c
+    label = 'Section Heading'                type = 'picklist'  length = 255  nillable = False
+    inlineHelpText = 'The section heading under which the criterion will be displayed.
+      Defined as a picklist, you can edit the section headings (change the names of the
+      existing and/or add new) under App Setup > Create > Objects > Assessment Criterion
+      > Section Headi'
+--- ALTF__Criterion_Text__c
+    label = 'Criterion Text'                 type = 'string'    length = 255  nillable = False
+    inlineHelpText = 'This is the text of the criterion, i.e. "Is there a compelling event?"'
+--- ALTF__Help__c
+    label = 'Help'                           type = 'textarea'  length = 1024
+    inlineHelpText = 'Tip/Hint text displayed to the user on clicking the 'i' icon beside
+      the assessment criterion. The same text is also displayed on the right of the
+      "add comments" pop-up screen.'
+--- ALTF__Long_Question__c
+    label = 'Question Text'                  type = 'textarea'  length = 1280
+    inlineHelpText = None
+```
+
+**Two sources disagree and both are credible.** Production's glossary rules `Long_Question`
+the proposition and `Criterion_Text` a short title. The field **label** agrees: the one
+called "Question Text" is `Long_Question`. But **this org's own inline help on
+`Criterion_Text` says the opposite**, in terms, with an example sentence: *"This is the text
+of the criterion, i.e. \"Is there a compelling event?\""*.
+
+Followed the ruling and re-authored, **and made the read tolerate both**, because a
+disagreement between the glossary and the shipped help text is a disagreement real customer
+orgs will also contain. Discovery reads `Long_Question` as the proposition **when it is
+populated** and falls back to `Criterion_Text` when it is blank, recording which it used:
+
+> *"Long Question is empty, so the proposition was read from Criterion Text. In an org that
+> authors the sentence there, that is correct; in an org that authors a short title there,
+> this contract carries a title where a proposition belongs."*
+
+Re-authored and re-run, verified in the org:
+
+```
+ALTF__Assessment_Question__c  AAO_T1
+  ALTF__Criterion_Text__c  = "Budget Confirmed"
+  ALTF__Long_Question__c   = "The customer's decision maker has confirmed that budget is
+                              secured for this initiative in the current fiscal year."
+
+AAO_Evidence_Contract__c      AAO_T1
+  AAO_Proposition_Short__c = "Budget Confirmed"
+  AAO_Proposition_Text__c  = "The customer's decision maker has confirmed that budget is
+                              secured for this initiative in the current fiscal year."
+
+EXIT TEST PASSED against contracts the org produced.  REPLAY exact=true.
+```
+
+**A correction to session 12.** That entry called `ALTF__Question__c` a picklist of "five
+assessment categories" and implied the set was fixed. Its label is **Section Heading** and
+its own help says the values are **editable and extensible per org**. So the five values in
+this org are this org's, not Altify's, and any mapping keyed on them is keyed on customer
+configuration. That makes item 38 sharper rather than softer.
+
+**A finding from a collision.** Re-authoring moved the sentence from `Criterion_Text` to
+`Long_Question` and the insert failed on `DUPLICATE_VALUE ... AAO_Contract_Key__c`. The key
+is question record id plus content hash; the **content did not change**, only the field it
+was read from, so identity held. That is the composer behaving exactly as designed, and it
+proved it under a change nobody designed it for.
+
+### 37. The guard
+
+Discovery can no longer report an empty rubric without saying which kind of empty it is.
+
+```
+DISCOVERY FILTER FAULT, not an empty rubric. ALTF__Assessment_Question__c holds N rows
+and the plan type "..." lists M codes (...), and none of them matched ALTF__AltifyId__c.
+The rubric exists and this query cannot see it. Do not report this as an unconfigured org.
+```
+
+A non-empty table with zero matches is now a thrown fault. An empty table is the cold-start
+condition and says so. This is written directly against session 12's `LIKE 'AAO\_%'`
+failure, where a filter bug and an unconfigured customer produced **the same silent
+result**, and the same shape would have hidden the wrong join key on
+`ALTF__AssessmentQuestionIds__c` too. Four tests cover it plus the two no-configuration
+cases.
+
+**One more purge fault worth recording.** Derived contracts were being purged with
+`AAO_Synthetic__c = TRUE` in the filter, and they were not marked, so six contracts from an
+earlier run survived every purge and collided on the next insert. `AAO_Evidence_Contract__c`
+carries **no delete law** (Source, Claim and Flag do), so the marker there was never a guard,
+only a query filter pretending to be one. Purge is by `AAO_Rubric_Version__c = 'discovered-v1'`
+now, which is our namespace by construction and the honest ownership test.
+
+### 38. Recorded, not built: speaker requirement and route are OUR rule data
+
+**Ruled and written down rather than implemented tonight.**
+
+`AAO_Speaker_Requirement__c` and `AAO_Route__c` are **our rule-data layer**. They are not
+discovered from Altify and never will be, because Altify carries neither: session 12 read the
+whole question object and neither concept exists on it, on the plan type, or on the settings.
+
+The sequence, per the existing setup-time-inference ruling:
+
+1. **Discovery floor stays `Any_Participant`.** What discovery writes today is not a guess
+   dressed as a read. It is the weakest requirement, which establishes least, and it is the
+   correct floor for a value nobody has ratified.
+2. **A setup-time inference pass proposes them**, per question, from the authored text.
+   Charter-config work, sequenced later.
+3. **A human ratifies.** Nothing a proposal pass produces becomes rule data unheard, which is
+   the same bar Gate 1 sets for verdicts.
+
+`AAO_Discovery.ROUTE_BY_CATEGORY` is therefore a **placeholder, and now a weaker one than it
+looked**: it is keyed on Section Heading values that each org can rename and extend. It stays
+because a contract needs a route, it is labelled in the class as our convention, and it is
+first in line to be replaced by the proposal pass.
+
+**The consequence stands and is unchanged.** The seller-said-it downgrade cannot be
+reproduced from org-derived contracts until that layer exists. The demo deals show it because
+they run on the seeded rubric. Anyone describing the speaker rule as working "from the
+customer's own rubric" would be wrong.
+
+**Owed.** The setup-time inference pass, and everything remaining on session 4's list.

@@ -55,11 +55,13 @@ precise list of what executes and what is authored in the fixture, and it is les
 than the demo looks. The one-line version: *this is a working evidence ledger with no reader
 attached — not a working extraction pipeline.* Nothing in this build reads a transcript.
 
-**The internal pipeline view renders**, verified on screen in App Builder against real data,
-and the session-3 related lists are confirmed under the record page's **Related** tab. The
-one step not taken is adding an `AAO Pipeline` tab to the shared Opportunity record page —
-that needs a Save on 98KB of customer customisation, so it waits for a word.
-`AAO_Pipeline_Internal` is deployed and assigned to nothing.
+**The `AAO Pipeline` tab is live on the active Opportunity record page**, verified rendering
+with real data, with the Altify panels and the Related tab intact. Rollback is deploying
+`ed71d06`'s copy of `Opportunity_Record_Page`.
+
+**CODE FREEZE** as of session 6. Nothing changes before the meeting. The demo state is:
+Tungsten Rehearsal `TRUE`, seller-said-it `UNVERIFIED`, **AAO Demo - Live empty** and ready
+for a live ingest. Opportunity ids changed on the reseed — see session 6.
 
 **Still not done, and it is the same gap as the first day:** the mini-rubric is written
 straight into `AAO_Evidence_Contract__c` and **discovery is skipped entirely**. The ALTF
@@ -945,3 +947,110 @@ page-layout related lists surface under **Related**, not in the main body.
    meeting. `AAO_Pipeline_Internal` is deployed and assigned to nothing as the alternative,
    and the Related tab works as the fallback.
 2. Everything in session 4's Owed list, unchanged and unaddressed.
+
+---
+
+## 2026-07-31 · session 6 · the tab, the reset, and the freeze
+
+**Did.** Retrieved the active Opportunity record page into git as a rollback point, added an
+`AAO Pipeline` tab to it, confirmed the Altify panels and the Related tab survived, then
+purged and reseeded the rehearsal leaving the live deal empty. **Code freeze from here.**
+
+**Decided, and why.**
+
+- **The tab went in as a metadata patch, not App Builder drag-and-drop.** It was attempted
+  in App Builder first, as instructed. Adding the tab worked; **renaming it did not** — the
+  Tab Label combobox would not open under automation across four different approaches, and
+  on the last attempt the click fell through the closed popover onto a related list in the
+  canvas, one icon away from its delete control. That is the point at which continuing to
+  click on a 98KB customer-customised page stops being diligence. The App Builder change was
+  **undone** — verified back to four tabs with Undo greyed out, nothing saved — and the same
+  edit made precisely in XML instead. **24 insertions, 0 deletions**, purely additive: one
+  `flexipage:tab` appended after `Legacy`, plus one facet holding the component.
+
+- **The rollback point was taken before anything was touched**, as instructed, and is a
+  separate commit so it can be deployed on its own:
+  `git show ed71d06:force-app/main/default/flexipages/Opportunity_Record_Page.flexipage-meta.xml`
+
+**Read from the org.** All verbatim.
+
+Which page is actually active, from Object Manager → Lightning Record Pages:
+
+> `AAO Pipeline (internal)` — org default: *(blank)*
+> `Opportunity 2 Column (Sales Navigator)` — *(blank)*
+> `Opportunity 3 Column (Sales Navigator)` — *(blank)*
+> `Opportunity Record Page` — **`Desktop, Phone`**
+> `Opportunity Record Page - Three Column` — *(blank)*
+
+So `Opportunity_Record_Page` is the one, and `AAO_Pipeline_Internal` is assigned to nothing,
+which is what was intended for it.
+
+The tab, rendered on the real record page, read out of the live DOM:
+
+> `AAO Pipeline (internal)` · `Read-only. Shows candidates, which never appear on a seller surface.` · `Refreshing every 10s`
+> `1 · Sources  dummy/transcript-one Adjudicated ECI · Attributed · 15 Jun 2026 / dummy/transcript-two Adjudicated ECI · Attributed · 26 Jun 2026`
+> `2 · Candidates  Latest pass · dummy/transcript-two  Abstained 5  Upheld 1  this pass 6  all passes 12`
+> `3 · Claims  — → UNVERIFIED Established 15 Jun 2026 “The funding is approved.”`
+> `            UNVERIFIED → TRUE Established 26 Jun 2026 “It is in the current fiscal year, confirmed last Thursday.”`
+> `4 · Answers  AAO_T1 · Budget Confirmed TRUE  covered e1, e2, e3 · missing —  established by MACHINE · Live`
+> `5 · Flags 0` · `6 · Projection off`
+
+Tab bar afterwards: `Details | Related | Chatter | AAO Pipeline`. The Altify Sales Process
+Manager and Opportunity Plan panels, the Related List Quick Links and the right sidebar all
+still render, and the Related tab still lists its related lists.
+
+The purge:
+
+> `purged: claim bases 0 · claims 5 · flags 0 · candidates 30 · answers 3 · sources 5 ·`
+> `contracts 6 · opportunities 3 · contacts 2 · accounts 1`
+
+The reseed, three separate transactions:
+
+> `OK. T1SRC committed on AAO Demo - Tungsten Rehearsal. staged verdict=UNVERIFIED claim=Established key4=005V400000MCTUbIAP abstentions=5`
+> `OK. T2SRC committed on AAO Demo - Tungsten Rehearsal. staged verdict=TRUE claim=Established key4=005V400000MCTUbIAP abstentions=5`
+> `OK. NEGSRC committed on AAO Demo - Tungsten Rehearsal (seller said it). staged verdict=UNVERIFIED claim=Downgraded ... note=Speaker requirement Decision_Maker_Or_Influencer unmet: Priya Shah is on the selling side`
+
+Final state, which is the state the meeting starts from:
+
+> `--- AAO Demo - Tungsten Rehearsal (006WD00000SjNmjYAF)`
+> `    answer ANS-00000003 AAO_T1 = TRUE by MACHINE coverage={"missing":[],"covered":["e1","e2","e3"]}`
+> `    claim  CLM-00000005 null -> UNVERIFIED (Established) occurred=2026-06-15 recorded=13:46:30`
+> `    claim  CLM-00000006 UNVERIFIED -> TRUE (Established) occurred=2026-06-26 recorded=13:46:32`
+> `    candidates=12 sources=2`
+> `--- AAO Demo - Tungsten Rehearsal (seller said it) (006WD00000SjNmkYAF)`
+> `    answer ANS-00000004 AAO_T1 = UNVERIFIED by MACHINE coverage={"missing":[],"covered":["e1","e2","e3"]}`
+> `    claim  CLM-00000007 null -> UNVERIFIED (Downgraded) occurred=2026-06-26`
+> `    candidates=6 sources=1`
+> `--- AAO Demo - Live (006WD00000SjNmlYAF)`
+> `    candidates=0 sources=0 claims=0`
+
+Replay exact on all three. **Note the ids all changed** — purge deletes the opportunities and
+the reseed creates new ones.
+
+And the empty state, rendered on the live deal, which is where a live-ingest demo begins:
+
+> `Nothing has arrived on this opportunity yet. No sources, no candidates, no claims, no`
+> `answers. That is a true statement about the deal, not a loading state.`
+
+**Assumed, not verified.**
+
+- **The 2s cadence and the row spinner have still never been observed.** Catching them means
+  having the tab open at the moment a source is landed-but-unadjudicated — a roughly
+  ten-second window. It will happen naturally on the first live ingest at the meeting, and if
+  it does not, nothing is broken; the 10s branch is the one that has been seen.
+- **A browser tab was left open on App Builder holding unsaved changes and a stale copy of
+  the page.** It predates the tab being added. **Saving it would remove the AAO Pipeline
+  tab.** Close it without saving. Nothing was saved from it during this session — the Undo
+  was verified.
+- **The Legacy tab does not appear on the rendered record page** even though it is in the
+  metadata, so it presumably carries a visibility filter. Not investigated; not ours.
+
+**Owed. Code freeze is in force: nothing else changes before the meeting.**
+
+1. **Nothing.** No further changes are to be made. If the tab misbehaves, the fallback is the
+   **Related** tab, which is independent of everything built in sessions 5 and 6, and the
+   rollback is deploying `ed71d06`'s copy of the record page.
+2. After the meeting, session 4's Owed list resumes **unchanged and unaddressed**, still led
+   by the two real defects: the artifact hash computed over the path label with a test
+   asserting that behaviour as correct, and `AAO_Model.Coverage.isFull()` never consulting
+   the contract's element list.

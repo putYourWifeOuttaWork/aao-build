@@ -246,7 +246,7 @@ public class AAO_MapRoute {
 
         // Through the same door route E uses. Every existing gate decides; nothing about
         // this route gets to skip one. The speaker gate records itself as not applicable
-        // rather than being bypassed, which is a consequence of 47 worth watching.
+        // rather than being bypassed, which is the law ratified in 48.
         AAO_Commit.Result cr = AAO_Commit.commitCandidate(cand.Id, internalDomains);
         o.verdict = cr.answer == null ? r.verdict : cr.answer.AAO_Verdict__c;
         o.answerId = cr.answer == null ? null : cr.answer.Id;

@@ -26,7 +26,13 @@ Companion to: Architecture, Object Model, Glossary, Data Flow. Every heading sta
 
 **Case sensitivity, corrected from the org 31 July.** `CaseSensitive can only be set for fields with unique also set` — verbatim from the compiler. **Affected and now false:** `AAO_SHA256__c`, `AAO_Artifact_SHA256__c`, `AAO_Content_Hash__c`, `AAO_Question_Record_Id__c`, `AAO_Question_Fingerprint__c`. **Unaffected and keeping it:** `AAO_Scope_Key__c`, `AAO_Contract_Key__c`, `AAO_Answer_Key__c`, all three unique. The intent survives in Apex: the key composers reject anything that is not lowercase hex rather than folding case silently. Each affected field carries the reason in its org description so nobody re-adds the flag.
 
-**Two Apex reserved-word collisions, recorded because they are permanent.** `commit` is a reserved word and cannot be a method name — our vocabulary uses *commit* as a pipeline stage, which is fine as data on a picklist and never as an identifier. And a parameter named `json` shadows the `JSON` system class, which resolves silently because Apex is case-insensitive. Both are naming hazards specific to this domain.
+**Five Apex reserved-word collisions, recorded because they are permanent.** Extended 1 Aug 2026 per ruling 48. The count was previously two; this is the full list the build has actually hit, and they come in two kinds. The second kind is the dangerous one.
+
+**Refused loudly, with the identifier named.** `commit`, because our vocabulary uses *commit* as a pipeline stage — fine as data on a picklist, never as an identifier. `any`, which is on nobody's list and took down the first deploy of the pipeline view controller. `merge`, which is a DML statement, so `AAO_EvidenceFamily.merge(String, String)` failed to parse at the declaration itself and was renamed `combine`.
+
+**Resolved silently, with the error surfacing somewhere else entirely.** A parameter named `json` shadows the `JSON` system class, and a local named `system` shadows `System`. Both compile without complaint, because Apex is case-insensitive, and the failure appears later as a missing method on `String`. These are the two worth teaching, precisely because the compiler will not teach them.
+
+Every one is a naming hazard specific to this domain: the words that collide are the words an evidence ledger most wants to use.
 
 **Name collision to watch.** Altify's assessment answer field is `ALTF__Answer__c`. Ours is `AAO_Answer__c` and they are distinct records, but the word is overloaded in conversation. When speaking to Toby or Bill, say *our answer row* or *the assessment answer*, never bare *answer*.
 

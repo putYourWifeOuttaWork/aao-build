@@ -145,13 +145,14 @@ public class AAO_Commit {
 
         // THE SPEAKER GATE IS ABOUT UTTERANCES, AND A RECORD HAS NO UTTERER.
         //
-        // Consequence of 47, surfaced rather than absorbed. The rule ranks whoever SAID
+        // RATIFIED 48 as the law for basis State. The rule ranks whoever SAID
         // the words; state evidence has no words and no speaker, so there is nothing to
         // rank. Running the loop anyway would leave speakerOk false on every state claim
         // and downgrade all of them to UNVERIFIED forever, which is not the gate deciding,
         // it is the gate being asked a question that does not apply to the row.
         //
-        // NOT APPLICABLE IS RECORDED, NOT SKIPPED. The reason goes on the claim in the
+        // NOT APPLICABLE IS RECORDED, NOT SKIPPED, and that distinction is the ratified
+        // part. The reason goes on the claim in the
         // same field the transcript path uses, so nobody reading a state claim later can
         // mistake it for one that cleared a speaker check it never faced.
         if (!AAO_EvidenceFamily.needsSource(cand.AAO_Basis__c)) {

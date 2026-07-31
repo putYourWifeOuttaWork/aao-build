@@ -2460,3 +2460,45 @@ after `system`, `commit` and `json`.
 
 **Owed.** Unchanged, less the Source ruling. Plus: whether `Any_Participant` should even be
 authored on a P-routed proposition.
+
+---
+
+## 2026-08-01 · session 20 · ruling 48 recorded
+
+**Did.** Recorded 48 where the code was asking for it, and extended the collision list.
+
+**`AAO_Answer__c.AAO_Basis__c` ratified as built, union semantics included.** The field
+description no longer says "recorded for ratification"; it says ratified, and dates it. The
+union half is the part that needed the word: an answer's family is not the last claim's, it
+is every claim's, so a proposition established from a call and later reinforced by a state
+read reads `Both`.
+
+**The speaker gate's "not applicable" is now law for basis State**, not a consequence I was
+watching. The distinction that got ratified is the one worth keeping: **not applicable is
+RECORDED, not skipped.** A state claim carries the sentence saying the requirement did not
+apply and why, in the same field the transcript path writes its reason to, so it can never
+be misread as a claim that cleared a check it never faced.
+
+### The collision list, and a correction to my own count
+
+Extended in `docs/aao-field-tables-v0_10.md` from two to **five**, which is what the build
+has actually hit. I called `merge` "fourth in the family" last session and that was one
+short: `any` belongs on the list too. It failed the first deploy of the pipeline view
+controller and is recorded at session 8 in this journal, but never reached the doc.
+
+The list now separates them by **how they fail**, because the two kinds want different
+habits:
+
+- **Refused loudly, identifier named** — `commit`, `any`, `merge`.
+- **Resolved silently, error surfacing elsewhere** — `json` shadows the `JSON` class,
+  `system` shadows `System`. Both compile clean, because Apex is case-insensitive, and
+  surface later as a missing method on `String`.
+
+The second pair is the one worth teaching, precisely because the compiler will not teach it.
+
+**A hazard in doing this at all, flagged.** `docs/` is read-reference and every context sync
+replaces it wholesale — the last two syncs did exactly that. **This edit will be lost at the
+next sync unless it is carried into the upstream document.** I made it because 48 said to,
+and I am naming the cost rather than letting it disappear quietly.
+
+**Owed.** Unchanged. Nothing further from session 19.

@@ -87,7 +87,16 @@ public class AAO_AnswerTriggerHandler {
             Boolean spansChanged =
                 oldById == null || oldById.get(a.Id).AAO_Spans__c != a.AAO_Spans__c;
 
-            if (a.AAO_Established_By__c == 'MACHINE') {
+            // The evidence-family law, ruled 47, reaching its third table. Spans are how a
+            // TRANSCRIPT answer is cited; a state answer is cited by the rows its claim
+            // named and froze, and demanding a quote of it would demand a quotation from
+            // an artifact that does not exist. The requirement is unchanged where it
+            // applies: an establishment still requires a citation, and what counts as one
+            // now depends on what kind of evidence it stands on.
+            Boolean fromArtifact = AAO_EvidenceFamily.needsSource(
+                AAO_EvidenceFamily.orTranscript(a.AAO_Basis__c)
+            );
+            if (a.AAO_Established_By__c == 'MACHINE' && fromArtifact) {
                 List<AAO_Model.Span> spans = AAO_Model.parseSpans(a.AAO_Spans__c).spans;
                 if (spans.isEmpty()) {
                     a.addError(

@@ -18,43 +18,53 @@ private class AAO_MapRouteTest {
     }
 
     /**
-     * THE BLOCK, pinned as a test so it cannot be forgotten or quietly worked around.
-     *
-     * Everything the P route needs is built and verified: the map rows, the deterministic
-     * count, state verification, the snapshot shape, the then-and-now lookup. What stops it
-     * is the schema: AAO_Candidate__c.AAO_Source__c is required and a state-derived
-     * candidate has no Source, because its evidence is a record rather than an artifact.
-     *
-     * This test exists so that whichever way that is ruled, the ruling is deliberate.
+     * ITEM 46 b AND c, unblocked by 47. The route writes a candidate with NO SOURCE,
+     * commits it through the same door route E uses, and the claim carries cited rows with
+     * the values frozen at claim time.
      */
     @IsTest
-    static void thePRouteRefusesToInventASourceAndSaysWhy() {
+    static void theRouteWritesAStateClaimWithNoSourceAndCitesTheRowsItCounted() {
         AAO_Demo.Ctx c = setUp();
         Id oppId = c.oppByDeal.get(AAO_Demo.OPP_LIVE);
         AAO_MapRoute.seedMapRows(oppId, c.acct.Id, danaId(c));
 
-        Boolean threw = false;
-        String message;
         Test.startTest();
-        try {
-            AAO_MapRoute.run(oppId, c.internalDomains, true);
-        } catch (AAO_MapRoute.MapRouteException e) {
-            threw = true;
-            message = e.getMessage();
-        }
+        AAO_MapRoute.Outcome o = AAO_MapRoute.run(oppId, c.internalDomains, true);
         Test.stopTest();
 
-        System.assertEquals(true, threw, 'It must refuse rather than manufacture a Source.');
-        System.assert(message.contains('AAO_Source__c is '), 'Got: ' + message);
-        System.assert(
-            message.contains('state verification passed'),
-            'And it must say how far it got, so the block is separable from a failure. ' +
-            'Got: ' + message
-        );
+        System.assertNotEquals(null, o.claimId, 'A claim, from state alone. ' + o.note);
+        System.assertEquals('TRUE', o.verdict, o.note);
+        System.assertEquals(1, o.basisRows, 'One row counted, one row cited.');
+
+        AAO_Claim__c claim = [
+            SELECT AAO_Basis__c, AAO_Source__c, AAO_Spans__c, AAO_Charter__c
+            FROM AAO_Claim__c
+            WHERE Id = :o.claimId
+        ];
+        System.assertEquals(AAO_EvidenceFamily.STATE, claim.AAO_Basis__c);
         System.assertEquals(
-            0,
-            [SELECT COUNT() FROM AAO_Claim_Basis__c WHERE AAO_Synthetic__c = TRUE],
-            'Nothing written.'
+            null,
+            claim.AAO_Source__c,
+            'The whole point of 47. Its evidence is a record, and there is no artifact to ' +
+            'name.'
+        );
+        System.assertEquals(null, claim.AAO_Spans__c, 'And nothing to quote.');
+        System.assertEquals(
+            AAO_MapRoute.READER,
+            claim.AAO_Charter__c,
+            'Not a charter, but still attribution: which reader, which version.'
+        );
+
+        AAO_Claim_Basis__c b = [
+            SELECT AAO_Cited_Map_Row__c, AAO_Covers_Element__c, AAO_Snapshot__c
+            FROM AAO_Claim_Basis__c
+            WHERE AAO_Claim__c = :o.claimId
+        ];
+        System.assertNotEquals(null, b.AAO_Cited_Map_Row__c, 'It names the row.');
+        System.assertEquals(AAO_MapRoute.ELEMENT, b.AAO_Covers_Element__c);
+        System.assert(
+            b.AAO_Snapshot__c.contains(AAO_MapRoute.ROLE_DECISION_MAKER),
+            'And freezes what the row said. Got: ' + b.AAO_Snapshot__c
         );
     }
 
@@ -109,13 +119,65 @@ private class AAO_MapRouteTest {
         );
     }
 
-    // ITEM 46f, THE EXIT CHECK, cannot run yet. It needs a claim to exist, and the P
-    // route cannot write one until AAO_Candidate__c.AAO_Source__c is ruled on. The
-    // machinery it would exercise is built: AAO_Claim_Basis__c.AAO_Cited_Map_Row__c is the
-    // live half, AAO_Snapshot__c is the frozen half, and AAO_MapRoute.thenAndNow returns
-    // both from one subquery. Deliberately not asserted against a hand-made claim, because
-    // a test that builds its own claim would prove the query works and nothing about
-    // whether the route produces one.
+    /**
+     * ITEM 46f, THE EXIT CHECK, against a claim the route produced rather than one built
+     * by hand. The sentence it exists to make true: editing the cited row afterwards
+     * changes nothing about the claim, while the live lookup shows the new value.
+     *
+     * This is why the frozen half exists at all. Without it, anyone editing a map row would
+     * silently rewrite the evidence under every claim that ever rested on it, and the claim
+     * would go on asserting something no record had ever said.
+     */
+    @IsTest
+    static void editingACitedRowMovesTheLiveValueAndNothingElse() {
+        AAO_Demo.Ctx c = setUp();
+        Id oppId = c.oppByDeal.get(AAO_Demo.OPP_LIVE);
+        AAO_MapRoute.seedMapRows(oppId, c.acct.Id, danaId(c));
+        AAO_MapRoute.Outcome o = AAO_MapRoute.run(oppId, c.internalDomains, true);
+        System.assertNotEquals(null, o.claimId, o.note);
+
+        AAO_Claim_Basis__c before = [
+            SELECT AAO_Snapshot__c, AAO_Cited_Map_Row__c
+            FROM AAO_Claim_Basis__c
+            WHERE AAO_Claim__c = :o.claimId
+        ];
+        String frozen = before.AAO_Snapshot__c;
+
+        // Somebody changes Dana's role next Tuesday, with no idea a claim rests on it.
+        Test.startTest();
+        update new ALTF__Contact_Map_Details__c(
+            Id = before.AAO_Cited_Map_Row__c,
+            ALTF__Buyer_Role__c = 'Evaluator'
+        );
+        Test.stopTest();
+
+        AAO_Claim_Basis__c after = [
+            SELECT AAO_Snapshot__c, AAO_Cited_Map_Row__r.ALTF__Buyer_Role__c
+            FROM AAO_Claim_Basis__c
+            WHERE AAO_Claim__c = :o.claimId
+        ];
+        System.assertEquals(
+            frozen,
+            after.AAO_Snapshot__c,
+            'THEN is unchanged. The claim still says what the row said when it was cited.'
+        );
+        System.assert(
+            after.AAO_Snapshot__c.contains(AAO_MapRoute.ROLE_DECISION_MAKER),
+            'And what it said was Decision Maker.'
+        );
+        System.assertEquals(
+            'Evaluator',
+            after.AAO_Cited_Map_Row__r.ALTF__Buyer_Role__c,
+            'NOW has moved, one traversal away, in the same subquery.'
+        );
+
+        String report = AAO_MapRoute.thenAndNow(oppId);
+        System.assert(
+            report.contains(AAO_MapRoute.ROLE_DECISION_MAKER) &&
+            report.contains('Evaluator'),
+            'And the report shows both halves together, which is the point. Got: ' + report
+        );
+    }
 
     /**
      * Item 46e. The map row wins over the roster, and the verdict says which it used, so a

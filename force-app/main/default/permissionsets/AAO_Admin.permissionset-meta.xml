@@ -5,6 +5,16 @@
     <label>AAO Admin</label>
     <fieldPermissions>
         <editable>true</editable>
+        <field>AAO_Candidate__c.AAO_Basis__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>AAO_Answer__c.AAO_Basis__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>AAO_Source__c.AAO_Normalized_Text__c</field>
         <readable>true</readable>
     </fieldPermissions>

@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>AAO_Source__c</fullName>
-    <description>Written by: Commit. Read by: The evidence. Singular and correct.</description>
+    <description>Written by: Commit. Read by: The evidence. Singular and correct. Optional since 47 (1 Aug 2026). Which evidence, WHEN THE EVIDENCE IS AN ARTIFACT. A state-derived row has no Source and the evidence-family law in the trigger requires it to be null. Not-required here means the law lives in one place instead of two, and the one place can say why.</description>
     <label>Source</label>
     <type>Lookup</type>
     <referenceTo>AAO_Source__c</referenceTo>
     <relationshipName>AAO_Claims</relationshipName>
     <relationshipLabel>AAO Claims</relationshipLabel>
     <deleteConstraint>Restrict</deleteConstraint>
-    <required>true</required>
 </CustomField>

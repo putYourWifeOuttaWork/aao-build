@@ -535,6 +535,7 @@ public class AAO_Pipeline {
         AAO_Candidate__c cand = new AAO_Candidate__c(
             AAO_Evidence_Contract__c = ec.Id,
             AAO_Source__c = src.Id,
+            AAO_Basis__c = AAO_EvidenceFamily.TRANSCRIPT,
             AAO_Opportunity__c = src.AAO_Opportunity__c,
             AAO_Account__c = src.AAO_Account__c,
             AAO_Subject_Type__c = p.subjectType,
@@ -600,6 +601,7 @@ public class AAO_Pipeline {
                 new AAO_Candidate__c(
                     AAO_Evidence_Contract__c = ec.Id,
                     AAO_Source__c = src.Id,
+                    AAO_Basis__c = AAO_EvidenceFamily.TRANSCRIPT,
                     AAO_Opportunity__c = src.AAO_Opportunity__c,
                     AAO_Account__c = src.AAO_Account__c,
                     AAO_Subject_Type__c = 'Opportunity',

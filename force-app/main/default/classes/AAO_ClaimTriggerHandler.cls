@@ -25,15 +25,20 @@ public class AAO_ClaimTriggerHandler {
                 );
                 continue;
             }
-            // An establishment requires a citation. A basis of state alone still requires
-            // the row be named and its value quoted, which lives on AAO_Claim_Basis__c and
-            // cannot be checked here because the junction is inserted after the parent.
-            if (c.AAO_Basis__c != 'State' && String.isBlank(c.AAO_Spans__c)) {
-                c.addError(
-                    'A claim with basis ' +
-                    c.AAO_Basis__c +
-                    ' must carry the quotes it rests on. An establishment requires a citation.'
-                );
+            // THE EVIDENCE-FAMILY LAW, ruled 47. This replaced `required` on
+            // AAO_Source__c, and it is strictly stronger: required only ever asserted that
+            // a lookup was populated and said nothing about whether the row's evidence
+            // matched its declared shape. See AAO_EvidenceFamily for the table and for why
+            // the "at least one cited row" half is enforced elsewhere.
+            String bad = AAO_EvidenceFamily.violation(
+                'AAO_Claim__c',
+                c.AAO_Basis__c,
+                c.AAO_Source__c,
+                c.AAO_Spans__c,
+                true
+            );
+            if (bad != null) {
+                c.addError(bad);
             }
         }
     }

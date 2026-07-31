@@ -196,6 +196,8 @@ public class AAO_MapRoute {
             );
         }
 
+        Opportunity opp = [SELECT Id, AccountId FROM Opportunity WHERE Id = :opportunityId];
+
         Reading r = read(opportunityId);
         o.verdict = r.verdict;
         o.note = r.note;
@@ -214,29 +216,55 @@ public class AAO_MapRoute {
             );
         }
 
-        // ================================================================ BLOCKED HERE
-        // AAO_Candidate__c.AAO_Source__c is REQUIRED, and a P-route candidate has no
-        // Source. Its evidence is state, not an artifact: there is no transcript, no
-        // bytes, nothing to point a Source at. The schema was closed on the assumption
-        // that every candidate comes from a piece of delivered evidence, and route P is
-        // the first thing to prove otherwise.
-        //
-        // Two ways out and both are Matthew's, not mine:
-        //   1. Make AAO_Source__c optional on Candidate, with Cited_Type or the route
-        //      carrying the discriminator instead. A change to a CLOSED table.
-        //   2. Give a state read its own Source row, on the grounds that "the relationship
-        //      map as it stood at 14:02" IS the artifact and the snapshot is its bytes.
-        //      Tidier in the model and it invents an artifact that nobody delivered.
-        //
-        // Refusing loudly rather than manufacturing a Source to get past it. Everything
-        // above this line works and is tested; everything below waits on the ruling.
-        throw new MapRouteException(
-            'The P route cannot write a Candidate: AAO_Candidate__c.AAO_Source__c is ' +
-            'required and a state-derived candidate has no Source. ' +
-            r.note +
-            ', state verification passed, and nothing was written. This is a schema ' +
-            'decision, not a defect: see AAO_MapRoute for the two options.'
+        // UNBLOCKED BY 47. The candidate is written with no Source, because a state read
+        // has no artifact, and it declares basis State so the evidence-family law checks
+        // it against the right shape: no Source, no spans, cited rows required.
+        AAO_Candidate__c cand = new AAO_Candidate__c(
+            AAO_Evidence_Contract__c = ec.Id,
+            AAO_Basis__c = AAO_EvidenceFamily.STATE,
+            AAO_Opportunity__c = opportunityId,
+            AAO_Account__c = opp.AccountId,
+            AAO_Subject_Type__c = 'Opportunity',
+            AAO_Proposed_Verdict__c = r.verdict,
+            AAO_Element_Coverage__c = AAO_Model.serializeCoverage(
+                AAO_Model.newCoverage(new List<String>{ ELEMENT }, new List<String>())
+            ),
+            AAO_Interpretation__c = r.note +
+                ', which is what the proposition asks for. Counted, not read: no model was ' +
+                'asked, because a count is the only thing that can prove what is not there.',
+            AAO_Stage__c = 'Adjudicated',
+            AAO_Outcome__c = 'Pending',
+            // Not a charter. Deterministic Apex, and the version is still attribution:
+            // whoever reads this claim in a year needs to know which reader produced it and
+            // which version of the counting rule it used.
+            AAO_Charter__c = READER,
+            AAO_Charter_Version__c = READER_VERSION,
+            AAO_Publication_State__c = 'Live',
+            AAO_Synthetic__c = synthetic
         );
+        insert cand;
+
+        // Through the same door route E uses. Every existing gate decides; nothing about
+        // this route gets to skip one. The speaker gate records itself as not applicable
+        // rather than being bypassed, which is a consequence of 47 worth watching.
+        AAO_Commit.Result cr = AAO_Commit.commitCandidate(cand.Id, internalDomains);
+        o.verdict = cr.answer == null ? r.verdict : cr.answer.AAO_Verdict__c;
+        o.answerId = cr.answer == null ? null : cr.answer.Id;
+        o.claimId = cr.claim == null ? null : cr.claim.Id;
+        o.note = r.note + '. ' + cr.note;
+
+        if (o.claimId == null) {
+            // A gate refused it. That is the gate working, not this route failing.
+            o.note = r.note + '. No claim written: ' + cr.note;
+            return o;
+        }
+
+        o.basisRows = writeBasis(o.claimId, r.cited);
+
+        // The forward half of the family law, checked now that the junction exists and
+        // inside the same transaction, so a throw takes the claim back with it.
+        AAO_EvidenceFamily.requireBasisRows(new Set<Id>{ o.claimId });
+        return o;
     }
 
     /**
@@ -268,8 +296,7 @@ public class AAO_MapRoute {
                                 ? null
                                 : row.ALTF__Contact__r.Name
                         }
-                    ),
-                    AAO_Synthetic__c = AAO_Synthetic.MARK
+                    )
                 )
             );
         }

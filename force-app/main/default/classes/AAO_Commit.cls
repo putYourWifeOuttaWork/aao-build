@@ -36,6 +36,7 @@ public class AAO_Commit {
                 Id,
                 AAO_Evidence_Contract__c,
                 AAO_Source__c,
+                AAO_Basis__c,
                 AAO_Opportunity__c,
                 AAO_Account__c,
                 AAO_Subject_Type__c,
@@ -122,9 +123,9 @@ public class AAO_Commit {
         }
 
         // 3 ------------------------------------------- who must be the source of it
-        Map<String, AAO_Model.Speaker> roster = AAO_Model.parseRoster(
-            cand.AAO_Source__r.AAO_Speaker_Roster__c
-        );
+        Map<String, AAO_Model.Speaker> roster = cand.AAO_Source__c == null
+            ? new Map<String, AAO_Model.Speaker>()
+            : AAO_Model.parseRoster(cand.AAO_Source__r.AAO_Speaker_Roster__c);
         // The org's own relationship map, where it has one. Preferred over the roster,
         // because standing is not something a transcript gets to declare.
         Map<Id, String> roleByContact = new Map<Id, String>();
@@ -141,6 +142,28 @@ public class AAO_Commit {
         String requirement = cand.AAO_Evidence_Contract__r.AAO_Speaker_Requirement__c;
         Boolean speakerOk = false;
         List<String> speakerReasons = new List<String>();
+
+        // THE SPEAKER GATE IS ABOUT UTTERANCES, AND A RECORD HAS NO UTTERER.
+        //
+        // Consequence of 47, surfaced rather than absorbed. The rule ranks whoever SAID
+        // the words; state evidence has no words and no speaker, so there is nothing to
+        // rank. Running the loop anyway would leave speakerOk false on every state claim
+        // and downgrade all of them to UNVERIFIED forever, which is not the gate deciding,
+        // it is the gate being asked a question that does not apply to the row.
+        //
+        // NOT APPLICABLE IS RECORDED, NOT SKIPPED. The reason goes on the claim in the
+        // same field the transcript path uses, so nobody reading a state claim later can
+        // mistake it for one that cleared a speaker check it never faced.
+        if (!AAO_EvidenceFamily.needsSource(cand.AAO_Basis__c)) {
+            speakerOk = true;
+            speakerReasons.add(
+                'Speaker requirement ' +
+                requirement +
+                ' does not apply: basis is State. Nobody said this; the record says it, ' +
+                'and the record is named in the claim\'s cited rows.'
+            );
+        }
+
         for (Integer i = 0; i < spans.size(); i++) {
             String key = sv.speakerByIndex.get(i);
             AAO_SpeakerRule.Verdict v = AAO_SpeakerRule.evaluate(
@@ -209,6 +232,12 @@ public class AAO_Commit {
             ? newAnswer(cand)
             : existing;
         AAO_Accumulate.apply(answer, claim);
+        // The union of the claims that built it, not the last one. An answer established
+        // from a call and later reinforced by a state read rests on both.
+        answer.AAO_Basis__c = AAO_EvidenceFamily.combine(
+            answer.AAO_Basis__c,
+            claim.AAO_Basis__c
+        );
         answer.AAO_Publication_State__c = 'Live';
 
         answer = persist(answer, answerKey, claim, r);
@@ -258,6 +287,7 @@ public class AAO_Commit {
                 Id,
                 AAO_Answer_Key__c,
                 AAO_Verdict__c,
+                AAO_Basis__c,
                 AAO_Spans__c,
                 AAO_Element_Coverage__c,
                 AAO_Interpretation__c,
@@ -313,13 +343,23 @@ public class AAO_Commit {
             // accumulated view, because that is what the verdict was decided on.
             AAO_Element_Coverage__c = AAO_Model.serializeCoverage(accumulated),
             AAO_Interpretation__c = cand.AAO_Interpretation__c,
-            AAO_Basis__c = 'Transcript',
+            // The claim inherits the candidate's family. Hardcoding Transcript here was
+            // safe only while every candidate had a Source; route P writes one that does
+            // not, and a claim that misdeclared its family would be checked against the
+            // wrong shape.
+            AAO_Basis__c = String.isBlank(cand.AAO_Basis__c)
+                ? AAO_EvidenceFamily.TRANSCRIPT
+                : cand.AAO_Basis__c,
             AAO_Outcome__c = outcome,
             AAO_Actor__c = String.isBlank(cand.AAO_Charter__c) ? 'HUMAN' : 'MACHINE',
             AAO_Charter__c = cand.AAO_Charter__c,
             AAO_Charter_Version__c = cand.AAO_Charter_Version__c,
             AAO_Rubric_Version__c = cand.AAO_Evidence_Contract__r.AAO_Rubric_Version__c,
-            AAO_Evidence_Occurred__c = cand.AAO_Source__r.AAO_Evidence_Occurred__c,
+            // A state read has no artifact and therefore no delivery time. The
+            // evidence occurred when the record was read, which is now.
+            AAO_Evidence_Occurred__c = cand.AAO_Source__c == null
+                ? System.now()
+                : cand.AAO_Source__r.AAO_Evidence_Occurred__c,
             AAO_Recorded_At__c = System.now(),
             AAO_Retrospective__c = false
         );

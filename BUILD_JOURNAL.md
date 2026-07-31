@@ -2358,3 +2358,105 @@ it now.
 
 **Owed.** The Source ruling, and then c and f run for real. Everything else on session 4's
 list.
+
+---
+
+## 2026-08-01 · session 19 · the evidence-family law, and the P route finished
+
+**Did.** Item 47 as ruled, and item 46 c and f, which it unblocked. **139 tests, 139
+passing** (was 132).
+
+### The law
+
+`AAO_Source__c` is no longer required on Candidate or Claim. In its place, in the triggers:
+
+| Basis | Source | Spans | Cited rows |
+|---|---|---|---|
+| Transcript | required | required on a claim | forbidden |
+| State | **must be null** | forbidden | at least one |
+| Both | required | required on a claim | at least one |
+
+**This is stronger than what it replaced, not weaker.** `required` only ever asserted that a
+lookup was populated. It could not tell a row that its evidence did not match its story —
+nothing stopped a state-derived row from carrying a Source it had never read a word from.
+Now that is refused by name.
+
+### What the ruling cost, honestly: it turned out to be three tables, not two
+
+47 named Candidate and Claim. **Answer carried the same assumption in a third form** and I
+could not correct the other two without it: its trigger required spans of every machine
+establishment, so a state-derived answer was refused one layer past where the ruling had
+looked. Spans are how a *transcript* answer is cited; a state answer is cited by the rows
+its claim named and froze, and demanding a quote of it demands a quotation from an artifact
+that does not exist. **`AAO_Answer__c.AAO_Basis__c` added, recorded for ratification.**
+
+It carries something the other two do not: **the union of the claims that built it.** An
+answer established from a call and later reinforced by a state read reads `Both`, which is
+what `Both` has always meant and what nothing until now produced.
+
+**Rows written before the field existed are read as Transcript, not backfilled.** Until 47
+nothing else could be written at all, so the assumption is safe — but the stored value stays
+null and only the check assumes. Nothing invents history.
+
+### Where each half of the law lives, and why it had to be split
+
+The "at least one cited row" half **cannot** be a before-insert trigger: `AAO_Claim_Basis__c`
+rows carry a lookup to the claim, so they do not exist until the claim has an Id, and a
+trigger asking for them would refuse every correct write. So:
+
+- **forward** — the writer calls `requireBasisRows` after inserting the junction, in the same
+  transaction, so a throw takes the claim back with it.
+- **reverse** — a new trigger on Claim Basis refuses a cited row hung off a claim that
+  declared it rests on an artifact.
+
+The reverse is the direction a trigger can hold absolutely, and it is the likelier accident:
+**a claim carrying receipts it never declared is a claim whose receipts do not match its
+story.** Anyone reading it would see cited rows under a Transcript basis and have no way to
+tell whether the answer came from the artifact or from the records.
+
+### A distinction the first version got wrong
+
+I wrote "Transcript requires spans" for both tables and the rehearsal failed. It was right to
+fail. **A candidate is a proposal and a proposal with no spans is an abstention** — the
+reader looked at this proposition and found nothing said about it, and that row is the whole
+record of having looked. A claim is different: it asserts something moved, and an assertion
+from an artifact with nothing quoted is a claim nobody can go back and check. Spans are
+required of establishments, not of proposals.
+
+### 46c and 46f, delivered
+
+The P route writes its candidate **with no Source**, commits it through the same door route E
+uses, and the claim carries a Claim Basis row citing the map row with its value frozen.
+
+The exit check runs **against a route-produced claim**, which is the whole reason it was left
+unwritten last session. Dana's role is edited to `Evaluator` after the fact:
+
+- **THEN** — the snapshot still reads `Decision Maker`. The claim says what the row said when
+  it was cited.
+- **NOW** — the lookup traverses to `Evaluator`, one hop away, in the same subquery.
+
+That gap is why the frozen half exists. Without it, editing a map row would silently rewrite
+the evidence under every claim that ever rested on it, and the claim would go on asserting
+something no record had ever said.
+
+### A consequence of 47 I am surfacing rather than absorbing
+
+**The speaker gate is about utterances, and a record has no utterer.** With no spans, the
+loop never runs and `speakerOk` stays false, which would downgrade every state claim to
+UNVERIFIED forever — not the gate deciding, the gate being asked a question that does not
+apply. So for basis State the requirement is **recorded as not applicable**, in the same
+field the transcript path writes its reason to:
+
+> Speaker requirement Any_Participant does not apply: basis is State. Nobody said this; the
+> record says it, and the record is named in the claim's cited rows.
+
+Not skipped. Nobody reading a state claim later can mistake it for one that cleared a check
+it never faced. **Whether a state route should be subject to a speaker requirement at all is
+a rule-data question, not a code one** — put alongside the setup-time inference pass that
+already owes speaker requirement and route.
+
+**`merge` is a reserved word** — the DML statement. Renamed `combine`. Fourth in the family
+after `system`, `commit` and `json`.
+
+**Owed.** Unchanged, less the Source ruling. Plus: whether `Any_Participant` should even be
+authored on a P-routed proposition.

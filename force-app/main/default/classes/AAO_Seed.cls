@@ -334,6 +334,7 @@ public class AAO_Seed {
                         .get((String) c.get('contractCode'))
                         .Id,
                     AAO_Source__c = out.sourceByCode.get((String) c.get('sourceCode')).Id,
+                    AAO_Basis__c = AAO_EvidenceFamily.TRANSCRIPT,
                     AAO_Opportunity__c = oppId,
                     AAO_Account__c = acct.Id,
                     AAO_Subject_Type__c = (String) c.get('subjectType'),
@@ -396,6 +397,7 @@ public class AAO_Seed {
                 new AAO_Candidate__c(
                     AAO_Evidence_Contract__c = ec.Id,
                     AAO_Source__c = src.Id,
+                    AAO_Basis__c = AAO_EvidenceFamily.TRANSCRIPT,
                     AAO_Opportunity__c = oppId,
                     AAO_Account__c = loaded.accountId,
                     AAO_Subject_Type__c = 'Opportunity',

@@ -443,6 +443,11 @@
         <field>AAO_Candidate__c.AAO_Blind_Charter_Version__c</field>
         <readable>true</readable>
     </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>AAO_Claim_Basis__c.AAO_Cited_Map_Row__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <objectPermissions>
         <allowCreate>true</allowCreate>
         <allowDelete>true</allowDelete>

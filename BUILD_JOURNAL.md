@@ -2270,3 +2270,91 @@ caught a third, but nothing proves a future one will not call `contracts()` mean
 
 **Owed.** Unchanged, minus the binding, which no longer exists to be owed. The proof register
 is still behind the org, and nothing supersedes a seeded contract.
+
+---
+
+## 2026-07-31 · session 18 · the P route, and the schema question it found
+
+**Did.** Item 46, parts a, b, d and e complete; c and f **blocked on a schema decision that
+is Matthew's**, refused loudly rather than worked around. **132 AAO tests, 132 passing.**
+
+### What works
+
+**a. Real map rows.** `ALTF__Contact_Map_Details__c`, Dana as `Decision Maker` on the demo
+deals. Data rows on a managed object, which the constraint permits; the field that ties a
+basis to one lives on `AAO_Claim_Basis__c`, which is ours.
+
+**b. Deterministic, no model.** "Is a decision maker identified on the relationship map" is
+answered by counting rows on the relationship map. A model asked to do that could only be
+less reliable than the count. An empty map returns `UNVERIFIED`, not `FALSE`: the absence of
+a record is not a record that there is nobody, the same distinction the extraction charter
+had to be taught in session 9.
+
+**d. State verification, the twin of the byte check.** The byte check asks *are these words
+actually in this artifact*; this asks *does this record actually say this*. Every cited row
+is re-read before commit and confirmed to still carry the value being claimed, and a failure
+**refuses the claim rather than downgrading it**: a row that does not say what it is cited
+for is not weaker evidence, it is absent evidence.
+
+The reason this route needs a different check at all is that a span and a map row are
+opposite kinds of evidence. A transcript is immutable, so a quote verified once is verified
+forever. A map row is live customer data, editable by anyone, usually by someone with no idea
+a claim rests on it. Dana is Decision Maker today and Evaluator next Tuesday.
+
+**e. The map beats the roster.** `AAO_SpeakerRule` now prefers the buying role on the org's
+relationship map and falls back to the artifact roster, and the verdict reason names which it
+used: *"Dana Ruiz is Decision Maker, per the relationship map"*. The roster is what a
+transcript asserted about who was on a call; the map row is what the customer's own records
+say about who this person is on this deal. **Standing is not something a transcript gets to
+declare.** Tested both ways: the same speaker fails on a roster saying `User` and passes on a
+map saying `Decision Maker`.
+
+### What is blocked, and why I did not route around it
+
+**`AAO_Candidate__c.AAO_Source__c` is required, and a P-route candidate has no Source.** Its
+evidence is a record, not an artifact: no transcript, no bytes, nothing to point a Source at.
+The schema was closed on the assumption that every candidate comes from a piece of delivered
+evidence, and route P is the first thing to prove otherwise.
+
+Two ways out, and both are rulings rather than fixes:
+
+1. **Make `AAO_Source__c` optional on Candidate**, with the route or cited type carrying the
+   discriminator. A change to a CLOSED table.
+2. **Give a state read its own Source**, on the grounds that *the relationship map as it
+   stood at 14:02* is the artifact and the snapshot is its bytes. Tidier in the model, and it
+   invents an artifact nobody delivered.
+
+I could have manufactured a Source and had a green end-to-end run tonight. That would have
+made the schema decision silently, in a direction nobody chose, and buried it in a helper.
+The route throws instead, naming both options and reporting how far it got:
+
+```
+The P route cannot write a Candidate: AAO_Candidate__c.AAO_Source__c is required and a
+state-derived candidate has no Source. 1 map row(s) carry the role "Decision Maker",
+state verification passed, and nothing was written. This is a schema decision, not a
+defect: see AAO_MapRoute for the two options.
+```
+
+**The block is pinned as a test**, so whichever way it is ruled, the ruling is deliberate.
+
+**c and f are built but unexercised.** `AAO_Claim_Basis__c.AAO_Cited_Map_Row__c` is added
+(recorded below as an addition to a closed table), the snapshot shape is written, and
+`AAO_MapRoute.thenAndNow` returns THEN and NOW from one subquery. None of it has run against
+a real claim, because there is no real claim to run it against. I did not assert item 46f
+against a hand-built claim: that would prove the query works and nothing about whether the
+route produces one.
+
+**Addition to a closed table, for ratification.** `AAO_Cited_Map_Row__c`, a lookup from
+`AAO_Claim_Basis__c` to `ALTF__Contact_Map_Details__c`. `AAO_Cited_Type__c` has carried
+`Map_Row` since session 2 and its description reads "which lookup is populated", plural, so
+this completes a shape the discriminator already described. It is a lookup on our object to
+a managed one, which is permitted; a field on theirs would not be.
+
+**A design error of mine, caught by a test.** `AAO_MapRoute.run` originally read
+`AAO_Synthetic.MARK` to decide which population it belonged to. That is exactly the implicit
+form session 17 threw out: the answer depended on whether the last caller happened to leave
+the marker set, and the demo's own scaffold clears it in a finally block. The caller declares
+it now.
+
+**Owed.** The Source ruling, and then c and f run for real. Everything else on session 4's
+list.

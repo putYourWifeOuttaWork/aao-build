@@ -125,6 +125,19 @@ public class AAO_Commit {
         Map<String, AAO_Model.Speaker> roster = AAO_Model.parseRoster(
             cand.AAO_Source__r.AAO_Speaker_Roster__c
         );
+        // The org's own relationship map, where it has one. Preferred over the roster,
+        // because standing is not something a transcript gets to declare.
+        Map<Id, String> roleByContact = new Map<Id, String>();
+        for (ALTF__Contact_Map_Details__c row : [
+            SELECT ALTF__Contact__c, ALTF__Buyer_Role__c
+            FROM ALTF__Contact_Map_Details__c
+            WHERE ALTF__Opportunity__c = :cand.AAO_Opportunity__c
+        ]) {
+            if (row.ALTF__Contact__c != null) {
+                roleByContact.put(row.ALTF__Contact__c, row.ALTF__Buyer_Role__c);
+            }
+        }
+
         String requirement = cand.AAO_Evidence_Contract__r.AAO_Speaker_Requirement__c;
         Boolean speakerOk = false;
         List<String> speakerReasons = new List<String>();
@@ -133,7 +146,8 @@ public class AAO_Commit {
             AAO_SpeakerRule.Verdict v = AAO_SpeakerRule.evaluate(
                 requirement,
                 key == null ? null : roster.get(key),
-                internalDomains
+                internalDomains,
+                roleByContact
             );
             speakerReasons.add(v.reason);
             if (v.satisfied) {

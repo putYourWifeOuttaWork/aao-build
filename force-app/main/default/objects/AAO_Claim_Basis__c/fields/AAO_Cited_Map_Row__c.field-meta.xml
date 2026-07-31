@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+<!--
+  ADDITION TO A CLOSED TABLE, recorded for ratification. Session 18.
+
+  AAO_Cited_Type__c has carried Map_Row since session 2 and its description reads "which
+  lookup is populated", plural, but only AAO_Cited_Answer__c was ever built. This completes
+  the shape the discriminator already described rather than inventing a new one.
+
+  It is a lookup ON OUR OBJECT TO a managed one, which the standing constraint permits. What
+  it forbids is a field on ALTF__Contact_Map_Details__c, and there is none.
+
+  This lookup is the LIVE half of then-and-now. AAO_Snapshot__c is the frozen half: what the
+  row said when the claim was written. One subquery returns both, and the gap between them is
+  the entire argument for freezing a basis at all.
+-->
+    <fullName>AAO_Cited_Map_Row__c</fullName>
+    <description>Written by: Commit, on the P route. Read by: the live record, for the current-state half of the then-and-now subquery. The frozen half is AAO_Snapshot__c.</description>
+    <label>Cited Map Row</label>
+    <type>Lookup</type>
+    <referenceTo>ALTF__Contact_Map_Details__c</referenceTo>
+    <relationshipLabel>AAO Claim Bases</relationshipLabel>
+    <relationshipName>AAO_Claim_Bases</relationshipName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <required>false</required>
+</CustomField>

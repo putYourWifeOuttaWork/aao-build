@@ -31,10 +31,31 @@ public class AAO_SpeakerRule {
         }
     }
 
+    /**
+     * The buying role comes from the org's own relationship map where the org has one, and
+     * from the artifact's roster only where it does not. Session 18.
+     *
+     * The roster is what a transcript asserted about who was on a call. The map row is what
+     * the customer's own records say about who this person is on this deal. When they
+     * disagree the map wins, because the speaker requirement is a question about standing
+     * and standing is not something a transcript gets to declare.
+     *
+     * The reason string records which was used, so a verdict can never be traced back to a
+     * source nobody can identify.
+     */
     public static Verdict evaluate(
         String requirement,
         AAO_Model.Speaker sp,
         Set<String> internalDomains
+    ) {
+        return evaluate(requirement, sp, internalDomains, null);
+    }
+
+    public static Verdict evaluate(
+        String requirement,
+        AAO_Model.Speaker sp,
+        Set<String> internalDomains,
+        Map<Id, String> roleByContact
     ) {
         if (String.isBlank(requirement)) {
             return new Verdict(false, 'no speaker requirement was supplied');
@@ -81,19 +102,35 @@ public class AAO_SpeakerRule {
                     'maker or influencer'
                 );
             }
-            if (String.isBlank(sp.mapRole)) {
+            // Prefer the map. Fall back to the roster, and say which.
+            String role = sp.mapRole;
+            String roleSource = 'the artifact roster';
+            if (roleByContact != null && String.isNotBlank(sp.contactId)) {
+                String fromMap = roleByContact.get((Id) sp.contactId);
+                if (String.isNotBlank(fromMap)) {
+                    role = fromMap;
+                    roleSource = 'the relationship map';
+                }
+            }
+            if (String.isBlank(role)) {
                 return new Verdict(
                     false,
-                    sp.display + ' carries no buying role on the relationship map'
+                    sp.display +
+                    ' carries no buying role, on the relationship map or the roster'
                 );
             }
-            return DM_OR_INFLUENCER.contains(sp.mapRole.toLowerCase())
-                ? new Verdict(true, sp.display + ' is mapped as ' + sp.mapRole)
+            return DM_OR_INFLUENCER.contains(role.toLowerCase())
+                ? new Verdict(
+                      true,
+                      sp.display + ' is ' + role + ', per ' + roleSource
+                  )
                 : new Verdict(
                       false,
                       sp.display +
-                      ' is mapped as ' +
-                      sp.mapRole +
+                      ' is ' +
+                      role +
+                      ' per ' +
+                      roleSource +
                       ', which is neither decision maker nor influencer'
                   );
         }

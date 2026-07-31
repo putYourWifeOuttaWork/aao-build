@@ -34,6 +34,9 @@ public class AAO_Extract {
         public String modelName;
         public String charter;
         public String charterVersion;
+        public String blindCharter;
+        public String blindCharterVersion;
+        public Boolean blindEnabled = false;
         public String namedCredential;
         public String endpointPath;
         public String anthropicBeta;
@@ -59,6 +62,9 @@ public class AAO_Extract {
                 AAO_Model_Name__c,
                 AAO_Charter__c,
                 AAO_Charter_Version__c,
+                AAO_Blind_Charter__c,
+                AAO_Blind_Charter_Version__c,
+                AAO_Blind_Enabled__c,
                 AAO_Named_Credential__c,
                 AAO_Endpoint_Path__c,
                 AAO_Anthropic_Beta__c,
@@ -84,6 +90,9 @@ public class AAO_Extract {
         c.modelName = r.AAO_Model_Name__c;
         c.charter = r.AAO_Charter__c;
         c.charterVersion = r.AAO_Charter_Version__c;
+        c.blindCharter = r.AAO_Blind_Charter__c;
+        c.blindCharterVersion = r.AAO_Blind_Charter_Version__c;
+        c.blindEnabled = r.AAO_Blind_Enabled__c == true;
         c.namedCredential = r.AAO_Named_Credential__c;
         c.endpointPath = r.AAO_Endpoint_Path__c;
         c.anthropicBeta = r.AAO_Anthropic_Beta__c;
@@ -211,15 +220,157 @@ public class AAO_Extract {
         Map<String, AAO_Model.Speaker> roster = AAO_Model.parseRoster(src.AAO_Speaker_Roster__c);
 
         String systemText = AAO_ExtractCharter.systemPrompt();
-        String user = AAO_ExtractCharter.userContent(src, contracts, roster);
-        Map<String, Object> outputSchema = AAO_ExtractCharter.schema(contracts, roster);
+        String rubric = AAO_ExtractCharter.rubricBlock(contracts);
+        String artifact = AAO_ExtractCharter.artifactBlock(src, roster);
 
+        // TWO BLOCKS, AND THE ORDER IS THE WHOLE POINT. Caching is a prefix match: the
+        // rubric is identical for every artifact in this org until somebody edits a
+        // contract, and the transcript changes every call. Rubric first with the
+        // breakpoint on it, artifact after. Put anything volatile above the breakpoint and
+        // the cache silently never reads, with no error to notice.
+        List<Object> blocks = new List<Object>{
+            new Map<String, Object>{
+                'type' => 'text',
+                'text' => rubric,
+                'cache_control' => new Map<String, Object>{ 'type' => 'ephemeral' }
+            },
+            new Map<String, Object>{ 'type' => 'text', 'text' => artifact }
+        };
+
+        Call c = send(
+            cfg,
+            systemText,
+            blocks,
+            AAO_ExtractCharter.schema(contracts, roster)
+        );
+
+        Result out = new Result();
+        out.sourceId = src.Id;
+        out.sourceRef = src.AAO_Source_Ref__c;
+        out.charter = cfg.charter;
+        out.charterVersion = cfg.charterVersion;
+        out.elapsedMs = c.elapsedMs;
+        out.promptChars = systemText.length() + rubric.length() + artifact.length();
+        out.usage = c.usage;
+        out.modelReported = c.modelReported;
+        out.stopReason = c.stopReason;
+
+        Set<String> codes = new Set<String>();
+        for (AAO_Evidence_Contract__c ec : contracts) {
+            codes.add(ec.AAO_Proposition_Code__c);
+        }
+        out.findings = AAO_ExtractCharter.parse(c.text, codes);
+
+        for (String code : codes) {
+            if (!out.findings.containsKey(code)) {
+                out.unanswered.add(code);
+            }
+        }
+        out.unanswered.sort();
+        return out;
+    }
+
+    // ================================================================= the second reader
+
+    public class BlindResult {
+        /** Keyed proposition code, then element id. */
+        public Map<String, Map<String, AAO_BlindCharter.ElementVerdict>> verdicts;
+        public Usage usage = new Usage();
+        public String modelReported;
+        public String stopReason;
+        public String charter;
+        public String charterVersion;
+        public Long elapsedMs;
+        public Integer promptChars;
+
+        public override String toString() {
+            return 'BLIND charter=' +
+                charter +
+                '@' +
+                charterVersion +
+                ' reviewed=' +
+                (verdicts == null ? 0 : verdicts.size()) +
+                ' ' +
+                usage +
+                ' ms=' +
+                elapsedMs +
+                ' stop=' +
+                stopReason;
+        }
+    }
+
+    /**
+     * Model call 2. Takes citations and returns, per element, whether they establish it.
+     *
+     * It is handed reviews and nothing else. There is no parameter here through which a
+     * transcript or an earlier verdict could arrive, which is what makes the blindness a
+     * property of the code rather than a promise in a prompt.
+     *
+     * Not cached. The content is different on every call by construction, since it is the
+     * citations a particular pass produced, so a breakpoint would pay the write premium and
+     * never read.
+     */
+    public static BlindResult review(List<AAO_BlindCharter.Review> reviews) {
+        Config cfg = config();
+        if (cfg.active != true) {
+            throw new ExtractException(
+                'AAO_Model_Config__mdt.Default is not Active. Model calls are switched off.'
+            );
+        }
+        if (reviews == null || reviews.isEmpty()) {
+            throw new ExtractException('The blind reader was called with nothing to review.');
+        }
+
+        String systemText = AAO_BlindCharter.systemPrompt();
+        String content = AAO_BlindCharter.content(reviews);
+
+        Call c = send(
+            cfg,
+            systemText,
+            new List<Object>{ new Map<String, Object>{ 'type' => 'text', 'text' => content } },
+            AAO_BlindCharter.schema(reviews)
+        );
+
+        Set<String> codes = new Set<String>();
+        for (AAO_BlindCharter.Review r : reviews) {
+            codes.add(r.contract.AAO_Proposition_Code__c);
+        }
+
+        BlindResult out = new BlindResult();
+        out.charter = cfg.blindCharter;
+        out.charterVersion = cfg.blindCharterVersion;
+        out.usage = c.usage;
+        out.modelReported = c.modelReported;
+        out.stopReason = c.stopReason;
+        out.elapsedMs = c.elapsedMs;
+        out.promptChars = systemText.length() + content.length();
+        out.verdicts = AAO_BlindCharter.parse(c.text, codes);
+        return out;
+    }
+
+    // ============================================================== the callout itself
+
+    private class Call {
+        Usage usage = new Usage();
+        String modelReported;
+        String stopReason;
+        Long elapsedMs;
+        String text;
+    }
+
+    /** One request, one response, shared by both charters so they cannot drift apart. */
+    private static Call send(
+        Config cfg,
+        String systemText,
+        List<Object> userBlocks,
+        Map<String, Object> outputSchema
+    ) {
         Map<String, Object> body = new Map<String, Object>{
             'model' => cfg.modelName,
             'max_tokens' => cfg.maxOutputTokens,
             'system' => systemText,
             'messages' => new List<Object>{
-                new Map<String, Object>{ 'role' => 'user', 'content' => user }
+                new Map<String, Object>{ 'role' => 'user', 'content' => userBlocks }
             },
             'output_config' => new Map<String, Object>{
                 'effort' => cfg.effort,
@@ -237,20 +388,13 @@ public class AAO_Extract {
         if (String.isNotBlank(cfg.anthropicBeta)) {
             req.setHeader('anthropic-beta', cfg.anthropicBeta);
         }
-        String payload = JSON.serialize(body);
-        req.setBody(payload);
+        req.setBody(JSON.serialize(body));
 
         Long started = System.currentTimeMillis();
         HttpResponse res = new Http().send(req);
-        Long elapsed = System.currentTimeMillis() - started;
 
-        Result out = new Result();
-        out.sourceId = src.Id;
-        out.sourceRef = src.AAO_Source_Ref__c;
-        out.charter = cfg.charter;
-        out.charterVersion = cfg.charterVersion;
-        out.elapsedMs = elapsed;
-        out.promptChars = systemText.length() + user.length();
+        Call c = new Call();
+        c.elapsedMs = System.currentTimeMillis() - started;
 
         if (res.getStatusCode() != 200) {
             throw new ExtractException(
@@ -264,51 +408,38 @@ public class AAO_Extract {
         }
 
         Map<String, Object> root = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
-        out.modelReported = (String) root.get('model');
-        out.stopReason = (String) root.get('stop_reason');
-        readUsage(out.usage, (Map<String, Object>) root.get('usage'));
+        c.modelReported = (String) root.get('model');
+        c.stopReason = (String) root.get('stop_reason');
+        readUsage(c.usage, (Map<String, Object>) root.get('usage'));
 
         // Checked before the content is read, not after. A refusal returns HTTP 200 with an
         // empty or partial content array, so code that reaches for content[0] first breaks
         // on the one response it most needs to report clearly.
-        if (out.stopReason == 'refusal') {
+        if (c.stopReason == 'refusal') {
             throw new ExtractException(
                 'The model declined this request. Nothing was proposed and nothing is ' +
                 'written. stop_details: ' +
                 JSON.serialize(root.get('stop_details'))
             );
         }
-        if (out.stopReason == 'max_tokens') {
+        if (c.stopReason == 'max_tokens') {
             throw new ExtractException(
                 'The response hit max_tokens and the JSON is truncated, so it cannot be ' +
                 'parsed. Raise AAO_Max_Output_Tokens__c on the config record. ' +
-                out.usage
+                c.usage
             );
         }
 
-        String text = firstTextBlock(root);
-        if (String.isBlank(text)) {
+        c.text = firstTextBlock(root);
+        if (String.isBlank(c.text)) {
             throw new ExtractException(
                 'The response carried no text block. stop_reason=' +
-                out.stopReason +
+                c.stopReason +
                 ' usage=' +
-                out.usage
+                c.usage
             );
         }
-
-        Set<String> codes = new Set<String>();
-        for (AAO_Evidence_Contract__c ec : contracts) {
-            codes.add(ec.AAO_Proposition_Code__c);
-        }
-        out.findings = AAO_ExtractCharter.parse(text, codes);
-
-        for (String code : codes) {
-            if (!out.findings.containsKey(code)) {
-                out.unanswered.add(code);
-            }
-        }
-        out.unanswered.sort();
-        return out;
+        return c;
     }
 
     // ======================================================================== internals

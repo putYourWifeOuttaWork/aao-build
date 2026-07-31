@@ -136,7 +136,10 @@ public class AAO_ExtractCharter {
                     'enum' => new List<String>{ 'TRUE', 'FALSE', 'UNVERIFIED', 'NONE' },
                     'description' => 'NONE unless status is addressed. Judge only whether ' +
                         'the words establish the proposition. Do NOT lower a verdict ' +
-                        'because of who spoke; that is adjudicated after you.'
+                        'because of who spoke; that is adjudicated after you. FALSE ' +
+                        'requires a positive assertion that the proposition does not ' +
+                        'hold. A missing confirmation, a deferral, or "I do not know" is ' +
+                        'UNVERIFIED, never FALSE.'
                 },
                 'interpretation' => new Map<String, Object>{
                     'type' => 'string',
@@ -225,6 +228,15 @@ public class AAO_ExtractCharter {
                 'the events they describe. "We will have budget approved next month" is not ' +
                 'approved budget.',
                 '',
+                'ABSENCE NEVER ESTABLISHES FALSE. FALSE means the evidence positively asserts ' +
+                'that the proposition does not hold. Silence does not, and neither does ' +
+                'anything in the family of "I do not know", "I cannot tell you yet", "we have ' +
+                'not decided", "that is still being worked out", or a question left ' +
+                'unanswered. Those are absence of confirmation, and absence of confirmation ' +
+                'is UNVERIFIED. Reach for FALSE only when somebody said the thing is not so. ' +
+                'If you find yourself proposing FALSE because a confirmation is missing ' +
+                'rather than because a denial is present, the answer you want is UNVERIFIED.',
+                '',
                 'You are not shown, and must not guess at, any current state for this deal. ' +
                 'What was concluded before is none of your business and agreeing with it is ' +
                 'not evidence.'
@@ -238,12 +250,31 @@ public class AAO_ExtractCharter {
     /**
      * The rubric and the artifact, assembled from records. Nothing here is a literal in
      * Apex: change a contract's guidance in the org and the next call sends the new text.
+     *
+     * Kept because it is the whole prompt in one string, which is what the tests assert
+     * against. The live call sends the two halves as separate content blocks so the first
+     * can be cached; see rubricBlock and artifactBlock.
      */
     public static String userContent(
         AAO_Source__c src,
         List<AAO_Evidence_Contract__c> contracts,
         Map<String, AAO_Model.Speaker> roster
     ) {
+        return rubricBlock(contracts) + '\n\n' + artifactBlock(src, roster);
+    }
+
+    /**
+     * THE CACHEABLE HALF. Identical for every artifact in an org until somebody edits a
+     * contract, which is exactly the shape prompt caching wants: a stable prefix followed
+     * by volatile content. It is first in the message and carries the cache breakpoint, so
+     * the second artifact of a pass reads the rubric from cache instead of paying for it
+     * again.
+     *
+     * Nothing volatile may move above this line. A timestamp, a source ref or a roster in
+     * here would change the prefix on every call and the cache would never read, silently,
+     * with no error to notice.
+     */
+    public static String rubricBlock(List<AAO_Evidence_Contract__c> contracts) {
         List<String> out = new List<String>();
 
         out.add('# The propositions');
@@ -273,6 +304,15 @@ public class AAO_ExtractCharter {
             }
             out.add('');
         }
+        return String.join(out, '\n');
+    }
+
+    /** THE VOLATILE HALF. Roster and transcript, different for every artifact. */
+    public static String artifactBlock(
+        AAO_Source__c src,
+        Map<String, AAO_Model.Speaker> roster
+    ) {
+        List<String> out = new List<String>();
 
         out.add('# Who is on this call');
         out.add('');

@@ -18,6 +18,16 @@ private class AAO_ExtractTest {
     private static final String Q_EARMARKED =
         'it is earmarked for this project specifically, not a general pool.';
     private static final String Q_INVENTED = 'We have unlimited budget in perpetuity.';
+    private static final String Q_EARMARKED_FULL =
+        'It came out of the operations modernisation pot, so it is earmarked for this ' +
+        'project specifically, not a general pool.';
+    // The quote that caused session 7's defect: real, verbatim, and it refutes the element
+    // it was filed against.
+    private static final String Q_CANNOT_TELL =
+        'That I cannot tell you yet. Finance is still working through the calendar.';
+    // In transcript one and in no span, so it is the probe for whether the second reader
+    // was handed the artifact.
+    private static final String NOT_IN_ANY_SPAN = 'So on the money side, where does this stand?';
 
     // ===================================================================== the harness
 
@@ -50,6 +60,82 @@ private class AAO_ExtractTest {
             res.setBody(body);
             return res;
         }
+    }
+
+    /** Replies in order, and keeps every request body for inspection. */
+    private class SeqMock implements HttpCalloutMock {
+        private List<String> bodies;
+        private Integer i = 0;
+        public List<String> sent = new List<String>();
+        public SeqMock(List<String> bodies) {
+            this.bodies = bodies;
+        }
+        public HttpResponse respond(HttpRequest req) {
+            sent.add(req.getBody());
+            HttpResponse res = new HttpResponse();
+            res.setStatusCode(200);
+            res.setStatus('OK');
+            res.setBody(bodies[Math.min(i++, bodies.size() - 1)]);
+            return res;
+        }
+    }
+
+    private static String blindEnvelope(List<Object> reviews) {
+        return envelope(
+            JSON.serialize(new Map<String, Object>{ 'reviews' => reviews }),
+            'end_turn'
+        );
+    }
+
+    private static Map<String, Object> review(String code, List<Object> elements) {
+        return new Map<String, Object>{
+            'proposition_code' => code,
+            'elements' => elements
+        };
+    }
+
+    private static Map<String, Object> elem(String id, Boolean established, String reason) {
+        return new Map<String, Object>{
+            'element' => id,
+            'established' => established,
+            'reason' => reason
+        };
+    }
+
+    /** The extraction response that reproduces the 31 July specimen exactly. */
+    private static String theSpecimen() {
+        return envelope(
+            JSON.serialize(
+                new Map<String, Object>{
+                    'findings' => new List<Object>{
+                        finding(
+                            'AAO_T1',
+                            'addressed',
+                            'FALSE',
+                            new List<Object>{
+                                span(Q_APPROVED, 'dana', 'e1'),
+                                span(Q_EARMARKED_FULL, 'dana', 'e2'),
+                                span(Q_CANNOT_TELL, 'dana', 'e3')
+                            }
+                        ),
+                        finding('AAO_T2', 'not_addressed', 'NONE', null),
+                        finding('AAO_T3', 'not_addressed', 'NONE', null),
+                        finding('AAO_T4', 'not_addressed', 'NONE', null),
+                        finding('AAO_T5', 'not_addressed', 'NONE', null),
+                        finding('AAO_T6', 'not_addressed', 'NONE', null)
+                    }
+                }
+            ),
+            'end_turn'
+        );
+    }
+
+    private static AAO_Extract.Config blindConfig() {
+        AAO_Extract.Config c = testConfig();
+        c.blindCharter = 'AAO_Blind_Reader';
+        c.blindCharterVersion = '1.0.0';
+        c.blindEnabled = true;
+        return c;
     }
 
     private static AAO_Extract.Config testConfig() {
@@ -133,12 +219,13 @@ private class AAO_ExtractTest {
     // ================================================================== the good case
 
     /**
-     * Coverage is computed from the spans that were located, never taken from the model.
-     * Two elements cited, three in the contract, so the third is missing and the answer is
-     * partial. The model is not asked what it covered and could not have said.
+     * With the second reader switched off, coverage falls back to elements that got a
+     * located span. This is the session 7 behaviour and it is kept only so the second
+     * reader can be switched out for a comparison. Two elements cited, three in the
+     * contract, so the third is missing.
      */
     @IsTest
-    static void coverageIsDerivedFromLocatedSpansAndNotFromTheModel() {
+    static void withTheSecondReaderOffCoverageFallsBackToLocatedSpans() {
         Id oppId = stageDeal();
         AAO_Source__c src = theSource(oppId);
 
@@ -622,5 +709,241 @@ private class AAO_ExtractTest {
             !user.contains('UNVERIFIED'),
             'The charter must not be shown the mirror vocabulary as current state.'
         );
+    }
+
+    // ============================================================ the second reader
+
+    /**
+     * THE REGRESSION TEST FOR SESSION 7'S DEFECT, and the reason model call 2 exists.
+     *
+     * The first reader cites, for e3, a verbatim quote in which the speaker declines to
+     * confirm e3. Session 7 counted that as coverage, coverage read full, and a wrong
+     * FALSE was written as an established claim. The second reader refuses the element,
+     * coverage drops to partial, and the partial route writes UNVERIFIED with its receipts,
+     * which is the staged ground truth.
+     */
+    @IsTest
+    static void theSecondReaderRefusesAnElementItsQuoteDoesNotEstablish() {
+        Id oppId = stageDeal();
+        AAO_Source__c src = theSource(oppId);
+
+        SeqMock mock = new SeqMock(
+            new List<String>{
+                theSpecimen(),
+                blindEnvelope(
+                    new List<Object>{
+                        review(
+                            'AAO_T1',
+                            new List<Object>{
+                                elem('e1', true, 'The funding is approved is an assertion.'),
+                                elem('e2', true, 'Earmarked for this project specifically.'),
+                                elem(
+                                    'e3',
+                                    false,
+                                    'The speaker declines to say which fiscal year, so the ' +
+                                    'quote is about this element and does not establish it.'
+                                )
+                            }
+                        )
+                    }
+                )
+            }
+        );
+        AAO_Extract.overrideConfig = blindConfig();
+        Test.setMock(HttpCalloutMock.class, mock);
+
+        Test.startTest();
+        AAO_Pipeline.Outcome o = AAO_Pipeline.runForSource(
+            src.Id,
+            new Set<String>{ 'altify.example' },
+            AAO_Pipeline.FROM_MODEL
+        );
+        Test.stopTest();
+
+        System.assertEquals(2, mock.sent.size(), 'Two model calls, extraction then blind.');
+        System.assertEquals(0, o.spanDrops.size(), 'All three quotes are real.');
+        System.assertEquals(1, o.blindOverrides.size(), 'One element was refused.');
+        System.assert(
+            o.blindOverrides[0].startsWith('AAO_T1/e3'),
+            'Got: ' + o.blindOverrides[0]
+        );
+
+        AAO_Candidate__c cand = [
+            SELECT AAO_Element_Coverage__c, AAO_Proposed_Verdict__c
+            FROM AAO_Candidate__c
+            WHERE AAO_Source__c = :src.Id AND AAO_Outcome__c != 'Abstained'
+            LIMIT 1
+        ];
+        AAO_Model.Coverage cov = AAO_Model.parseCoverage(cand.AAO_Element_Coverage__c);
+        System.assertEquals(
+            new List<String>{ 'e1', 'e2' },
+            cov.covered,
+            'Only the two elements the second reader upheld.'
+        );
+        System.assertEquals(
+            new List<String>{ 'e3' },
+            cov.missing,
+            'The refuted element is missing, which is what routes this to partial.'
+        );
+        System.assertEquals(
+            false,
+            cov.isFull(),
+            'Partial coverage is the whole point: full coverage writes the verdict through.'
+        );
+    }
+
+    /**
+     * Blindness is structural, so it is asserted structurally. The second request must not
+     * contain the artifact, and must not contain the first reader's verdict.
+     */
+    @IsTest
+    static void theSecondReaderIsNeverGivenTheTranscriptOrTheFirstVerdict() {
+        Id oppId = stageDeal();
+        AAO_Source__c src = theSource(oppId);
+
+        SeqMock mock = new SeqMock(
+            new List<String>{
+                theSpecimen(),
+                blindEnvelope(
+                    new List<Object>{
+                        review(
+                            'AAO_T1',
+                            new List<Object>{
+                                elem('e1', true, 'asserted'),
+                                elem('e2', true, 'asserted'),
+                                elem('e3', false, 'declined')
+                            }
+                        )
+                    }
+                )
+            }
+        );
+        AAO_Extract.overrideConfig = blindConfig();
+        Test.setMock(HttpCalloutMock.class, mock);
+
+        Test.startTest();
+        AAO_Pipeline.runForSource(
+            src.Id,
+            new Set<String>{ 'altify.example' },
+            AAO_Pipeline.FROM_MODEL
+        );
+        Test.stopTest();
+
+        String first = mock.sent[0];
+        String second = mock.sent[1];
+
+        System.assert(
+            first.contains(NOT_IN_ANY_SPAN),
+            'Sanity check: the first reader does get the transcript.'
+        );
+        System.assert(
+            !second.contains(NOT_IN_ANY_SPAN),
+            'The second reader was handed transcript text that was never cited. It is ' +
+            'supposed to see the citations and nothing else.'
+        );
+        System.assert(
+            !second.contains('proposed_verdict'),
+            'The second reader was shown the first verdict, so it can agree with it.'
+        );
+        System.assert(
+            second.contains(Q_CANNOT_TELL),
+            'It does get the cited quotes; that is the thing it is judging.'
+        );
+    }
+
+    /** The rubric is the cacheable prefix and the artifact must never precede it. */
+    @IsTest
+    static void theCacheBreakpointSitsOnTheRubricAndNotOnTheArtifact() {
+        Id oppId = stageDeal();
+        AAO_Source__c src = theSource(oppId);
+
+        SeqMock mock = new SeqMock(new List<String>{ theSpecimen() });
+        AAO_Extract.Config cfg = testConfig();
+        AAO_Extract.overrideConfig = cfg;
+        Test.setMock(HttpCalloutMock.class, mock);
+
+        Test.startTest();
+        AAO_Extract.run(src.Id);
+        Test.stopTest();
+
+        String body = mock.sent[0];
+        Integer breakpointAt = body.indexOf('cache_control');
+        Integer transcriptAt = body.indexOf(NOT_IN_ANY_SPAN);
+        System.assert(breakpointAt > 0, 'There is a cache breakpoint.');
+        System.assert(
+            breakpointAt < transcriptAt,
+            'The breakpoint must precede the transcript. Anything volatile above it changes ' +
+            'the prefix on every call and the cache silently never reads.'
+        );
+    }
+
+    /** A second reader that says nothing about an element does not grant it coverage. */
+    @IsTest
+    static void aMissingSecondVerdictIsNotAYes() {
+        Id oppId = stageDeal();
+        AAO_Source__c src = theSource(oppId);
+
+        SeqMock mock = new SeqMock(
+            new List<String>{
+                theSpecimen(),
+                // Answers e1 only. e2 and e3 are simply absent.
+                blindEnvelope(
+                    new List<Object>{
+                        review('AAO_T1', new List<Object>{ elem('e1', true, 'asserted') })
+                    }
+                )
+            }
+        );
+        AAO_Extract.overrideConfig = blindConfig();
+        Test.setMock(HttpCalloutMock.class, mock);
+
+        Test.startTest();
+        AAO_Pipeline.Outcome o = AAO_Pipeline.runForSource(
+            src.Id,
+            new Set<String>{ 'altify.example' },
+            AAO_Pipeline.FROM_MODEL
+        );
+        Test.stopTest();
+
+        AAO_Candidate__c cand = [
+            SELECT AAO_Element_Coverage__c
+            FROM AAO_Candidate__c
+            WHERE AAO_Source__c = :src.Id AND AAO_Outcome__c != 'Abstained'
+            LIMIT 1
+        ];
+        AAO_Model.Coverage cov = AAO_Model.parseCoverage(cand.AAO_Element_Coverage__c);
+        System.assertEquals(
+            new List<String>{ 'e1' },
+            cov.covered,
+            'Coverage needs an affirmative yes, and the absence of one is not one.'
+        );
+        System.assertEquals(2, o.blindOverrides.size());
+    }
+
+    /** The blind reader is never asked to judge standing. */
+    @IsTest
+    static void theBlindCharterDoesNotCarryTheSpeakerRule() {
+        String prompt = AAO_BlindCharter.systemPrompt();
+        System.assert(
+            prompt.contains('Judge substance, not standing'),
+            'It must be told explicitly to leave standing alone.'
+        );
+        System.assert(
+            !prompt.contains('decision maker or influencer'),
+            'The speaker requirement stays with AAO_SpeakerRule at commit, so the ' +
+            'downgrade remains a law enforced by the schema and stays visible firing.'
+        );
+    }
+
+    /** Absence of confirmation is UNVERIFIED, and the charter now says so in terms. */
+    @IsTest
+    static void theExtractionCharterForbidsFalseFromAbsence() {
+        String prompt = AAO_ExtractCharter.systemPrompt();
+        System.assert(
+            prompt.contains('ABSENCE NEVER ESTABLISHES FALSE'),
+            'The FALSE bar has to be explicit, because the model reached for FALSE on a ' +
+            'missing confirmation on 31 July.'
+        );
+        System.assert(prompt.contains('I cannot tell you yet'), 'Named, because it happened.');
     }
 }

@@ -26,7 +26,16 @@ public class AAO_Gate1 {
     public class Gate1Exception extends Exception {
     }
 
+    /**
+     * The deal a round runs on. Named per round rather than reused, because reset() purges
+     * and the proof register cites runs by their rows. Purging the deal that a receipt
+     * points at would leave the register describing a run that no longer exists anywhere.
+     */
     public static final String OPP = 'AAO Gate1 - Model Round Two';
+    public static final String OPP_BLIND = 'AAO Gate1 - Blind Reader';
+
+    /** Which deal the next call operates on. Set it, then reset and pass. */
+    public static String deal = OPP;
 
     /** The two artifacts, in evidence order. */
     public static final List<String> PASSES = new List<String>{ 'T1SRC', 'T2SRC' };
@@ -59,7 +68,7 @@ public class AAO_Gate1 {
             } finally {
                 AAO_Synthetic.MARK = false;
             }
-            out.add('opportunity ' + OPP + ' ' + oppId);
+            out.add('opportunity ' + deal + ' ' + oppId);
             out.add('contracts in org ' + AAO_Pipeline.liveContracts().size());
             return 'GATE1 RESET\n  ' + String.join(out, '\n  ');
         } finally {
@@ -68,12 +77,12 @@ public class AAO_Gate1 {
     }
 
     private static Id ensureOpp(AAO_Demo.Ctx c) {
-        List<Opportunity> found = [SELECT Id FROM Opportunity WHERE Name = :OPP LIMIT 1];
+        List<Opportunity> found = [SELECT Id FROM Opportunity WHERE Name = :deal LIMIT 1];
         if (!found.isEmpty()) {
             return found[0].Id;
         }
         Opportunity o = new Opportunity(
-            Name = OPP,
+            Name = deal,
             AccountId = c.acct.Id,
             StageName = AAO_Seed.defaultStage(),
             CloseDate = Date.newInstance(2026, 12, 31)
@@ -84,7 +93,7 @@ public class AAO_Gate1 {
 
     /** Scoped to this deal. Deliberately not AAO_Demo.purge. */
     private static String purgeDeal() {
-        List<Opportunity> opps = [SELECT Id FROM Opportunity WHERE Name = :OPP];
+        List<Opportunity> opps = [SELECT Id FROM Opportunity WHERE Name = :deal];
         if (opps.isEmpty()) {
             return 'purge: no prior deal';
         }
@@ -168,6 +177,30 @@ public class AAO_Gate1 {
                 out.add('  ' + d);
             }
         }
+        if (!o.blindOverrides.isEmpty()) {
+            out.add('the second reader refused these elements, overriding claimed coverage:');
+            for (String ov : o.blindOverrides) {
+                out.add('  ' + ov);
+            }
+        }
+        if (o.blind != null) {
+            out.add(
+                'BLIND   ' +
+                o.blind.charter +
+                '@' +
+                o.blind.charterVersion +
+                '  in=' +
+                o.blind.usage.inputTokens +
+                '  out=' +
+                o.blind.usage.outputTokens +
+                '  cacheRead=' +
+                o.blind.usage.cacheReadTokens +
+                '  promptChars=' +
+                o.blind.promptChars +
+                '  ms=' +
+                o.blind.elapsedMs
+            );
+        }
         if (o.extraction != null) {
             out.add(
                 'TOKENS  in=' +
@@ -186,7 +219,7 @@ public class AAO_Gate1 {
                 o.extraction.modelReported
             );
         }
-        return 'GATE1 PASS ' + sourceCode + '\n  ' + String.join(out, '\n  ');
+        return 'GATE1 PASS ' + sourceCode + ' on ' + deal + '\n  ' + String.join(out, '\n  ');
     }
 
     private static AAO_Source__c sourceFor(String sourceCode, Id oppId) {
@@ -209,7 +242,7 @@ public class AAO_Gate1 {
         ];
         if (rows.isEmpty()) {
             throw new Gate1Exception(
-                'Source ' + sourceCode + ' is not staged on ' + OPP + '. Run reset first.'
+                'Source ' + sourceCode + ' is not staged on ' + deal + '. Run reset first.'
             );
         }
         return rows[0];
@@ -227,9 +260,9 @@ public class AAO_Gate1 {
      * wrong. Where they differ the transcript is the tiebreaker, read by a human.
      */
     public static String compare() {
-        List<Opportunity> opps = [SELECT Id FROM Opportunity WHERE Name = :OPP LIMIT 1];
+        List<Opportunity> opps = [SELECT Id FROM Opportunity WHERE Name = :deal LIMIT 1];
         if (opps.isEmpty()) {
-            return 'GATE1 COMPARE: no ' + OPP + '. Run reset and the passes first.';
+            return 'GATE1 COMPARE: no ' + deal + '. Run reset and the passes first.';
         }
         Id oppId = opps[0].Id;
         Map<String, Object> fixture = AAO_Seed.fixture();
@@ -331,9 +364,7 @@ public class AAO_Gate1 {
                     ']  gate=' +
                     (actual == null ? '-' : actual.AAO_Outcome__c) +
                     (actual != null && String.isNotBlank(actual.AAO_Interpretation__c)
-                        ? '  interpretation="' +
-                          actual.AAO_Interpretation__c.abbreviate(80) +
-                          '"'
+                        ? '\n         interpretation: ' + actual.AAO_Interpretation__c
                         : '')
                 );
             }

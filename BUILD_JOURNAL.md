@@ -20,9 +20,9 @@ recorded as a finding is how a wrong belief becomes load-bearing.
 
 Wave 1 plus Flag is live: seven objects (136 fields), five triggers, three frozen key
 composers, span verification, the speaker rule, commit, replay, the mini-rubric and the
-dummy transcripts, plus extraction charter v1 and the credential scaffolding it calls
-through. **99 AAO tests, 99 passing.** One pre-existing sandbox test still fails on a
-customer validation rule, and that failure is not ours.
+dummy transcripts, plus two charters, the credential scaffolding they call through, and the
+second reader that decides coverage. **105 AAO tests, 105 passing.** One pre-existing sandbox
+test still fails on a customer validation rule, and that failure is not ours.
 
 **The rehearsal is durable.** `AAO Demo - Tungsten Rehearsal` carries two claims and one
 answer, written in two separate transactions, and a second deal carries the seller-said-it
@@ -77,12 +77,19 @@ the Named Credential on 31 July, wrote Candidates only through `AAO_Pipeline`, a
 existing gate decided. Zero hallucinated spans across six citations. **99 AAO tests, 99
 passing**, including eleven that exercise the model path against mocked responses.
 
-**It also exposed a defect in the coverage derivation added the same night, and that defect
-is not yet fixed.** A span that refutes an element is counted as covering it, which let a
-wrong `FALSE` be written as an established claim on a run where correct coverage would have
-produced the right answer unaided. See the session 7 addendum before quoting the model run
-to anyone. The three demo deals are unaffected: they are charter version `0.1.0` and read
-`UNVERIFIED -> TRUE` as they always did.
+**Session 8 added the second reader, and it works on the specimen it was built for.** The
+blind reader receives the proposition, its elements and the located spans, never the
+transcript and never the first verdict, and its no overrides claimed coverage. On
+`AAO Gate1 - Blind Reader` it refused the element whose quote refuted it, coverage fell to
+partial, and the run wrote `UNVERIFIED -> TRUE` with the first claim untouched, which is the
+staged ground truth. `AGREE 11 DIFFER 1`, and the one difference is a comparison artifact
+rather than a model error. Read the session 8 entry before quoting any of it.
+
+**Session 7's defect is fixed. Rows written before it was are still in the org**, on
+`AAO Gate1 - Model Round Two`, deliberately, because the proof register cites them.
+
+The three demo deals are untouched throughout: charter version `0.1.0`, `UNVERIFIED -> TRUE`
+as they always did.
 
 Gate 1 round two, once the key is in, on `AAO Gate1 - Model Round Two`, which is isolated
 from the three demo deals:
@@ -1310,3 +1317,114 @@ rather than inferred from whether a span exists.
 3. **Token counts are not persisted anywhere.** They come back on the Outcome and are printed
    to a terminal. The register's numbers for this run cannot be re-derived from the org.
    `AAO_Candidate__c.AAO_Run__c` is still not built and this is what it is for.
+
+---
+
+## 2026-07-31 · session 8 · the second reader, and the specimen it was built for
+
+**Did.** Items 23 to 27. Model call 2 exists, the FALSE bar is explicit, the rubric prefix is
+cached, and Gate 1 was re-run on a **new deal**, `AAO Gate1 - Blind Reader`, so the run the
+proof register already cites is still in the org rather than purged by its successor.
+**105 AAO tests, 105 passing**, seventeen of them on the model path.
+
+**The prediction in item 24 held, and it is worth stating exactly.** Expected: the blind
+reader refuses element three, coverage drops to partial, the verdict lands `UNVERIFIED`
+rather than `FALSE`, matching ground truth. All three happened.
+
+```
+AAO_T1 v1.1.0 verdict=UNVERIFIED outcome=Upheld cov={"missing":["e3"],"covered":["e1","e2"]}
+   [e1] dana: "The funding is approved."
+   [e2] dana: "It came out of the operations modernisation pot, so it is earmarked for
+              this project specifically, not a general pool."
+   [e3] dana: "That I cannot tell you yet. Finance is still working through the calendar."
+CLM-00000016 null        -> UNVERIFIED (Established) v1.1.0  src=dummy/transcript-one
+CLM-00000017 UNVERIFIED  -> TRUE       (Established) v1.1.0  src=dummy/transcript-two
+answer AAO_T1 = TRUE  covered=e1,e2,e3
+```
+
+**The blind reader is provably load-bearing here, independently of the charter change.**
+Three spans are stored on that candidate and their element labels are e1, e2 and e3. Under
+session 7's rule, three located spans meant three covered elements and coverage full. The
+stored coverage says `missing:["e3"]`. Only the override produces that combination, so the
+receipt is in the row and does not rest on reading a log.
+
+**The model path now reproduces the demo narrative.** `UNVERIFIED` with receipts, then
+`TRUE`, first claim untouched. That is the same shape the fixture deals show, produced by a
+model reading a transcript.
+
+**Decided, and why.**
+
+- **Blindness is structural, not promised.** `AAO_Extract.review` takes reviews and nothing
+  else, and `AAO_BlindCharter.content` is given a contract, an interpretation and a list of
+  spans. There is no parameter through which a transcript or an earlier verdict could
+  arrive. A test asserts it from the other side: a phrase that is in transcript one and in no
+  cited span must not appear in the second request, and `proposed_verdict` must not appear
+  either.
+- **The second reader does not get the speaker rule.** Item 25 was explicit and it is also
+  the right call: keeping it at `AAO_SpeakerRule` is what lets us keep watching the downgrade
+  fire on the seller-said-it deal.
+- **A missing verdict from the second reader is not a yes.** Coverage requires an affirmative
+  yes per element. If the second reader says nothing about an element, that element is not
+  covered and the fact is recorded on the Outcome rather than defaulted away.
+- **The blind-off path was kept**, so the two behaviours can be compared. Off is the unsafe
+  setting and its config field says so.
+- **A deal per round.** `reset()` purges, and purging the deal a receipt points at would
+  leave the register describing a run that no longer exists.
+
+**Read from the org (verbatim).**
+
+- **Prompt caching works and the delta is large.** Extraction on pass two:
+  `in=175 out=892 cacheRead=3187 cacheWrite=0 ms=10928`. Session 7's uncached pass one was
+  `in=3137`. The rubric prefix is now read from cache and only 175 input tokens are paid
+  fresh. A later diagnostic call on transcript one read the same 3,187.
+- **The second reader costs a second call**: `in=1283 out=591 ms=9177`, prompt 2,232 chars.
+  That is the price of the check and it should be quoted alongside the benefit.
+- **Charter 1.1.0 fixes the FALSE by itself, separately from the blind reader.** A read-only
+  extraction call on transcript one, writing nothing, now returns
+  `AAO_T1 -> addressed/UNVERIFIED spans=3` where 1.0.0 returned FALSE. Two independent
+  corrections landed on the same specimen, which is why the pass-one result cannot be
+  attributed to either alone.
+- **`AGREE 11  DIFFER 1`** against staged ground truth.
+
+**Assumed, not verified.**
+
+- **The single DIFFER is a comparison artifact, not a model error.** Staged proposes `TRUE`
+  with `cov=e1,e2` and leans on the coverage gate to downgrade it; the model proposes
+  `UNVERIFIED` with the same coverage. Both adjudicate to the same answer. `compare()` grades
+  proposals, not outcomes, so two readers that agree on the answer can read as disagreeing.
+- **Pass one recorded five `model_missed` where pass two recorded five `nobody_said`.** A
+  later call on the same artifact returned all six findings with five `not_addressed`, so
+  this is run-to-run variance rather than a regression. It cannot be pinned down after the
+  fact, and that is a defect of mine: `fromModel` writes `model_missed` both when the model
+  omits a proposition and when it abstains on one, so the row cannot say which happened.
+  Debug logs are not retained in this org.
+- That the second reader is right about e3. It agrees with the fixture and with a plain
+  reading of the transcript, which is as far as this goes.
+
+**Owed.**
+
+1. **`model_missed` conflates two facts.** An omitted proposition is a schema-compliance
+   failure by the model; an abstention is a considered judgement. Same value today. This is
+   the same shape of error as session 7's coverage defect: two different things written into
+   one slot.
+2. **`compare()` grades proposals only.** It should also compare the adjudicated answer, and
+   it should not treat two abstentions as matching when their reasons differ.
+3. **No field carries the blind charter version.** `AAO_Candidate__c` has one charter and one
+   charter version and they belong to extraction. The second reader's version reaches the
+   journal and not the row, which means a row cannot be attributed to the reader that set its
+   coverage. Adding a field to a CLOSED table needs ratification, so it is recorded here.
+4. **Item 26 is built and untested against real data.** `AAO_Interpretation__c` came back
+   empty on every finding in every run so far, so the untruncated print has never had
+   anything to print. Null is the good case, so this may stay untested for a while.
+5. Everything on session 4's list, unchanged, still led by the artifact hash over the path
+   label and `isFull()` never consulting the element list.
+
+**Offered to the proof register.**
+
+- **Row 12 is now superseded rather than wrong.** It recorded that the comparison caught a
+  verdict the gates upheld, and named the absent blind reader as the reason. The blind reader
+  exists, and on the same specimen the gates now catch it without the comparison. The row
+  should be marked superseded and a new row should carry the receipt above.
+- **Row 19, blind reader catch rate, has its first data point.** One specimen, caught.
+- **Row 14 has its caching measurement**: 3,137 input tokens to 175, with 3,187 read from
+  cache, on the second artifact of a pass.

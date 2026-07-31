@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Blind_Charter_Version__c</fullName>
+    <label>BlindCharterVersion</label>
+    <description>Written by: a human, in this record, bumped whenever the blind reader's prompt or output schema changes. Read by: AAO_Extract.review. Owed: no field on AAO_Candidate__c carries this yet, so it currently reaches the journal and not the row.</description>
+    <inlineHelpText>Written by: a human, in this record, bumped whenever the blind reader's prompt or output schema changes. Read by: AAO_Extract.review. Owed: no field on AAO_Candidate__c carries this yet, so it currently reaches the journal and not the row.</inlineHelpText>
+    <type>Text</type>
+    <length>20</length>
+    <required>true</required>
+    <unique>false</unique>
+</CustomField>

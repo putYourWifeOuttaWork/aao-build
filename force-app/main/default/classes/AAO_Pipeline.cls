@@ -89,6 +89,10 @@ public class AAO_Pipeline {
         public List<SpanDrop> spanDrops = new List<SpanDrop>();
         /** Populated only on the model path. */
         public AAO_Extract.Result extraction;
+        /** Populated only when the second reader ran. */
+        public AAO_Extract.BlindResult blind;
+        /** Elements the first reader cited and the second reader refused. */
+        public List<String> blindOverrides = new List<String>();
         public String note;
 
         public override String toString() {
@@ -114,6 +118,9 @@ public class AAO_Pipeline {
                 ')' +
                 ' spansDropped=' +
                 spanDrops.size() +
+                ' blindOverrides=' +
+                blindOverrides.size() +
+                (blind == null ? '' : ' | ' + blind) +
                 (extraction == null ? '' : ' | ' + extraction) +
                 (String.isBlank(note) ? '' : ' note=' + note);
         }
@@ -287,10 +294,10 @@ public class AAO_Pipeline {
      * because the speaker rule is evaluated against the turn a span lies in, and two
      * candidate turns means we do not know who said it.
      *
-     * Coverage is computed, not accepted. covered is the set of elements that ended up with
-     * at least one located span; missing is the contract's element list minus that. The
-     * model is never asked what it covered, because a reader grading its own coverage is
-     * the fixture's weakness, not a fix for it.
+     * Coverage is decided by the second reader, not by the first and not by span arithmetic.
+     * An element counts as covered only when a located span was offered for it AND
+     * AAO_BlindCharter says that span establishes it. Session 7 counted any located span,
+     * which credited a quote that refuted its element; see the session 7 addendum.
      *
      * not_addressed and abstained stay distinct. They become nobody_said and model_missed
      * on the abstention ledger. Collapsing them would make the abstention rate measure
@@ -304,6 +311,7 @@ public class AAO_Pipeline {
         Map<Id, String> abstentionByContract
     ) {
         List<Proposal> out = new List<Proposal>();
+        List<AAO_BlindCharter.Review> reviews = new List<AAO_BlindCharter.Review>();
 
         for (String code : contracts.keySet()) {
             AAO_ExtractCharter.Finding f = ex.findings.get(code);
@@ -328,26 +336,71 @@ public class AAO_Pipeline {
             p.proposedVerdict = f.proposedVerdict == 'NONE' ? null : f.proposedVerdict;
             p.interpretation = String.isBlank(f.interpretation) ? null : f.interpretation;
 
-            Set<String> coveredIds = new Set<String>();
             for (AAO_ExtractCharter.QuotedSpan q : f.spans) {
                 AAO_Model.Span located = locate(src, q, o, code);
-                if (located == null) {
-                    continue;
-                }
-                p.spans.add(located);
-                if (String.isNotBlank(q.element)) {
-                    coveredIds.add(q.element);
-                }
-            }
-
-            for (String id : AAO_ExtractCharter.elementIds(contracts.get(code))) {
-                if (coveredIds.contains(id)) {
-                    p.covered.add(id);
-                } else {
-                    p.missing.add(id);
+                if (located != null) {
+                    p.spans.add(located);
                 }
             }
             out.add(p);
+            reviews.add(
+                new AAO_BlindCharter.Review(contracts.get(code), p.interpretation, p.spans)
+            );
+        }
+
+        // ---- model call 2, still before any DML
+        Map<String, Map<String, AAO_BlindCharter.ElementVerdict>> verdicts = null;
+        Boolean blindRan = false;
+        if (!reviews.isEmpty() && AAO_Extract.config().blindEnabled) {
+            AAO_Extract.BlindResult br = AAO_Extract.review(reviews);
+            o.blind = br;
+            verdicts = br.verdicts;
+            blindRan = true;
+        }
+
+        // ---- coverage, decided last, by the second reader
+        for (Proposal p : out) {
+            Set<String> cited = new Set<String>();
+            for (AAO_Model.Span sp : p.spans) {
+                if (String.isNotBlank(sp.element)) {
+                    cited.add(sp.element);
+                }
+            }
+            Map<String, AAO_BlindCharter.ElementVerdict> forCode = verdicts == null
+                ? null
+                : verdicts.get(p.contractCode);
+
+            for (String id : AAO_ExtractCharter.elementIds(contracts.get(p.contractCode))) {
+                if (!cited.contains(id)) {
+                    // Nothing was offered for it, so there is nothing to establish it.
+                    p.missing.add(id);
+                    continue;
+                }
+                if (!blindRan) {
+                    // The session 7 behaviour, kept only so the second reader can be
+                    // switched out for a comparison. A located span counts as coverage,
+                    // which is how a refuting quote came to be credited as one.
+                    p.covered.add(id);
+                    continue;
+                }
+                AAO_BlindCharter.ElementVerdict v = forCode == null ? null : forCode.get(id);
+                if (v != null && v.established == true) {
+                    p.covered.add(id);
+                } else {
+                    // The override. A span exists and is verbatim, and the second reader
+                    // says it does not establish this element, so it does not count.
+                    // A missing verdict lands here too: coverage needs an affirmative yes,
+                    // and the absence of one is not one.
+                    p.missing.add(id);
+                    o.blindOverrides.add(
+                        p.contractCode +
+                        '/' +
+                        id +
+                        ': ' +
+                        (v == null ? 'the second reader returned no verdict' : v.reason)
+                    );
+                }
+            }
         }
         return out;
     }
@@ -421,7 +474,12 @@ public class AAO_Pipeline {
     public static Map<String, AAO_Evidence_Contract__c> liveContracts() {
         Map<String, AAO_Evidence_Contract__c> byCode = new Map<String, AAO_Evidence_Contract__c>();
         for (AAO_Evidence_Contract__c ec : [
-            SELECT Id, AAO_Proposition_Code__c, AAO_Elements__c
+            SELECT
+                Id,
+                AAO_Proposition_Code__c,
+                AAO_Proposition_Short__c,
+                AAO_Proposition_Text__c,
+                AAO_Elements__c
             FROM AAO_Evidence_Contract__c
             WHERE AAO_Contract_State__c != 'Superseded'
             ORDER BY AAO_Proposition_Code__c

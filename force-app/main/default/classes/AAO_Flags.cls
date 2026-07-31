@@ -36,6 +36,21 @@ public class AAO_Flags {
      * Called on deal setup and again whenever discovery adds a gating contract, because a
      * rubric that gains a gating proposition gains it for deals that already exist.
      */
+    /**
+     * Each deal against its own rubric, read from the deal. The overload taking an explicit
+     * version stays for callers setting a deal up before it has been bound.
+     */
+    public static Integer raiseFor(Set<Id> opportunityIds) {
+        Integer raised = 0;
+        for (Id oppId : opportunityIds) {
+            raised += raiseFor(
+                new Set<Id>{ oppId },
+                AAO_Rubric.versionFor(oppId)
+            );
+        }
+        return raised;
+    }
+
     public static Integer raiseFor(Set<Id> opportunityIds, String rubricVersion) {
         if (opportunityIds == null || opportunityIds.isEmpty()) {
             return 0;

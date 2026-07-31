@@ -46,6 +46,8 @@ Contact-centric, external infrastructure, two SMB clients. Toby's own words: "I 
 
 **"Why not wait for the platform's agents to just do this?"** Verbs versus nouns. A runtime can converse; it cannot be the deal's system of record. Whatever agents win, they will need something trustworthy to read. We are what they read.
 
+**"What would it cost to build this properly?"** Don't argue what an external build would cost; show what this one did cost, receipted: seed to model-verified pipeline in ~48 hours, one architect plus AI tooling, zero new infrastructure, zero new vendors, under a dollar of tokens (register row 26). The reason the number is small is structural, not heroic: everything expensive about the alternative, the storage, the identity, the security boundary, the memory plane, already existed inside the customer's platform. An external build spends its first millions recreating what we started on top of.
+
 ## 5 · Phrasing guardrails (say / never say)
 
 - Say **our answer row**, never bare "answer" (ALTF__Answer__c exists).

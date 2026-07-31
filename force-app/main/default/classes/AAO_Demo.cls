@@ -163,6 +163,9 @@ public class AAO_Demo {
         AAO_Synthetic.MARK = true;
         try {
             c.contractByCode = AAO_Seed.ensureContracts(c.fixture);
+            for (Id oppId : c.oppByDeal.values()) {
+                AAO_Rubric.bind(oppId, AAO_Seed.RUBRIC_VERSION);
+            }
             AAO_Flags.raiseFor(new Set<Id>(c.oppByDeal.values()), AAO_Seed.RUBRIC_VERSION);
         } finally {
             AAO_Synthetic.MARK = false;

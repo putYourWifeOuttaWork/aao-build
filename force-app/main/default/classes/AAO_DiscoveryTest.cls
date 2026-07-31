@@ -164,4 +164,124 @@ private class AAO_DiscoveryTest {
         System.assertEquals(true, threw);
         System.assert(message.contains('lists no questions'), 'Got: ' + message);
     }
+
+    // ============================================================ supersede, item 44
+
+    private static ALTF__Assessment_Question__c question(String sentence) {
+        return new ALTF__Assessment_Question__c(
+            Name = 'Budget Confirmed',
+            ALTF__AltifyId__c = 'AAO_T1',
+            ALTF__Question__c = 'Is it worth winning?',
+            ALTF__Criterion_Text__c = 'Budget Confirmed',
+            ALTF__Long_Question__c = sentence,
+            ALTF__Help__c = 'Guidance.\n\nElements:\n- e1: the only part',
+            ALTF__Order_Number__c = 1,
+            ALTF__Active__c = true,
+            ALTF__Mandatory__c = true
+        );
+    }
+
+    /**
+     * ITEM 44. A customer edits the wording of a rubric question mid-quarter. That is a new
+     * generation of the proposition, not a correction to the old one, because every claim
+     * already stamped with the old contract was adjudicated against words the new one does
+     * not carry.
+     *
+     * The old contract is marked Superseded and points at its replacement. It is never
+     * deleted: the delete law exists precisely so those claims stay explicable forever.
+     */
+    @IsTest
+    static void editingAQuestionUpstreamSupersedesTheOldGenerationRatherThanReplacingIt() {
+        insert new ALTF__Opportunity_Plan_Type_List__c(
+            Name = AAO_Discovery.PLAN_TYPE,
+            ALTF__AssessmentQuestionIds__c = 'AAO_T1',
+            ALTF__Show_Assessment__c = true
+        );
+        ALTF__Assessment_Question__c q = question(
+            'The decision maker has confirmed budget is secured.'
+        );
+        insert q;
+
+        AAO_Discovery.Derived first = AAO_Discovery.discover();
+        System.assertEquals(1, first.byCode.size());
+        System.assertEquals(0, first.superseded, 'Nothing to retire on a first pass.');
+        Id firstId = first.byCode.get('AAO_T1').Id;
+
+        // The customer rewords the question.
+        q.ALTF__Long_Question__c =
+            'The decision maker has confirmed budget is secured AND allocated.';
+        update q;
+
+        Test.startTest();
+        AAO_Discovery.Derived second = AAO_Discovery.discover();
+        Test.stopTest();
+
+        System.assertEquals(
+            1,
+            second.superseded,
+            'One generation retired. Got notes: ' + second.notes
+        );
+        Id secondId = second.byCode.get('AAO_T1').Id;
+        System.assertNotEquals(
+            firstId,
+            secondId,
+            'A changed content hash is a different contract, not an edited one.'
+        );
+
+        AAO_Evidence_Contract__c old = [
+            SELECT AAO_Contract_State__c, AAO_Superseded_By__c, AAO_Proposition_Text__c
+            FROM AAO_Evidence_Contract__c
+            WHERE Id = :firstId
+        ];
+        System.assertEquals('Superseded', old.AAO_Contract_State__c);
+        System.assertEquals(
+            secondId,
+            old.AAO_Superseded_By__c,
+            'And it names its replacement, so lineage is followable.'
+        );
+        System.assertEquals(
+            'The decision maker has confirmed budget is secured.',
+            old.AAO_Proposition_Text__c,
+            'The old words survive verbatim. That is the whole reason it is not deleted: ' +
+            'a claim stamped with this contract was judged against these words.'
+        );
+
+        System.assertEquals(
+            1,
+            [
+                SELECT COUNT()
+                FROM AAO_Evidence_Contract__c
+                WHERE
+                    AAO_Rubric_Version__c = :AAO_Discovery.RUBRIC_VERSION
+                    AND AAO_Contract_State__c != 'Superseded'
+            ],
+            'Exactly one live generation.'
+        );
+    }
+
+    /** And a rubric-scoped reader must not hand a superseded generation to anything. */
+    @IsTest
+    static void aSupersededGenerationIsInvisibleToTheScopedReader() {
+        insert new ALTF__Opportunity_Plan_Type_List__c(
+            Name = AAO_Discovery.PLAN_TYPE,
+            ALTF__AssessmentQuestionIds__c = 'AAO_T1',
+            ALTF__Show_Assessment__c = true
+        );
+        ALTF__Assessment_Question__c q = question('First wording.');
+        insert q;
+        AAO_Discovery.discover();
+
+        q.ALTF__Long_Question__c = 'Second wording.';
+        update q;
+
+        Test.startTest();
+        AAO_Discovery.discover();
+        Test.stopTest();
+
+        List<AAO_Evidence_Contract__c> live = AAO_Rubric.contracts(
+            AAO_Discovery.RUBRIC_VERSION
+        );
+        System.assertEquals(1, live.size(), 'One generation, not two.');
+        System.assertEquals('Second wording.', live[0].AAO_Proposition_Text__c);
+    }
 }

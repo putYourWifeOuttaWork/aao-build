@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AAO · state of the project</title>
+<style>
+  :root{
+    --navy:#16233c; --ink:#1a1c1e; --sub:#5f6b7d; --line:#dfe4ec; --paper:#f7f8fa;
+    --green:#0f6e56; --green-soft:#e1f5ee;
+    --teal:#0e7490; --teal-soft:#e0f2f8;
+    --orange:#e8672b; --orange-soft:#fdeee4;
+    --purple:#6d5ae6; --purple-soft:#efecfd;
+    --grey:#8b93a0; --grey-soft:#eef0f3;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       background:var(--paper); color:var(--ink); padding:26px 24px 30px; line-height:1.3;}
+  h1{font-size:24px; color:var(--navy); font-weight:800; letter-spacing:-0.4px;}
+  .when{color:var(--sub); font-size:12.5px; margin:2px 0 14px;}
+  .nums{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px;}
+  .num{background:#fff; border:1px solid var(--line); border-radius:10px; padding:8px 14px; text-align:center;}
+  .num b{display:block; font-size:19px; color:var(--navy);}
+  .num span{font-size:10.5px; color:var(--sub); text-transform:uppercase; letter-spacing:0.8px;}
+  .legend{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:14px; font-size:11.5px; color:var(--sub);}
+  .dot{display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:5px; vertical-align:-1px;}
+  .cols{display:grid; grid-template-columns:repeat(auto-fit,minmax(215px,1fr)); gap:10px;}
+  .col h2{font-size:11px; text-transform:uppercase; letter-spacing:1.2px; color:var(--sub); margin-bottom:7px;}
+  .tile{border-radius:8px; padding:7px 10px; margin-bottom:6px; font-size:12.5px; font-weight:650; border:1.5px solid transparent;}
+  .tile small{display:block; font-weight:500; font-size:10.5px; color:var(--sub); margin-top:1px;}
+  .t-proven{background:var(--green-soft); border-color:#bfe5d6; color:var(--navy);}
+  .t-proven::before{content:"✓ "; color:var(--green); font-weight:800;}
+  .t-built{background:var(--teal-soft); border-color:#bfe0ec; color:var(--navy);}
+  .t-built::before{content:"◑ "; color:var(--teal); font-weight:800;}
+  .t-next{background:var(--orange-soft); border-color:#f3cdb3; color:var(--navy);}
+  .t-next::before{content:"→ "; color:var(--orange); font-weight:800;}
+  .t-ruled{background:#fff; border-color:var(--line); color:var(--navy);}
+  .t-ruled::before{content:"□ "; color:var(--grey); font-weight:800;}
+  .t-parked{background:var(--grey-soft); border-color:var(--line); color:var(--sub);}
+  .t-parked::before{content:"· ";}
+  .t-you{background:var(--purple-soft); border-color:#d8d1f7; color:var(--navy);}
+  .t-you::before{content:"★ "; color:var(--purple); font-weight:800;}
+
+  .road{margin-top:20px; background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px 16px;}
+  .road > h2{font-size:12px; text-transform:uppercase; letter-spacing:1.4px; color:var(--navy); margin-bottom:3px;}
+  .road > .sub{font-size:12px; color:var(--sub); margin-bottom:12px;}
+  .act{margin-bottom:12px;}
+  .act h3{font-size:11px; text-transform:uppercase; letter-spacing:1.1px; color:var(--sub); margin-bottom:6px;}
+  .act h3 b{color:var(--navy);}
+  .steps{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:7px;}
+  .step{border-radius:8px; border:1.5px solid var(--line); background:#fff; padding:7px 10px; font-size:12px; font-weight:650;}
+  .step small{display:block; font-weight:500; font-size:10.5px; color:var(--sub); margin-top:2px; line-height:1.3;}
+  .step .n{display:inline-block; font-size:10px; font-weight:800; color:#fff; background:var(--grey); border-radius:99px; padding:1px 7px; margin-right:5px; vertical-align:1px;}
+  .s-done{background:var(--green-soft); border-color:#bfe5d6;} .s-done .n{background:var(--green);}
+  .s-now{background:var(--orange-soft); border-color:var(--orange);} .s-now .n{background:var(--orange);}
+  .s-later .n{background:var(--grey);}
+  .s-decide{border-style:dashed; border-color:#c9bff0;} .s-decide .n{background:var(--purple);}
+
+  .timeline{margin-top:16px; background:#fff; border:1px solid var(--line); border-radius:12px; padding:12px 16px;}
+  .timeline h2{font-size:11px; text-transform:uppercase; letter-spacing:1.2px; color:var(--sub); margin-bottom:9px;}
+  .tl{display:flex; gap:6px; align-items:stretch; flex-wrap:wrap;}
+  .seg{flex:1; min-width:110px; border-radius:8px; padding:7px 9px; font-size:11px;}
+  .seg b{display:block; font-size:11.5px; margin-bottom:2px;}
+  .seg.past{background:var(--green-soft);}
+  .seg.now{background:var(--orange-soft); border:2px solid var(--orange);}
+  .seg.future{background:var(--grey-soft);}
+  .seg.qbr{background:var(--navy); color:#fff;}
+  .seg.qbr b{color:#f0a97e;}
+</style>
+</head>
+<body>
+
+  <h1>Altify Always On · state of the build</h1>
+  <div class="when">as of Friday evening, 1 August 2026 · sandbox altify--aossb2 · repo aao-sandbox · v2.0 of this board</div>
+
+  <div class="nums">
+    <div class="num"><b>125/125</b><span>tests green</span></div>
+    <div class="num"><b>12/12</b><span>model outcomes vs truth</span></div>
+    <div class="num"><b>0</b><span>hallucinated spans</span></div>
+    <div class="num"><b>6</b><span>contracts derived from the org</span></div>
+    <div class="num"><b>~95%</b><span>input cached (in-window)</span></div>
+    <div class="num"><b>8 of 15</b><span>objects live</span></div>
+    <div class="num"><b>~50h</b><span>since the seed</span></div>
+  </div>
+
+  <div class="legend">
+    <span><span class="dot" style="background:var(--green-soft);border:1.5px solid #bfe5d6"></span>Proven, receipted</span>
+    <span><span class="dot" style="background:var(--teal-soft);border:1.5px solid #bfe0ec"></span>Built, awaiting live proof</span>
+    <span><span class="dot" style="background:var(--orange-soft);border:1.5px solid #f3cdb3"></span>Next up</span>
+    <span><span class="dot" style="background:#fff;border:1.5px solid var(--line)"></span>Designed, not built</span>
+    <span><span class="dot" style="background:var(--grey-soft);border:1.5px solid var(--line)"></span>Parked on purpose</span>
+    <span><span class="dot" style="background:var(--purple-soft);border:1.5px solid #d8d1f7"></span>Yours, Matthew</span>
+  </div>
+
+  <div class="cols">
+
+    <div class="col">
+      <h2>Evidence in</h2>
+      <div class="tile t-proven">Source, frozen + hashed<small>identity now content, not filename — defect fixed</small></div>
+      <div class="tile t-proven">Async arrival + dedup + two clocks<small>all on camera</small></div>
+      <div class="tile t-ruled">Data 360 door<small>Ingestion API researched; not wired</small></div>
+      <div class="tile t-parked">Email + notes channels<small>notes = the Toby conversation, post-QBR</small></div>
+    </div>
+
+    <div class="col">
+      <h2>The engine</h2>
+      <div class="tile t-proven">8 objects + trigger laws<small>Source→Flag, Claim Basis, Run</small></div>
+      <div class="tile t-proven">Replay · coverage · speaker gate<small>all receipted</small></div>
+      <div class="tile t-proven">Both session-4 defects fixed<small>isFull judged by the contract; hash over content; defending test corrected</small></div>
+      <div class="tile t-next">Evidence Contract delete law<small>versioned-never-deleted was ruled, never enforced — found by the purge bug</small></div>
+    </div>
+
+    <div class="col">
+      <h2>The model layer</h2>
+      <div class="tile t-proven">Extraction 1.1.0 + blind reader<small>live, 12/12 outcomes, refusal predicted first</small></div>
+      <div class="tile t-proven">Caching + secret handling<small>95% in-window; key unreadable</small></div>
+      <div class="tile t-built">3-way telemetry + dual attribution<small>built; first live writes unconfirmed</small></div>
+    </div>
+
+    <div class="col">
+      <h2>Rule data</h2>
+      <div class="tile t-proven">DISCOVERY — works anywhere<small>contracts derived from Altify's own tables, real record IDs, exit test + replay green</small></div>
+      <div class="tile t-proven">Long_Question trap caught<small>reads Question Text first, falls back, records which — the package's own docs self-contradict</small></div>
+      <div class="tile t-proven">Filter-fault guard<small>empty rubric ≠ broken query, ever again</small></div>
+      <div class="tile t-ruled">Speaker + route layer<small>ours, proposed at setup, ratified — floor is Any_Participant until then</small></div>
+    </div>
+
+    <div class="col">
+      <h2>The campaign</h2>
+      <div class="tile t-proven">Demo'd live to Toby · answers sent<small>connector reply + architecture, sourced</small></div>
+      <div class="tile t-proven">Register · rebuttals · board<small>living files, I maintain them</small></div>
+      <div class="tile t-you">Corporate: 3 uploads + 4 bumps<small>waits for corrections v2.0 (mine, Sunday)</small></div>
+      <div class="tile t-you">One-pager<small>diagram + vision slides + proven column</small></div>
+    </div>
+
+  </div>
+
+  <div class="road">
+    <h2>The road from here</h2>
+    <div class="sub">Everything that has to exist before this is a product, in build order, in plain words. Where we are: Act I, step 5.</div>
+
+    <div class="act">
+      <h3><b>ACT I · Finish the spine</b> — one deal, evidence to flags, everything real</h3>
+      <div class="steps">
+        <div class="step s-done"><span class="n">1</span>Objects + laws<small>The eight core objects with their triggers: things can be written, never faked, always replayed.</small></div>
+        <div class="step s-done"><span class="n">2</span>Model in the loop<small>A real model proposes, real checks judge it, and we measured it against known truth.</small></div>
+        <div class="step s-done"><span class="n">3</span>Discovery<small>The system reads the customer's own question tables and builds its contracts from them. Works in an org it has never seen.</small></div>
+        <div class="step s-done"><span class="n">4</span>Flags that raise<small>Live: reds stand from deal creation, TRUE clears them on screen, seller-said-it holds its reds at full coverage. Aging/escalation still owed.</small></div>
+        <div class="step s-now"><span class="n">5</span>The other charters<small>People, problems, politics: reading who was on the call, what hurts, who influences whom — writing maps, not just answers.</small></div>
+        <div class="step s-later"><span class="n">6</span>Wave 2 objects<small>Notes, links, shadow people, personas' history, non-establishment rules: the seven remaining entities.</small></div>
+        <div class="step s-later"><span class="n">7</span>Ratification + setup passes<small>The human yes/no surface, and the once-per-rubric passes that propose speaker rules, routes, and elements for approval.</small></div>
+        <div class="step s-later"><span class="n">8</span>Real transcripts<small>Tungsten-length calls, the small-talk boundary, cardinality guards under load. Where the charters earn their grades.</small></div>
+      </div>
+    </div>
+
+    <div class="act">
+      <h3><b>ACT II · Make it real</b> — many deals, history, and the write-back</h3>
+      <div class="steps">
+        <div class="step s-later"><span class="n">9</span>The memory plane (your buckets)<small>Claims stream to Data 360 and live forever under keys: two-year lookups, cold starts, deal history — one query, no re-reading.</small></div>
+        <div class="step s-later"><span class="n">10</span>Contention vs history<small>The person who was an enemy three years ago just became your decision maker. The system says so, with receipts.</small></div>
+        <div class="step s-later"><span class="n">11</span>Real ingestion<small>The Data 360 door wired: connectors, the Ingestion API, then email. Notes last, designed with Toby.</small></div>
+        <div class="step s-later"><span class="n">12</span>Projection<small>Verified answers written back into Altify's own panels: watermarked, toggleable, humans always win.</small></div>
+        <div class="step s-later"><span class="n">13</span>Surface + guidance<small>One current-state record per deal that briefs, agents, and dashboards all read. Guidance held stable between changes.</small></div>
+      </div>
+    </div>
+
+    <div class="act">
+      <h3><b>ACT III · Make it a product</b> — other people's hands</h3>
+      <div class="steps">
+        <div class="step s-later"><span class="n">14</span>Autonomy levels live<small>The three-level human-approval dial, yellow flags, decline-with-consequences.</small></div>
+        <div class="step s-later"><span class="n">15</span>Internal pilot<small>Altify's own live deals, a few sellers, projection on. Where efficacy gets measured for real.</small></div>
+        <div class="step s-decide"><span class="n">16</span>Package + security posture<small>2GP, the ALTF namespace endgame, the InfoSec story formalized. Decisions with Toby.</small></div>
+        <div class="step s-later"><span class="n">17</span>Pilot customers → Dreamforce<small>One or two orgs that are not ours. September.</small></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="timeline">
+    <h2>The line</h2>
+    <div class="tl">
+      <div class="seg past"><b>Wed 30 Jul</b>Design day: tables closed, Answer/Claim ruled</div>
+      <div class="seg past"><b>Thu 31</b>Built, deployed, demo'd live, first model call, 12/12</div>
+      <div class="seg now"><b>NOW · Fri 1 Aug</b>Defects fixed · discovery landed · day-one red LIVE</div>
+      <div class="seg future"><b>Sat–Sun</b>Day-one red · corrections v2.0 · corp bumps</div>
+      <div class="seg future"><b>Next week</b>Both away · opportunistic sessions only</div>
+      <div class="seg qbr"><b>QBR · w/o 11 Aug</b>Build here vs AWS vs buy. Receipts, not roadmap.</div>
+    </div>
+  </div>
+
+</body>
+</html>

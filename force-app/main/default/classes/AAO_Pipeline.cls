@@ -200,7 +200,7 @@ public class AAO_Pipeline {
             // Apex forbids a callout after DML in the same transaction, so if a single
             // row were written above this line the model call would fail at runtime with
             // an error that reads like a platform problem rather than an ordering one.
-            contracts = liveContracts();
+            contracts = liveContracts(src.AAO_Opportunity__c);
             if (contracts.isEmpty()) {
                 o.status = 'no_staged_proposal';
                 o.note = 'No evidence contracts exist in this org, so there is nothing to ask.';
@@ -232,6 +232,13 @@ public class AAO_Pipeline {
                 : contractsOverride;
             proposals = fromFixture(staged, src);
         }
+
+        // Bind on first adjudication, after the callout, because it is DML. A deal already
+        // bound is left alone: its claims were judged under that rubric.
+        AAO_Rubric.bind(
+            src.AAO_Opportunity__c,
+            proposalSource == FROM_MODEL ? AAO_Rubric.active : AAO_Seed.RUBRIC_VERSION
+        );
 
         Boolean mark = src.AAO_Synthetic__c == true;
         Boolean priorMark = AAO_Synthetic.MARK;
@@ -510,6 +517,11 @@ public class AAO_Pipeline {
      */
     public static Map<String, AAO_Evidence_Contract__c> liveContracts() {
         return AAO_Rubric.byCode();
+    }
+
+    /** The rubric THIS DEAL is judged under, read from the deal itself. */
+    public static Map<String, AAO_Evidence_Contract__c> liveContracts(Id opportunityId) {
+        return AAO_Rubric.byCodeForDeal(opportunityId);
     }
 
     // ====================================================================== internals

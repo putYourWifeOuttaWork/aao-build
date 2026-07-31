@@ -252,6 +252,9 @@ public class AAO_Discovery {
         public List<String> notes = new List<String>();
         public Integer authored = 0;
         public Integer inferred = 0;
+        public Integer reused = 0;
+        /** Old generations retired because their upstream text changed. */
+        public Integer superseded = 0;
     }
 
     /**
@@ -296,6 +299,11 @@ public class AAO_Discovery {
         // text, same key, same contract.
         Map<String, AAO_Evidence_Contract__c> existingByKey =
             new Map<String, AAO_Evidence_Contract__c>();
+        // Every live generation, by the rubric question it came from. A second generation
+        // of the same question means the customer edited the text, and the old one has to
+        // be retired without being destroyed.
+        Map<String, List<AAO_Evidence_Contract__c>> liveByQuestion =
+            new Map<String, List<AAO_Evidence_Contract__c>>();
         for (AAO_Evidence_Contract__c ec : [
             SELECT
                 Id,
@@ -309,6 +317,15 @@ public class AAO_Discovery {
             WHERE AAO_Rubric_Version__c = :RUBRIC_VERSION
         ]) {
             existingByKey.put(ec.AAO_Contract_Key__c, ec);
+            if (ec.AAO_Contract_State__c != 'Superseded') {
+                if (!liveByQuestion.containsKey(ec.AAO_Question_Record_Id__c)) {
+                    liveByQuestion.put(
+                        ec.AAO_Question_Record_Id__c,
+                        new List<AAO_Evidence_Contract__c>()
+                    );
+                }
+                liveByQuestion.get(ec.AAO_Question_Record_Id__c).add(ec);
+            }
         }
 
         // ITEM 37. "The table has no rows" and "my query matched none of them" are
@@ -389,8 +406,19 @@ public class AAO_Discovery {
             AAO_Evidence_Contract__c already = existingByKey.get(expectedKey);
             if (already != null) {
                 d.byCode.put(code, already);
+                d.reused++;
                 d.notes.add(code + ': unchanged since the last pass, contract reused');
                 continue;
+            }
+            if (liveByQuestion.containsKey(q.Id)) {
+                // Same rubric question, different content hash. The customer edited the
+                // words, and a claim adjudicated under the old words was adjudicated
+                // against something this new contract does not say.
+                d.notes.add(
+                    code +
+                    ': upstream text changed, so this is a new generation and the previous ' +
+                    'one is superseded rather than replaced'
+                );
             }
 
             toInsert.add(
@@ -439,6 +467,32 @@ public class AAO_Discovery {
             }
             for (AAO_Evidence_Contract__c ec : toInsert) {
                 d.byCode.put(ec.AAO_Proposition_Code__c, ec);
+            }
+
+            // Retire the generation this one replaces. Never delete: the delete law exists
+            // because every claim stamped with the old contract still names it, and those
+            // claims were adjudicated against words the new contract does not carry.
+            // Superseded keeps them explicable forever.
+            List<AAO_Evidence_Contract__c> retire = new List<AAO_Evidence_Contract__c>();
+            for (AAO_Evidence_Contract__c fresh : toInsert) {
+                List<AAO_Evidence_Contract__c> priors = liveByQuestion.get(
+                    fresh.AAO_Question_Record_Id__c
+                );
+                if (priors == null) {
+                    continue;
+                }
+                for (AAO_Evidence_Contract__c previous : priors) {
+                    if (previous.Id == fresh.Id) {
+                        continue;
+                    }
+                    previous.AAO_Contract_State__c = 'Superseded';
+                    previous.AAO_Superseded_By__c = fresh.Id;
+                    retire.add(previous);
+                }
+            }
+            if (!retire.isEmpty()) {
+                update retire;
+                d.superseded = retire.size();
             }
         }
         return d;
@@ -516,6 +570,9 @@ public class AAO_Discovery {
             oppId = found[0].Id;
         }
 
+        // The binding is a fact about the deal, written at cold start. Session 16.
+        AAO_Rubric.bind(oppId, RUBRIC_VERSION);
+
         List<ALTF__Opportunity__c> alt = [
             SELECT Id FROM ALTF__Opportunity__c WHERE ALTF__Opportunity__c = :oppId LIMIT 1
         ];
@@ -557,7 +614,11 @@ public class AAO_Discovery {
                 d.authored +
                 ' Authored, ' +
                 d.inferred +
-                ' Inferred_Pending)'
+                ' Inferred_Pending, ' +
+                d.reused +
+                ' reused, ' +
+                d.superseded +
+                ' superseded)'
             );
             for (String n : d.notes) {
                 out.add('  ' + n);

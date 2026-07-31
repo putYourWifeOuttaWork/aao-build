@@ -184,6 +184,7 @@ public class AAO_Extract {
         AAO_Source__c src = [
             SELECT
                 Id,
+                AAO_Opportunity__c,
                 AAO_Source_Ref__c,
                 AAO_Normalized_Text__c,
                 AAO_Speaker_Roster__c,
@@ -199,7 +200,9 @@ public class AAO_Extract {
 
         // Scoped to one rubric. An unscoped read here sends every generation of every
         // proposition to the charter at once, and it reads as thoroughness.
-        List<AAO_Evidence_Contract__c> contracts = AAO_Rubric.contracts();
+        List<AAO_Evidence_Contract__c> contracts = AAO_Rubric.contracts(
+            AAO_Rubric.versionFor(src.AAO_Opportunity__c)
+        );
         if (contracts.isEmpty()) {
             throw new ExtractException(
                 'No evidence contracts in the org. There is nothing to ask about.'

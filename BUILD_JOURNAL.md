@@ -21,7 +21,8 @@ recorded as a finding is how a wrong belief becomes load-bearing.
 Wave 1 plus Flag is live: seven objects (136 fields), five triggers, three frozen key
 composers, span verification, the speaker rule, commit, replay, the mini-rubric and the
 dummy transcripts, plus two charters, the credential scaffolding they call through, and the
-second reader that decides coverage, discovery, and day-one red. **125 AAO tests, 125 passing.** One pre-existing sandbox
+second reader that decides coverage, discovery with supersede, and day-one red.
+**127 AAO tests, 127 passing.** One pre-existing sandbox
 test still fails on a customer validation rule, and that failure is not ours.
 
 **The rehearsal is durable.** `AAO Demo - Tungsten Rehearsal` carries two claims and one
@@ -2116,3 +2117,92 @@ how late that makes the deal. It lands with projection-era work, not before.
 3. Escalation, with projection.
 4. The run sheet's "the Flag tab is empty" line, still wrong.
 5. Everything remaining on session 4's list.
+
+---
+
+## 2026-07-31 · session 16 · supersede, and the binding becomes a fact about the deal
+
+**Did.** Items 44 and 45, plus a full `docs/` replacement. **127 AAO tests, 127 passing**,
+discovery exit test green.
+
+### 44. Supersede
+
+`AAO_Superseded_By__c` already carried the description *"Written by: Discovery, on hash
+change."* It now is.
+
+Same rubric question, different content hash, means the customer edited the words. That is a
+**new generation of the proposition, not a correction to the old one**, because every claim
+already stamped with the old contract was adjudicated against words the new one does not
+carry. The old contract is set to `Superseded`, points at its replacement, and **keeps its
+text verbatim forever**. It is never deleted, which is the entire reason session 14 made the
+delete law.
+
+The test does what item 44 specified: edit a question's text, re-run discovery, assert one
+superseded and one live. It also asserts the old contract still holds the old wording, and
+that a rubric-scoped read returns exactly one generation, because a superseded contract that
+still reached a reader would reintroduce the two-generations bug from the other direction.
+
+`AAO_Contract_State__c` and `AAO_Superseded_By__c` are outside the frozen set, so the
+retirement is a legal update while the words stay immutable. That was designed in session 2
+and used for the first time tonight.
+
+### 45. The binding is a fact about the deal
+
+`Opportunity.AAO_Rubric_Version__c`, written once at cold start or first adjudication, read
+by `AAO_Rubric.versionFor`. Session 15 named this as the honest limit of that session, in
+those terms, and it was right: `active` expressed a property of **the execution** when the
+question is a property of **the deal**.
+
+```
+AAO Demo - Live                            -> mini-0.1.0
+AAO Demo - Tungsten Rehearsal              -> mini-0.1.0
+AAO Demo - Tungsten Rehearsal (seller...)  -> mini-0.1.0
+AAO Discovery - Derived Contracts          -> discovered-v1
+```
+
+**Bound once and then left alone.** A deal already bound is not rebound: it has claims judged
+under that rubric, and rebinding would make them incomparable to whatever came next,
+silently. `AAO_Rubric.active` survives only as the value an **unbound** deal is bound to on
+first adjudication, and as the fallback for a deal nothing has judged.
+
+`AAO_Rubric.bind` is DML, so it runs after the callout on the model path. Ordering that the
+session 7 rule already forced, now with a second reason.
+
+**A field on the standard Opportunity, which is an exception to nothing.** The standing
+constraint forbids fields on managed `ALTF__` objects and triggers on objects we do not own.
+This is neither, and no trigger reads or writes it.
+
+**Two deals read blank and were backfilled.** `AAO Gate1 - Model Round Two` and
+`AAO Gate1 - Blind Reader` were adjudicated before the field existed, and blank means "nothing
+has judged this deal yet", which was false of both. Bound to `mini-0.1.0`, which is what they
+actually ran under.
+
+### The docs replacement
+
+`docs/` replaced wholesale from `aao-context 5`, as instructed, and treated as read-reference
+only. The journal remains the write surface.
+
+- **`aao-demo-runsheet-v1_2.md` replaces v1.1**, and the line this build flagged as wrong is
+  gone. It reads *"The empty-Flag-tab line is retired; flags-do-not-age-yet takes its slot"*,
+  and the new act one is **"The 'empty' deal that already owes answers"**. Checked against the
+  org and it matches exactly: two reds standing on Live, unmoved by pass one because partial
+  evidence establishes nothing, one clearing on pass two, and the seller-said-it deal holding
+  both reds at full coverage.
+- Its new closing bullet carries session 15's escalation reasoning verbatim, denominator and
+  all.
+- **`aao-field-tables-v0_8.md` is gone**, superseded by v0.10. Noting it because v0.8 is the
+  version this entire build was authored from; what mattered from it is quoted in sessions 1
+  to 6 and the removal loses nothing that is not written down here.
+- New: `aao-state-board-v2_1.html`. Updated: the proof register and the competitive rebuttals.
+
+**Owed.**
+
+1. **The proof register is behind the org.** It still describes the state at session 8 and
+   does not carry the blind reader's receipt, discovery, day-one red, or the two owed defects
+   being paid. Its rows 12 and 19 were offered corrections in sessions 8 and 9 that have not
+   landed. Not a code gap.
+2. **Nothing supersedes a seeded contract**, only a derived one. The seed reuses by question
+   record id rather than by content hash, so editing the fixture's wording would mutate
+   meaning under a stable identity. Fine while the fixture is frozen, wrong the moment it is
+   not.
+3. Escalation, with projection. Everything remaining on session 4's list.

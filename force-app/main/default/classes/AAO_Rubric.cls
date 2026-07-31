@@ -17,19 +17,63 @@
  * looks like more rigour: more propositions considered, more reds raised, more abstentions
  * logged. It would read as thoroughness.
  *
- * WHAT IS OWED, and it is the honest limit of this. There is no field recording which rubric
- * a given deal is adjudicated under. `active` is a caller-set static, which means the binding
- * lives in whoever starts the run rather than on the deal. That is enough for one rubric per
- * org and not enough for the mid-quarter edit this law exists to survive. The binding wants
- * to be a field, and until it is, this class is the single place that would have to change.
+ * THE BINDING IS A FACT ABOUT THE DEAL, as of session 16.
+ * `Opportunity.AAO_Rubric_Version__c` records which rubric a deal is adjudicated under,
+ * written once at cold start or first adjudication and never changed. Session 15 left this
+ * as a caller-set static and said so: that expressed a property of the execution when the
+ * question is a property of the deal, which is exactly the distinction the mid-quarter edit
+ * turns on. `active` survives only as the value a deal is bound TO on its first
+ * adjudication, and as the fallback for a deal nothing has judged yet.
  */
 public class AAO_Rubric {
     /**
-     * The rubric this execution adjudicates under. Defaults to the seeded mini-rubric,
-     * which is what the demo and the model path run on. Discovery sets its own around its
-     * work and puts it back.
+     * What an UNBOUND deal will be bound to on its first adjudication. Not the answer to
+     * "which rubric is this deal judged under" any more; that is on the deal.
      */
     public static String active = AAO_Seed.RUBRIC_VERSION;
+
+    /**
+     * The rubric this deal is adjudicated under. The field is the authority; `active` is
+     * only the default for a deal nothing has judged yet.
+     */
+    public static String versionFor(Id opportunityId) {
+        if (opportunityId == null) {
+            return active;
+        }
+        List<Opportunity> rows = [
+            SELECT AAO_Rubric_Version__c FROM Opportunity WHERE Id = :opportunityId
+        ];
+        if (rows.isEmpty() || String.isBlank(rows[0].AAO_Rubric_Version__c)) {
+            return active;
+        }
+        return rows[0].AAO_Rubric_Version__c;
+    }
+
+    /**
+     * Bind a deal to a rubric, once. A deal already bound is left alone: it has claims
+     * judged under that rubric and rebinding it would make them incomparable to whatever
+     * came next, silently.
+     *
+     * DML, so never call it before a callout.
+     */
+    public static Boolean bind(Id opportunityId, String rubricVersion) {
+        if (opportunityId == null || String.isBlank(rubricVersion)) {
+            return false;
+        }
+        List<Opportunity> rows = [
+            SELECT Id, AAO_Rubric_Version__c FROM Opportunity WHERE Id = :opportunityId
+        ];
+        if (rows.isEmpty() || String.isNotBlank(rows[0].AAO_Rubric_Version__c)) {
+            return false;
+        }
+        rows[0].AAO_Rubric_Version__c = rubricVersion;
+        update rows[0];
+        return true;
+    }
+
+    public static Map<String, AAO_Evidence_Contract__c> byCodeForDeal(Id opportunityId) {
+        return byCode(versionFor(opportunityId));
+    }
 
     /**
      * Every contract in one rubric, with every field any reader needs. One query rather

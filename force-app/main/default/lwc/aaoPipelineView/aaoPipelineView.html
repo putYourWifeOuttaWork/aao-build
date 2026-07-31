@@ -1,0 +1,273 @@
+<template>
+    <article class="slds-card">
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <span class="slds-icon_container slds-icon-standard-entity">
+                        <lightning-icon
+                            icon-name="standard:record_lookup"
+                            size="small"
+                        ></lightning-icon>
+                    </span>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <span class="slds-text-heading_small">AAO Pipeline (internal)</span>
+                    </h2>
+                    <p class="slds-text-body_small slds-text-color_weak">
+                        Read-only. Shows candidates, which never appear on a seller surface.
+                    </p>
+                </div>
+            </header>
+            <div class="slds-no-flex slds-grid slds-grid_vertical-align-center">
+                <template if:true={hasSnapshot}>
+                    <span class="slds-text-body_small slds-text-color_weak slds-p-right_small">
+                        {cadence} · {snapshot.generatedAt}
+                    </span>
+                </template>
+                <lightning-button
+                    label="Refresh"
+                    onclick={handleRefresh}
+                    variant="neutral"
+                ></lightning-button>
+            </div>
+        </div>
+
+        <div class="slds-card__body slds-card__body_inner">
+            <!-- The order below is the order evidence moves through the system. -->
+            <p
+                class="aao-flow slds-text-title_caps slds-text-color_weak slds-m-bottom_small"
+            >
+                Sources → Candidates → Claims → Answers → Flags → Projection
+            </p>
+
+            <template if:true={loading}>
+                <div class="slds-is-relative slds-p-vertical_medium">
+                    <lightning-spinner
+                        alternative-text="Reading the pipeline"
+                        size="small"
+                    ></lightning-spinner>
+                </div>
+            </template>
+
+            <template if:true={error}>
+                <div class="slds-notify slds-notify_alert slds-theme_error" role="alert">
+                    <span class="slds-assistive-text">Error</span>
+                    {error}
+                </div>
+            </template>
+
+            <template if:true={showEmpty}>
+                <div class="slds-box slds-box_small slds-theme_shade">
+                    <p class="slds-text-body_regular">
+                        Nothing has arrived on this opportunity yet. No sources, no
+                        candidates, no claims, no answers. That is a true statement about the
+                        deal, not a loading state.
+                    </p>
+                </div>
+            </template>
+
+            <template if:true={showBody}>
+                <div class="slds-grid slds-wrap slds-gutters">
+                    <!-- 1 · SOURCES -->
+                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-3 slds-p-bottom_small">
+                        <div class="slds-box slds-box_x-small aao-panel">
+                            <h3 class="slds-text-title_caps slds-m-bottom_x-small">
+                                1 · Sources
+                            </h3>
+                            <template for:each={snapshot.sources} for:item="src">
+                                <div
+                                    key={src.id}
+                                    class="slds-border_bottom slds-p-vertical_xx-small"
+                                >
+                                    <div class="slds-grid slds-grid_align-spread">
+                                        <span class="slds-text-body_small slds-truncate"
+                                            >{src.sourceRef}</span
+                                        >
+                                        <span class="slds-grid slds-grid_vertical-align-center">
+                                            <template if:true={src.pending}>
+                                                <div
+                                                    class="slds-spinner slds-spinner_xx-small slds-spinner_inline slds-m-right_x-small"
+                                                    role="status"
+                                                >
+                                                    <span class="slds-assistive-text"
+                                                        >Adjudication pending</span
+                                                    >
+                                                    <div class="slds-spinner__dot-a"></div>
+                                                    <div class="slds-spinner__dot-b"></div>
+                                                </div>
+                                                <span class="slds-badge slds-theme_warning"
+                                                    >PENDING</span
+                                                >
+                                            </template>
+                                            <template if:false={src.pending}>
+                                                <span class="slds-badge">Adjudicated</span>
+                                            </template>
+                                        </span>
+                                    </div>
+                                    <p
+                                        class="slds-text-body_small slds-text-color_weak"
+                                    >
+                                        {src.origin} · {src.diarization} · {src.occurred}
+                                    </p>
+                                </div>
+                            </template>
+                            <template if:false={snapshot.sources.length}>
+                                <p class="slds-text-body_small slds-text-color_weak">
+                                    No evidence has arrived.
+                                </p>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- 2 · CANDIDATES -->
+                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-3 slds-p-bottom_small">
+                        <div class="slds-box slds-box_x-small aao-panel">
+                            <h3 class="slds-text-title_caps slds-m-bottom_x-small">
+                                2 · Candidates
+                            </h3>
+                            <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_xx-small">
+                                Latest pass · {snapshot.candidates.latestPassLabel}
+                            </p>
+                            <template for:each={snapshot.candidates.latest} for:item="oc">
+                                <div
+                                    key={oc.outcome}
+                                    class="slds-grid slds-grid_align-spread slds-text-body_small"
+                                >
+                                    <span>{oc.outcome}</span>
+                                    <span class="slds-text-title_bold">{oc.count}</span>
+                                </div>
+                            </template>
+                            <div
+                                class="slds-grid slds-grid_align-spread slds-border_top slds-m-top_xx-small slds-p-top_xx-small slds-text-body_small"
+                            >
+                                <span>this pass</span>
+                                <span class="slds-text-title_bold"
+                                    >{snapshot.candidates.latestTotal}</span
+                                >
+                            </div>
+                            <div
+                                class="slds-grid slds-grid_align-spread slds-text-body_small slds-text-color_weak"
+                            >
+                                <span>all passes</span>
+                                <span>{snapshot.candidates.grandTotal}</span>
+                            </div>
+                            <p class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">
+                                Every proposition considered writes a row, including the ones
+                                nothing was said about.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 3 · CLAIMS -->
+                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-3 slds-p-bottom_small">
+                        <div class="slds-box slds-box_x-small aao-panel">
+                            <h3 class="slds-text-title_caps slds-m-bottom_x-small">
+                                3 · Claims
+                            </h3>
+                            <template for:each={snapshot.claims} for:item="c">
+                                <div
+                                    key={c.id}
+                                    class="slds-border_bottom slds-p-vertical_xx-small"
+                                >
+                                    <div class="slds-text-body_small">
+                                        <span class="slds-text-color_weak">{c.before}</span>
+                                        <span class="slds-p-horizontal_xx-small">→</span>
+                                        <span class={c.theme}>{c.after}</span>
+                                        <span class="slds-text-color_weak slds-p-left_x-small"
+                                            >{c.outcome}</span
+                                        >
+                                    </div>
+                                    <p class="slds-text-body_small slds-text-color_weak">
+                                        {c.occurred}
+                                    </p>
+                                    <template if:true={c.snippet}>
+                                        <p class="aao-snippet slds-text-body_small">
+                                            “{c.snippet}”
+                                        </p>
+                                    </template>
+                                </div>
+                            </template>
+                            <template if:false={snapshot.claims.length}>
+                                <p class="slds-text-body_small slds-text-color_weak">
+                                    Nothing has been established yet.
+                                </p>
+                            </template>
+                            <p class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">
+                                Ordered by when the evidence happened, not by when we
+                                processed it. Never edited.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 4 · ANSWERS -->
+                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-3 slds-p-bottom_small">
+                        <div class="slds-box slds-box_x-small aao-panel">
+                            <h3 class="slds-text-title_caps slds-m-bottom_x-small">
+                                4 · Answers
+                            </h3>
+                            <template for:each={snapshot.answers} for:item="a">
+                                <div
+                                    key={a.id}
+                                    class="slds-border_bottom slds-p-vertical_xx-small"
+                                >
+                                    <div class="slds-grid slds-grid_align-spread">
+                                        <span class="slds-text-body_small slds-truncate"
+                                            >{a.code} · {a.proposition}</span
+                                        >
+                                        <span class={a.theme}>{a.verdict}</span>
+                                    </div>
+                                    <p class="slds-text-body_small slds-text-color_weak">
+                                        covered {a.covered} · missing {a.missing}
+                                    </p>
+                                    <p class="slds-text-body_small slds-text-color_weak">
+                                        established by {a.establishedBy} · {a.publicationState}
+                                    </p>
+                                </div>
+                            </template>
+                            <template if:false={snapshot.answers.length}>
+                                <p class="slds-text-body_small slds-text-color_weak">
+                                    Nothing stands yet.
+                                </p>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- 5 · FLAGS -->
+                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-3 slds-p-bottom_small">
+                        <div class="slds-box slds-box_x-small aao-panel">
+                            <h3 class="slds-text-title_caps slds-m-bottom_x-small">
+                                5 · Flags
+                            </h3>
+                            <p class="slds-text-heading_medium">{snapshot.flags.count}</p>
+                            <p class="slds-text-body_small slds-text-color_weak">
+                                {snapshot.flags.sentence}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 6 · PROJECTION, off -->
+                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-3 slds-p-bottom_small">
+                        <div class="slds-box slds-box_x-small aao-panel aao-off">
+                            <div class="slds-grid slds-grid_align-spread">
+                                <h3 class="slds-text-title_caps">6 · Projection</h3>
+                                <span class="slds-badge">{snapshot.projection.label}</span>
+                            </div>
+                            <p class="slds-text-body_small slds-m-top_x-small">
+                                {snapshot.projection.sentence}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+
+        <footer class="slds-card__footer">
+            <p class="slds-text-body_small slds-text-color_weak">
+                Internal diagnostic view. The seller Surface is a later and different thing:
+                one comprehensive current-state record per opportunity per seller, derived,
+                with no candidates on it.
+            </p>
+        </footer>
+    </article>
+</template>

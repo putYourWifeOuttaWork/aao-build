@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  A standalone Opportunity record page carrying the internal pipeline view.
+
+  Deployed but ASSIGNED TO NOTHING, which means it changes no user's experience until
+  somebody activates it. That is deliberate: the org's own Opportunity_Record_Page is 98KB
+  of customer customisation and hand-patching it to add one tab is not a trade worth making
+  the day before a meeting. Activate this page, or add the aaoPipelineView component as a
+  new tab on whichever record page you actually use — both take about a minute in App
+  Builder, and neither risks the page everybody else is looking at.
+-->
+<FlexiPage xmlns="http://soap.sforce.com/2006/04/metadata">
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentName>force:highlightsPanel</componentName>
+                <identifier>force_highlightsPanel</identifier>
+            </componentInstance>
+        </itemInstances>
+        <name>header</name>
+        <type>Region</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentName>force:detailPanel</componentName>
+                <identifier>force_detailPanel</identifier>
+            </componentInstance>
+        </itemInstances>
+        <name>sidebar</name>
+        <type>Region</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentName>aaoPipelineView</componentName>
+                <identifier>aaoPipelineView1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <name>main</name>
+        <type>Region</type>
+    </flexiPageRegions>
+    <masterLabel>AAO Pipeline (internal)</masterLabel>
+    <sobjectType>Opportunity</sobjectType>
+    <template>
+        <name>flexipage:recordHomeTemplateDesktop</name>
+    </template>
+    <type>RecordPage</type>
+</FlexiPage>

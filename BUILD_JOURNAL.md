@@ -774,3 +774,105 @@ absences, and they are ordered by how badly they would mislead someone.
 16. **The field tables mark five fields case-sensitive that cannot be.**
 17. **Write-blocking customer constraints** — live example still sitting in this org.
 18. **The four project documents are still behind.**
+
+---
+
+## 2026-07-31 · session 5
+
+**Did.** Built the AAO Pipeline (internal) view: one LWC, one Apex controller, one snapshot
+per call. Deployed a standalone Opportunity record page carrying it, **assigned to nothing**.
+88 AAO tests pass. **The component has not been seen rendering** — see Assumed.
+
+**Decided, and why.**
+
+- **One call, one snapshot, and all display formatting in Apex.** The template does no
+  arithmetic and no string building; even the badge class comes down finished, so there is
+  exactly one place where a verdict becomes a colour. A view that computed anything would be
+  a second implementation of the thing it is meant to be showing.
+
+- **Two cadences.** While an artifact has landed and nothing has adjudicated it, the poll is
+  2s and that row carries a spinner; otherwise 10s. The fast case is the only moment
+  something is about to change, and a demo screen that hammers an org at 2s forever is its
+  own kind of statement.
+
+- **The existing Opportunity record page was not touched.** `Opportunity_Record_Page` is
+  98KB of customer customisation, its tabs live in a facet keyed by a GUID, and hand-patching
+  it to add one tab the day before a meeting is not a trade worth making. Instead a new
+  `AAO_Pipeline_Internal` record page carries the component and is **assigned to nothing**,
+  so it changes no user's experience until somebody activates it. The retrieved copy of the
+  customer page was deleted from the repo rather than committed, so nothing can redeploy it
+  by accident.
+
+- **A missing record id throws rather than rendering an empty snapshot.** My first test
+  asserted this and failed, because the controller was returning an empty snapshot for a
+  null id. The test was right about the requirement and the code was wrong: an empty
+  snapshot renders as *nothing has arrived on this deal*, which is a claim about the
+  customer, when the truth would have been a claim about our own wiring. Now guarded.
+
+- **The empty states say why they are empty.** No flags reads *"nothing raises them yet — the
+  object and its law exist, the raise path does not. An empty list here is the honest state,
+  not a clean bill of health."* An empty deal reads *"that is a true statement about the deal,
+  not a loading state."* Both are asserted by test, because the sentence is the point.
+
+- **Projection is greyed and labelled `off`**, with the reason on it. A panel that is merely
+  absent invites the assumption that it works.
+
+- **Labelled AAO Pipeline (internal), and it says so twice.** In the card subtitle and in
+  the footer: this shows candidates, and candidates never appear on a seller surface. The
+  seller Surface is a later and different thing — one comprehensive current-state record per
+  opportunity per seller, derived, no citation, no actor, no precedence.
+
+**Read from the org.** All verbatim.
+
+The controller against the three real demo deals:
+
+> `VIEW AAO Demo - Live | sources=2 pending=0 | candidates latest=6 total=12 | claims=2 | answers=1 | flags=0 | projection=off`
+> `VIEW    claim — -> UNVERIFIED (Established) 15 Jun 2026 "The funding is approved."`
+> `VIEW    claim UNVERIFIED -> TRUE (Established) 26 Jun 2026 "It is in the current fiscal year, confirmed last Thursday."`
+> `VIEW    answer AAO_T1 = TRUE covered=e1, e2, e3 missing=— theme=slds-badge slds-theme_success`
+> `VIEW AAO Demo - Tungsten Rehearsal (seller said it) | sources=1 pending=0 | candidates latest=6 total=6 | claims=1 | answers=1 | flags=0 | projection=off`
+> `VIEW    claim — -> UNVERIFIED (Downgraded) 26 Jun 2026 "It is in the current fiscal year, confirmed last Thursday."`
+> `VIEW    answer AAO_T1 = UNVERIFIED covered=e1, e2, e3 missing=— theme=slds-badge slds-theme_warning`
+
+**That last pair is the screen worth pointing at.** Coverage complete — `covered=e1, e2, e3`,
+`missing=—` — and the verdict still `UNVERIFIED`, because the seller said the words. Every
+part was said and it still does not establish.
+
+First deploy of the controller failed on a reserved word, which is worth recording because it
+is not in most people's list:
+
+> `ApexClass AAO_PipelineViewController :: Identifier name is reserved: any`
+
+And the first record page failed on a component name that does not exist at this API version:
+
+> `We couldn't retrieve the design time component information for component flexipage:highlightsPanel`
+
+It is `force:highlightsPanel`.
+
+Full local suite after the view: `Tests Ran 107`, one failure, still the pre-existing
+`ConvertToOpportunityTest`.
+
+**Assumed, not verified.**
+
+- **The component has never been seen on screen.** This is the significant one. The deploy
+  compiles the LWC template and the record page validates the component reference, and the
+  controller is proven against real data — but nothing has rendered. The in-app browser is
+  blocked from this org's domain by policy and I did not route around it. Template-level
+  runtime faults would not have been caught by anything done here.
+- **Which Opportunity record page Matt's profile actually uses is still unknown.** Two exist
+  plus two LinkedIn ones. This is the same unknown as session 3's related lists.
+- **The 2s/10s cadence has never been observed switching**, because observing it needs the
+  component on screen with a pending source.
+
+**Owed.** Session 4's list stands unchanged; nothing on it was addressed. New items first.
+
+1. **Put the component on a page and look at it.** Either activate `AAO_Pipeline_Internal`,
+   or add `aaoPipelineView` as a new tab on whichever record page is actually in use. About
+   a minute in App Builder. **Until this is done the view is deployed, not demonstrated.**
+2. **Run sheet v1.1 stays Plan B, unchanged.** If the view is not solid an hour before the
+   meeting, demo on the related lists — which are already in place from session 3 and are
+   independent of everything built tonight — and ship the view afterwards. *Note: the run
+   sheet itself is not in this repo and I have not seen it; nothing here modifies it.*
+3. Everything in session 4's Owed list, unchanged and unaddressed — including the two real
+   defects it found: the artifact hash on the path label with a test defending it, and
+   `isFull()` never consulting the contract's element list.

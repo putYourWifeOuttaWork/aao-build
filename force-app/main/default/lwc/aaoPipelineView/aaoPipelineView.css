@@ -1,0 +1,19 @@
+/* The only rules here are the ones SLDS has no utility for. Everything else is SLDS. */
+
+.aao-flow {
+    letter-spacing: 0.02em;
+}
+
+/* Projection is off, and it has to look off rather than merely say so. */
+.aao-off {
+    opacity: 0.45;
+    filter: grayscale(100%);
+}
+
+.aao-snippet {
+    font-style: italic;
+}
+
+.aao-panel {
+    height: 100%;
+}

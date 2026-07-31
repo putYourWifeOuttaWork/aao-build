@@ -516,4 +516,8 @@
         <tab>AAO_Flag__c</tab>
         <visibility>Visible</visibility>
     </tabSettings>
+    <classAccesses>
+        <apexClass>AAO_PipelineViewController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
 </PermissionSet>

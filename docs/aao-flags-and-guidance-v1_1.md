@@ -1,6 +1,6 @@
 # AAO Flags and Guidance — topology and fields
 
-**v1.0 · 31 July 2026**
+**v1.1 · 1 August 2026** (Surface capture + nearly-clearable law added; Flag section unchanged)
 Companion to AAO Field Tables, which closes Source, Evidence Contract, Candidate, Answer, Claim and Claim Basis. **This file closes Flag and settles Guidance's topology.** Surfacing is deliberately last, per Matthew's ordering: objects and fields, then topology, then the read surface, then delivery, tracking, dismissal and efficacy.
 
 ---
@@ -86,6 +86,14 @@ Matthew proposed four types — dismissible, acknowledgeable, both, neither. **T
 **Persona-fit guidance exists from cold start onward.** The moment a persona ghost is seeded, the account's own contacts can be examined for who might fill it. That is a lookup against history and the CRM, not an establishment.
 
 ---
+
+## 2a · The Surface as the answer sheet · CAPTURED 1 Aug, design still scheduled last
+
+Matthew's ruling-in-waiting, recorded so its design inherits it: **the read surface and the reconciliation destination are one object.** One record per opportunity per seller: the what-matters-now snapshot (flags, guidance, statuses, which questions stand where) PLUS response fields where humans answer from any surface, headless or in-CRM — approve a yellow, acknowledge guidance, argue a red. Every gesture arrives pre-addressed (deal, flag, context) and **enters as evidence through the ordinary door**; our own trigger fires, which is what makes the express lane possible. On any underlying change the surface is superseded: a fresh snapshot generates, responses never accumulate against a stale picture, and the retired surface's responses have already been consumed as evidence.
+
+Two carried laws that bind the eventual design: guidance freezes, flag state reads live or regenerates on every flag change (stale advice is annoying; stale risk is dangerous); and nothing typed on a surface ever directly clears anything — it may only become evidence that clears things.
+
+**The nearly-clearable law (Matthew, 1 Aug):** a red whose clearance is one answer away — e.g., an Identification flag's resolution would release it — is surfaced proactively regardless of tier or value.
 
 ## 3 · Surfacing — deliberately last
 

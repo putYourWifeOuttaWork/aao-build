@@ -1,6 +1,8 @@
 # AAO Charter Design
 
-**v0.1 · 1 August 2026 · DRAFT — People charter open, first rulings landed**
+**v0.2 · 1 August 2026 · DRAFT — People charter open, self-report ruled, Identification ratified**
+
+**Changed in v0.2.** Self-report ruled: sentiment moves one rung conservatively; terminal rungs (Mentor, Enemy) are earned across multiple separate sources and lost the same way; no behavioral-pattern inference for support — stated sentiment and human input only; a human write watermarks the dimension forever (existing precedence law). The Identification flag is RATIFIED as the fifth type, its own thing: not Ratification (which asks permission for a known write), linked to whatever red its resolution would release. New surfacing law from Matthew: a red that is one answer away from clearing is surfaced proactively regardless of tier or value. PENDING ONE RULING: Source optional on Candidate and Claim, with the evidence-family law (words → Source required; state → Claim Basis rows required; both → both) — recommended, awaiting Matthew's word; the P route is blocked on it.
 
 Companion to the AAO Field Tables (objects) and the four project documents. This file does for the charters what the field tables did for the objects: one section per charter, every emission naming what may produce it and what checks it, rulings marked as rulings. The extraction (assessment/evidence) charter is live at 1.1.0 and its lessons feed this design.
 
@@ -56,11 +58,18 @@ Shadow → real Contact → map row. Promotion happens when identity completes: 
 
 Attendance is not evidence of position — a silent attendee establishes at most coverage. Roles are never inferred from job titles. Movement is ±1 from current state with a span; structural inference may exceed one rung only where structure compels it. Absence never establishes. Per-charter admission gates: on a town-hall call this charter abstains while insight proceeds. Cardinality guards on every creation path.
 
+### Self-report and the sentiment ladder · RULED 1 Aug
+
+The way a human would do it. **Clear, sustained sentiment on a call moves a person one rung, conservatively, never more than one per source-event** (the ±1 law already held). **Terminal rungs are sticky:** nobody reaches Mentor or Enemy on one call — entering an extreme requires the same signal across multiple separate sources, and leaving one requires the same. **No behavioral-pattern inference** ("how they behaved as a call-closure piece") to derive support — too much reading between lines; the inputs are stated sentiment on calls and human judgment, nothing else. A human setting the dimension **watermarks it forever**; the machine stops writing that field (existing precedence law, applied). Open for the build: the counting rule for "multiple separate sources" (distinct Source rows? distinct days?) — lands with the output schema.
+
+### The Identification flag · RATIFIED 1 Aug
+
+Fifth flag type, confirmed. Not Ratification (permission for a known write); this is missing knowledge. Where its answer would clear a red, the two are linked and **the red is surfaced proactively regardless of tier or value** — Matthew's nearly-clearable law: the cheapest red to clear is the one one answer away. First concrete priority rule the surfacing design owns.
+
 ### Open, next in line
 
-1. **Self-report:** does a person's own "I love this product" move their own Support, or is self-reported disposition weaker than observed behavior? (The politeness-inflation problem.)
-2. What this charter may do on Unsegmented sources, where no words can be attributed to anyone.
-3. Output schema (the JSON the charter emits), after the above close.
+1. What this charter may do on Unsegmented sources, where no words can be attributed to anyone.
+2. Output schema (the JSON the charter emits), after the above closes.
 
 ---
 

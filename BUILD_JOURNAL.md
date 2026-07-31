@@ -55,6 +55,12 @@ precise list of what executes and what is authored in the fixture, and it is les
 than the demo looks. The one-line version: *this is a working evidence ledger with no reader
 attached — not a working extraction pipeline.* Nothing in this build reads a transcript.
 
+**The internal pipeline view renders**, verified on screen in App Builder against real data,
+and the session-3 related lists are confirmed under the record page's **Related** tab. The
+one step not taken is adding an `AAO Pipeline` tab to the shared Opportunity record page —
+that needs a Save on 98KB of customer customisation, so it waits for a word.
+`AAO_Pipeline_Internal` is deployed and assigned to nothing.
+
 **Still not done, and it is the same gap as the first day:** the mini-rubric is written
 straight into `AAO_Evidence_Contract__c` and **discovery is skipped entirely**. The ALTF
 rubric objects were confirmed present and empty in this org (session 3), so the ground is
@@ -876,3 +882,66 @@ Full local suite after the view: `Tests Ran 107`, one failure, still the pre-exi
 3. Everything in session 4's Owed list, unchanged and unaddressed — including the two real
    defects it found: the artifact hash on the path label with a test defending it, and
    `isFull()` never consulting the contract's element list.
+
+---
+
+## 2026-07-31 · session 5 addendum · seen on screen
+
+**Corrects session 5's Assumed list, above.** That entry says *"the component has never been
+seen on screen"* and *"the in-app browser is blocked from this org's domain by policy"*. Both
+were true when written. Matt then opened the org in Chrome with the Claude extension, and
+both are now settled. The entry above stands as written; this is the correction.
+
+**The component renders, with real data.** Opened in Lightning App Builder against
+`AAO Demo - Tungsten Rehearsal (seller said it)`. Every panel drew, in flow order, left to
+right, two rows of three:
+
+> `AAO Pipeline (internal)` · `Read-only. Shows candidates, which never appear on a seller surface.` · `Refreshing every 10s · 06:27:45`
+> `SOURCES → CANDIDATES → CLAIMS → ANSWERS → FLAGS → PROJECTION`
+> `1 · SOURCES  dummy/transcript-two-wrong-s… [Adjudicated]  ECI · Attributed · 26 Jun 2026`
+> `2 · CANDIDATES  Latest pass · dummy/transcript-two-wrong-speaker  Abstained 5  Downgraded_Speaker_Rank 1  this pass 6  all passes 6`
+> `3 · CLAIMS  — → [UNVERIFIED] Downgraded  26 Jun 2026  "It is in the current fiscal year, confirmed last Thursday."`
+> `4 · ANSWERS  AAO_T1 · Budget Confirmed [UNVERIFIED]  covered e1, e2, e3 · missing — · established by MACHINE · Live`
+> `5 · FLAGS  0  No flags. Nothing raises them yet — the object and its law exist, the raise path does not…`
+> `6 · PROJECTION [off]` — greyed, with its reason on it
+
+The cadence label read `Refreshing every 10s`, correctly, because nothing was pending.
+
+**The screen worth pointing at is panel 4 beside panel 3.** `covered e1, e2, e3`,
+`missing —`, and the verdict still `UNVERIFIED`. Every part of the proposition was said and
+it does not establish, because the seller said it. That is the Gate 1 run-two regrade,
+rendered.
+
+**Session 3's related lists are also confirmed, and this was an open assumption too.** On
+`AAO Demo - Live`, under the record page's own **Related** tab:
+
+> `AAO Answers (1)   ANS-00000002  TRUE  MACHINE  6/26/2026, 8:00 AM`
+> `AAO Claims (2)    CLM-00000003  (blank) → UNVERIFIED  Established`
+> `                  CLM-00000004  UNVERIFIED → TRUE     Established`
+> `AAO Sources (2)   SRC-00000003  Attributed  ECI  6/15/2026, 8:00 AM`
+> `                  SRC-00000004  Attributed  ECI  6/26/2026, 8:00 AM`
+> `AAO Flags (0)`
+
+Claims and Sources are in ascending evidence-occurred order, which is the sort configured in
+session 3. **Plan B is real and working**, independently of anything built tonight.
+
+**Read from the org.** The active Opportunity record page carries a Lightning tabset —
+`Details | Related | Chatter` — so a new tab is a natural fit rather than a squeeze. The
+page-layout related lists surface under **Related**, not in the main body.
+
+**Assumed, not verified.**
+
+- **The 2s cadence and the row spinner have still not been observed.** Seeing them needs the
+  component on screen at the moment a source is landed-but-unadjudicated, which is a
+  ten-second window on the live deal. The 10s branch was observed; the 2s branch was not.
+- **Nothing was saved in App Builder.** The page was opened, read and navigated away from.
+
+**Owed.** Session 5's list, with item 1 narrowed.
+
+1. **Add the tab, or activate the page.** No longer "put it on a page and look at it" —
+   it has been looked at. What remains is the one change that touches the shared Opportunity
+   record page, and it was deliberately not made without a word from Matt: adding an
+   `AAO Pipeline` tab means a Save on a 98KB customer-customised page the day before a
+   meeting. `AAO_Pipeline_Internal` is deployed and assigned to nothing as the alternative,
+   and the Related tab works as the fallback.
+2. Everything in session 4's Owed list, unchanged and unaddressed.

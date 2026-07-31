@@ -273,7 +273,7 @@ private class AAO_ExtractTest {
         AAO_Candidate__c cand = [
             SELECT AAO_Element_Coverage__c, AAO_Proposed_Verdict__c, AAO_Charter_Version__c
             FROM AAO_Candidate__c
-            WHERE AAO_Source__c = :src.Id AND AAO_Outcome__c != 'Abstained'
+            WHERE AAO_Source__c = :src.Id AND AAO_Outcome__c NOT IN ('Abstained', 'Not_Returned')
             LIMIT 1
         ];
         AAO_Model.Coverage cov = AAO_Model.parseCoverage(cand.AAO_Element_Coverage__c);
@@ -343,7 +343,7 @@ private class AAO_ExtractTest {
         AAO_Candidate__c cand = [
             SELECT AAO_Element_Coverage__c, AAO_Spans__c
             FROM AAO_Candidate__c
-            WHERE AAO_Source__c = :src.Id AND AAO_Outcome__c != 'Abstained'
+            WHERE AAO_Source__c = :src.Id AND AAO_Outcome__c NOT IN ('Abstained', 'Not_Returned')
             LIMIT 1
         ];
         AAO_Model.Coverage cov = AAO_Model.parseCoverage(cand.AAO_Element_Coverage__c);
@@ -465,6 +465,25 @@ private class AAO_ExtractTest {
             ],
             'The reason is on the row, so the two cases are distinguishable after the fact. ' +
             'They were not on 31 July, which is why that run could not be diagnosed.'
+        );
+        System.assertEquals(
+            5,
+            [
+                SELECT COUNT()
+                FROM AAO_Candidate__c
+                WHERE AAO_Source__c = :src.Id AND AAO_Outcome__c = 'Not_Returned'
+            ],
+            'And the OUTCOME says it too, ratified session 10, so counting abstentions by ' +
+            'outcome is now the correct query rather than a documented trap.'
+        );
+        System.assertEquals(
+            1,
+            [
+                SELECT COUNT()
+                FROM AAO_Candidate__c
+                WHERE AAO_Source__c = :src.Id AND AAO_Outcome__c = 'Abstained'
+            ],
+            'Exactly the one genuine abstention.'
         );
     }
 
@@ -794,7 +813,7 @@ private class AAO_ExtractTest {
         AAO_Candidate__c cand = [
             SELECT AAO_Element_Coverage__c, AAO_Proposed_Verdict__c
             FROM AAO_Candidate__c
-            WHERE AAO_Source__c = :src.Id AND AAO_Outcome__c != 'Abstained'
+            WHERE AAO_Source__c = :src.Id AND AAO_Outcome__c NOT IN ('Abstained', 'Not_Returned')
             LIMIT 1
         ];
         AAO_Model.Coverage cov = AAO_Model.parseCoverage(cand.AAO_Element_Coverage__c);
@@ -931,7 +950,7 @@ private class AAO_ExtractTest {
         AAO_Candidate__c cand = [
             SELECT AAO_Element_Coverage__c
             FROM AAO_Candidate__c
-            WHERE AAO_Source__c = :src.Id AND AAO_Outcome__c != 'Abstained'
+            WHERE AAO_Source__c = :src.Id AND AAO_Outcome__c NOT IN ('Abstained', 'Not_Returned')
             LIMIT 1
         ];
         AAO_Model.Coverage cov = AAO_Model.parseCoverage(cand.AAO_Element_Coverage__c);
@@ -1111,7 +1130,7 @@ private class AAO_ExtractTest {
         AAO_Candidate__c cand = [
             SELECT AAO_Interpretation__c
             FROM AAO_Candidate__c
-            WHERE AAO_Source__c = :src.Id AND AAO_Outcome__c != 'Abstained'
+            WHERE AAO_Source__c = :src.Id AND AAO_Outcome__c NOT IN ('Abstained', 'Not_Returned')
             LIMIT 1
         ];
         System.assertEquals(

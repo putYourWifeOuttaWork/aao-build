@@ -84,7 +84,7 @@ transcript and never the first verdict, and its no overrides claimed coverage. O
 partial, and the run wrote `UNVERIFIED -> TRUE` with the first claim untouched, which is the
 staged ground truth. Graded two ways, `PROPOSALS 11/12` and `OUTCOMES 12/12`: the single
 proposal difference disappears at the outcome line, which is the correct reading of it. Read
-sessions 8 and 9 before quoting any of it.
+sessions 8, 9 and 10 before quoting any of it.
 
 **Session 7's defect is fixed. Rows written before it was are still in the org**, on
 `AAO Gate1 - Model Round Two`, deliberately, because the proof register cites them.
@@ -1522,4 +1522,62 @@ mini-rubric has no under-specified proposition, so nothing in it should produce 
    there are three reasons and one of them is not an abstention at all, that leniency hides
    more than it did.
 3. Everything on session 4's list, unchanged, still led by the artifact hash over the path
+   label and `isFull()` never consulting the element list.
+
+---
+
+## 2026-07-31 · session 10 · the trap removed rather than documented
+
+**Did.** Item 32. `AAO_Outcome__c` gains `Not_Returned`, ratified. **109 AAO tests, 109
+passing.** Item 33 acknowledged: no dedicated run, and no model calls were spent on this
+session at all. The new values will be written by Saturday's discovery pass.
+
+**The correction, stated as a correction.** Session 9 shipped `not_returned` as an abstention
+reason on a row whose outcome still said `Abstained`, and wrote a note in the field
+description explaining that counting abstentions by outcome would overcount. That note was
+the defect, not the mitigation. **The plausible query was the wrong query, and the schema was
+the thing making it wrong.** A field description cannot fix that: it can only warn whoever
+happens to read it, and the person writing `WHERE AAO_Outcome__c = 'Abstained'` at speed is
+precisely the person who will not.
+
+The two values now mean what a reader would guess.
+
+- `Abstained` is a judgment about evidence. The reader looked, and either nothing in the
+  artifact bore on the proposition or it could not resolve what it found.
+- `Not_Returned` is a fact about the charter. The reader never answered.
+
+**Nothing was backfilled and nothing needed to be.** `not_returned` had never reached a live
+row when this landed, so the ratification arrived before the first row that would have
+carried the wrong outcome. That is luck rather than planning, and it is worth noticing that
+session 9 came within one discovery pass of writing rows that would have needed correcting.
+
+**Counts updated.** `AAO_Gate1.compare()` prints `NOT RETURNED` as its own line, deliberately
+not folded into either grade, and a not-returned row renders as `(NOT RETURNED)` rather than
+as an abstention, because the staged truth expects the reader to have looked and said
+nothing and a row it never returned is a different failure. `AAO_Demo.status()` breaks the
+candidate total into `abstained` and `notReturned` so a silent charter failure cannot hide
+inside a total that looks healthy.
+
+**Read from the org (verbatim).** Both free, no callouts:
+
+```
+--- AAO Demo - Tungsten Rehearsal
+    candidates=12 (abstained=10 notReturned=0) sources=2
+--- AAO Demo - Tungsten Rehearsal (seller said it)
+    candidates=6 (abstained=5 notReturned=0) sources=1
+NOT RETURNED  0
+PROPOSALS  11/12
+OUTCOMES   12/12
+```
+
+**Assumed, not verified.** That `Not_Returned` renders sensibly on the LWC. The pipeline view
+groups candidates by outcome dynamically, so a new value appears as its own row without code
+changes, but no row carries it yet so nothing has rendered. It will first appear on Saturday.
+
+**Owed.**
+
+1. `compare()` still treats two abstentions as matching regardless of reason. `not_returned`
+   no longer hides there, so this is narrower than it was, but `nobody_said` and
+   `model_declined` still compare equal.
+2. Everything on session 4's list, unchanged, still led by the artifact hash over the path
    label and `isFull()` never consulting the element list.

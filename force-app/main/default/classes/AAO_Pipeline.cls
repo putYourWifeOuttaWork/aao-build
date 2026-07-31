@@ -600,7 +600,10 @@ public class AAO_Pipeline {
                     AAO_Account__c = src.AAO_Account__c,
                     AAO_Subject_Type__c = 'Opportunity',
                     AAO_Stage__c = 'Adjudicated',
-                    AAO_Outcome__c = 'Abstained',
+                    // A proposition the reader never answered is not an abstained row.
+                    // Ratified 31 July: the outcome says which of the two happened, so the
+                    // obvious query is the correct one.
+                    AAO_Outcome__c = reason == 'not_returned' ? 'Not_Returned' : 'Abstained',
                     // On the fixture path this is asserted, not determined: only something
                     // that actually read the transcript can tell the three reasons apart,
                     // and the fixture reads nothing.

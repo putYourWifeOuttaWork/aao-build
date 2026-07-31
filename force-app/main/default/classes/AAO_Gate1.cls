@@ -346,6 +346,12 @@ public class AAO_Gate1 {
                 if (actual == null) {
                     gotVerdict = '(no row)';
                     gotCovered = '-';
+                } else if (actual.AAO_Outcome__c == 'Not_Returned') {
+                    // Deliberately does NOT read as an abstention. The staged truth expects
+                    // the reader to have looked and said nothing; a row it never returned
+                    // is a different failure and the grade should show it as one.
+                    gotVerdict = '(NOT RETURNED)';
+                    gotCovered = '-';
                 } else if (actual.AAO_Outcome__c == 'Abstained') {
                     gotVerdict = '(abstain:' + actual.AAO_Abstention_Reason__c + ')';
                     gotCovered = '-';
@@ -449,7 +455,19 @@ public class AAO_Gate1 {
             );
         }
 
+        Integer notReturned = [
+            SELECT COUNT()
+            FROM AAO_Candidate__c
+            WHERE AAO_Opportunity__c = :oppId AND AAO_Outcome__c = 'Not_Returned'
+        ];
+
         out.add('');
+        out.add(
+            'NOT RETURNED  ' +
+            notReturned +
+            '   propositions the reader never answered. A charter-quality number, ' +
+            'deliberately not folded into anything above.'
+        );
         out.add(
             'PROPOSALS  ' +
             agree +

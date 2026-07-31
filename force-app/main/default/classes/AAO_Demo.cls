@@ -339,6 +339,19 @@ public class AAO_Demo {
             out.add(
                 '    candidates=' +
                 [SELECT COUNT() FROM AAO_Candidate__c WHERE AAO_Opportunity__c = :o.Id] +
+                ' (abstained=' +
+                [
+                    SELECT COUNT()
+                    FROM AAO_Candidate__c
+                    WHERE AAO_Opportunity__c = :o.Id AND AAO_Outcome__c = 'Abstained'
+                ] +
+                ' notReturned=' +
+                [
+                    SELECT COUNT()
+                    FROM AAO_Candidate__c
+                    WHERE AAO_Opportunity__c = :o.Id AND AAO_Outcome__c = 'Not_Returned'
+                ] +
+                ')' +
                 ' sources=' +
                 [SELECT COUNT() FROM AAO_Source__c WHERE AAO_Opportunity__c = :o.Id]
             );

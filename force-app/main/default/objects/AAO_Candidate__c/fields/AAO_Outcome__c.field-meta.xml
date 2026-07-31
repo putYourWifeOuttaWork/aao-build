@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+<!--
+  Not_Returned added 31 July, session 10, ratified.
+
+  A row the model never reported is not an abstained row. It was carrying Outcome =
+  Abstained with Abstention_Reason = not_returned, and the field description explained that
+  counting abstentions by outcome would overcount. That is documenting a trap rather than
+  removing one: the plausible query was the wrong query, and the schema was the thing making
+  it wrong. Now the plausible reading is the true one.
+
+  Abstained still means a judgment about evidence: the reader looked and either found
+  nothing bearing on the proposition or could not resolve what it found. Not_Returned means
+  the reader never answered, which is a fact about the charter.
+
+  Nothing was backfilled, and nothing needed to be: not_returned had never been written to a
+  live row when this landed.
+-->
     <fullName>AAO_Outcome__c</fullName>
     <description>Written by: Whichever step ended it. Read by: What happened there.</description>
     <label>Outcome</label>
@@ -58,6 +74,11 @@
                 <fullName>Abstained</fullName>
                 <default>false</default>
                 <label>Abstained</label>
+            </value>
+            <value>
+                <fullName>Not_Returned</fullName>
+                <default>false</default>
+                <label>Not_Returned</label>
             </value>
         </valueSetDefinition>
     </valueSet>

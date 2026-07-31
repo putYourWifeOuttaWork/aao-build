@@ -19,14 +19,13 @@
   exactly what made the 31 July pass-one result impossible to diagnose after the fact.
   Ruled: backfill nothing, the enum starts clean, old rows keep what they were written with.
 
-  KNOWN GAP, recorded rather than quietly worked around. AAO_Outcome__c has no value meaning
-  "the reader did not report this", so a not_returned row still carries Outcome = Abstained.
-  Any query counting abstentions by outcome therefore overcounts, and the correct query
-  filters on this field. Adding a value to that picklist changes a CLOSED table and needs
-  ratifying.
+  CLOSED, session 10. That gap is gone. AAO_Outcome__c gained Not_Returned by ratification,
+  so a not_returned row no longer carries Outcome = Abstained and counting abstentions by
+  outcome no longer overcounts. The previous note here explained how to avoid a trap; the
+  trap was removed instead.
 -->
     <fullName>AAO_Abstention_Reason__c</fullName>
-    <description>Written by: Extraction. Read by: the abstention-rate detector, which must exclude not_returned because that value is a charter-quality signal and not a judgment about evidence. model_missed is retired and kept only so pre-split rows stay valid.</description>
+    <description>Written by: Extraction. Read by: the abstention-rate detector. not_returned is a charter-quality signal rather than a judgment about evidence, and it carries Outcome = Not_Returned so it falls out of an abstention count naturally. model_missed is retired and kept only so pre-split rows stay valid.</description>
     <label>Abstention Reason</label>
     <type>Picklist</type>
     <required>false</required>

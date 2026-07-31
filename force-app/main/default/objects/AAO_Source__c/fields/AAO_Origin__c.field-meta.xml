@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Origin__c</fullName>
+    <description>Written by: Collector. Read by: Channel routing; gate variant.</description>
+    <label>Origin</label>
+    <type>Picklist</type>
+    <required>false</required>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>ECI</fullName>
+                <default>false</default>
+                <label>ECI</label>
+            </value>
+            <value>
+                <fullName>ingest</fullName>
+                <default>false</default>
+                <label>ingest</label>
+            </value>
+            <value>
+                <fullName>note</fullName>
+                <default>false</default>
+                <label>note</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

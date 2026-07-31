@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Abstention_Reason__c</fullName>
+    <description>Written by: Extraction. Read by: The abstention-rate detector.</description>
+    <label>Abstention Reason</label>
+    <type>Picklist</type>
+    <required>false</required>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>model_missed</fullName>
+                <default>false</default>
+                <label>model_missed</label>
+            </value>
+            <value>
+                <fullName>nobody_said</fullName>
+                <default>false</default>
+                <label>nobody_said</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

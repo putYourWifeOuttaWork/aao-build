@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Proposition_Code__c</fullName>
+    <description>Written by: Rubric discovery. Read by: Display only. Never identity.</description>
+    <label>Proposition Code</label>
+    <type>Text</type>
+    <length>40</length>
+    <caseSensitive>false</caseSensitive>
+    <unique>false</unique>
+    <externalId>false</externalId>
+    <required>false</required>
+</CustomField>

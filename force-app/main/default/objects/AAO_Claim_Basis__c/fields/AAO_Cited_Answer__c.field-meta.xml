@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Cited_Answer__c</fullName>
+    <description>Written by: Commit. Read by: The live record. Traversal, and the current-state half of the subquery.</description>
+    <label>Cited Answer</label>
+    <type>Lookup</type>
+    <referenceTo>AAO_Answer__c</referenceTo>
+    <relationshipName>AAO_Cited_By</relationshipName>
+    <relationshipLabel>AAO Cited By</relationshipLabel>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <required>false</required>
+</CustomField>

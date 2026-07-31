@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>What a claim rests on, beyond its own quotes. Half frozen, half live. It records what was cited, not what was available.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <label>AAO Claim Basis</label>
+    <nameField>
+        <displayFormat>CB-{00000000}</displayFormat>
+        <label>AAO Claim Basis Name</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>AAO Claim Bases</pluralLabel>
+    <sharingModel>ControlledByParent</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

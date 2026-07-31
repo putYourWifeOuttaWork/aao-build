@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Per proposition, per version of its text. Rule data, derived at runtime from the customer's methodology, versioned, never deleted.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <label>AAO Evidence Contract</label>
+    <nameField>
+        <displayFormat>EC-{00000000}</displayFormat>
+        <label>AAO Evidence Contract Name</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>AAO Evidence Contracts</pluralLabel>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Internal_Person__c</fullName>
+    <description>Written by: Commit, resolved from participants rather than assumed from the deal owner. Read by: Key four. Opens the seller-to-buyer grain, which is where relationship standing lives. A grain not recorded cannot be declared later without reprocessing the corpus.</description>
+    <label>Internal Person</label>
+    <type>Lookup</type>
+    <referenceTo>User</referenceTo>
+    <relationshipName>AAO_Claim_Internal_People</relationshipName>
+    <relationshipLabel>AAO Claim Internal People</relationshipLabel>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <required>false</required>
+</CustomField>

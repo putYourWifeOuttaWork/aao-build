@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Spans__c</fullName>
+    <description>JSON, each with source ref, part index and locator. Frozen. Written by: Commit. Read by: This claim quotes.</description>
+    <label>Spans</label>
+    <type>LongTextArea</type>
+    <length>32768</length>
+    <visibleLines>6</visibleLines>
+</CustomField>

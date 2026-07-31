@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Scope_Key__c</fullName>
+    <description>Written by: AAO_SourceTrigger via AAO_ScopeKey, frozen composer, ScopeId + ArtifactSHA + PartIndex. Read by: Dedup target. DUPLICATE_VALUE is a merge path.</description>
+    <label>Scope Key</label>
+    <type>Text</type>
+    <length>101</length>
+    <caseSensitive>true</caseSensitive>
+    <unique>true</unique>
+    <externalId>true</externalId>
+    <required>false</required>
+</CustomField>

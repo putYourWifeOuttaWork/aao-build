@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Speaker_Requirement__c</fullName>
+    <description>Written by: Element resolution. Read by: Who must be the source of the span carrying the assertion. Not who may appear in the set.</description>
+    <label>Speaker Requirement</label>
+    <type>Picklist</type>
+    <required>true</required>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Seller</fullName>
+                <default>false</default>
+                <label>Seller</label>
+            </value>
+            <value>
+                <fullName>Any_Participant</fullName>
+                <default>false</default>
+                <label>Any_Participant</label>
+            </value>
+            <value>
+                <fullName>Buyer_Side</fullName>
+                <default>false</default>
+                <label>Buyer_Side</label>
+            </value>
+            <value>
+                <fullName>Decision_Maker_Or_Influencer</fullName>
+                <default>false</default>
+                <label>Decision_Maker_Or_Influencer</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

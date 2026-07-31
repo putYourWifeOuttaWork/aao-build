@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Rubric_Version__c</fullName>
+    <description>Written by: Commit. Read by: Which rules produced this. Rubric version is an attribute, never identity.</description>
+    <label>Rubric Version</label>
+    <type>Text</type>
+    <length>20</length>
+    <caseSensitive>false</caseSensitive>
+    <unique>false</unique>
+    <externalId>false</externalId>
+    <required>false</required>
+</CustomField>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Established_By__c</fullName>
+    <description>Written by: Commit. Read by: A write is MACHINE only if it carries a charter stamp. Everything else is HUMAN, because misreading a machine write as human costs one overwrite and misreading a human write as machine destroys a person judgment.</description>
+    <label>Established By</label>
+    <type>Picklist</type>
+    <required>true</required>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>MACHINE</fullName>
+                <default>false</default>
+                <label>MACHINE</label>
+            </value>
+            <value>
+                <fullName>HUMAN</fullName>
+                <default>false</default>
+                <label>HUMAN</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

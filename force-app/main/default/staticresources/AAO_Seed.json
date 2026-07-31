@@ -1,0 +1,330 @@
+{
+  "v": 1,
+  "note": "The mini-rubric and the dummy transcripts. FROZEN once written: a transcript edited after a span was verified against it breaks the citation chain, which is the exact failure immutability exists to prevent. Spans are given as quotes, never as offsets, and AAO_Seed resolves them against the composed normalized text, so a fixture and the verifier cannot disagree about bytes.",
+  "internalDomains": ["altify.example"],
+
+  "people": [
+    {
+      "key": "dana",
+      "display": "Dana Ruiz",
+      "title": "VP Operations",
+      "email": "dana.ruiz@northwind.example",
+      "mapRole": "Decision Maker"
+    },
+    {
+      "key": "priya",
+      "display": "Priya Shah",
+      "title": "Account Executive",
+      "email": "priya.shah@altify.example",
+      "mapRole": null
+    }
+  ],
+
+  "rubric": [
+    {
+      "code": "AAO_T1",
+      "short": "Budget Confirmed",
+      "proposition": "The customer's decision maker has confirmed that budget is secured for this initiative in the current fiscal year.",
+      "guidance": "Budget is confirmed when a decision maker states that funds are approved, that they are allocated to this initiative specifically, and that they are available in the current fiscal year.",
+      "route": "E",
+      "elements": [
+        { "id": "e1", "text": "funds are approved" },
+        { "id": "e2", "text": "allocated to this initiative specifically" },
+        { "id": "e3", "text": "available in the current fiscal year" }
+      ],
+      "elementsBasis": "Authored",
+      "speakerRequirement": "Decision_Maker_Or_Influencer",
+      "decayClass": "Event",
+      "gating": true,
+      "solicit": false,
+      "perPersonSource": null,
+      "requiresRatification": false,
+      "contractState": "Ratified",
+      "why": "The guidance text names all three parts, so element resolution is a read rather than an inference and Elements_Basis is Authored. That is the path we want to be the main path."
+    },
+    {
+      "code": "AAO_T2",
+      "short": "Decision Team Identified",
+      "proposition": "A decision maker for this initiative has been identified on the relationship map.",
+      "guidance": "This is satisfied when at least one person on the relationship map carries the buying role of decision maker.",
+      "route": "P",
+      "elements": [
+        { "id": "e1", "text": "at least one mapped decision maker exists" }
+      ],
+      "elementsBasis": "Authored",
+      "speakerRequirement": "Any_Participant",
+      "decayClass": "Standing",
+      "gating": true,
+      "solicit": false,
+      "perPersonSource": null,
+      "requiresRatification": false,
+      "contractState": "Ratified",
+      "why": "Route P: a predicate over map state, no model. Exercises the route that must never call a charter."
+    },
+    {
+      "code": "AAO_T3",
+      "short": "Competitive Position Understood",
+      "proposition": "The customer has told us who else they are considering and what they value about them.",
+      "guidance": "Satisfied when a buyer-side participant names an alternative under consideration and states what that alternative offers them.",
+      "route": "C",
+      "elements": [
+        { "id": "e1", "text": "an alternative is named" },
+        { "id": "e2", "text": "what the alternative offers them is stated" }
+      ],
+      "elementsBasis": "Authored",
+      "speakerRequirement": "Buyer_Side",
+      "decayClass": "Decaying",
+      "gating": false,
+      "solicit": true,
+      "perPersonSource": null,
+      "requiresRatification": false,
+      "contractState": "Ratified",
+      "why": "Route C: a charter reading transcript plus committed state."
+    },
+    {
+      "code": "AAO_T4",
+      "short": "Success Criteria Captured Per Decision Maker",
+      "proposition": "Each mapped decision maker has stated what success looks like for them personally.",
+      "guidance": "For each person on the relationship map carrying the buying role of decision maker, satisfied when that person states a measurable outcome they are accountable for and a timeframe for it.",
+      "route": "C",
+      "elements": [
+        { "id": "e1", "text": "a measurable outcome they are accountable for" },
+        { "id": "e2", "text": "a timeframe for it" }
+      ],
+      "elementsBasis": "Authored",
+      "speakerRequirement": "Decision_Maker_Or_Influencer",
+      "decayClass": "Standing",
+      "gating": false,
+      "solicit": true,
+      "perPersonSource": "RelationshipMap.DecisionMakers",
+      "requiresRatification": false,
+      "contractState": "Ratified",
+      "why": "Per_Person_Source populated, so the per-person count and the empty-set guard are exercised. Counting people needs a pointer, not a structure."
+    },
+    {
+      "code": "AAO_T5",
+      "short": "Implementation Timeline Agreed",
+      "proposition": "The customer and the seller have agreed an implementation timeline.",
+      "guidance": "Satisfied when both sides have agreed when the work would start and when it would be live.",
+      "route": "E",
+      "elements": [
+        { "id": "e1", "text": "an agreed start" },
+        { "id": "e2", "text": "an agreed go-live" }
+      ],
+      "elementsBasis": "Inferred_Pending",
+      "speakerRequirement": "Any_Participant",
+      "decayClass": "Event",
+      "gating": false,
+      "solicit": true,
+      "perPersonSource": null,
+      "requiresRatification": true,
+      "contractState": "Awaiting_Ratification",
+      "why": "Elements_Basis is deliberately Inferred_Pending: the guidance says 'both sides have agreed when the work would start and when it would be live' without naming its parts as parts, so the decomposition is proposed rather than read. Exercises the ratification path."
+    },
+    {
+      "code": "AAO_T6",
+      "short": "Reference Customer Discussed",
+      "proposition": "A relevant reference customer has been discussed with the buying group.",
+      "guidance": "Satisfied when a comparable customer is named to a buyer-side participant.",
+      "route": "E",
+      "elements": [
+        { "id": "e1", "text": "a comparable customer is named" },
+        { "id": "e2", "text": "it was said to a buyer-side participant" }
+      ],
+      "elementsBasis": "Authored",
+      "speakerRequirement": "Any_Participant",
+      "decayClass": "Standing",
+      "gating": false,
+      "solicit": false,
+      "perPersonSource": null,
+      "requiresRatification": false,
+      "contractState": "Ratified",
+      "why": "Non-gating, so day-one red is not the only behaviour tested."
+    }
+  ],
+
+  "sources": [
+    {
+      "code": "T1SRC",
+      "deal": "main",
+      "diarization": "Attributed",
+      "origin": "ECI",
+      "occurred": "2026-06-15T15:00:00Z",
+      "sourceRef": "dummy/transcript-one",
+      "durationSeconds": 1800,
+      "turns": [
+        { "speaker": "priya", "text": "So on the money side, where does this stand?" },
+        {
+          "speaker": "dana",
+          "text": "The funding is approved. It came out of the operations modernisation pot, so it is earmarked for this project specifically, not a general pool."
+        },
+        {
+          "speaker": "priya",
+          "text": "That is helpful. And is that this year's money or next?"
+        },
+        {
+          "speaker": "dana",
+          "text": "That I cannot tell you yet. Finance is still working through the calendar."
+        }
+      ]
+    },
+    {
+      "code": "T2SRC",
+      "deal": "main",
+      "diarization": "Attributed",
+      "origin": "ECI",
+      "occurred": "2026-06-26T15:00:00Z",
+      "sourceRef": "dummy/transcript-two",
+      "durationSeconds": 1200,
+      "turns": [
+        { "speaker": "priya", "text": "Did finance land on the timing?" },
+        {
+          "speaker": "dana",
+          "text": "They did. It is in the current fiscal year, confirmed last Thursday. The budget is approved and sitting against this initiative, so we are clear to proceed this year."
+        }
+      ]
+    },
+    {
+      "code": "NEGSRC",
+      "deal": "negative",
+      "diarization": "Attributed",
+      "origin": "ECI",
+      "occurred": "2026-06-26T15:00:00Z",
+      "sourceRef": "dummy/transcript-two-wrong-speaker",
+      "durationSeconds": 1200,
+      "turns": [
+        { "speaker": "dana", "text": "Did finance land on the timing?" },
+        {
+          "speaker": "priya",
+          "text": "They did. It is in the current fiscal year, confirmed last Thursday. The budget is approved and sitting against this initiative, so we are clear to proceed this year."
+        }
+      ]
+    },
+    {
+      "code": "UNSEGSRC",
+      "deal": "unsegmented",
+      "diarization": "Unsegmented",
+      "origin": "note",
+      "occurred": "2026-06-26T15:00:00Z",
+      "sourceRef": "dummy/notion-page",
+      "unsegmentedText": "Operations modernisation - working notes\nBudget: approved, allocated to this initiative, current fiscal year confirmed.\nNext step: schedule the technical review with the platform team."
+    }
+  ],
+
+  "candidates": [
+    {
+      "code": "C1",
+      "deal": "main",
+      "sourceCode": "T1SRC",
+      "contractCode": "AAO_T1",
+      "subjectType": "Opportunity",
+      "proposedVerdict": "TRUE",
+      "covered": ["e1", "e2"],
+      "missing": ["e3"],
+      "charter": "AAO_Extract_Evidence",
+      "charterVersion": "0.1.0",
+      "spans": [
+        {
+          "sourceCode": "T1SRC",
+          "element": "e1",
+          "speaker": "dana",
+          "quote": "The funding is approved."
+        },
+        {
+          "sourceCode": "T1SRC",
+          "element": "e2",
+          "speaker": "dana",
+          "quote": "it is earmarked for this project specifically, not a general pool."
+        }
+      ],
+      "expect": "Partial coverage, so the answer is written UNVERIFIED carrying the spans that exist. Dana is the mapped decision maker, so the speaker requirement is satisfied."
+    },
+    {
+      "code": "C2",
+      "deal": "main",
+      "sourceCode": "T2SRC",
+      "contractCode": "AAO_T1",
+      "subjectType": "Opportunity",
+      "proposedVerdict": "TRUE",
+      "covered": ["e1", "e2", "e3"],
+      "missing": [],
+      "charter": "AAO_Extract_Evidence",
+      "charterVersion": "0.1.0",
+      "spans": [
+        {
+          "sourceCode": "T2SRC",
+          "element": "e3",
+          "speaker": "dana",
+          "quote": "It is in the current fiscal year, confirmed last Thursday."
+        },
+        {
+          "sourceCode": "T2SRC",
+          "element": "e1",
+          "speaker": "dana",
+          "quote": "The budget is approved"
+        },
+        {
+          "sourceCode": "T2SRC",
+          "element": "e2",
+          "speaker": "dana",
+          "quote": "sitting against this initiative"
+        }
+      ],
+      "expect": "Coverage completes, so the answer flips to TRUE carrying spans from both sources. A second claim, verdict before UNVERIFIED, verdict after TRUE. The first claim is untouched."
+    },
+    {
+      "code": "CNEG",
+      "deal": "negative",
+      "sourceCode": "NEGSRC",
+      "contractCode": "AAO_T1",
+      "subjectType": "Opportunity",
+      "proposedVerdict": "TRUE",
+      "covered": ["e1", "e2", "e3"],
+      "missing": [],
+      "charter": "AAO_Extract_Evidence",
+      "charterVersion": "0.1.0",
+      "spans": [
+        {
+          "sourceCode": "NEGSRC",
+          "element": "e3",
+          "speaker": "priya",
+          "quote": "It is in the current fiscal year, confirmed last Thursday."
+        },
+        {
+          "sourceCode": "NEGSRC",
+          "element": "e1",
+          "speaker": "priya",
+          "quote": "The budget is approved"
+        },
+        {
+          "sourceCode": "NEGSRC",
+          "element": "e2",
+          "speaker": "priya",
+          "quote": "sitting against this initiative"
+        }
+      ],
+      "expect": "The same words, spoken by the seller. The speaker requirement fails, so it writes UNVERIFIED with receipts rather than TRUE. This is the ruling that regraded Gate 1 run two."
+    },
+    {
+      "code": "CUNSEG",
+      "deal": "unsegmented",
+      "sourceCode": "UNSEGSRC",
+      "contractCode": "AAO_T1",
+      "subjectType": "Opportunity",
+      "proposedVerdict": "TRUE",
+      "covered": ["e1", "e2", "e3"],
+      "missing": [],
+      "charter": "AAO_Extract_Evidence",
+      "charterVersion": "0.1.0",
+      "spans": [
+        {
+          "sourceCode": "UNSEGSRC",
+          "element": "e1",
+          "speaker": null,
+          "quote": "approved, allocated to this initiative, current fiscal year confirmed."
+        }
+      ],
+      "expect": "Stored with Diarization Unsegmented. The span verifies as a contiguous substring of the whole document, and the artifact cannot satisfy the speaker requirement on AAO_T1 at all, so this writes UNVERIFIED."
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Contract_Key__c</fullName>
+    <description>Written by: AAO_EvidenceContractTrigger via AAO_ContractKey, frozen composer. Read by: Upsert target for discovery.</description>
+    <label>Contract Key</label>
+    <type>Text</type>
+    <length>83</length>
+    <caseSensitive>true</caseSensitive>
+    <unique>true</unique>
+    <externalId>true</externalId>
+    <required>false</required>
+</CustomField>

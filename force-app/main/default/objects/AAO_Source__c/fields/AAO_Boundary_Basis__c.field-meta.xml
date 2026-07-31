@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Boundary_Basis__c</fullName>
+    <description>Written by: Boundary detector. Read by: The labelling exercise; audit.</description>
+    <label>Boundary Basis</label>
+    <type>Text</type>
+    <length>40</length>
+    <caseSensitive>false</caseSensitive>
+    <unique>false</unique>
+    <externalId>false</externalId>
+    <required>false</required>
+</CustomField>

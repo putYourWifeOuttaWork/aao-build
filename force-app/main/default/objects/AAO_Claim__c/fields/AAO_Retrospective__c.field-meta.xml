@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Retrospective__c</fullName>
+    <description>Written by: Commit. Read by: Marks a record constructed from history, so nothing downstream reads a map built last Tuesday as evidence of what a seller knew in 2024.</description>
+    <label>Retrospective</label>
+    <type>Checkbox</type>
+    <defaultValue>false</defaultValue>
+</CustomField>

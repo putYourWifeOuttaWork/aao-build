@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Subject_Type__c</fullName>
+    <description>Written by: Commit. Read by: The discriminator. Without it, opportunity-plus-proposition and opportunity-plus-contact-plus-dimension rows are indistinguishable to any query that does not already know what it is hunting.</description>
+    <label>Subject Type</label>
+    <type>Picklist</type>
+    <required>true</required>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Opportunity</fullName>
+                <default>false</default>
+                <label>Opportunity</label>
+            </value>
+            <value>
+                <fullName>Contact</fullName>
+                <default>false</default>
+                <label>Contact</label>
+            </value>
+            <value>
+                <fullName>Shadow_Person</fullName>
+                <default>false</default>
+                <label>Shadow_Person</label>
+            </value>
+            <value>
+                <fullName>Insight_Card</fullName>
+                <default>false</default>
+                <label>Insight_Card</label>
+            </value>
+            <value>
+                <fullName>Qualifier</fullName>
+                <default>false</default>
+                <label>Qualifier</label>
+            </value>
+            <value>
+                <fullName>Decision_Criterion</fullName>
+                <default>false</default>
+                <label>Decision_Criterion</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

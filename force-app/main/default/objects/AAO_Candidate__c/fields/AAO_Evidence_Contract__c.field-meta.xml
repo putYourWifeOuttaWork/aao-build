@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Evidence_Contract__c</fullName>
+    <description>Written by: Extraction. Read by: Which question.</description>
+    <label>Evidence Contract</label>
+    <type>Lookup</type>
+    <referenceTo>AAO_Evidence_Contract__c</referenceTo>
+    <relationshipName>AAO_Candidates</relationshipName>
+    <relationshipLabel>AAO Candidates</relationshipLabel>
+    <deleteConstraint>Restrict</deleteConstraint>
+    <required>true</required>
+</CustomField>

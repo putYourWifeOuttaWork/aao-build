@@ -101,10 +101,13 @@ from the three demo deals:
 The passes are separate commands because Apex forbids a callout after DML in the same
 transaction, which is the same reason the rehearsal's passes are separate.
 
-**Still not done, and it is the same gap as the first day:** the mini-rubric is written
-straight into `AAO_Evidence_Contract__c` and **discovery is skipped entirely**. The ALTF
-rubric objects were confirmed present and empty in this org (session 3), so the ground is
-prepared, but discovery itself stays owed and was deliberately not started.
+**Discovery landed in session 12.** The accumulation exit test passes end to end against
+Evidence Contracts assembled by reading Altify's own rubric tables, with
+`AAO_Question_Record_Id__c` carrying a real `ALTF__Assessment_Question__c` id. Run it with
+`AAO_Discovery.exitTest()`. **Session 12's entry contains the discovery spec**: every ALTF
+field name and behaviour that had to be read from the org, verbatim, including the two things
+Altify does not carry at all, speaker requirement and route, which is why the per-org charter
+overlay is now measured rather than predicted.
 
 ---
 
@@ -1634,3 +1637,166 @@ every affected Source already has a claim, and `runForSource` short-circuits on
 clean org, and until that happens the three demo deals and the two Gate 1 deals hold hashes
 no current code path would produce. Deliberately not reseeded: the proof register cites those
 claim numbers.
+
+---
+
+## 2026-07-31 · session 12 · discovery, and the receipt that "works anywhere"
+
+**Did.** Item 35, all five parts. The accumulation exit test now passes against Evidence
+Contracts **the org produced**, not contracts we typed. **110 AAO tests, 110 passing.**
+
+```
+DISCOVERY EXIT TEST
+  AUTHORED  questions present 6
+  plan type "AAO Discovery" carries AAO_T1,AAO_T2,AAO_T3,AAO_T4,AAO_T5,AAO_T6
+  cold start: opportunity 006WD00000SjxtTYAR with an Altify Opportunity on it
+  DISCOVERED 6 contracts (5 Authored, 1 Inferred_Pending)
+    AAO_T1 questionRecordId=a0aWD00000QamjuYAB basis=Authored elements=3 state=Derived
+    AAO_T5 questionRecordId=a0aWD00000QamjyYAB basis=Inferred_Pending elements=1
+           state=Awaiting_Ratification
+  PASS T1SRC: verdict=UNVERIFIED claim=Established
+  PASS T2SRC: verdict=TRUE claim=Established
+  EXIT TEST PASSED against contracts the org produced.
+  REPLAY exact=true.
+```
+
+`AAO_Question_Record_Id__c` is an Altify record id at last. Session 1's seed carries the
+comment *"In production this is the rubric question's own record id. Here it is the fixture
+code, padded, because there is no rubric record to point at until discovery runs against the
+org."* That sentence is now false, which is the point of writing it down.
+
+---
+
+### 35e. THE DISCOVERY SPEC. Every ALTF name and behaviour read from the org, verbatim.
+
+This section is the deliverable. Everything below cost a query, and every line of it would
+have broken a plausible guess.
+
+**`ALTF__Assessment_Question__c` — the rubric row. Org-global.**
+
+| Field | Type | Note |
+|---|---|---|
+| `ALTF__Question__c` | picklist, **required, restricted** | **NOT the question.** Five values only: `Is the renewal at risk?`, `Is there an opportunity?`, `Can we compete?`, `Can we win?`, `Is it worth winning?` |
+| `ALTF__Criterion_Text__c` | Text(255), **required** | **This is the question text.** |
+| `ALTF__Help__c` | Textarea(1024) | The only field that can carry element decomposition. Authored path or nothing. |
+| `ALTF__Long_Question__c` | Textarea(1280) | Unused by us. |
+| `ALTF__AltifyId__c` | Text(100), **UNIQUE** | The natural external key. Proven unique by `DUPLICATE_VALUE, duplicate value found: ALTF__AltifyId__c duplicates value on record with id: a0aWD00000QamjuYAB`. A real discovery upserts on this. |
+| `ALTF__Order_Number__c` | Number, **required** | |
+| `ALTF__Active__c`, `ALTF__Mandatory__c`, `ALTF__Recommended__c`, `ALTF__Summary__c` | Checkbox | `Mandatory` is the closest thing to our gating flag. |
+| `ALTF__Yes_Score__c`, `ALTF__No_Score__c`, `ALTF__Unknown_Score__c`, `ALTF__Yes_Label__c`, `ALTF__No_Label__c` | | Scoring. We never score. |
+| `ALTF__Support_Competitor_Answer__c` | Checkbox | |
+
+**It has no plan type lookup, no opportunity lookup, and no relationship to anything.** The
+question set is one flat list per org.
+
+**`ALTF__Opportunity_Plan_Type_List__c` — the plan-type chain. A custom setting, keyed by
+`Name`.**
+
+`ALTF__AssessmentQuestionIds__c`, **Text(255)**, and **its name is a lie**. It does not hold
+Salesforce ids. It holds Altify codes, comma delimited, verbatim from this org:
+
+```
+Cross Sell    TC_1,TC_2,TC_4,TC_5,TC_6,TC_7,TC_9,AC_1,TC_10,TC_11,TC_12,TC_14,TC_15,TC_16,TC_13,TC_18,TC_20
+Renewal       RC_1,RC_2,RC_3,RC_4,RC_5,RC_6,TC_6,TC_7,AC_1,TC_10,TC_14,RC_11,RC_13
+```
+
+Those codes join to `ALTF__Assessment_Question__c.ALTF__AltifyId__c`. **An implementation
+that split this on commas and queried by Id would find nothing and report an empty rubric.**
+The 255-character ceiling is a real bound on how many questions a plan type can carry:
+Cross Sell is already at 93.
+
+Also on it: `ALTF__Show_Assessment__c` (checkbox), the `ALTF__Show_FSM1__c` through
+`ALTF__Show_FSM10__c` flags, and per-plan-type custom tab configuration.
+
+**`ALTF__Opportunity_Manager_Settings__c` — a hierarchy custom setting, one org row here.**
+`ALTF__Opportunity_Plan_Type__c` is a **string**, not a lookup: the default plan type is
+named by text and joined to the list by `Name`.
+
+**`ALTF__Assessment_Answer__c` — their answer row.** `ALTF__Opportunity__c` (lookup),
+`ALTF__Assessment_Question__c` (lookup), `ALTF__Answer__c` picklist `Unknown` / `Yes` / `No`,
+`ALTF__CompositeKey__c`, `ALTF__Note__c`, `ALTF__NoteEntered__c`, `ALTF__AltifyId__c`.
+Three-valued, one row per opportunity per question. **This is the projection target when
+that phase arrives, and its answer vocabulary is not ours.**
+
+**`ALTF__Opportunity__c` — the Altify Opportunity, and the cold start.** It carries
+`ALTF__Opportunity__c`, a **required** lookup to the **standard** Opportunity. It does not
+exist until something creates it, and `ALTF__Assessment_Answer__c` points at **it**, never at
+the standard Opportunity. A deal with no Altify record is the cold-start condition and
+`AAO_Discovery.coldStart` is what resolves it.
+
+**The state of this org, which is the customer condition and not a broken sandbox.**
+`ALTF__Assessment_Question__c` held **zero rows**. The nine configured plan types list codes
+(`TC_1`, `RC_11`, `AC_1`) for questions that **do not exist here**, and
+`ALTF__Show_Assessment__c` is **false on all nine**. Config referencing a question set nobody
+loaded is the normal starting state.
+
+**WHAT ALTIFY DOES NOT CARRY, which matters more than what it does.**
+
+- **No speaker requirement.** Nowhere on the question, nowhere on the plan type. It cannot be
+  discovered because it does not exist to discover. Discovery writes `Any_Participant` and
+  the journal says so. **This is the per-org charter overlay the seed named as an open design
+  item, and discovery has just proved it is not optional.**
+- **No route.** Our `AAO_Route__c` is mapped from the five categories by a table in
+  `AAO_Discovery.ROUTE_BY_CATEGORY`. That mapping is **our convention, not Altify semantics**,
+  and it is stated in the class so nobody reads a route off a contract and believes the
+  customer authored it.
+- **No decay class, no solicit flag, no per-person source.** Defaulted.
+
+**Consequence, and it is the honest limit of tonight.** The seller-said-it downgrade
+**cannot be reproduced from org-derived contracts**, because the requirement that produces it
+is not in the org. The demo deals still show it; they run on the seeded rubric. Any claim
+that the speaker rule works "from the customer's own rubric" would be false until the overlay
+exists.
+
+---
+
+**Decided, and why.**
+
+- **A new plan type, `AAO Discovery`, rather than editing one of the nine.** Those are
+  customer configuration. Discovery reads the chain without touching them.
+- **One proposition authored WITHOUT an elements block, on purpose.** `AAO_T5` has no
+  `Elements:` section in its Help, so discovery has to reach `Inferred_Pending` honestly
+  rather than being handed `Authored` for everything. It came back
+  `basis=Inferred_Pending elements=1 state=Awaiting_Ratification`, which is the path a real
+  under-specified customer question takes.
+- **`AAO_Pipeline.contractsOverride` is a seam, not a second pipeline.** The whole claim is
+  that the SAME code reaches the same outcomes against a rubric it did not author. A parallel
+  discovery pipeline would have proved nothing.
+- **Text is carried verbatim.** `AAO_Proposition_Text__c` is `ALTF__Criterion_Text__c`
+  unmodified and `AAO_Guidance_Text__c` is `ALTF__Help__c` unmodified, because the content
+  hash covers them and an upstream edit has to surface as a new contract rather than as a
+  silent change of meaning.
+
+**Read from the org (verbatim), the failures worth keeping.**
+
+- `Discovery produced no contracts.` from a rubric that was sitting right there. The cause:
+  `WHERE ALTF__AltifyId__c LIKE 'AAO\_%'`. The underscore is a SOQL single-character
+  wildcard, escaping it inside an Apex string literal is not a documented escape, and **the
+  query failed by returning zero rows rather than erroring.** Replaced with
+  `WHERE ALTF__AltifyId__c IN :codes`. A silent-empty query is the worst failure mode in a
+  discovery pass, because an empty rubric looks exactly like a customer who has not
+  configured one.
+- `DUPLICATE_VALUE, duplicate value found: ALTF__AltifyId__c duplicates value on record with
+  id: a0aWD00000QamjuYAB` — which is how we learned the field is unique.
+
+**Assumed, not verified.**
+
+- That `ALTF__Show_Assessment__c = true` on our plan type makes the assessment visible in the
+  Altify UI. Set, never looked at on screen.
+- That the five categories map to routes the way `ROUTE_BY_CATEGORY` says. It is a convention
+  we invented tonight and no Altify document was consulted.
+- That a real customer rubric fits the `Elements:` convention in Help. Ours does because we
+  authored it. **A customer's Help text will not**, which is why `Inferred_Pending` exists and
+  why one proposition was deliberately routed through it.
+
+**Owed.**
+
+1. **The per-org charter overlay.** Speaker requirement and route have no home in Altify. This
+   is now measured rather than predicted.
+2. **Discovery reads one plan type by name.** Real orgs pick the plan type per opportunity;
+   `ALTF__Opportunity_Manager_Settings__c.ALTF__Opportunity_Plan_Type__c` is the org default
+   and there is presumably a per-opportunity selection not yet found.
+3. **Projection into `ALTF__Assessment_Answer__c` is untouched**, as ruled. Their vocabulary
+   is `Yes` / `No` / `Unknown` and ours is `TRUE` / `FALSE` / `UNVERIFIED`; the mapping is a
+   decision, not a translation.
+4. Everything on session 4's list that remains.

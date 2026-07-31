@@ -37,6 +37,16 @@ public class AAO_Pipeline {
     /** The fixture's version. The model path takes its version from custom metadata. */
     public static final String CHARTER_VERSION = '0.1.0';
 
+    /**
+     * Contracts to adjudicate against, when they did not come from the seed. Discovery
+     * sets this so the pipeline judges against contracts the ORG produced. Null means the
+     * seeded rubric, which is the demo path.
+     *
+     * A seam rather than a second pipeline: the point of discovery is that the SAME code
+     * reaches the same outcomes against a rubric it did not author.
+     */
+    public static Map<String, AAO_Evidence_Contract__c> contractsOverride;
+
     public static final String FROM_FIXTURE = 'fixture';
     public static final String FROM_MODEL = 'model';
 
@@ -217,7 +227,9 @@ public class AAO_Pipeline {
                     'if a proposal was authored for it.';
                 return o;
             }
-            contracts = AAO_Seed.ensureContracts(fixture);
+            contracts = contractsOverride == null
+                ? AAO_Seed.ensureContracts(fixture)
+                : contractsOverride;
             proposals = fromFixture(staged, src);
         }
 

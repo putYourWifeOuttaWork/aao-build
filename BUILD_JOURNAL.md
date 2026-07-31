@@ -40,7 +40,16 @@ sf apex run --target-org aossb2 --file /dev/stdin <<< "System.debug(AAO_Demo.sta
 `AAO_Demo.passOne()` · `AAO_Demo.passTwo()` · `AAO_Demo.passNegative()` ·
 `AAO_Demo.status()` · `AAO_Demo.purge()`.
 
-**Still not done, and it is the same gap as yesterday:** the mini-rubric is written
+**Evidence now arrives by event.** An after-insert on `AAO_Source__c` enqueues the same
+pipeline the rehearsal runs. `AAO Demo - Live` was driven one artifact at a time and the
+claims appeared asynchronously, without anybody asking for them.
+
+**Before describing this build to anyone, read session 4's stage inventory.** It is the
+precise list of what executes and what is authored in the fixture, and it is less flattering
+than the demo looks. The one-line version: *this is a working evidence ledger with no reader
+attached — not a working extraction pipeline.* Nothing in this build reads a transcript.
+
+**Still not done, and it is the same gap as the first day:** the mini-rubric is written
 straight into `AAO_Evidence_Contract__c` and **discovery is skipped entirely**. The ALTF
 rubric objects were confirmed present and empty in this org (session 3), so the ground is
 prepared, but discovery itself stays owed and was deliberately not started.
@@ -552,3 +561,210 @@ Marker check:
     example sitting in this org.
 12. **The four project documents are still behind.** `docs/aao-corrections-v1_0.md` is
     authoritative until they are bumped.
+
+---
+
+## 2026-07-31 · session 4
+
+**Did.** Built the live ingestion path: an after-insert on `AAO_Source__c` enqueues
+`AAO_IngestQueueable`, which calls the same `AAO_Pipeline.runForSource` the durable
+rehearsal calls. Extracted that pipeline out of `AAO_Demo` so there is one body and two
+entries. Added a third deal, `AAO Demo - Live`, seeded empty, and drove it one artifact at a
+time. Then audited this whole build, adversarially, for what actually executes versus what
+is authored in the fixture — the inventory below is the result and it is the most important
+thing in this entry.
+
+**Decided, and why.**
+
+- **The pipeline body was extracted, and the copy in `AAO_Demo` deleted.** Two entries
+  calling one function, not two functions that agree. The alternative would have made the
+  live path a demonstration of a second implementation.
+
+- **Proposals are staged in the fixture and found by artifact hash.** A trigger has a Source
+  and nothing else, so a proposal keyed by a fixture code would be unreachable from the async
+  entry. See the inventory for how little this actually proves.
+
+- **Adjudication is asynchronous; arrival is not.** Doing the work inline would put the whole
+  adjudication inside whatever transaction delivered the evidence, and a governor limit there
+  would roll back the *ingestion* and lose the artifact. Async means the artifact lands first
+  and is adjudicated second, which is the right order for something whose whole point is that
+  evidence is durable.
+
+- **The rehearsal keeps its synchronous entry.** `AAO_Ingest.AUTO` is off around
+  `AAO_Demo`'s inserts, because a demonstration of accumulation has to be deterministic about
+  which transcript landed first.
+
+- **A source with nothing staged for it writes nothing and says so** (`no_staged_proposal`).
+  Not an error. Until a charter runs, an artifact only becomes a claim if a proposal was
+  authored for it, and that is the honest shape of the gap.
+
+**Read from the org.** All verbatim.
+
+The live deal, driven by two separate `AAO_Live.ingest` calls with nothing else done by hand:
+
+> `--- AAO Demo - Live (006WD00000SjFfVYAV)`
+> `    job 707WD0000A4PJMpYQO Completed`
+> `    job 707WD0000A4PIlvYQG Completed`
+> `    source SRC-00000003 dummy/transcript-one occurred=2026-06-15`
+> `    source SRC-00000004 dummy/transcript-two occurred=2026-06-26`
+> `    answer ANS-00000002 AAO_T1 = TRUE by MACHINE coverage={"v":1,"missing":[],"covered":["e1","e2","e3"]}`
+> `    claim  CLM-00000003 null -> UNVERIFIED (Established) occurred=2026-06-15 recorded=2026-07-31 12:45:42`
+> `    claim  CLM-00000004 UNVERIFIED -> TRUE (Established) occurred=2026-06-26 recorded=2026-07-31 12:46:23`
+> `    candidates=12 sources=2 claims=2`
+
+Both jobs `Completed`; the claims were written by the org's own queue, 41 seconds apart.
+
+Replay, checked in the org across all three demo deals:
+
+> `REPLAY AAO Demo - Live | claims=2 | exact=true`
+> `REPLAY AAO Demo - Tungsten Rehearsal | claims=2 | exact=true`
+> `REPLAY AAO Demo - Tungsten Rehearsal (seller said it) | claims=1 | exact=true`
+
+Full local suite: `Tests Ran 102`, `Pass Rate 99%`, one failure and it is the pre-existing
+`ConvertToOpportunityTest`. All 83 AAO tests pass.
+
+**A defect the new trigger exposed in our own test suite, before anything else did.**
+`AAO_Seed.load()` inserts the four fixture Sources. With an after-insert enqueueing
+adjudication, the fixture loader began silently committing **all four artifacts** at
+`Test.stopTest()` — on deals the calling test had never asked about. Two assertions in
+`AAO_TriggerLawTest` failed on it:
+
+> `AAO_TriggerLawTest.commitDoesNotOverwriteAHumanAnswer Fail System.AssertException: Assertion Failed: The second pass wrote nothing.: Expected: 1, Actual: 3`
+
+Several other tests were passing while quietly polluted, which is worse. Fixed by making the
+fixture loader stage without adjudicating, and by scoping the org-wide `COUNT()` assertions
+to the deal under test. **The lesson is about after-insert triggers generally:** they change
+the meaning of every transaction that touches the object, including the ones written before
+the trigger existed.
+
+---
+
+### The stage inventory · what executed and what was fixture-supplied
+
+**This exists so the claim made to Toby is exact.** It was produced by four independent
+readers of this repo, each put through an adversarial pass instructed to refute every
+"executed" claim and to default to refuting when uncertain. Where reader and refuter
+disagreed, the refuter won. **I then re-verified the seven sharpest findings against the code
+myself**; all seven held, and two of them corrected claims I would otherwise have made in
+this journal.
+
+| Stage | Status | What actually happened |
+|---|---|---|
+| Artifact collection | **Fixture-supplied** | No connector, callout, file reader or poller exists anywhere in the repo. Every Source is built in Apex from `AAO_Seed.json`: origin, ref, duration, diarization and the words are all authored |
+| Delivery-as-event (async plumbing) | **Executed** | After-insert → `AAO_Ingest` → `AAO_IngestQueueable` → pipeline, with re-entrancy guards, queueable-limit checks and per-source try/catch. Real async delivery — over a payload the loader itself inserted |
+| Deal / account resolution | **Fixture-supplied** | Each source names its own deal as a literal. No domain match, no calendar correlation, no ambiguity handling |
+| Evidence-occurred clock | **Fixture-supplied** | ISO strings typed into the fixture. The "eleven days apart" is the difference between two literals. What *is* real is downstream: propagation, the forward-only max rule, immutability, and replay ordering on it rather than on processing time |
+| Artifact hashing | **Partly executed** | SHA-256 genuinely runs and no hex appears in the fixture. But `AAO_Artifact_SHA256__c` digests the path label `dummy/transcript-one`, not artifact bytes — and `AAO_SHA256__c`, the one true digest of stored text, is read by nothing |
+| Normalisation | **Fixture-supplied** | `compose()` is `speaker + tab + utterance` joined by newlines — a re-serialisation of the fixture's own turn array. No case folding, whitespace collapse, unicode normalisation or diarization inference. `AAO_NormalForm` says so in its own header |
+| Speaker roster | **Fixture-supplied** | Names, emails and buying roles copied verbatim and stamped identically onto every source. `contactId` is written and never read |
+| Rubric discovery (`ALTF__*`) | **Not built** | No Apex reads any `ALTF__*` object. Two field-meta files name "Rubric discovery" as their writer. It does not exist |
+| Evidence-contract derivation | **Fixture-supplied** | All fifteen contract fields are direct copies out of the fixture. The only executed code is the find-or-create query and `elements.size()` |
+| Element resolution | **Fixture-supplied** | Elements are hand-typed JSON. `AAO_Guidance_Text__c` is never parsed. Even `AAO_Elements_Basis__c` is itself authored |
+| Element-count validation | **Partly executed** | A real before-insert guard, proven by test — but the seeder sets the count from the same list it serialises, so it is tautological on every real record |
+| Extraction (verdict + quotes) | **Fixture-supplied** | Verdict, quotes, speakers and elements read verbatim. `CHARTER = 'AAO_Extract_Evidence'` is a literal stamped on rows, not an invocation. One real guarantee: `AAO_Seed.resolve` throws if an authored quote is absent from the text or ambiguous, so a fixture cannot cite words the artifact does not contain |
+| Proposal lookup by artifact hash | **Partly executed** | Both sides of the comparison are SHA-256 of the same literal in the same file. It cannot miss. What genuinely executes is the already-committed idempotency check, exercised for real on the live path |
+| Interpretation | **Not built** | Plumbed end to end and permanently null. The replay comparison on it is asserting `null == null` |
+| Span byte-verification | **Partly executed** | The substring compare is real code against stored text, and its failure branches are proven by hand-built negatives and refused at the DML boundary. But every span in the build has offsets produced by `indexOf(quote)` against that same string, so **on every path the system actually runs, the compare cannot return false** |
+| Turn contiguity + speaker attribution | **Executed** | Turn boundaries are re-derived by parsing the stored string; the offsets fed in come from `indexOf`, which knows nothing about turns. A quote straddling a newline or reaching into a speaker prefix *would* be rejected on the live path |
+| Blind reader / coverage adjudication | **Fixture-supplied** | `covered`/`missing` are literals. `isFull()` is `missing.isEmpty()` and never consults the contract's element list; `Span.element` is written and read nowhere. A test asserts `covered=['e1'], missing=[]` routes TRUE on a three-element proposition |
+| Coverage-to-verdict routing | **Partly executed** | The three-way route, the answer-key read-back, `verdictBefore` capture and the cross-source span union are real. But **C2 does not merge to full — it arrives full.** Across all four fixture candidates the merged verdict always equals the verdict from the incoming candidate alone. Accumulation is load-bearing for the span union, never for the verdict |
+| Speaker-requirement gate | **Partly executed** | The strongest computed behaviour here: the speaker is re-derived from turn segmentation rather than trusted from the span, and the unsegmented source fails genuinely because segmentation yields no speaker. But the fact it rules on — `mapRole = 'Decision Maker'` — is a fixture literal, and NEGSRC differs only because the fixture swapped who utters the line. 2 of 5 requirement branches are reached through the pipeline |
+| Scope-key composition | **Executed** | Composed in Apex at before-insert from live record values, five validated rejection paths, unique + case-sensitive + external id on the platform, real `DUPLICATE_VALUE` at runtime. Caveat: the identity it enforces is only as good as the path-label hash feeding it |
+| Contract key + content hash | **Executed** | Real SHA-256 over proposition+guidance into a unique `Text(83)` external id, frozen by a real immutability guard, a value appearing nowhere in the fixture. Narrowing: it fingerprints `AAO_Seed.json`, not any org rubric row |
+| Answer-key composition | **Executed** | Composed at write time from platform-assigned Ids by a single writer, identity-does-not-move guard, genuine unique index, unit-tested with no fixture involvement at all. Only 2 of 6 subject types are wired |
+| Read-before-write | **Executed** | Real SOQL on the answer key finds pass one's own row during pass two, and what it finds changes what is written. The test asserts `verdictBefore='UNVERIFIED'`, a value in no fixture |
+| Human precedence | **Partly executed** | Three real refusals, one at the database boundary. But no path in the repo can build a charter-less candidate, so **the gate has evaluated false on every execution the system has ever performed**; the precondition exists only because tests set it by direct DML |
+| `DUPLICATE_VALUE` merge | **Partly executed** | Insert-with-partial-success, status-code inspection, re-read, precedence and accumulate-and-update are all real, and the collision comes from the real platform index. But the race is manufactured by a test seam. Nothing concurrent has ever happened here |
+| Answer upsert + accumulation | **Partly executed** | Real math: span union by fingerprint with stable sort, missing shrinking against accumulated covered, a monotonic occurred clock that stops a backfill dragging the answer backwards. The inputs that decide the verdict are authored lists |
+| Claim insert + immutability | **Executed** | Assembled at runtime from verdict-after, verdict-before, outcome and the resolved internal person, then inserted; the org genuinely refuses to edit or delete it, proven at DML |
+| Key four (internal person) | **Partly executed** | Real resolution that intersects the roster with internal domains and with speakers appearing in verified spans, never assuming the deal owner. But there is exactly one internal person and their id is `UserInfo.getUserId()`, so the function has two possible outputs across the whole exercise |
+| Candidate ledger | **Partly executed** | Completeness is genuinely computed — contracts already carrying a proposal, differenced against the full rubric — and asserted as 12 rows / 10 abstained / 2 upheld, and 6 on the async path. But the *reason* is the hardcoded literal `nobody_said`; **`model_missed` is written by no line of Apex**, and a test asserts the literal as though it were a finding |
+| Replay | **Executed** | Re-queries the real claims, orders on the occurred clock with deterministic tiebreaks, folds them into a fresh in-memory map, diffs field-for-field against live rows, and flags an answer no claim produced. Nothing is read from the fixture. Caveats: it shares its accumulation function with the writer by design, and no test has ever fed it claims out of occurred order — the case it exists for |
+| Flag raising | **Not built** | Nothing raises a flag. The law that is there — type and raised-at immutable, no delete — is real and tested, but only against rows a test hand-built |
+
+### The sentence that is true
+
+Nothing in this build reads a transcript. Every judgement a model would have to make — which
+deal an artifact belongs to, what was said, which verdict the words support, which elements
+are covered — is typed by hand into one fixture file and copied onto records; the six
+propositions are authored too, because the org's own rubric tables have never been read.
+What is genuinely built and running is the ledger machinery underneath those judgements:
+keys composed at write time and enforced by real platform indexes, spans verified against
+stored text and refused at the database boundary, claims the org will not let you edit or
+delete, and a replay that rebuilds every answer from the claims alone and matches field for
+field. **That is a working evidence ledger with no reader attached — not a working
+extraction pipeline.**
+
+### Three things a reader could wrongly conclude, and the correction
+
+1. **"It accumulated evidence across two transcripts and upgraded its answer."** The routing
+   law and the two-pass write path are real, but the second candidate does not merge to full
+   coverage — it *arrives* full, because its `missing` list was authored empty. Accumulation
+   is load-bearing for the **span union** (five spans from two sources on one answer, which
+   is real), never for the verdict. Say *the answer went from UNVERIFIED to TRUE across two
+   passes and carries quotes from both*, not *it worked out that the second call completed
+   the picture*.
+
+2. **"Integrity and de-duplication are demonstrated."** The SHA-256 is real, but the
+   fingerprint anything reads hashes the string `dummy/transcript-one`, a filename we
+   invented — not artifact bytes. The one hash that digests the stored text is read nowhere.
+   **The test suite asserts the consequence as correct**: a Source with genuinely different
+   text under the same ref is rejected as a re-delivery. Nothing about content integrity or
+   content dedup has been shown.
+
+3. **"The laws are enforcing."** Several have never fired in operation. Human precedence
+   cannot trigger because no path can produce a charter-less candidate; `model_missed` is
+   written by no line of code; the `Reinforced` and `no_staged_proposal` branches are
+   unreachable outside unit tests. Say *these guards exist and are proven against hand-built
+   inputs*, not *the pipeline enforces them*.
+
+---
+
+**Assumed, not verified.**
+
+- **The audit is a reading of the code, not a proof.** Four readers plus four refuters plus
+  a synthesis; I re-verified seven findings by hand and all seven held, but the rest of the
+  table is their reading and not mine.
+- **`AAO_Live.status()` is the only ordering guard.** Firing `ingestTwo` before `ingestOne`'s
+  job completes would still produce correct claims — each carries its own occurred clock —
+  but the narrative would be wrong and nothing prevents it.
+- **The Celigo Opportunity layouts are still untouched**, so if Matt's profile uses one, the
+  related lists will not appear.
+- **`AAO_Demo.purge()` still has never been run for real.**
+
+**Owed.** Session 3's list, plus what the audit surfaced. The new items are defects, not
+absences, and they are ordered by how badly they would mislead someone.
+
+1. **`AAO_Artifact_SHA256__c` hashes the path label, not content — and a test enshrines it.**
+   `AAO_TriggerLawTest.theScopeKeyIsComposedByTheTriggerAndDedupes` inserts a Source with
+   different text under the same ref and asserts `DUPLICATE_VALUE` is correct. Dedup is
+   currently on the filename. Either hash the delivered payload, or keep the label hash and
+   rewrite that test so it stops defending the bug. **Highest priority: a wrong test is worse
+   than a missing one.**
+2. **`AAO_Model.Coverage.isFull()` never consults the contract's element list.** Coverage is
+   full when `missing` is empty, whoever authored `missing`. A three-element proposition with
+   one covered element and an empty missing list routes to TRUE, and a test asserts it.
+3. **Nothing demonstrates load-bearing accumulation.** To show it, transcript two would have
+   to address *only* timing, or a third artifact would. The current pair cannot, because
+   transcript two genuinely restates all three elements — which was the right call for
+   fidelity to the words and the wrong one for the demonstration. Frozen fixtures, so this is
+   a ruling, not an edit.
+4. **`model_missed` is unreachable**, so the abstention-rate detector currently has one value.
+5. **`AAO_Interpretation__c` is plumbed and permanently null.** Either something writes it or
+   the replay comparison on it should say it is vacuous.
+6. **Replay has never been fed claims out of occurred order** — the exact case it exists for.
+7. **Start discovery.** Unchanged, still the largest absence. Ground prepared in session 3.
+8. **Decide which object a `Qualifier` subject points at.** Three candidates named in session 3.
+9. **`AAO_Claim_Basis__c` is deployed and written by nothing.**
+10. **Claim Basis parent: field tables say required Master-Detail, flags document says
+    polymorphic.** Unresolved contradiction, sharper now that Flag exists.
+11. **`AAO_Answer__c` has no subject-deleted flag.**
+12. **`AAO_Candidate__c.AAO_Run__c` is not built.**
+13. **Internal domains are still a caller argument, not org configuration.**
+14. **Nothing raises flags.**
+15. **Four additions to CLOSED tables need ratifying**: `Opportunity` as a subject type,
+    `AAO_Synthetic__c`, normal form v1, and now the `AAO_Ingest.AUTO` switch as a documented
+    part of the write path.
+16. **The field tables mark five fields case-sensitive that cannot be.**
+17. **Write-blocking customer constraints** — live example still sitting in this org.
+18. **The four project documents are still behind.**

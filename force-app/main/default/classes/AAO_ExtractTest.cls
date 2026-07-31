@@ -284,7 +284,7 @@ private class AAO_ExtractTest {
             'The third element of the contract was never cited, so it is missing. ' +
             'Nothing in the response said so.'
         );
-        System.assertEquals(false, cov.isFull());
+        System.assertEquals(false, cov.isFull(new List<String>{ 'e1', 'e2', 'e3' }));
         System.assertEquals('1.0.0', cand.AAO_Charter_Version__c);
     }
 
@@ -829,7 +829,7 @@ private class AAO_ExtractTest {
         );
         System.assertEquals(
             false,
-            cov.isFull(),
+            cov.isFull(new List<String>{ 'e1', 'e2', 'e3' }),
             'Partial coverage is the whole point: full coverage writes the verdict through.'
         );
     }

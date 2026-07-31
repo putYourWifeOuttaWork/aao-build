@@ -311,7 +311,8 @@ public with sharing class AAO_PipelineViewController {
                 AAO_Established_By__c,
                 AAO_Publication_State__c,
                 AAO_Evidence_Contract__r.AAO_Proposition_Code__c,
-                AAO_Evidence_Contract__r.AAO_Proposition_Short__c
+                AAO_Evidence_Contract__r.AAO_Proposition_Short__c,
+                AAO_Evidence_Contract__r.AAO_Elements__c
             FROM AAO_Answer__c
             WHERE AAO_Opportunity__c = :opportunityId
             ORDER BY Name ASC
@@ -333,7 +334,9 @@ public with sharing class AAO_PipelineViewController {
             AAO_Model.Coverage cov = AAO_Model.parseCoverage(a.AAO_Element_Coverage__c);
             r.covered = cov.covered.isEmpty() ? '—' : String.join(cov.covered, ', ');
             r.missing = cov.missing.isEmpty() ? '—' : String.join(cov.missing, ', ');
-            r.complete = cov.isFull();
+            r.complete = cov.isFull(
+                AAO_ExtractCharter.elementIds(a.AAO_Evidence_Contract__r)
+            );
             s.answers.add(r);
         }
 

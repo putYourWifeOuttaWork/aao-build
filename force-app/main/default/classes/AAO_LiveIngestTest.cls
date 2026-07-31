@@ -280,7 +280,22 @@ private class AAO_LiveIngestTest {
     @IsTest
     static void stagedProposalsAreFoundByArtifactHashNotByFixtureCode() {
         Map<String, Object> fixture = AAO_Seed.fixture();
-        String sha = AAO_NormalForm.sha256('dummy/transcript-one');
+
+        // The hash of the artifact's CONTENT, not of 'dummy/transcript-one'. Session 11:
+        // hashing the label made a filename the identity of a piece of evidence.
+        Map<String, Object> spec;
+        for (Object o : (List<Object>) fixture.get('sources')) {
+            Map<String, Object> m = (Map<String, Object>) o;
+            if (m.get('code') == 'T1SRC') {
+                spec = m;
+            }
+        }
+        String sha = AAO_Seed.artifactSha(spec);
+        System.assertNotEquals(
+            AAO_NormalForm.sha256((String) spec.get('sourceRef')),
+            sha,
+            'The artifact hash must not be the hash of its path label.'
+        );
 
         List<Object> staged = AAO_Pipeline.stagedFor(fixture, sha);
         System.assertEquals(

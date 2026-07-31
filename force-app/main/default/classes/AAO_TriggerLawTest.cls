@@ -91,6 +91,8 @@ private class AAO_TriggerLawTest {
                 AAO_Scope_Key__c,
                 AAO_Opportunity__c,
                 AAO_Artifact_SHA256__c,
+                AAO_SHA256__c,
+                AAO_Normalized_Text__c,
                 AAO_Part_Index__c
             FROM AAO_Source__c
             WHERE Id = :s.sourceByCode.get('T1SRC').Id
@@ -105,12 +107,19 @@ private class AAO_TriggerLawTest {
             'The trigger is the single writer of the scope key.'
         );
 
-        // Same deal, same artifact, same part. The unique index is the dedup target.
+        // THE SAME ARTIFACT, ARRIVING AGAIN. Same deal, same bytes, same part.
+        // Corrected in session 11. This block used to send DIFFERENT text while reusing
+        // the artifact hash, and asserted the rejection as correct. It was not correct,
+        // and the test was defending the defect: the hash was computed over the path
+        // label, so two unrelated transcripts delivered under one filename collided and
+        // the second was silently discarded as a re-delivery. The hash is over the
+        // content now, so a genuine re-delivery has to be genuinely the same bytes.
         AAO_Source__c dup = new AAO_Source__c(
             AAO_Opportunity__c = src.AAO_Opportunity__c,
             AAO_Account__c = s.accountId,
-            AAO_Normalized_Text__c = 'priya\tRedelivered.',
+            AAO_Normalized_Text__c = src.AAO_Normalized_Text__c,
             AAO_Diarization__c = 'Attributed',
+            AAO_SHA256__c = src.AAO_SHA256__c,
             AAO_Artifact_SHA256__c = src.AAO_Artifact_SHA256__c,
             AAO_Part_Index__c = 1,
             AAO_Part_Count__c = 1,
@@ -123,6 +132,56 @@ private class AAO_TriggerLawTest {
             StatusCode.DUPLICATE_VALUE,
             sr.getErrors()[0].getStatusCode(),
             'DUPLICATE_VALUE is the merge signal, not a generic failure.'
+        );
+    }
+
+    /**
+     * The other half of the same law, and the half that was inverted until session 11.
+     * Two different transcripts can arrive under one path label: a file overwritten, a
+     * meeting series reusing a name, a connector that numbers nothing. They are different
+     * evidence and both must be stored. Identity is the content, never the label.
+     */
+    @IsTest
+    static void twoDifferentArtifactsUnderOneLabelAreNotARedelivery() {
+        AAO_Seed.Loaded s = load();
+        AAO_Source__c src = [
+            SELECT
+                AAO_Opportunity__c,
+                AAO_Source_Ref__c,
+                AAO_Normalized_Text__c,
+                AAO_Artifact_SHA256__c
+            FROM AAO_Source__c
+            WHERE Id = :s.sourceByCode.get('T1SRC').Id
+        ];
+
+        String differentText = 'priya\tA different call entirely, same filename.';
+        AAO_Source__c other = new AAO_Source__c(
+            AAO_Opportunity__c = src.AAO_Opportunity__c,
+            AAO_Account__c = s.accountId,
+            AAO_Normalized_Text__c = differentText,
+            AAO_Diarization__c = 'Attributed',
+            AAO_SHA256__c = AAO_NormalForm.sha256(differentText),
+            AAO_Artifact_SHA256__c = AAO_NormalForm.sha256(differentText),
+            AAO_Part_Index__c = 1,
+            AAO_Part_Count__c = 1,
+            // Deliberately the same label as the first.
+            AAO_Source_Ref__c = src.AAO_Source_Ref__c,
+            AAO_Origin__c = 'ECI',
+            AAO_Evidence_Occurred__c = System.now()
+        );
+        Database.SaveResult sr = Database.insert(other, false);
+
+        System.assert(
+            sr.isSuccess(),
+            'Different bytes under the same path label are different evidence and must ' +
+            'both be stored. Rejecting the second one loses a transcript silently, which ' +
+            'is what this build did until session 11. Error was: ' +
+            (sr.isSuccess() ? '' : String.valueOf(sr.getErrors()))
+        );
+        System.assertNotEquals(
+            src.AAO_Artifact_SHA256__c,
+            AAO_NormalForm.sha256(differentText),
+            'The hashes differ because the content differs. That is the whole fix.'
         );
     }
 

@@ -70,8 +70,31 @@ public class AAO_Model {
         public List<String> covered;
         public List<String> missing;
 
-        public Boolean isFull() {
-            return missing == null || missing.isEmpty();
+        /**
+         * Full means every element the CONTRACT names is covered. It deliberately takes
+         * the element list rather than trusting the missing list, because missing is
+         * written by whoever proposed and an empty missing list is a claim, not a fact.
+         *
+         * The old no-argument version returned missing.isEmpty(), so a proposal of
+         * covered:[e1] missing:[] read as full coverage of a three-element proposition
+         * and routed a verdict straight through. There is no no-argument version any
+         * more: the trap is removed rather than documented.
+         */
+        public Boolean isFull(List<String> contractElements) {
+            if (contractElements == null || contractElements.isEmpty()) {
+                // Nothing can fully cover a contract that names no elements. Returning
+                // true here would establish propositions out of an empty list.
+                return false;
+            }
+            Set<String> have = new Set<String>(
+                covered == null ? new List<String>() : covered
+            );
+            for (String e : contractElements) {
+                if (!have.contains(e)) {
+                    return false;
+                }
+            }
+            return true;
         }
 
         public Boolean isNone() {

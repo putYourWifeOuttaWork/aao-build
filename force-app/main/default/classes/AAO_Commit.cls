@@ -48,6 +48,7 @@ public class AAO_Commit {
                 AAO_Charter_Version__c,
                 AAO_Publication_State__c,
                 AAO_Evidence_Contract__r.AAO_Speaker_Requirement__c,
+                AAO_Evidence_Contract__r.AAO_Elements__c,
                 AAO_Evidence_Contract__r.AAO_Rubric_Version__c,
                 AAO_Source__r.AAO_Evidence_Occurred__c,
                 AAO_Source__r.AAO_Speaker_Roster__c,
@@ -100,7 +101,16 @@ public class AAO_Commit {
             existing == null ? null : existing.AAO_Element_Coverage__c,
             cand.AAO_Element_Coverage__c
         );
-        String verdict = AAO_Accumulate.verdictFor(accumulated, cand.AAO_Proposed_Verdict__c);
+        // The contract says what full coverage is. Asking the proposal would be asking
+        // the thing being judged.
+        List<String> contractElements = AAO_ExtractCharter.elementIds(
+            cand.AAO_Evidence_Contract__r
+        );
+        String verdict = AAO_Accumulate.verdictFor(
+            accumulated,
+            cand.AAO_Proposed_Verdict__c,
+            contractElements
+        );
         if (verdict == null) {
             // Nothing was said about this proposition. Nothing is written, and the
             // candidate row is the whole record of having looked.

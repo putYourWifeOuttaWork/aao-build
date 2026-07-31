@@ -256,9 +256,12 @@ public class AAO_Seed {
                         ? null
                         : rosterJson,
                     AAO_SHA256__c = AAO_NormalForm.sha256(text),
-                    AAO_Artifact_SHA256__c = AAO_NormalForm.sha256(
-                        (String) s.get('sourceRef')
-                    ),
+                    // The artifact hash is over the artifact. It used to be over
+                    // sourceRef, the path label, which made two different transcripts
+                    // delivered under one filename look like the same evidence arriving
+                    // twice, and made one transcript delivered under two filenames look
+                    // like two pieces of evidence. See session 11.
+                    AAO_Artifact_SHA256__c = artifactSha(s),
                     AAO_Part_Index__c = 1,
                     AAO_Part_Count__c = 1,
                     AAO_Source_Ref__c = (String) s.get('sourceRef'),
@@ -411,6 +414,18 @@ public class AAO_Seed {
             out.add((String) o);
         }
         return out;
+    }
+
+    /**
+     * The identity of a piece of evidence is its content. In this build the delivered
+     * artifact and the stored normalized text are the same string, because the fixture
+     * hands us turns rather than a file, so this equals AAO_SHA256__c. When a real
+     * connector lands they diverge: artifact hash is what arrived, AAO_SHA256__c is what
+     * we stored after normalising. Keeping both named separately now is what makes that
+     * divergence a change of one line rather than a change of meaning.
+     */
+    public static String artifactSha(Map<String, Object> s) {
+        return AAO_NormalForm.sha256(normalizedTextFor(s));
     }
 
     public static String normalizedTextFor(Map<String, Object> s) {

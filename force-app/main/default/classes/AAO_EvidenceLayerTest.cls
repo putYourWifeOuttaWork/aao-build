@@ -271,7 +271,7 @@ private class AAO_EvidenceLayerTest {
         );
         AAO_Model.Coverage merged = AAO_Accumulate.mergeCoverage(first, second);
         System.assertEquals(3, merged.covered.size());
-        System.assert(merged.isFull(), 'Missing was ' + merged.missing);
+        System.assert(merged.isFull(new List<String>{ 'e1', 'e2', 'e3' }), 'Missing was ' + merged.missing);
     }
 
     @IsTest
@@ -294,7 +294,8 @@ private class AAO_EvidenceLayerTest {
             null,
             AAO_Accumulate.verdictFor(
                 AAO_Model.newCoverage(new List<String>(), new List<String>{ 'e1' }),
-                'TRUE'
+                'TRUE',
+                new List<String>{ 'e1' }
             ),
             'No element covered writes nothing.'
         );
@@ -302,7 +303,8 @@ private class AAO_EvidenceLayerTest {
             'UNVERIFIED',
             AAO_Accumulate.verdictFor(
                 AAO_Model.newCoverage(new List<String>{ 'e1' }, new List<String>{ 'e2' }),
-                'TRUE'
+                'TRUE',
+                new List<String>{ 'e1', 'e2' }
             ),
             'Partial coverage writes UNVERIFIED with the spans that exist.'
         );
@@ -310,8 +312,32 @@ private class AAO_EvidenceLayerTest {
             'TRUE',
             AAO_Accumulate.verdictFor(
                 AAO_Model.newCoverage(new List<String>{ 'e1' }, new List<String>()),
-                'TRUE'
+                'TRUE',
+                new List<String>{ 'e1' }
             )
+        );
+
+        // THE DEFECT, now a test. A proposal that covers one element of three and sends
+        // an empty missing list used to route its verdict straight through, because the
+        // routing law believed the proposal about what full meant.
+        System.assertEquals(
+            'UNVERIFIED',
+            AAO_Accumulate.verdictFor(
+                AAO_Model.newCoverage(new List<String>{ 'e1' }, new List<String>()),
+                'TRUE',
+                new List<String>{ 'e1', 'e2', 'e3' }
+            ),
+            'An empty missing list is a claim by the proposer, not a fact. The contract ' +
+            'names three elements and one is covered, so this is partial.'
+        );
+        System.assertEquals(
+            'UNVERIFIED',
+            AAO_Accumulate.verdictFor(
+                AAO_Model.newCoverage(new List<String>{ 'e1' }, new List<String>()),
+                'TRUE',
+                new List<String>()
+            ),
+            'A contract naming no elements cannot be fully covered by anything.'
         );
     }
 }

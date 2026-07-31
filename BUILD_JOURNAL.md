@@ -21,7 +21,7 @@ recorded as a finding is how a wrong belief becomes load-bearing.
 Wave 1 plus Flag is live: seven objects (136 fields), five triggers, three frozen key
 composers, span verification, the speaker rule, commit, replay, the mini-rubric and the
 dummy transcripts, plus two charters, the credential scaffolding they call through, and the
-second reader that decides coverage. **109 AAO tests, 109 passing.** One pre-existing sandbox
+second reader that decides coverage. **110 AAO tests, 110 passing.** One pre-existing sandbox
 test still fails on a customer validation rule, and that failure is not ours.
 
 **The rehearsal is durable.** `AAO Demo - Tungsten Rehearsal` carries two claims and one
@@ -1581,3 +1581,56 @@ changes, but no row carries it yet so nothing has rendered. It will first appear
    `model_declined` still compare equal.
 2. Everything on session 4's list, unchanged, still led by the artifact hash over the path
    label and `isFull()` never consulting the element list.
+
+---
+
+## 2026-07-31 · session 11 · the two owed defects, paid
+
+**Did.** Item 34. Both session-4 defects are fixed, with the test that defended one of them
+corrected rather than deleted. **110 AAO tests, 110 passing.**
+
+**Defect one: `isFull()` never consulted the element list.** It returned
+`missing.isEmpty()`, so a proposal could declare itself complete by sending an empty missing
+list. `covered:['e1'], missing:[]` against a three-element proposition read as full coverage
+and routed its verdict straight through, unchallenged.
+
+The no-argument version is gone. `isFull(List<String> contractElements)` checks that every
+element the **contract** names is covered, and `AAO_Accumulate.verdictFor` takes the element
+list and passes it. `AAO_Commit` reads `AAO_Evidence_Contract__r.AAO_Elements__c` and hands
+it in, so the authority on what full means is the contract rather than the thing being
+judged. A contract naming no elements returns false, because treating an empty list as
+trivially satisfied would establish propositions out of nothing.
+
+Two new assertions in `AAO_EvidenceLayerTest.verdictRoutesOnCoverage` state the defect
+directly: one element of three with an empty missing list is `UNVERIFIED`, and an empty
+element list is never full.
+
+**Defect two: the artifact hash was computed over the path label.**
+`AAO_Artifact_SHA256__c = sha256(sourceRef)`. Since that hash composes the scope key, and the
+scope key is the dedup target, **identity was the filename**. Two different transcripts
+delivered under one path label collided and the second was discarded as a re-delivery. One
+transcript delivered under two labels looked like two pieces of evidence.
+
+The hash is over content now, via `AAO_Seed.artifactSha`. In this build it equals
+`AAO_SHA256__c`, because the fixture hands us turns rather than a file, so the delivered
+artifact and the stored normalized text are the same string. They diverge the moment a real
+connector lands, and keeping both named separately is what makes that a one-line change
+rather than a change of meaning.
+
+**The defending test was the worse half.** `theScopeKeyIsComposedByTheTriggerAndDedupes`
+inserted a Source with **different text** while reusing the artifact hash and asserted the
+rejection as correct. It was not correct; it was the defect written down as an expectation.
+Corrected so a re-delivery is genuinely the same bytes, and a second test,
+`twoDifferentArtifactsUnderOneLabelAreNotARedelivery`, asserts the half that was inverted:
+different bytes under one label are different evidence and both must be stored.
+
+`AAO_LiveIngestTest.stagedProposalsAreFoundByArtifactHashNotByFixtureCode` hashed the label
+too, and now asserts that the artifact hash is **not** the hash of its path label.
+
+**Assumed, not verified.** **Rows written before tonight carry the old label hashes**, so
+stored data and current code disagree on how those hashes were derived. Nothing breaks:
+every affected Source already has a claim, and `runForSource` short-circuits on
+`already_committed` before it looks for a proposal. But a purge and reseed is required for a
+clean org, and until that happens the three demo deals and the two Gate 1 deals hold hashes
+no current code path would produce. Deliberately not reseeded: the proof register cites those
+claim numbers.

@@ -227,7 +227,7 @@ public class AAO_Demo {
         }
 
         String text = AAO_Seed.normalizedTextFor(spec);
-        String artifactSha = AAO_NormalForm.sha256((String) spec.get('sourceRef'));
+        String artifactSha = AAO_Seed.artifactSha(spec);
         String scopeKey = AAO_ScopeKey.compose(oppId, artifactSha, 1);
 
         List<AAO_Source__c> found = [

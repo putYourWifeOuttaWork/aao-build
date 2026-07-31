@@ -160,7 +160,10 @@ private class AAO_AccumulationTest {
         );
 
         AAO_Model.Coverage cov = AAO_Model.parseCoverage(answer.AAO_Element_Coverage__c);
-        System.assert(cov.isFull(), 'Coverage completed; missing was ' + cov.missing);
+        System.assert(
+            cov.isFull(new List<String>{ 'e1', 'e2', 'e3' }),
+            'Coverage completed; missing was ' + cov.missing
+        );
         System.assertEquals(3, cov.covered.size());
 
         // ---- 4. every span byte-verifies, and is contiguous inside one turn

@@ -475,10 +475,7 @@ public class AAO_Pipeline {
         Map<String, String> shaBySourceCode = new Map<String, String>();
         for (Object o : (List<Object>) fixture.get('sources')) {
             Map<String, Object> s = (Map<String, Object>) o;
-            shaBySourceCode.put(
-                (String) s.get('code'),
-                AAO_NormalForm.sha256((String) s.get('sourceRef'))
-            );
+            shaBySourceCode.put((String) s.get('code'), AAO_Seed.artifactSha(s));
         }
 
         List<Object> out = new List<Object>();

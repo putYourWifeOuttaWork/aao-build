@@ -130,12 +130,20 @@ public class AAO_Accumulate {
      * Coverage here is the ACCUMULATED coverage at the answer, not this pass's alone.
      * That is what lets call two say there was already partial evidence and now it is
      * sufficient.
+     *
+     * contractElements is the authority on what full means. Before session 11 this read
+     * the proposal's own missing list, so a proposal could declare itself complete by
+     * sending an empty missing list and the verdict went through unchallenged.
      */
-    public static String verdictFor(AAO_Model.Coverage accumulated, String proposedVerdict) {
+    public static String verdictFor(
+        AAO_Model.Coverage accumulated,
+        String proposedVerdict,
+        List<String> contractElements
+    ) {
         if (accumulated.isNone()) {
             return null;
         }
-        if (accumulated.isFull()) {
+        if (accumulated.isFull(contractElements)) {
             return proposedVerdict;
         }
         return 'UNVERIFIED';

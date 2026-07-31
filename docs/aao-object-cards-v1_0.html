@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AAOS · what each thing on the screen is</title>
+<style>
+  :root{
+    --ink:#1a1c1e; --sub:#5c6066; --line:#e3e1db; --paper:#faf9f6; --card:#ffffff;
+    --green:#0f6e56; --green-soft:#e1f5ee;
+    --blue:#2b4a8f; --blue-soft:#e8eefb;
+    --amber:#854f0b; --amber-soft:#faeeda;
+    --red:#a32d2d; --red-soft:#fcebeb;
+    --purple:#534ab7; --purple-soft:#eeedfe;
+    --grey:#5f5e5a; --grey-soft:#f1efe8;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       background:var(--paper); color:var(--ink); line-height:1.4; padding:28px 20px 48px;}
+  .wrap{max-width:1040px; margin:0 auto;}
+  h1{font-size:22px; letter-spacing:-0.3px;}
+  .meta{color:var(--sub); font-size:13px; margin-top:3px; margin-bottom:16px;}
+  .flow{display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:20px;
+        font-size:12.5px; color:var(--sub);}
+  .chip{background:var(--card); border:1px solid var(--line); border-radius:99px; padding:5px 12px; font-weight:600; color:var(--ink);}
+  .flow .verb{font-size:11.5px;}
+  .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:12px;}
+  .obj{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:14px 16px;
+       border-top:4px solid var(--grey);}
+  .obj h2{font-size:16px; margin-bottom:1px;}
+  .obj .api{font-size:11px; color:var(--sub); font-family:ui-monospace,Menlo,monospace; margin-bottom:8px;}
+  .obj .tag{display:inline-block; font-size:11px; font-weight:700; letter-spacing:0.6px; text-transform:uppercase;
+            padding:2px 8px; border-radius:4px; margin-bottom:8px;}
+  .obj p{font-size:13.5px; margin-bottom:7px;}
+  .obj p b{font-weight:650;}
+  .demo{font-size:12.5px; background:var(--grey-soft); border-radius:6px; padding:6px 9px; color:var(--ink);}
+  .demo b{font-size:10.5px; text-transform:uppercase; letter-spacing:0.7px; color:var(--sub); margin-right:5px;}
+  .c-source{border-top-color:var(--blue);} .c-source .tag{background:var(--blue-soft); color:var(--blue);}
+  .c-contract{border-top-color:var(--purple);} .c-contract .tag{background:var(--purple-soft); color:var(--purple);}
+  .c-cand{border-top-color:var(--grey);} .c-cand .tag{background:var(--grey-soft); color:var(--grey);}
+  .c-claim{border-top-color:var(--amber);} .c-claim .tag{background:var(--amber-soft); color:var(--amber);}
+  .c-answer{border-top-color:var(--green);} .c-answer .tag{background:var(--green-soft); color:var(--green);}
+  .c-flag{border-top-color:var(--red);} .c-flag .tag{background:var(--red-soft); color:var(--red);}
+  .law{margin-top:16px; background:var(--ink); color:#fff; border-radius:10px; padding:14px 20px;
+       display:flex; gap:24px; flex-wrap:wrap; justify-content:center; font-size:13.5px;}
+  .law span b{color:#8fd8c2;}
+  .foot{margin-top:10px; text-align:center; font-size:12px; color:var(--sub);}
+  @media print{ body{padding:0; background:#fff;} .obj{break-inside:avoid;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Altify Always On (AAOS) · what each thing on the screen is</h1>
+  <div class="meta">Six objects. The names below are exactly what the related lists and the pipeline tab call them.</div>
+
+  <div class="flow">
+    <span class="chip">Source</span><span class="verb">words arrive, frozen →</span>
+    <span class="chip">Candidate</span><span class="verb">proposals checked →</span>
+    <span class="chip">Claim</span><span class="verb">receipt written →</span>
+    <span class="chip">Answer</span><span class="verb">truth updated →</span>
+    <span class="chip">Flag</span><span class="verb">gaps escalate →</span>
+    <span class="chip">Projection</span><span class="verb">handed back to Altify (off)</span>
+  </div>
+
+  <div class="grid">
+
+    <div class="obj c-contract">
+      <h2>Evidence Contract</h2>
+      <div class="api">AAO_Evidence_Contract__c</div>
+      <span class="tag">The question, as data</span>
+      <p>One record per question, per version of its wording: the sentence, what would establish it in the methodology author's own words, <b>its parts</b> (funds approved · allocated to this initiative · this fiscal year), and <b>who must be the speaker</b>.</p>
+      <p>The machine never invents questions. It answers these. In a customer org these are assembled by reading their own rubric.</p>
+      <div class="demo"><b>In the demo</b>AAO_T1, Budget Confirmed, three parts, speaker must be the decision maker.</div>
+    </div>
+
+    <div class="obj c-source">
+      <h2>Source</h2>
+      <div class="api">AAO_Source__c</div>
+      <span class="tag">The words, frozen</span>
+      <p>A transcript, email or note, normalised once and <b>never edited</b>. Every quote anywhere in the system is byte-checked against this exact text, so the bytes are locked by trigger.</p>
+      <p>Carries who was on the call, when the evidence <b>occurred</b> (not when we read it), and how it was diarized.</p>
+      <div class="demo"><b>In the demo</b>Two calls, eleven days apart on the evidence clock, processed minutes apart.</div>
+    </div>
+
+    <div class="obj c-cand">
+      <h2>Candidate</h2>
+      <div class="api">AAO_Candidate__c</div>
+      <span class="tag">The proposal, and its fate</span>
+      <p>One row per question considered per pass, <b>including the questions the call said nothing about</b> — those rows say so. Carries what was proposed, every check it passed, and why it died if it died.</p>
+      <p>This is why <b>"did it even look"</b> is answerable, and why the abstention rate is measurable. Internal only: sellers never see candidates.</p>
+      <div class="demo"><b>In the demo</b>Six considered per pass; five say nobody-said, one carries the budget claim.</div>
+    </div>
+
+    <div class="obj c-claim">
+      <h2>Claim</h2>
+      <div class="api">AAO_Claim__c</div>
+      <span class="tag">The receipt · never edited</span>
+      <p>One establishment from one piece of evidence: what the answer was <b>before</b>, what it <b>became</b>, the verbatim quotes, the speaker, and both clocks.</p>
+      <p>Claim one says UNVERIFIED <b>forever</b>, even after the answer flips TRUE. That is progress staying visible instead of being overwritten. <b>Replaying the claims rebuilds every answer exactly.</b></p>
+      <div class="demo"><b>In the demo</b>null → UNVERIFIED, then UNVERIFIED → TRUE, and the first claim untouched.</div>
+    </div>
+
+    <div class="obj c-answer">
+      <h2>Answer</h2>
+      <div class="api">AAO_Answer__c</div>
+      <span class="tag">What is true right now</span>
+      <p>One row per question. TRUE, FALSE or UNVERIFIED, nothing else. Carries the accumulated quotes and the <b>coverage</b>: which parts are established, which part is still missing.</p>
+      <p><b>A human edit here wins forever.</b> The machine is never allowed to overwrite a person; the strongest thing it can do is disagree in writing, with a flag.</p>
+      <div class="demo"><b>In the demo</b>Budget Confirmed goes UNVERIFIED after call one, TRUE after call two. On the seller-said-it deal: all parts covered and still UNVERIFIED, because the seller said them.</div>
+    </div>
+
+    <div class="obj c-flag">
+      <h2>Flag</h2>
+      <div class="api">AAO_Flag__c</div>
+      <span class="tag">What is still unmet</span>
+      <p>Type is set at birth and decides how it clears: <b>methodological</b> clears by evidence only, never by dismissal; <b>contention</b> clears by written acknowledgement that transfers the risk; <b>ratification</b> clears by approve or decline.</p>
+      <p>Empty today because raising is not built yet. When it lands, <b>every gating question stands red from the day the deal opens</b>, and evidence is the only thing that lowers the count.</p>
+      <div class="demo"><b>In the demo</b>Zero, honestly: the next deterministic piece, not a gap in the idea.</div>
+    </div>
+
+  </div>
+
+  <div class="law">
+    <span><b>1.</b> Every establishment carries the verbatim words that produced it.</span>
+    <span><b>2.</b> Humans always win; the machine may only disagree in writing.</span>
+    <span><b>3.</b> Replaying the receipts rebuilds the truth exactly.</span>
+  </div>
+  <div class="foot">Today the meaning is staged and every piece of machinery around it is the shipping path: verification, commit, accumulation, replay. Model charters land behind Gate 1. Projection into Altify's own panels is greyed on the pipeline until it ships: dynamic, watermarked, toggleable.</div>
+
+</div>
+</body>
+</html>

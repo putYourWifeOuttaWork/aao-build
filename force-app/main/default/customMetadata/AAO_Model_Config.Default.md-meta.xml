@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  The one record. AAO_Extract reads "Default" by name and fails loudly if it is missing,
+  rather than falling back to a constant, because a fallback constant is exactly the
+  hardcoding this type exists to prevent.
+
+  Charter version is 1.0.0 because this is the first charter that reads anything. The 0.1.0
+  that came before it was the fixture: proposals authored by hand and staged by artifact
+  hash. Those two must never share a version string, or candidate rows from a run that read
+  a transcript become indistinguishable from rows a human wrote.
+
+  AAO_Anthropic_Beta__c is deliberately absent rather than present and empty. An omitted
+  field on a custom metadata record is null, and null is the normal case here.
+-->
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <label>Default</label>
+    <protected>false</protected>
+    <values>
+        <field>AAO_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>AAO_Charter_Version__c</field>
+        <value xsi:type="xsd:string">1.0.0</value>
+    </values>
+    <values>
+        <field>AAO_Charter__c</field>
+        <value xsi:type="xsd:string">AAO_Extract_Evidence</value>
+    </values>
+    <values>
+        <field>AAO_Effort__c</field>
+        <value xsi:type="xsd:string">high</value>
+    </values>
+    <values>
+        <field>AAO_Endpoint_Path__c</field>
+        <value xsi:type="xsd:string">/v1/messages</value>
+    </values>
+    <values>
+        <field>AAO_Max_Output_Tokens__c</field>
+        <value xsi:type="xsd:double">16000.0</value>
+    </values>
+    <values>
+        <field>AAO_Model_Name__c</field>
+        <value xsi:type="xsd:string">claude-opus-5</value>
+    </values>
+    <values>
+        <field>AAO_Named_Credential__c</field>
+        <value xsi:type="xsd:string">AAO_Anthropic</value>
+    </values>
+    <values>
+        <field>AAO_Timeout_Ms__c</field>
+        <value xsi:type="xsd:double">120000.0</value>
+    </values>
+</CustomMetadata>

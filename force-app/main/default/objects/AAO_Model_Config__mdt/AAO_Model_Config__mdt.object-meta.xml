@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  One record holds every value that decides WHICH model ran under WHICH charter. Custom
+  metadata rather than a custom object because these are configuration, they deploy with
+  the code, and they are readable without a SOQL query against data the running user may
+  not have access to.
+
+  The reason this type exists at all is the proof register. A token count or a candidate
+  comparison is meaningless unless the model and charter version that produced it are
+  recorded next to it, and a hardcoded constant in Apex is not a record of anything: it
+  changes in a commit nobody reads and every prior measurement silently re-attributes to
+  the new value. Every field here is stamped onto the Candidate rows the run writes.
+-->
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>AAO Model Config</label>
+    <pluralLabel>AAO Model Config</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

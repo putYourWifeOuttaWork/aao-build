@@ -37,7 +37,9 @@ Companion to AAO Field Tables, which closes Source, Evidence Contract, Candidate
 
 **Ruled 31 July, and it is the finding that justified doing Flag tonight.** A contention flag's cause is not a row on core. It is a comparison against history on the memory plane, which will have changed by the time anyone opens the flag. **So the historical basis is frozen at the instant the flag is raised.**
 
-**It uses Claim Basis rather than fields on Flag**, which makes that junction's parent polymorphic — a basis row hangs off a claim or off a flag. One mechanism, one place to look when anyone asks what this rested on. Fields on Flag would have given us two snapshot mechanisms doing one job, and the first question anyone asks would have two answers.
+**Corrected 31 July, from the build. It uses fields on Flag, not Claim Basis, and the v1.0 ruling above was wrong.** That ruling chose a polymorphic parent on the junction so there would be "one mechanism, one place to look." It assumed the two snapshots were the same kind of thing and they are not. **Claim Basis points at a live core record and freezes what it said. A contention flag's basis is a computed aggregate over the memory plane, and there is no core row to point at** — the typed lookups have nothing to hold. One mechanism was the right instinct applied to the wrong pair.
+
+**So Flag carries its own snapshot fields:** the aggregate that fired, the count behind it, the rung distribution, and the window they were computed over, frozen at raise time. Master-detail from Claim Basis to Claim stands, which also keeps basis rows dying with their claim.
 
 **What freezes:** the aggregate that fired, the count behind it, and the rung distribution, all as they read at raise time, with the same discipline as everywhere else — **what was cited, not what was available.**
 

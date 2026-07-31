@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AAO Demo Run Sheet v1.1 · live run first</title>
+<style>
+  :root{
+    --ink:#1a1c1e; --sub:#5c6066; --line:#e3e1db; --paper:#faf9f6;
+    --card:#ffffff; --accent:#0f6e56; --accent-soft:#e1f5ee;
+    --warn:#854f0b; --warn-soft:#faeeda; --red:#a32d2d; --blue:#2b4a8f; --blue-soft:#e8eefb;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       background:var(--paper); color:var(--ink); line-height:1.45; padding:32px 20px 60px;}
+  .wrap{max-width:860px; margin:0 auto;}
+  h1{font-size:24px; letter-spacing:-0.3px;}
+  .meta{color:var(--sub); font-size:13px; margin-top:4px;}
+  .frame{background:var(--card); border:1px solid var(--line); border-left:4px solid var(--accent);
+         border-radius:8px; padding:14px 18px; margin:18px 0; font-size:15px;}
+  .frame b{color:var(--accent);}
+  .prep{background:var(--blue-soft); border:1px solid #c9d6f2; border-radius:8px; padding:14px 18px; margin:18px 0;}
+  .prep h2{color:var(--blue); margin:0 0 8px;}
+  .prep li{margin:5px 0 5px 18px; font-size:14px;}
+  h2{font-size:15px; text-transform:uppercase; letter-spacing:1.2px; color:var(--sub); margin:26px 0 10px;}
+  .step{display:flex; gap:14px; background:var(--card); border:1px solid var(--line); border-radius:8px;
+        padding:14px 16px; margin-bottom:10px;}
+  .num{flex:0 0 34px; height:34px; border-radius:50%; background:var(--accent); color:#fff;
+       display:flex; align-items:center; justify-content:center; font-weight:700; font-size:16px;}
+  .num.live{background:var(--blue);}
+  .num.closer{background:var(--ink);}
+  .num.neg{background:var(--red);}
+  .step h3{font-size:15px; margin-bottom:3px;}
+  .click{font-size:13.5px; color:var(--sub); margin-bottom:6px;}
+  .say{font-size:14px; background:var(--accent-soft); border-radius:6px; padding:8px 11px;}
+  .say b{color:var(--accent); font-size:12px; text-transform:uppercase; letter-spacing:0.8px; margin-right:6px;}
+  .say.wait{background:var(--blue-soft);}
+  .say.wait b{color:var(--blue);}
+  .honest{background:var(--warn-soft); border:1px solid #ecd9b4; border-radius:8px; padding:14px 18px; margin-top:18px;}
+  .honest h2{color:var(--warn); margin:0 0 8px;}
+  .honest li{margin:6px 0 6px 18px; font-size:14px;}
+  .planb{font-size:13.5px; color:var(--sub); margin-top:14px; padding:10px 14px; border:1px dashed var(--line); border-radius:8px;}
+  .close-line{margin-top:22px; background:var(--ink); color:#fff; border-radius:8px; padding:16px 20px;
+              font-size:16px; text-align:center;}
+  @media print{ body{padding:0; background:#fff;} .step,.frame,.prep,.honest{break-inside:avoid;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>AAO · live run first</h1>
+  <div class="meta">Demo run sheet v1.1 · 31 July 2026 · sandbox altify--aossb2 · trigger → Queueable, async on screen · model slots stubbed, everything else is the shipping path</div>
+
+  <div class="prep">
+    <h2>Before the meeting, ten minutes</h2>
+    <ul>
+      <li><b>Reset the live deal.</b> It already ran once and shows TRUE. Have CODE purge and reseed, then confirm status: Tungsten Rehearsal TRUE · seller-said-it UNVERIFIED · <b>AAO Demo - Live empty</b>.</li>
+      <li>Stage the two ingest one-liners in a terminal, one keystroke each.</li>
+      <li>Open the org on AAO Demo - Live as yourself; confirm the AAO related lists are visible.</li>
+      <li>Keep this sheet open beside the browser.</li>
+    </ul>
+  </div>
+
+  <div class="frame"><b>The frame, 20 seconds.</b> A verification layer that reads evidence and maintains, per deal, which necessary conditions are actually true. It never predicts and never scores. Everything it writes traces to words a specific person said, and the current truth is rebuildable from receipts alone.</div>
+
+  <h2>Act one · the live run</h2>
+
+  <div class="step"><div class="num live">1</div><div>
+    <h3>The empty deal</h3>
+    <div class="click">AAO Demo - Live: no answers, no claims, no sources.</div>
+    <div class="say"><b>Say</b>A bare standard Opportunity. Nothing touches an Altify object or a customer save path.</div>
+  </div></div>
+
+  <div class="step"><div class="num live">2</div><div>
+    <h3>Fire ingest one</h3>
+    <div class="click">The transcript row appears immediately; the verdict does not. Status reads PENDING until the job completes.</div>
+    <div class="say wait"><b>While it runs</b>The arrival and the adjudication are deliberately two transactions. The artifact lands first and is judged second, so no governor limit, no defect of ours, can ever roll back the arrival of evidence. Wait for Completed before pass two.</div>
+  </div></div>
+
+  <div class="step"><div class="num live">3</div><div>
+    <h3>Refresh · UNVERIFIED appears</h3>
+    <div class="click">One claim, null → UNVERIFIED, with its quotes. Coverage shows two of three parts, the missing one named.</div>
+    <div class="say"><b>Say</b>The first call partly answered, and that partial truth was recorded honestly with its receipts.</div>
+  </div></div>
+
+  <div class="step"><div class="num live">4</div><div>
+    <h3>Fire ingest two, refresh · TRUE</h3>
+    <div class="click">Second claim, UNVERIFIED → TRUE. The first claim untouched.</div>
+    <div class="say"><b>Say</b>Incrementalism, live. Nothing overwritten; progress visible instead of destroyed. And the two clocks: recorded-at is a minute apart because you just watched it, evidence-occurred is eleven days apart because the transcripts say so. That is what makes backfilling history possible without collapsing it onto today.</div>
+  </div></div>
+
+  <h2>Act two · the deep dive, on any deal</h2>
+
+  <div class="step"><div class="num">5</div><div>
+    <h3>A claim's spans, then the Source</h3>
+    <div class="click">Verbatim quotes, byte-checked against the frozen transcript.</div>
+    <div class="say"><b>Say</b>Checked byte for byte. A buyer's yes carries the seller's question that produced it, because the yes means nothing alone. Machine annotations were stripped before storage, and the strip is recorded.</div>
+  </div></div>
+
+  <div class="step"><div class="num">6</div><div>
+    <h3>The Candidate ledger</h3>
+    <div class="click">Every proposition considered got a row, including nothing-said rows.</div>
+    <div class="say"><b>Say</b>It logs what it looked at, not just what it found. Abstention is measurable, and "did it even look" is answerable.</div>
+  </div></div>
+
+  <div class="step"><div class="num neg">7</div><div>
+    <h3>The negative deal</h3>
+    <div class="click">Same budget words, full coverage, spoken by the seller: UNVERIFIED, outcome Downgraded.</div>
+    <div class="say"><b>Say</b>All three parts were said and it still does not establish, because the seller said them. Who may establish what is enforced by the schema, not by prompt discipline.</div>
+  </div></div>
+
+  <div class="step"><div class="num closer">R</div><div>
+    <h3>The closer · replay</h3>
+    <div class="click">All three deals: replaying claims in evidence order rebuilds every answer exactly, checked in the org.</div>
+    <div class="say"><b>Say</b>The current truth is derived from receipts, never typed in. That is the property everything else is built on, and it is in git.</div>
+  </div></div>
+
+  <div class="honest">
+    <h2>Say unprompted, before he asks</h2>
+    <ul>
+      <li><b>The model slots are stubbed.</b> Extraction proposals were authored and staged by artifact hash; no model has read anything. Everything you just watched — trigger, queue, verification, commit, accumulation, replay — is the shipping code path those model outputs will land on. Charters stay behind Gate 1's bar until round two clears.</li>
+      <li><b>Discovery is not wired yet.</b> The six questions were seeded into our contract object. Altify's own rubric tables exist in this sandbox and are empty, exactly the customer condition; reading from them is next.</li>
+      <li><b>Projection into Altify's objects is a later phase.</b> Their tables are untouched.</li>
+      <li><b>If he clicks the Flag tab, it is empty:</b> nothing raises flags yet. When the raise machinery lands, every gating proposition stands red from the day the deal opens, and evidence is the only thing that lowers the count.</li>
+      <li><b>The sandbox handed us a specimen:</b> its own pre-existing test fails on a customer validation rule — the write-blocking-constraint problem already on our list, alive in the target org.</li>
+    </ul>
+  </div>
+
+  <div class="planb"><b>Plan B.</b> If the live job queues slowly, do not wait on stage: switch to Tungsten Rehearsal, which shows the identical result already landed, and let the live deal complete in the background.</div>
+
+  <div class="close-line">You just watched evidence arrive and truth accumulate, asynchronously, on the platform's own machinery, with every word traceable and the whole state rebuildable from receipts.</div>
+
+</div>
+</body>
+</html>

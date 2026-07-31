@@ -20,8 +20,9 @@ recorded as a finding is how a wrong belief becomes load-bearing.
 
 Wave 1 plus Flag is live: seven objects (136 fields), five triggers, three frozen key
 composers, span verification, the speaker rule, commit, replay, the mini-rubric and the
-dummy transcripts. **83 AAO tests, 83 passing.** The full local suite is 102 with one
-failure, and that failure is pre-existing sandbox code, not ours.
+dummy transcripts, plus extraction charter v1 and the credential scaffolding it calls
+through. **99 AAO tests, 99 passing.** One pre-existing sandbox test still fails on a
+customer validation rule, and that failure is not ours.
 
 **The rehearsal is durable.** `AAO Demo - Tungsten Rehearsal` carries two claims and one
 answer, written in two separate transactions, and a second deal carries the seller-said-it
@@ -52,16 +53,40 @@ claims appeared asynchronously, without anybody asking for them.
 
 **Before describing this build to anyone, read session 4's stage inventory.** It is the
 precise list of what executes and what is authored in the fixture, and it is less flattering
-than the demo looks. The one-line version: *this is a working evidence ledger with no reader
-attached — not a working extraction pipeline.* Nothing in this build reads a transcript.
+than the demo looks. Session 4's one-line version was: *this is a working evidence ledger
+with no reader attached, not a working extraction pipeline.*
+
+**Session 7 changes that sentence, but only once the key is in.** A charter now exists that
+reads a transcript, and it has never run. Until it does, the accurate statement is
+unchanged: **everything demonstrated so far rests on proposals authored by hand.** The
+distinction is visible in the data rather than a matter of trust. Fixture rows carry charter
+version `0.1.0`; model rows carry the version on the config record, currently `1.0.0`. The
+three demo deals are all `0.1.0`.
 
 **The `AAO Pipeline` tab is live on the active Opportunity record page**, verified rendering
 with real data, with the Altify panels and the Related tab intact. Rollback is deploying
 `ed71d06`'s copy of `Opportunity_Record_Page`.
 
-**CODE FREEZE** as of session 6. Nothing changes before the meeting. The demo state is:
-Tungsten Rehearsal `TRUE`, seller-said-it `UNVERIFIED`, **AAO Demo - Live empty** and ready
-for a live ingest. Opportunity ids changed on the reseed — see session 6.
+**Code freeze is lifted** as of session 7. The demo state is unchanged and was verified
+after every change tonight: Tungsten Rehearsal `TRUE`, seller-said-it `UNVERIFIED`,
+**AAO Demo - Live empty** and ready for a live ingest. Opportunity ids changed on the
+session 6 reseed.
+
+**The first real model call is wired and has not been fired.** A charter assembles its
+prompt from `AAO_Evidence_Contract__c` records at runtime, the model writes Candidates only
+through `AAO_Pipeline`, and every existing gate decides. **99 AAO tests, 99 passing**,
+including eleven that exercise the model path against mocked responses. What is missing is
+the API key: it is pasted once into the `AAO_Anthropic` external credential in Setup, and
+until it is, the callout fails with `The external credential isn't fully configured`.
+
+Gate 1 round two, once the key is in, on `AAO Gate1 - Model Round Two`, which is isolated
+from the three demo deals:
+
+`AAO_Gate1.reset()` · `AAO_Gate1.pass('T1SRC')` · `AAO_Gate1.pass('T2SRC')` ·
+`AAO_Gate1.compare()`
+
+The passes are separate commands because Apex forbids a callout after DML in the same
+transaction, which is the same reason the rehearsal's passes are separate.
 
 **Still not done, and it is the same gap as the first day:** the mini-rubric is written
 straight into `AAO_Evidence_Contract__c` and **discovery is skipped entirely**. The ALTF
@@ -1054,3 +1079,140 @@ And the empty state, rendered on the live deal, which is where a live-ingest dem
    by the two real defects: the artifact hash computed over the path label with a test
    asserting that behaviour as correct, and `AAO_Model.Coverage.isFull()` never consulting
    the contract's element list.
+
+---
+
+## 2026-07-31 · session 7 · the first real model call, wired but not yet fired
+
+**Did.**
+
+- **Synced the new context folder into `docs/`** and read the version bumps before writing
+  any code, because `aao-field-tables-v0_10` supersedes the `v0_8` this entire build was
+  authored from. It turns out to ratify rather than contradict. Diffed in full; the changes
+  are listed under *Read from the org* below.
+- **Deployed the credential scaffolding for `api.anthropic.com`**: an External Credential,
+  a Named Credential, a Remote Site Setting, and a principal grant on `AAO_Admin`. The key
+  itself is not set and was never handled here.
+- **Added `AAO_Model_Config__mdt`** with one record, `Default`, carrying model name, charter
+  version, named credential, endpoint path, effort, max output tokens, timeout, and an
+  active switch. Nothing about which model ran is a literal in Apex any more.
+- **Wrote extraction charter v1** as `AAO_ExtractCharter`, which assembles the prompt and
+  the output schema from `AAO_Evidence_Contract__c` records at runtime, and `AAO_Extract`,
+  which makes the call and returns proposals plus token usage.
+- **Rewrote `AAO_Pipeline` around a typed `Proposal`** so the fixture path and the model
+  path genuinely share one builder rather than being two builders that agree.
+- **Wrote `AAO_Gate1`**, the round-two harness, and staged its deal.
+- **Wrote `AAO_ExtractTest`**, eleven tests that exercise the model path with mocked
+  responses. **99 AAO tests, 99 passing.**
+
+**Decided, and why.**
+
+- **The charter is told the speaker requirement and forbidden from acting on it.** The
+  requirement is injected so the model can identify whose utterance carries the assertion,
+  and both the prompt and the output schema say in terms that it must not lower a verdict
+  because of who spoke. `AAO_SpeakerRule` still decides that at commit. Had the charter
+  applied the rule itself, the seller-said-it case would come back `UNVERIFIED` already, the
+  downgrade would never fire, and a law enforced by the schema would have quietly become a
+  request made in a prompt.
+- **The charter does not decide element coverage.** It cites spans against elements;
+  coverage is computed from the spans that were actually located in the artifact. A reader
+  asserting its own coverage is what the fixture did and it is the weaker half of the
+  fixture, not a thing to reproduce. A side effect worth naming: because `missing` is now
+  derived as *contract elements minus covered*, the `isFull()` defect cannot bite on the
+  model path. It still bites on the fixture path and the fix is still owed.
+- **Every vocabulary in the output schema is built from org data.** Proposition codes are
+  the contracts that exist, element ids are the elements those contracts carry, speaker keys
+  are the roster on that artifact. The model cannot name a proposition we do not hold or a
+  person who was not on the call, because there is no string it could return that would mean
+  that.
+- **`not_addressed` and `abstained` are separate values** and become `nobody_said` and
+  `model_missed`. Session 4 recorded `model_missed` as unreachable. It is reachable now, and
+  it is the first thing in this build that only something which actually read the transcript
+  could produce.
+- **A quote that is not in the artifact is dropped and counted, not fatal.**
+  `AAO_Seed.resolve` throws on a missing quote, which is right for a fixture, where it means
+  the construction is wrong. It is wrong for a model, where it is the exact thing byte
+  verification exists to catch. The model path has its own resolver that returns null and
+  records the drop.
+- **`AAO_Extract` has no DML in it at all.** A callout cannot follow DML in the same Apex
+  transaction, so a class that both calls out and writes has to keep itself in order
+  forever. A class that cannot write cannot get that wrong.
+- **The protocol on the External Credential is `Basic`, and it is not being used as Basic
+  auth.** See below; the org rejected the two obvious choices.
+- **Gate 1 purges only its own deal.** `AAO_Demo.purge()` clears every synthetic row in the
+  org and would take the three demo deals with it.
+
+**Read from the org (verbatim).**
+
+- `The authentication protocol "Custom" doesn't support the following external credential
+  parameter type(s): CustomPrincipal, AuthParameter.` So `Custom`, which is what you reach
+  for first for an API key in a header, accepts a principal and rejects everything that
+  could hold a secret.
+- `External Credentials don't support the "Password" authentication protocol.` It appears in
+  `ExternalCredential.AuthenticationProtocol`'s picklist and is refused anyway.
+- The picklist itself, by describe: `NoAuthentication, Oauth, Password, AwsSv4, Jwt,
+  JwtExchange, Custom, Basic`. `Basic` is the only supported protocol with an encrypted,
+  write-only secret slot, so the key goes in its Password field and the Authorization header
+  it would otherwise generate is switched off.
+- `Property 'principal' not valid in version 66.0` and again in 67.0. Authentication
+  parameters are not bound to a principal in metadata at all.
+- `The parameter type "HttpHeader" requires the following Named Credential Parameter fields:
+  SequenceNumber.`
+- `Identifier name is reserved: system`. A local `String system` shadowed the `System` class
+  and the failure surfaced as `Method does not exist: void currentTimeMillis() from the type
+  String`. **This is the third of the family** after `commit` and `json`, both of which
+  v0.10 records. Worth adding to that list.
+- Deploying a custom metadata type and its records in one operation fails with
+  `UNKNOWN_EXCEPTION` and **zero component errors**. Split into two deploys, type first.
+- `The external credential isn't fully configured.` This is the current state of the callout
+  path and it is the expected one: it proves the Named Credential resolves and the principal
+  grant is in place, and names the missing key as the only remaining step.
+- **Field tables v0.10 ratify four things this build had recorded as owed:**
+  `AAO_Synthetic__c` as a permanent field on every AAO object; the internal-person
+  resolution rule *as code built it*, never the deal owner; `Opportunity` added to
+  `AAO_Subject_Type__c`, explicitly credited to this build; and the five fields that cannot
+  be case-sensitive, corrected in v0.9 with the reasoning this build reported.
+- **The Claim Basis parent contradiction is resolved against session 3's reading.** The
+  corrected flags document now rules that Flag carries its own snapshot fields and that
+  master-detail from Claim Basis to Claim stands.
+
+**Assumed, not verified.**
+
+- **That the callout works at all.** No token has been spent. Everything up to the
+  credential is proven; the request has never left the org. The first real call may fail on
+  something only a live response reveals, and the two likeliest are the merge field not
+  substituting into `x-api-key` under `generateAuthorizationHeader false`, and the 120 second
+  Apex callout ceiling against `effort: high`.
+- That `output_config.format` behaves as the schema intends for this shape. The mocked tests
+  prove the parser, not the model's conformance to it.
+- That one call per artifact for all six propositions is the right grain. It is one call
+  because it is cheaper and the propositions share the transcript; whether per-proposition
+  calls read better is unmeasured.
+- That the fixture is a fair ground truth. It was authored from the transcripts by
+  construction, so a disagreement means the two readers differ, not that the model is wrong.
+  Where they differ the transcript is the tiebreaker and a human reads it.
+
+**Owed.**
+
+1. **The key, and then the run.** Items 20d and 20e are the only part of tonight not
+   delivered, and both are blocked on one paste in Setup. Once it is in:
+   `AAO_Gate1.pass('T1SRC')`, `AAO_Gate1.pass('T2SRC')`, `AAO_Gate1.compare()`, then the
+   token numbers come here.
+2. **Everything on session 4's Owed list, unchanged**, still led by the two real defects:
+   the artifact hash computed over the path label with a test asserting that behaviour as
+   correct, and `AAO_Model.Coverage.isFull()` never consulting the contract's element list.
+3. **v0.10 ratified `AAO_Synthetic__c` with a requirement this build does not meet:** that
+   every aggregating, streaming or projecting reader excludes synthetic rows. Nothing here
+   excludes them, and it cannot yet, because in this org every row is synthetic and the
+   exclusion would empty the demo. Recorded rather than implemented.
+4. **Flag now owes snapshot fields** (the aggregate that fired, the count, the rung
+   distribution, the window) per the corrected flags document. Nothing raises flags, so
+   nothing is broken by their absence.
+5. **The blind reader does not exist.** Coverage on the model path is computed
+   deterministically from located spans, which is honest but is not the second reader the
+   design calls for. Until it lands, no proposal is read twice.
+6. **`AAO_Ingest`'s async path still runs the fixture.** The trigger-fired Queueable calls
+   the fixture entry, not the model entry. Switching it is a one-word change and was not
+   made, because it would alter what the demo does.
+7. Normal form v1 and `AAO_Ingest.AUTO` are still additions to closed tables awaiting
+   ratification. v0.10 ratified the other four.

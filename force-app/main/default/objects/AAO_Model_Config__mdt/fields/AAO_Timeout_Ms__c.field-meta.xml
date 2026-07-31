@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Timeout_Ms__c</fullName>
+    <label>TimeoutMs</label>
+    <description>Written by: a human, in this record. Read by: AAO_Extract, set on the HttpRequest. Apex caps this at 120000 and the platform is the authority, so a larger value here is silently the cap.</description>
+    <inlineHelpText>Written by: a human, in this record. Read by: AAO_Extract, set on the HttpRequest. Apex caps this at 120000 and the platform is the authority, so a larger value here is silently the cap.</inlineHelpText>
+    <type>Number</type>
+    <precision>9</precision>
+    <scale>0</scale>
+    <required>true</required>
+    <unique>false</unique>
+</CustomField>

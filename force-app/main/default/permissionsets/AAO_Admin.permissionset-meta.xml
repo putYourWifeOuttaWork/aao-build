@@ -520,4 +520,14 @@
         <apexClass>AAO_PipelineViewController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <!--
+      Without this the callout does not fail loudly, it fails as an authentication error,
+      which reads like a bad key and sends you to Setup to check a key that is fine.
+      Permission to use a stored credential is separate from permission to run the Apex
+      that uses it.
+    -->
+    <externalCredentialPrincipalAccesses>
+        <enabled>true</enabled>
+        <externalCredentialPrincipal>AAO_Anthropic-AAO_Anthropic_Principal</externalCredentialPrincipal>
+    </externalCredentialPrincipalAccesses>
 </PermissionSet>

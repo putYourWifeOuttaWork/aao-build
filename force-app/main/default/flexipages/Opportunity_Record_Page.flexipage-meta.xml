@@ -1885,7 +1885,31 @@
                 <identifier>flexipage_tab4</identifier>
             </componentInstance>
         </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>body</name>
+                    <value>Facet-aa0f1e11-aa00-4a00-aa00-aa0000000001</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>title</name>
+                    <value>AAO Pipeline</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:tab</componentName>
+                <identifier>flexipage_tab5</identifier>
+            </componentInstance>
+        </itemInstances>
         <name>Facet-ef6a2c6f-647b-4d87-81d5-f3583529e7ec</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentName>aaoPipelineView</componentName>
+                <identifier>aaoPipelineView_aaoTab</identifier>
+            </componentInstance>
+        </itemInstances>
+        <name>Facet-aa0f1e11-aa00-4a00-aa00-aa0000000001</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>

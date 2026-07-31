@@ -20,7 +20,8 @@ recorded as a finding is how a wrong belief becomes load-bearing.
 
 Wave 1 plus Flag is live: seven objects (136 fields), five triggers, three frozen key
 composers, span verification, the speaker rule, commit, replay, the mini-rubric and the
-dummy transcripts. **74 AAO tests, 74 passing.**
+dummy transcripts. **83 AAO tests, 83 passing.** The full local suite is 102 with one
+failure, and that failure is pre-existing sandbox code, not ours.
 
 **The rehearsal is durable.** `AAO Demo - Tungsten Rehearsal` carries two claims and one
 answer, written in two separate transactions, and a second deal carries the seller-said-it
@@ -39,6 +40,11 @@ sf apex run --target-org aossb2 --file /dev/stdin <<< "System.debug(AAO_Demo.sta
 
 `AAO_Demo.passOne()` · `AAO_Demo.passTwo()` · `AAO_Demo.passNegative()` ·
 `AAO_Demo.status()` · `AAO_Demo.purge()`.
+
+The live deal, one artifact at a time — fire `ingestTwo` only once `status()` stops printing
+a `PENDING:` line:
+
+`AAO_Live.ingestOne()` · `AAO_Live.ingestTwo()` · `AAO_Live.status()` · `AAO_Live.reset()`.
 
 **Evidence now arrives by event.** An after-insert on `AAO_Source__c` enqueues the same
 pipeline the rehearsal runs. `AAO Demo - Live` was driven one artifact at a time and the

@@ -37,14 +37,14 @@ public class AAO_Model {
         public List<Span> spans;
     }
 
-    public static SpanSet parseSpans(String json) {
-        if (String.isBlank(json)) {
+    public static SpanSet parseSpans(String raw) {
+        if (String.isBlank(raw)) {
             SpanSet empty = new SpanSet();
             empty.v = SPANS_V;
             empty.spans = new List<Span>();
             return empty;
         }
-        SpanSet s = (SpanSet) JSON.deserialize(json, SpanSet.class);
+        SpanSet s = (SpanSet) JSON.deserialize(raw, SpanSet.class);
         if (s.spans == null) {
             s.spans = new List<Span>();
         }
@@ -79,11 +79,11 @@ public class AAO_Model {
         }
     }
 
-    public static Coverage parseCoverage(String json) {
-        if (String.isBlank(json)) {
+    public static Coverage parseCoverage(String raw) {
+        if (String.isBlank(raw)) {
             return newCoverage(new List<String>(), new List<String>());
         }
-        Coverage c = (Coverage) JSON.deserialize(json, Coverage.class);
+        Coverage c = (Coverage) JSON.deserialize(raw, Coverage.class);
         if (c.covered == null) {
             c.covered = new List<String>();
         }
@@ -134,12 +134,12 @@ public class AAO_Model {
         public List<Speaker> speakers;
     }
 
-    public static Map<String, Speaker> parseRoster(String json) {
+    public static Map<String, Speaker> parseRoster(String raw) {
         Map<String, Speaker> byKey = new Map<String, Speaker>();
-        if (String.isBlank(json)) {
+        if (String.isBlank(raw)) {
             return byKey;
         }
-        Roster r = (Roster) JSON.deserialize(json, Roster.class);
+        Roster r = (Roster) JSON.deserialize(raw, Roster.class);
         if (r.speakers == null) {
             return byKey;
         }

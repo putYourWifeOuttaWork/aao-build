@@ -15,31 +15,29 @@ recorded as a finding is how a wrong belief becomes load-bearing.
 
 ## Current state
 
-**Nothing has been deployed. Nothing has been run. No org has been queried.**
+**Deployed to `altify--aossb2` and green. The exit test passes in the org.**
 
-The repo holds a complete, deploy-ready Wave 1: six objects (110 fields), four triggers,
-the three frozen key composers, span verification, the speaker rule, commit, replay, the
-mini-rubric, the dummy transcripts, and the exit test. All of it is **authored, none of it
-is verified**, because `altify--aossb2` is not authenticated on this machine and
-`sf org login web` needs a human at a browser.
+Wave 1 is live: six objects (110 fields), four triggers, three frozen key composers, span
+verification, the speaker rule, commit, replay, the mini-rubric, the dummy transcripts.
+67 AAO tests, 67 passing. `AAO_AccumulationTest.theAccumulationTest` passes, which means
+incrementalism is demonstrated in an org rather than in an argument.
 
-**The next session's first job is to authenticate and deploy.** Until that happens, treat
-every claim in this repo about how Salesforce will behave as a hypothesis. The Apex has
-never been compiled.
-
-```bash
-sf org login web --alias aossb2 --instance-url https://test.salesforce.com
-```
-
-Then, from the repo root:
+One test fails in the run and **it is not ours**: `ConvertToOpportunityTest`, pre-existing
+sandbox code, failing on a customer validation rule. See session 2.
 
 ```bash
 sf project deploy start --target-org aossb2
 ```
 
 ```bash
-sf apex run test --target-org aossb2 --test-level RunLocalTests --result-format human --wait 20
+sf apex run test --target-org aossb2 --tests AAO_AccumulationTest AAO_TriggerLawTest AAO_EvidenceLayerTest AAO_AnswerKeyTest AAO_ScopeKeyTest --result-format human --wait 30
 ```
+
+**What is not yet done** is the part that makes this a real per-org discovery test rather
+than a schema demo: the mini-rubric is written straight into `AAO_Evidence_Contract__c`
+and **discovery is skipped entirely**. That is Owed item 3 and it is the biggest gap
+between this repo and the brief. Nothing has been seeded into the org as durable data
+either — the fixtures exist only inside test transactions, which roll back.
 
 ---
 
@@ -227,3 +225,149 @@ Tooling actually observed on this machine:
 12. **The four project documents are still behind.** Architecture, Glossary, Object Model
     and Data Flow carry the old vocabulary where Claim meant the current-state row.
     `docs/aao-corrections-v1_0.md` is authoritative until they are bumped.
+
+---
+
+## 2026-07-30 · session 2
+
+**Did.** Matthew authenticated `altify--aossb2`. Deployed. The first deploy failed on
+three root causes and a cloud of cascades; fixed all three, redeployed clean, ran
+`RunLocalTests`. **All 67 AAO tests pass, including the exit test.** Session 1's entire
+"Assumed, not verified" list is now settled — resolved below, each one.
+
+**Decided, and why.**
+
+- **`AAO_Commit.commit` renamed to `AAO_Commit.commitCandidate`.** `commit` is an Apex
+  reserved word — the parser reads it as the DML statement, so the method declaration
+  never parsed and every statement in the class became an orphan. The domain word is kept
+  in the class name, where it is safe.
+
+- **`AAO_Model`'s `String json` parameters renamed to `raw`.** Apex is case-insensitive,
+  so a parameter named `json` shadowed the `JSON` system class and `JSON.deserialize`
+  resolved to `String.deserialize`. Three methods, one cause, and a good example of a
+  defect that no amount of reading catches and one compile finds instantly.
+
+- **Case-sensitivity on the fingerprint fields is enforced in Apex, not by the field.**
+  The platform refuses `caseSensitive` on a text field that is not also `unique`. The field
+  tables mark `AAO_SHA256__c`, `AAO_Artifact_SHA256__c`, `AAO_Content_Hash__c`,
+  `AAO_Question_Record_Id__c` and `AAO_Question_Fingerprint__c` case-sensitive; that
+  annotation is **not implementable as a metadata flag** on any of them. Set to `false`,
+  with the reason written into each field's org-visible description. The intent survives
+  because `AAO_ScopeKey` and `AAO_ContractKey` reject anything that is not 64 lowercase
+  hex — rejected, not folded. The two keys that *are* unique (`AAO_Scope_Key__c`,
+  `AAO_Answer_Key__c`) keep real platform case sensitivity. **The field tables should be
+  corrected**: case-sensitive is a property those five fields cannot have.
+
+**Read from the org.** All verbatim.
+
+Org identity:
+
+> `alias aossb2`, `username matt.weisberg@altify.com.aossb2`,
+> `id 00DWD00000DV7iT2AT`,
+> `instanceUrl https://altify--aossb2.sandbox.my.salesforce.com`,
+> `apiVersion 67.0`
+
+> `@salesforce/cli/2.135.7 darwin-arm64 node-v22.23.1`
+
+`sourceApiVersion` in `sfdx-project.json` is `66.0` and the org accepted it.
+
+Deploy one, the three root-cause errors:
+
+> `CustomField │ AAO_Source__c.AAO_SHA256__c │ CaseSensitive can only be set for fields with unique also set (188:13)`
+
+> `ApexClass │ AAO_Commit │ Unexpected token ')'. (33:76)`
+
+> `ApexClass │ AAO_Model │ Method does not exist or incorrect signature: void deserialize(String, System.Type) from the type String (47:36)`
+
+and the cascade that named the reserved word plainly:
+
+> `ApexClass │ AAO_TriggerLawTest │ Method does not exist or incorrect signature: void commit(Id, Set<String>) from the type AAO_Commit (134:20)`
+
+Deploy two: every component `Created`, no errors.
+
+Test run `707WD0000A4HF8Q`:
+
+> `Tests Ran 86`, `Pass Rate 99%`, `Fail Rate 1%`, `Org Wide Coverage 86%`,
+> `Org Id 00DWD00000DV7iT2AT`, `Username matt.weisberg@altify.com.aossb2`
+
+The single failure is **pre-existing sandbox code, not ours**:
+
+> `ConvertToOpportunityTest.testgetOppCreationDetails  Fail  System.DmlException: Insert
+> failed. First exception on row 0; first error: FIELD_CUSTOM_VALIDATION_EXCEPTION, AE
+> Summary is required when no opportunity is created. Please document your call notes
+> before saving: [AE_Summary__c]`
+
+This is worth keeping. It is a live instance of Owed item **write-blocking customer
+constraints**, named in the brief's "known to be missing": a validation rule that makes a
+write fail for reasons that have nothing to do with our evidence. Discovery must read
+validation rules alongside the rubric, and a blocked write must record itself as blocked
+with the rule named, and never throw. The sandbox has one already, uninvited.
+
+Every AAO test passed. The four that carry the exit test:
+
+> `AAO_AccumulationTest.theAccumulationTest  Pass  1222`
+> `AAO_AccumulationTest.replayingOnlyTheFirstClaimGivesUnverified  Pass  1188`
+> `AAO_AccumulationTest.theSameWordsFromTheSellerDoNotEstablishIt  Pass  815`
+> `AAO_AccumulationTest.anUnsegmentedArtifactVerifiesButCannotSatisfyTheSpeakerRule  Pass  2634`
+
+Coverage on our classes: `AAO_Accumulate 100%`, `AAO_SourceTriggerHandler 97%`,
+`AAO_ScopeKey 95%`, `AAO_AnswerTriggerHandler 93%`, `AAO_Seed 93%`, `AAO_Model 91%`,
+`AAO_AnswerKey 90%`, `AAO_NormalForm 90%`, `AAO_EvidenceContractTriggerHandler 84%`,
+`AAO_SpanVerifier 83%`, `AAO_SpeakerRule 83%`, `AAO_Replay 82%`, `AAO_Commit 80%`,
+`AAO_ClaimTriggerHandler 76%`, `AAO_ContractKey 63%`. All four triggers 100%.
+
+**Assumed, not verified.** Session 1's list is now settled. Recording the resolutions,
+because a list that only grows is not being read.
+
+- ~~The Apex has never been compiled.~~ **Compiled and run.**
+- ~~API version 66.0 may not be accepted.~~ **Accepted.** Org reports 67.0.
+- ~~Circular lookups may not deploy in one pass.~~ **They do.**
+  `AAO_Answer__c.AAO_Last_Claim__c` and `AAO_Claim__c.AAO_Answer__c` deployed together
+  with no special handling.
+- ~~`Database.insert(record, false)` returns `DUPLICATE_VALUE` on a unique external-id
+  collision.~~ **It does.** `duplicateValueIsAMergePathNotAnErrorPath` passes, and it
+  drives the real branch through the `simulateLostRace` seam rather than asserting the
+  index exists.
+- ~~`TRUE` / `FALSE` as restricted picklist API names.~~ **Accepted.**
+- ~~`StaticResource` readable in tests without `SeeAllData`.~~ **It is.**
+- ~~The permission set's omission of required and master-detail fields.~~ **Correct shape.**
+- ~~Opportunity stage picklist.~~ `AAO_Seed.defaultStage()` reads it live and worked.
+
+Still assumed, and new:
+
+- **Nothing has been seeded as durable data.** Every fixture exists only inside test
+  transactions, which roll back. Nobody can open the org and look at the two claims.
+- **Coverage is not correctness.** `AAO_ContractKey` at 63% and `AAO_ClaimTriggerHandler`
+  at 76% are mostly untaken error branches, but that is an inference and has not been
+  checked line by line.
+- **The exit test runs both passes inside one transaction.** The eleven-day gap is asserted
+  on `AAO_Evidence_Occurred__c` precisely so processing order cannot carry the test, but a
+  genuine two-transaction run has not happened.
+
+**Owed.** Items 1 and 2 from session 1 are done. The rest carry forward, renumbered, with
+two additions.
+
+1. **Seed into the org's own rubric records.** Unchanged and still the largest gap.
+   `AAO_Seed` writes `AAO_Evidence_Contract__c` directly, skipping discovery. Needs the
+   Altify rubric object API names read from the org. `altify-pbo` is now authenticated and
+   probably carries the ALTF package; a read-only describe against it would answer this,
+   and Matthew was asked and has not yet ruled.
+2. **Leave a durable seeded run in the org**, so the two claims and the answer can be
+   opened and looked at rather than only asserted. This is the Toby artifact.
+3. **`AAO_Claim__c.AAO_Internal_Person__c` is never populated.** Key four of four. *A grain
+   not recorded cannot be declared later without reprocessing the corpus.*
+4. **`AAO_Claim_Basis__c` is deployed and written by nothing.** Routes P and C need it.
+5. **Claim Basis parent: field tables say required Master-Detail to Claim, flags document
+   says polymorphic across claim-or-flag.** Unresolved contradiction. Matthew's call.
+6. **`AAO_Answer__c` has no subject-deleted flag**, though the field table says
+   "null-and-flag on subject delete".
+7. **`AAO_Candidate__c.AAO_Run__c` is not built.** `AAO_Run__c` is Wave 2.
+8. **Internal domains are a caller argument, not org configuration.**
+9. **`AAO_Flag__c` is not built**, so its trigger law is not built either.
+10. **Normal form v1 and the `Opportunity` subject type need ratifying.**
+11. **NEW: the field tables mark five fields case-sensitive that cannot be.** See Decided.
+12. **NEW: write-blocking customer constraints have a live example in this sandbox.**
+    `ConvertToOpportunityTest`'s failure is the shape of the problem, sitting in the target
+    org already.
+13. **The four project documents are still behind.** `docs/aao-corrections-v1_0.md` is
+    authoritative until they are bumped.

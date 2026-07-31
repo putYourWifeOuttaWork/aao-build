@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>AAO_Question_Fingerprint__c</fullName>
-    <description>Written by: Commit. Read by: Compared on read. A mismatch reads as the answer not counting, which is the failure direction we accept.</description>
+    <description>Written by: Commit. Read by: Compared on read. A mismatch reads as the answer not counting, which is the failure direction we accept. The platform refuses caseSensitive on a non-unique text field, so case sensitivity here is enforced in Apex, not by the field.</description>
     <label>Question Fingerprint</label>
     <type>Text</type>
     <length>64</length>
-    <caseSensitive>true</caseSensitive>
+    <caseSensitive>false</caseSensitive>
     <unique>false</unique>
     <externalId>false</externalId>
     <required>false</required>

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>AAO_SHA256__c</fullName>
-    <description>Fingerprint of the normalized text. Written by: Normalisation. Read by: Integrity; idempotent re-delivery.</description>
+    <description>Fingerprint of the normalized text. Written by: Normalisation. Read by: Integrity; idempotent re-delivery. The platform refuses caseSensitive on a non-unique text field, so case sensitivity here is enforced in Apex, not by the field.</description>
     <label>SHA256</label>
     <type>Text</type>
     <length>64</length>
-    <caseSensitive>true</caseSensitive>
+    <caseSensitive>false</caseSensitive>
     <unique>false</unique>
     <externalId>false</externalId>
     <required>false</required>

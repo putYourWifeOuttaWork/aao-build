@@ -27,10 +27,10 @@ private class AAO_AccumulationTest {
 
     /** Transcript one, then transcript two, in that order. Returns the main deal's id. */
     private static Id runTheTwoPasses(AAO_Seed.Loaded s) {
-        AAO_Commit.commit(s.candidateByCode.get('C1').Id, s.internalDomains);
+        AAO_Commit.commitCandidate(s.candidateByCode.get('C1').Id, s.internalDomains);
         AAO_Seed.logAbstentions(s, 'main', 'T1SRC', 'AAO_Extract_Evidence', '0.1.0');
 
-        AAO_Commit.commit(s.candidateByCode.get('C2').Id, s.internalDomains);
+        AAO_Commit.commitCandidate(s.candidateByCode.get('C2').Id, s.internalDomains);
         AAO_Seed.logAbstentions(s, 'main', 'T2SRC', 'AAO_Extract_Evidence', '0.1.0');
 
         return s.opportunityByDeal.get('main');
@@ -231,12 +231,12 @@ private class AAO_AccumulationTest {
         AAO_Seed.Loaded s = load();
 
         Test.startTest();
-        AAO_Commit.commit(s.candidateByCode.get('C1').Id, s.internalDomains);
+        AAO_Commit.commitCandidate(s.candidateByCode.get('C1').Id, s.internalDomains);
         Map<String, AAO_Answer__c> afterOne = AAO_Replay.rebuild(
             s.opportunityByDeal.get('main')
         );
 
-        AAO_Commit.commit(s.candidateByCode.get('C2').Id, s.internalDomains);
+        AAO_Commit.commitCandidate(s.candidateByCode.get('C2').Id, s.internalDomains);
         Map<String, AAO_Answer__c> afterTwo = AAO_Replay.rebuild(
             s.opportunityByDeal.get('main')
         );
@@ -266,7 +266,7 @@ private class AAO_AccumulationTest {
         AAO_Seed.Loaded s = load();
 
         Test.startTest();
-        AAO_Commit.Result r = AAO_Commit.commit(
+        AAO_Commit.Result r = AAO_Commit.commitCandidate(
             s.candidateByCode.get('CNEG').Id,
             s.internalDomains
         );
@@ -324,7 +324,7 @@ private class AAO_AccumulationTest {
         );
 
         Test.startTest();
-        AAO_Commit.Result r = AAO_Commit.commit(
+        AAO_Commit.Result r = AAO_Commit.commitCandidate(
             s.candidateByCode.get('CUNSEG').Id,
             s.internalDomains
         );

@@ -131,7 +131,7 @@ private class AAO_TriggerLawTest {
     @IsTest
     static void claimsCannotBeEdited() {
         AAO_Seed.Loaded s = load();
-        AAO_Commit.commit(s.candidateByCode.get('C1').Id, s.internalDomains);
+        AAO_Commit.commitCandidate(s.candidateByCode.get('C1').Id, s.internalDomains);
 
         AAO_Claim__c c = [SELECT Id, AAO_Verdict_After__c FROM AAO_Claim__c LIMIT 1];
         c.AAO_Verdict_After__c = 'TRUE';
@@ -150,7 +150,7 @@ private class AAO_TriggerLawTest {
     @IsTest
     static void claimsCannotBeDeleted() {
         AAO_Seed.Loaded s = load();
-        AAO_Commit.commit(s.candidateByCode.get('C1').Id, s.internalDomains);
+        AAO_Commit.commitCandidate(s.candidateByCode.get('C1').Id, s.internalDomains);
         AAO_Claim__c c = [SELECT Id FROM AAO_Claim__c LIMIT 1];
         try {
             delete c;
@@ -163,7 +163,7 @@ private class AAO_TriggerLawTest {
     @IsTest
     static void aMachineClaimWithoutACharterStampIsRefused() {
         AAO_Seed.Loaded s = load();
-        AAO_Commit.commit(s.candidateByCode.get('C1').Id, s.internalDomains);
+        AAO_Commit.commitCandidate(s.candidateByCode.get('C1').Id, s.internalDomains);
         AAO_Answer__c a = [SELECT Id, AAO_Spans__c FROM AAO_Answer__c LIMIT 1];
 
         AAO_Claim__c c = new AAO_Claim__c(
@@ -254,7 +254,7 @@ private class AAO_TriggerLawTest {
     @IsTest
     static void aHumanAnswerIsNeverTakenByAMachine() {
         AAO_Seed.Loaded s = load();
-        AAO_Commit.commit(s.candidateByCode.get('C1').Id, s.internalDomains);
+        AAO_Commit.commitCandidate(s.candidateByCode.get('C1').Id, s.internalDomains);
 
         AAO_Answer__c a = [
             SELECT Id, AAO_Established_By__c, AAO_Verdict__c
@@ -281,14 +281,14 @@ private class AAO_TriggerLawTest {
     @IsTest
     static void commitDoesNotOverwriteAHumanAnswer() {
         AAO_Seed.Loaded s = load();
-        AAO_Commit.commit(s.candidateByCode.get('C1').Id, s.internalDomains);
+        AAO_Commit.commitCandidate(s.candidateByCode.get('C1').Id, s.internalDomains);
 
         AAO_Answer__c a = [SELECT Id, AAO_Established_By__c FROM AAO_Answer__c LIMIT 1];
         a.AAO_Established_By__c = 'HUMAN';
         update a;
 
         Test.startTest();
-        AAO_Commit.Result r = AAO_Commit.commit(
+        AAO_Commit.Result r = AAO_Commit.commitCandidate(
             s.candidateByCode.get('C2').Id,
             s.internalDomains
         );
@@ -306,7 +306,7 @@ private class AAO_TriggerLawTest {
     @IsTest
     static void identityDoesNotMove() {
         AAO_Seed.Loaded s = load();
-        AAO_Commit.commit(s.candidateByCode.get('C1').Id, s.internalDomains);
+        AAO_Commit.commitCandidate(s.candidateByCode.get('C1').Id, s.internalDomains);
 
         AAO_Answer__c a = [
             SELECT Id, AAO_Evidence_Contract__c, AAO_Answer_Key__c
@@ -332,11 +332,11 @@ private class AAO_TriggerLawTest {
     @IsTest
     static void duplicateValueIsAMergePathNotAnErrorPath() {
         AAO_Seed.Loaded s = load();
-        AAO_Commit.commit(s.candidateByCode.get('C1').Id, s.internalDomains);
+        AAO_Commit.commitCandidate(s.candidateByCode.get('C1').Id, s.internalDomains);
 
         Test.startTest();
         AAO_Commit.simulateLostRace = true;
-        AAO_Commit.Result r = AAO_Commit.commit(
+        AAO_Commit.Result r = AAO_Commit.commitCandidate(
             s.candidateByCode.get('C2').Id,
             s.internalDomains
         );

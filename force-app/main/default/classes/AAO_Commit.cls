@@ -30,7 +30,7 @@ public class AAO_Commit {
      * @param internalDomains email domains on the selling side. Owed: this belongs in org
      *                        configuration, not an argument. See BUILD_JOURNAL.
      */
-    public static Result commit(Id candidateId, Set<String> internalDomains) {
+    public static Result commitCandidate(Id candidateId, Set<String> internalDomains) {
         AAO_Candidate__c cand = [
             SELECT
                 Id,

@@ -2598,3 +2598,54 @@ third value, `inferred + cue`, goes in the same sentence. Recorded, not built.
 
 **Owed.** Unchanged, plus the upstream field-tables question from session 21, now with a
 script holding the line until it is answered.
+
+---
+
+## 2026-08-02 · session 23 · context 10, and an audit of doc against org
+
+**Did.** Synced `docs/` to context 10. **Nothing built, nothing deployed.** Field tables
+v0.10 → v0.11, which is the version bump I have been waiting three syncs for.
+
+**The script broke, which is what it was for.** v0.11 renamed the file, so every target went
+missing and `carry_forward_docs.py` exited loudly instead of silently doing nothing. That was
+the whole design: a real upstream fix should break it, not be papered over.
+
+**v0.11 retired most of it** and says so — the evidence-family law, the abstention enum,
+`Not_Returned`, the blind-reader fields, the delete law, `AAO_Cited_Map_Row__c`, and the
+speaker gate's *not applicable*. All correct against the org. Both `AAO_Source__c` rows now
+read nullable with the family law spelled out.
+
+### Four things v0.11 still has wrong, retargeted the script at them
+
+1. **`AAO_Answer__c.AAO_Basis__c` has no row in section 4.** The change note says it was
+   consolidated; the table has no entry for it. A shipped, ratified field with no line in the
+   object record.
+2. **Candidate's `AAO_Basis__c` is listed "Restricted, required".** It is not required at
+   field level, deliberately: a required picklist would make every pre-47 candidate
+   un-updatable. Enforcement is on insert in the trigger, which also lets the refusal explain
+   itself. **This one would cause damage if believed** — someone adding the flag to match the
+   doc breaks updates on existing rows.
+3. **The reserved-word section still says "Two"** while v0.11's own change note says four.
+   The document contradicts itself in two places.
+4. **It is five, not four.** `any` has never reached this document. It took down the first
+   deploy of the pipeline view controller and is at session 8 in this journal.
+
+### Then I audited every field in the org against the tables
+
+Three genuine omissions, and I did **not** add these — they are absences rather than
+contradictions, and the tables are authored elsewhere. Reporting rather than authoring:
+
+- **`AAO_Model_Config__mdt` appears in no document at all.** Thirteen fields. It pins the
+  model name and both charter versions, and items 20–21 ruled precisely that these must live
+  in one record and never be hardcoded. **The one place the whole build's model binding is
+  recorded is undocumented.**
+- **`AAO_Claim_Basis__c.AAO_Cited_Answer__c`** is in no document, on a table the docs call
+  CLOSED.
+- **`AAO_Claim__c.AAO_Subject_Contact__c`** is in no document.
+
+Two apparent gaps that are not: `AAO_Synthetic__c` is covered once as a standing convention
+in the v0.10 note ("a permanent field on every AAO object"), which is the right way to say it
+once rather than eight times. `AAO_Flag__c` lives in the flags doc rather than the tables.
+
+**Owed, new.** The four corrections and the three omissions both need to reach the authored
+tables. The script holds the first four; nothing holds the last three but this entry.

@@ -298,7 +298,11 @@ private class AAO_TriggerLawTest {
         System.assertEquals('Superseded_By_Human', r.candidateOutcome);
         System.assertEquals(
             1,
-            [SELECT COUNT() FROM AAO_Claim__c],
+            [
+                SELECT COUNT()
+                FROM AAO_Claim__c
+                WHERE AAO_Opportunity__c = :s.opportunityByDeal.get('main')
+            ],
             'The second pass wrote nothing.'
         );
     }
@@ -345,7 +349,11 @@ private class AAO_TriggerLawTest {
         System.assert(r.merged, 'The collision must be handled as a merge.');
         System.assertEquals(
             1,
-            [SELECT COUNT() FROM AAO_Answer__c],
+            [
+                SELECT COUNT()
+                FROM AAO_Answer__c
+                WHERE AAO_Opportunity__c = :s.opportunityByDeal.get('main')
+            ],
             'The merge landed on the existing row rather than creating a second.'
         );
         System.assertEquals(
@@ -353,7 +361,15 @@ private class AAO_TriggerLawTest {
             r.answer.AAO_Verdict__c,
             'Having lost the race, the write still completed correctly.'
         );
-        System.assertEquals(2, [SELECT COUNT() FROM AAO_Claim__c], 'Both receipts exist.');
+        System.assertEquals(
+            2,
+            [
+                SELECT COUNT()
+                FROM AAO_Claim__c
+                WHERE AAO_Opportunity__c = :s.opportunityByDeal.get('main')
+            ],
+            'Both receipts exist.'
+        );
     }
 
     // =============================================== Evidence Contract immutability

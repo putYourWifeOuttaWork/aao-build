@@ -61,5 +61,44 @@ prove the easy class.
 
 ## Status
 
-**Authored, not observed.** Nothing in this file has been run against `altify--aossb2`.
-See `BUILD_JOURNAL.md`.
+**Observed.** Every expectation above has been run against `altify--aossb2` and holds.
+Superseded: this section previously read *"Authored, not observed — nothing in this file has
+been run against `altify--aossb2`"*, which was true when written on 30 July and stopped
+being true on 31 July. See `BUILD_JOURNAL.md` sessions 2 and 3 for the org output, quoted.
+
+---
+
+## The live path — same pipeline, different entry
+
+`AAO Demo - Live` is seeded empty. Evidence arrives on it one artifact at a time, and
+nothing else is done by hand:
+
+```
+AAO_Live.ingestOne();   // insert transcript one, and stop
+AAO_Live.status();      // a moment later
+AAO_Live.ingestTwo();
+```
+
+`AAO_Live.ingest` inserts an `AAO_Source__c` and returns. The after-insert trigger enqueues
+`AAO_IngestQueueable`, which calls **the same `AAO_Pipeline.runForSource`** the durable
+rehearsal calls. The rehearsal runs it inline and in order because a demonstration of
+accumulation has to be deterministic about which transcript landed first; the live deal runs
+it asynchronously because that is what happens when evidence actually arrives.
+
+**Expected:** transcript one lands `UNVERIFIED` with `missing:["e3"]`, asynchronously.
+Transcript two flips it to `TRUE`. The first claim is untouched. Replay is still exact.
+
+**The assertion that matters** is in `AAO_LiveIngestTest`, before `Test.stopTest()`: zero
+claims exist in the transaction that inserted the Source. Without that assertion the tests
+would pass identically if the pipeline ran inline, and the claim about the live path would be
+unproven.
+
+**What a Source with nothing staged for it does:** nothing, and it says so
+(`status = 'no_staged_proposal'`). Until a charter runs, an artifact only becomes a claim if
+a proposal was authored for it. That is the honest shape of the gap, not an error.
+
+## What executed and what was fixture-supplied
+
+The stage-by-stage inventory is in `BUILD_JOURNAL.md`, session 4. Read it before describing
+this build to anyone. The short version: everything deterministic ran, and everything a model
+would have written was authored in `AAO_Seed.json` and looked up by artifact hash.

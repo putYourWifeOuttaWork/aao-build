@@ -40,6 +40,14 @@ public class AAO_SourceTriggerHandler {
         }
     }
 
+    /**
+     * Evidence has landed. Adjudication follows, asynchronously, so a governor limit in the
+     * pipeline can never roll back the arrival of the artifact itself.
+     */
+    public static void afterInsert(List<AAO_Source__c> rows) {
+        AAO_Ingest.onSourceInserted(rows);
+    }
+
     public static void beforeUpdate(List<AAO_Source__c> rows, Map<Id, AAO_Source__c> oldById) {
         for (AAO_Source__c s : rows) {
             AAO_Source__c old = oldById.get(s.Id);

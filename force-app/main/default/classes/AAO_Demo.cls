@@ -33,6 +33,8 @@ public class AAO_Demo {
     public static final String ACCOUNT_NAME = 'AAO Demo - Tungsten Rehearsal';
     public static final String OPP_MAIN = 'AAO Demo - Tungsten Rehearsal';
     public static final String OPP_NEGATIVE = 'AAO Demo - Tungsten Rehearsal (seller said it)';
+    /** Seeded empty. Evidence arrives here through the live path, not through a pass. */
+    public static final String OPP_LIVE = 'AAO Demo - Live';
     public static final String CHARTER = 'AAO_Extract_Evidence';
     public static final String CHARTER_VERSION = '0.1.0';
 
@@ -54,54 +56,50 @@ public class AAO_Demo {
     // ===================================================================== the passes
 
     public static String passOne() {
-        return runPass('T1SRC', 'C1', 'main', OPP_MAIN);
+        return runPass('T1SRC', OPP_MAIN);
     }
 
     public static String passTwo() {
-        return runPass('T2SRC', 'C2', 'main', OPP_MAIN);
+        return runPass('T2SRC', OPP_MAIN);
     }
 
     public static String passNegative() {
-        return runPass('NEGSRC', 'CNEG', 'negative', OPP_NEGATIVE);
+        return runPass('NEGSRC', OPP_NEGATIVE);
     }
 
-    private static String runPass(
-        String sourceCode,
-        String candidateCode,
-        String fixtureDeal,
-        String oppName
-    ) {
+    /**
+     * The rehearsal runs the pipeline synchronously and in order, because a demonstration
+     * of accumulation has to be deterministic about which transcript landed first. The
+     * live path on OPP_LIVE runs the same pipeline asynchronously; see AAO_Live.
+     */
+    private static String runPass(String sourceCode, String oppName) {
         Ctx c = scaffold();
         Id oppId = c.oppByDeal.get(oppName);
 
-        AAO_Source__c src = findSource(c, sourceCode, oppId);
-        if (alreadyCommitted(src.Id)) {
+        // Auto-ingest off: this entry adjudicates inline, and a Queueable enqueued by the
+        // same insert would arrive afterwards to find the work already done. Harmless, but
+        // an async job fired for nothing is a thing a future reader would have to explain.
+        Boolean prior = AAO_Ingest.AUTO;
+        AAO_Ingest.AUTO = false;
+        AAO_Pipeline.Outcome o;
+        try {
+            AAO_Synthetic.MARK = true;
+            AAO_Source__c src = findSource(c, sourceCode, oppId);
+            AAO_Synthetic.MARK = false;
+            o = AAO_Pipeline.runForSource(src.Id, c.internalDomains);
+        } finally {
+            AAO_Ingest.AUTO = prior;
+            AAO_Synthetic.MARK = false;
+        }
+
+        if (o.status == 'already_committed') {
             return 'SKIPPED. ' +
                 sourceCode +
                 ' has already been committed on ' +
                 oppName +
                 '. Nothing written. Run AAO_Demo.purge() first to redo it.';
         }
-
-        AAO_Synthetic.MARK = true;
-        AAO_Candidate__c cand = buildCandidate(c, candidateCode, src, oppId);
-        AAO_Commit.Result r = AAO_Commit.commitCandidate(cand.Id, c.internalDomains);
-        List<AAO_Candidate__c> abstentions = logAbstentions(c, src, oppId);
-        AAO_Synthetic.MARK = false;
-
-        return 'OK. ' +
-            sourceCode +
-            ' committed on ' +
-            oppName +
-            '. verdict=' +
-            (r.answer == null ? 'none' : r.answer.AAO_Verdict__c) +
-            ' claim=' +
-            (r.claim == null ? 'none' : r.claim.AAO_Outcome__c) +
-            ' internalPerson=' +
-            (r.claim == null ? 'n/a' : String.valueOf(r.claim.AAO_Internal_Person__c)) +
-            ' abstentions=' +
-            abstentions.size() +
-            (String.isBlank(r.note) ? '' : ' note=' + r.note);
+        return 'OK. ' + sourceCode + ' committed on ' + oppName + '. ' + o;
     }
 
     // ================================================================== the scaffold
@@ -122,17 +120,17 @@ public class AAO_Demo {
             c.acct = accts[0];
         }
 
-        // ---- the two deals
+        // ---- the three deals
         Map<String, Opportunity> oppByName = new Map<String, Opportunity>();
         for (Opportunity o : [
             SELECT Id, Name
             FROM Opportunity
-            WHERE Name IN (:OPP_MAIN, :OPP_NEGATIVE) AND AccountId = :c.acct.Id
+            WHERE Name IN (:OPP_MAIN, :OPP_NEGATIVE, :OPP_LIVE) AND AccountId = :c.acct.Id
         ]) {
             oppByName.put(o.Name, o);
         }
         List<Opportunity> toInsert = new List<Opportunity>();
-        for (String n : new List<String>{ OPP_MAIN, OPP_NEGATIVE }) {
+        for (String n : new List<String>{ OPP_MAIN, OPP_NEGATIVE, OPP_LIVE }) {
             if (!oppByName.containsKey(n)) {
                 toInsert.add(
                     new Opportunity(
@@ -200,57 +198,9 @@ public class AAO_Demo {
         }
         c.rosterJson = AAO_Seed.rosterFor(people, c.contactByKey, c.internalDomains);
 
-        // ---- the mini-rubric, found by its question record id
-        Map<String, AAO_Evidence_Contract__c> existing =
-            new Map<String, AAO_Evidence_Contract__c>();
-        for (AAO_Evidence_Contract__c ec : [
-            SELECT Id, AAO_Question_Record_Id__c, AAO_Rubric_Version__c
-            FROM AAO_Evidence_Contract__c
-            WHERE AAO_Rubric_Version__c = :AAO_Seed.RUBRIC_VERSION
-        ]) {
-            existing.put(ec.AAO_Question_Record_Id__c, ec);
-        }
-
+        // ---- the mini-rubric, from the one place both entries read it
         AAO_Synthetic.MARK = true;
-        List<AAO_Evidence_Contract__c> newContracts = new List<AAO_Evidence_Contract__c>();
-        List<String> newCodes = new List<String>();
-        for (Object o : (List<Object>) c.fixture.get('rubric')) {
-            Map<String, Object> q = (Map<String, Object>) o;
-            String code = (String) q.get('code');
-            if (existing.containsKey(code)) {
-                c.contractByCode.put(code, existing.get(code));
-                continue;
-            }
-            List<Object> elements = (List<Object>) q.get('elements');
-            newCodes.add(code);
-            newContracts.add(
-                new AAO_Evidence_Contract__c(
-                    AAO_Question_Record_Id__c = code,
-                    AAO_Proposition_Code__c = code,
-                    AAO_Proposition_Short__c = (String) q.get('short'),
-                    AAO_Proposition_Text__c = (String) q.get('proposition'),
-                    AAO_Guidance_Text__c = (String) q.get('guidance'),
-                    AAO_Elements__c = JSON.serialize(elements),
-                    AAO_Element_Count__c = elements.size(),
-                    AAO_Elements_Basis__c = (String) q.get('elementsBasis'),
-                    AAO_Route__c = (String) q.get('route'),
-                    AAO_Speaker_Requirement__c = (String) q.get('speakerRequirement'),
-                    AAO_Decay_Class__c = (String) q.get('decayClass'),
-                    AAO_Gating__c = (Boolean) q.get('gating'),
-                    AAO_Solicit__c = (Boolean) q.get('solicit'),
-                    AAO_Per_Person_Source__c = (String) q.get('perPersonSource'),
-                    AAO_Requires_Ratification__c = (Boolean) q.get('requiresRatification'),
-                    AAO_Contract_State__c = (String) q.get('contractState'),
-                    AAO_Rubric_Version__c = AAO_Seed.RUBRIC_VERSION
-                )
-            );
-        }
-        if (!newContracts.isEmpty()) {
-            insert newContracts;
-            for (Integer i = 0; i < newCodes.size(); i++) {
-                c.contractByCode.put(newCodes[i], newContracts[i]);
-            }
-        }
+        c.contractByCode = AAO_Seed.ensureContracts(c.fixture);
         AAO_Synthetic.MARK = false;
 
         return c;
@@ -258,8 +208,12 @@ public class AAO_Demo {
 
     // ==================================================================== the records
 
-    /** Find the Source for this fixture code on this deal, or create it. */
-    private static AAO_Source__c findSource(Ctx c, String sourceCode, Id oppId) {
+    /**
+     * Find the Source for this fixture code on this deal, or create it. Public because the
+     * live path creates its Sources the same way; what differs between the two entries is
+     * only whether AAO_Ingest.AUTO is on when the insert happens.
+     */
+    public static AAO_Source__c findSource(Ctx c, String sourceCode, Id oppId) {
         Map<String, Object> spec = null;
         for (Object o : (List<Object>) c.fixture.get('sources')) {
             Map<String, Object> s = (Map<String, Object>) o;
@@ -314,105 +268,6 @@ public class AAO_Demo {
         ];
     }
 
-    private static AAO_Candidate__c buildCandidate(
-        Ctx c,
-        String candidateCode,
-        AAO_Source__c src,
-        Id oppId
-    ) {
-        Map<String, Object> spec = null;
-        for (Object o : (List<Object>) c.fixture.get('candidates')) {
-            Map<String, Object> cc = (Map<String, Object>) o;
-            if (cc.get('code') == candidateCode) {
-                spec = cc;
-                break;
-            }
-        }
-        if (spec == null) {
-            throw new DemoException('No candidate "' + candidateCode + '" in the fixture.');
-        }
-
-        List<AAO_Model.Span> spans = new List<AAO_Model.Span>();
-        for (Object so : (List<Object>) spec.get('spans')) {
-            Map<String, Object> sp = (Map<String, Object>) so;
-            spans.add(
-                AAO_Seed.resolve(
-                    src,
-                    (String) sp.get('quote'),
-                    (String) sp.get('speaker'),
-                    (String) sp.get('element')
-                )
-            );
-        }
-
-        AAO_Candidate__c cand = new AAO_Candidate__c(
-            AAO_Evidence_Contract__c = c.contractByCode
-                .get((String) spec.get('contractCode'))
-                .Id,
-            AAO_Source__c = src.Id,
-            AAO_Opportunity__c = oppId,
-            AAO_Account__c = c.acct.Id,
-            AAO_Subject_Type__c = (String) spec.get('subjectType'),
-            AAO_Proposed_Verdict__c = (String) spec.get('proposedVerdict'),
-            AAO_Spans__c = AAO_Model.serializeSpans(spans),
-            AAO_Element_Coverage__c = AAO_Model.serializeCoverage(
-                AAO_Model.newCoverage(
-                    AAO_Seed.strings((List<Object>) spec.get('covered')),
-                    AAO_Seed.strings((List<Object>) spec.get('missing'))
-                )
-            ),
-            AAO_Stage__c = 'Adjudicated',
-            AAO_Outcome__c = 'Pending',
-            AAO_Charter__c = CHARTER,
-            AAO_Charter_Version__c = CHARTER_VERSION,
-            AAO_Publication_State__c = 'Live',
-            AAO_Synthetic__c = true
-        );
-        insert cand;
-        return cand;
-    }
-
-    /** The complete ledger for this pass: a row for every proposition nothing was said about. */
-    private static List<AAO_Candidate__c> logAbstentions(Ctx c, AAO_Source__c src, Id oppId) {
-        Set<Id> proposedFor = new Set<Id>();
-        for (AAO_Candidate__c cd : [
-            SELECT AAO_Evidence_Contract__c
-            FROM AAO_Candidate__c
-            WHERE AAO_Source__c = :src.Id
-        ]) {
-            proposedFor.add(cd.AAO_Evidence_Contract__c);
-        }
-
-        List<AAO_Candidate__c> rows = new List<AAO_Candidate__c>();
-        for (AAO_Evidence_Contract__c ec : c.contractByCode.values()) {
-            if (proposedFor.contains(ec.Id)) {
-                continue;
-            }
-            rows.add(
-                new AAO_Candidate__c(
-                    AAO_Evidence_Contract__c = ec.Id,
-                    AAO_Source__c = src.Id,
-                    AAO_Opportunity__c = oppId,
-                    AAO_Account__c = c.acct.Id,
-                    AAO_Subject_Type__c = 'Opportunity',
-                    AAO_Stage__c = 'Adjudicated',
-                    AAO_Outcome__c = 'Abstained',
-                    AAO_Abstention_Reason__c = 'nobody_said',
-                    AAO_Charter__c = CHARTER,
-                    AAO_Charter_Version__c = CHARTER_VERSION,
-                    AAO_Publication_State__c = 'Live',
-                    AAO_Synthetic__c = true
-                )
-            );
-        }
-        insert rows;
-        return rows;
-    }
-
-    private static Boolean alreadyCommitted(Id sourceId) {
-        return [SELECT COUNT() FROM AAO_Claim__c WHERE AAO_Source__c = :sourceId] > 0;
-    }
-
     // ======================================================================== status
 
     public static String status() {
@@ -420,7 +275,7 @@ public class AAO_Demo {
         for (Opportunity o : [
             SELECT Id, Name
             FROM Opportunity
-            WHERE Name IN (:OPP_MAIN, :OPP_NEGATIVE)
+            WHERE Name IN (:OPP_MAIN, :OPP_NEGATIVE, :OPP_LIVE)
             ORDER BY Name
         ]) {
             out.add('--- ' + o.Name + ' (' + o.Id + ')');
@@ -515,7 +370,7 @@ public class AAO_Demo {
             // standard object for a rehearsal. They are matched by name instead, which is
             // why the names are deliberately unmistakable.
             List<Opportunity> opps = [
-                SELECT Id FROM Opportunity WHERE Name IN (:OPP_MAIN, :OPP_NEGATIVE)
+                SELECT Id FROM Opportunity WHERE Name IN (:OPP_MAIN, :OPP_NEGATIVE, :OPP_LIVE)
             ];
             out.add('opportunities ' + del(opps));
             List<Account> accts = [SELECT Id FROM Account WHERE Name = :ACCOUNT_NAME];

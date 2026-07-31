@@ -53,9 +53,91 @@ public class AAO_Seed {
         return (Map<String, Object>) JSON.deserializeUntyped(rs[0].Body.toString());
     }
 
+    /**
+     * The mini-rubric as contracts, found or created, keyed by proposition code. Shared by
+     * the durable runner and the live pipeline so neither can seed a rubric the other
+     * would not recognise.
+     *
+     * Found by question record id at this rubric version. Re-running creates nothing: the
+     * contract key is unique, and a contract is per proposition per version of its text.
+     */
+    public static Map<String, AAO_Evidence_Contract__c> ensureContracts(
+        Map<String, Object> fixture
+    ) {
+        Map<String, AAO_Evidence_Contract__c> byCode =
+            new Map<String, AAO_Evidence_Contract__c>();
+        for (AAO_Evidence_Contract__c ec : [
+            SELECT Id, AAO_Question_Record_Id__c
+            FROM AAO_Evidence_Contract__c
+            WHERE AAO_Rubric_Version__c = :RUBRIC_VERSION
+        ]) {
+            byCode.put(ec.AAO_Question_Record_Id__c, ec);
+        }
+
+        List<AAO_Evidence_Contract__c> toCreate = new List<AAO_Evidence_Contract__c>();
+        List<String> newCodes = new List<String>();
+        for (Object o : (List<Object>) fixture.get('rubric')) {
+            Map<String, Object> q = (Map<String, Object>) o;
+            String code = (String) q.get('code');
+            if (byCode.containsKey(code)) {
+                continue;
+            }
+            List<Object> elements = (List<Object>) q.get('elements');
+            newCodes.add(code);
+            toCreate.add(
+                new AAO_Evidence_Contract__c(
+                    AAO_Question_Record_Id__c = code,
+                    AAO_Proposition_Code__c = code,
+                    AAO_Proposition_Short__c = (String) q.get('short'),
+                    AAO_Proposition_Text__c = (String) q.get('proposition'),
+                    AAO_Guidance_Text__c = (String) q.get('guidance'),
+                    AAO_Elements__c = JSON.serialize(elements),
+                    AAO_Element_Count__c = elements.size(),
+                    AAO_Elements_Basis__c = (String) q.get('elementsBasis'),
+                    AAO_Route__c = (String) q.get('route'),
+                    AAO_Speaker_Requirement__c = (String) q.get('speakerRequirement'),
+                    AAO_Decay_Class__c = (String) q.get('decayClass'),
+                    AAO_Gating__c = (Boolean) q.get('gating'),
+                    AAO_Solicit__c = (Boolean) q.get('solicit'),
+                    AAO_Per_Person_Source__c = (String) q.get('perPersonSource'),
+                    AAO_Requires_Ratification__c = (Boolean) q.get('requiresRatification'),
+                    AAO_Contract_State__c = (String) q.get('contractState'),
+                    AAO_Rubric_Version__c = RUBRIC_VERSION
+                )
+            );
+        }
+        if (!toCreate.isEmpty()) {
+            insert toCreate;
+            for (Integer i = 0; i < newCodes.size(); i++) {
+                byCode.put(newCodes[i], toCreate[i]);
+            }
+        }
+        return byCode;
+    }
+
     // --------------------------------------------------------------------- loading
 
+    /**
+     * Stages fixtures. It does not adjudicate them.
+     *
+     * Auto-ingest is off for the whole of this method, and that is not a convenience. The
+     * after-insert trigger on AAO_Source__c means any transaction that inserts a Source now
+     * enqueues adjudication for it, and a fixture loader inserting four transcripts would
+     * silently commit all four at Test.stopTest -- on deals the calling test never asked
+     * about. Tests drive the pipeline explicitly; AAO_LiveIngestTest turns AUTO back on
+     * where the async path is the thing under test.
+     */
     public static Loaded load() {
+        Boolean priorAuto = AAO_Ingest.AUTO;
+        AAO_Ingest.AUTO = false;
+        try {
+            return loadStaged();
+        } finally {
+            AAO_Ingest.AUTO = priorAuto;
+        }
+    }
+
+    private static Loaded loadStaged() {
         Map<String, Object> f = fixture();
         Loaded out = new Loaded();
 

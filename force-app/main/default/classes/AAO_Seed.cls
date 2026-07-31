@@ -107,7 +107,18 @@ public class AAO_Seed {
             );
         }
         if (!toCreate.isEmpty()) {
-            insert toCreate;
+            // Ruled session 15. Seeder-created rows are synthetic by the standing law, and
+            // this is the seeder. It used to inherit whatever MARK happened to be set,
+            // which meant a contract's marker depended on which entry created it: marked
+            // from the demo path, unmarked from AAO_Seed.load. With a delete law on the
+            // object that inconsistency decided whether the purge could remove a row.
+            Boolean priorMark = AAO_Synthetic.MARK;
+            AAO_Synthetic.MARK = true;
+            try {
+                insert toCreate;
+            } finally {
+                AAO_Synthetic.MARK = priorMark;
+            }
             for (Integer i = 0; i < newCodes.size(); i++) {
                 byCode.put(newCodes[i], toCreate[i]);
             }

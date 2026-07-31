@@ -197,20 +197,9 @@ public class AAO_Extract {
             );
         }
 
-        List<AAO_Evidence_Contract__c> contracts = [
-            SELECT
-                Id,
-                AAO_Proposition_Code__c,
-                AAO_Proposition_Short__c,
-                AAO_Proposition_Text__c,
-                AAO_Guidance_Text__c,
-                AAO_Elements__c,
-                AAO_Speaker_Requirement__c,
-                AAO_Per_Person_Source__c
-            FROM AAO_Evidence_Contract__c
-            WHERE AAO_Contract_State__c != 'Superseded'
-            ORDER BY AAO_Proposition_Code__c
-        ];
+        // Scoped to one rubric. An unscoped read here sends every generation of every
+        // proposition to the charter at once, and it reads as thoroughness.
+        List<AAO_Evidence_Contract__c> contracts = AAO_Rubric.contracts();
         if (contracts.isEmpty()) {
             throw new ExtractException(
                 'No evidence contracts in the org. There is nothing to ask about.'

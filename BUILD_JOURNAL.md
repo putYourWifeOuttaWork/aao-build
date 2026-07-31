@@ -2027,3 +2027,92 @@ at on screen since session 6.
    populated. The run sheet's line *"if he clicks the Flag tab, it is empty"* is now wrong and
    the sheet needs a bump.
 4. Everything remaining on session 4's list.
+
+---
+
+## 2026-07-31 · session 15 · one rubric per deal, and who owns a derived row
+
+**Did.** Items 41, 42, 43. **125 AAO tests, 125 passing**, discovery exit test still green.
+
+### 41. Rubric scoping is a law, and it was hiding in two more readers
+
+`AAO_Rubric` is now the only reader of contracts. Session 14 scoped the flag raise and
+stopped there, which fixed the symptom. Promoting it to a law found the same hole twice more:
+
+- `AAO_Pipeline.liveContracts()` returned **every non-superseded contract in the org**.
+- `AAO_Extract.run()` queried the same way for the charter prompt.
+
+So after discovery ran, a model pass would have sent **twelve propositions where six were the
+deal's**, and written an abstention row for every one of the six that were not. **It would
+have read as thoroughness.** More propositions considered, more reds, more abstentions
+logged: every number moves in the direction that looks like rigour. That is why this is a
+law rather than a fix.
+
+**The sandbox collision is a miniature of the real one**, and the class header says so. Two
+rubrics in one org is not an artefact of having a seeded and a derived rubric here. It is
+what a customer editing their rubric mid-quarter produces: a contract is per proposition per
+version of its text, an edit creates a new generation, and deals opened before the edit are
+still adjudicated under the old one. **Both generations are live and correct at the same
+time.** Any reader asking "which contracts exist" rather than "which contracts is this deal
+judged under" mixes them.
+
+**The honest limit, recorded in the class.** There is no field saying which rubric a deal is
+adjudicated under. `AAO_Rubric.active` is a caller-set static, so the binding lives in
+whoever starts the run rather than on the deal. That is enough for one rubric per org and
+**not enough for the mid-quarter edit this law exists to survive**. The binding wants to be a
+field. Until it is, `AAO_Rubric` is the single place that would have to change.
+
+### 42. Who owns a derived row
+
+**Seeder-created rows are synthetic by the standing law.** `AAO_Seed.ensureContracts` now
+marks unconditionally instead of inheriting whatever `MARK` happened to be set, which is what
+made a contract's marker depend on which entry created it: marked from the demo path,
+unmarked from `AAO_Seed.load`. With a delete law on the object, that inconsistency decided
+whether the purge could remove a row.
+
+**Discovery-derived rows are real system output and stay unmarked.** Six existing ones were
+unmarked to match. They are therefore undeletable under session 14's law, which is correct
+rather than awkward: **supersede is their retirement path.**
+
+That forced a better design than the one it replaced. Discovery no longer purges and
+reinserts its contracts; it **reuses them by contract key**. Unchanged upstream text produces
+the same question record id and the same content hash, therefore the same key, therefore the
+same contract:
+
+```
+AAO_T1: unchanged since the last pass, contract reused
+...
+purge: flags 2, bases 0, claims 2, candidates 12, answers 1, sources 2,
+       derived contracts kept 6
+```
+
+That is what a contract is supposed to do, and the delete-and-reinsert it replaced was
+quietly minting a new identity for the same proposition on every run.
+
+**A state leak found while doing it.** The discovery purge cleared the deal's evidence and
+left its flags, so a red cleared by a previous run stayed cleared against evidence that no
+longer existed, and a reset did not return the deal to day one. Flags are purged now, and the
+deal reads `raised 2, standing 2` at day one and `standing 1` after both passes.
+
+### 43. Escalation stays unbuilt, and the reason is the point
+
+Recorded rather than built. **`AAO_Escalation_Threshold__c` is a percentage of a denominator
+that does not exist yet.** Age against what? The answer is Altify's derived close date, and
+that requires Altify configured on the deal: an `ALTF__Opportunity__c` record with a plan and
+a date, which is precisely the projection-era dependency this build has been careful not to
+take on.
+
+An escalation threshold measured against anything else would be measuring elapsed time
+against a number we invented, and reporting it as urgency. **A red standing at uniform weight
+is honest for now**: it says this gating condition is unmet, and it does not pretend to know
+how late that makes the deal. It lands with projection-era work, not before.
+
+**Owed.**
+
+1. **The rubric binding wants to be a field on the deal**, not a static on the run.
+2. **Supersede has no path.** A contract whose upstream text changes should be superseded and
+   replaced; today discovery would simply insert the new generation and leave the old one
+   live, which is exactly the two-generations condition item 41 is about.
+3. Escalation, with projection.
+4. The run sheet's "the Flag tab is empty" line, still wrong.
+5. Everything remaining on session 4's list.

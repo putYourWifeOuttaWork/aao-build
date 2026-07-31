@@ -500,23 +500,16 @@ public class AAO_Pipeline {
         return out;
     }
 
-    /** The rubric as the org actually holds it. Read only, so it is callout safe. */
+    /**
+     * The rubric THIS DEAL is adjudicated under, read only so it is callout safe.
+     *
+     * Was "every non-superseded contract in the org", which after discovery ran meant two
+     * rubrics at once: twelve propositions sent to the charter where six were the deal's,
+     * and an abstention row for every one of the six that were not. Session 15 made
+     * rubric scoping a law and AAO_Rubric the only reader.
+     */
     public static Map<String, AAO_Evidence_Contract__c> liveContracts() {
-        Map<String, AAO_Evidence_Contract__c> byCode = new Map<String, AAO_Evidence_Contract__c>();
-        for (AAO_Evidence_Contract__c ec : [
-            SELECT
-                Id,
-                AAO_Proposition_Code__c,
-                AAO_Proposition_Short__c,
-                AAO_Proposition_Text__c,
-                AAO_Elements__c
-            FROM AAO_Evidence_Contract__c
-            WHERE AAO_Contract_State__c != 'Superseded'
-            ORDER BY AAO_Proposition_Code__c
-        ]) {
-            byCode.put(ec.AAO_Proposition_Code__c, ec);
-        }
-        return byCode;
+        return AAO_Rubric.byCode();
     }
 
     // ====================================================================== internals

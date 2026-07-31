@@ -288,6 +288,29 @@ public class AAO_Discovery {
 
         Map<String, ALTF__Assessment_Question__c> byCode = questionsByCode(wanted);
 
+        // What discovery has already derived. Ruled session 15: a derived contract is real
+        // system output, not a rehearsal row, so it is NOT marked synthetic and is never
+        // deleted. Re-running discovery against unchanged text must find the same contract
+        // rather than make a second one, and the contract key is exactly the test for
+        // that: question record id plus the hash of its proposition and guidance. Unchanged
+        // text, same key, same contract.
+        Map<String, AAO_Evidence_Contract__c> existingByKey =
+            new Map<String, AAO_Evidence_Contract__c>();
+        for (AAO_Evidence_Contract__c ec : [
+            SELECT
+                Id,
+                AAO_Contract_Key__c,
+                AAO_Proposition_Code__c,
+                AAO_Question_Record_Id__c,
+                AAO_Elements_Basis__c,
+                AAO_Element_Count__c,
+                AAO_Contract_State__c
+            FROM AAO_Evidence_Contract__c
+            WHERE AAO_Rubric_Version__c = :RUBRIC_VERSION
+        ]) {
+            existingByKey.put(ec.AAO_Contract_Key__c, ec);
+        }
+
         // ITEM 37. "The table has no rows" and "my query matched none of them" are
         // different facts and only one of them is the customer's fault. Reporting an
         // empty rubric for the second is how the LIKE defect hid: a filter bug looks
@@ -359,6 +382,17 @@ public class AAO_Discovery {
                 d.inferred++;
             }
 
+            String expectedKey = AAO_ContractKey.compose(
+                q.Id,
+                AAO_ContractKey.contentHash(propositionText, q.ALTF__Help__c)
+            );
+            AAO_Evidence_Contract__c already = existingByKey.get(expectedKey);
+            if (already != null) {
+                d.byCode.put(code, already);
+                d.notes.add(code + ': unchanged since the last pass, contract reused');
+                continue;
+            }
+
             toInsert.add(
                 new AAO_Evidence_Contract__c(
                     // Identity is the rubric record itself, at last. Until tonight this
@@ -388,24 +422,24 @@ public class AAO_Discovery {
                 )
             );
         }
-        if (toInsert.isEmpty()) {
+        if (d.byCode.isEmpty() && toInsert.isEmpty()) {
             throw new DiscoveryException('Discovery produced no contracts.');
         }
-        // Marked, because these are rehearsal rows on a rehearsal deal and the purge is
-        // marker-guarded. Unmarked, they survived the purge and the next run collided on
-        // AAO_Contract_Key__c. Worth noting what that collision proved: the key is
-        // questionRecordId plus content hash, the CONTENT did not change when the
-        // proposition moved from Criterion Text to Long Question, so identity held. That
-        // is the composer behaving exactly as designed.
-        Boolean prior = AAO_Synthetic.MARK;
-        AAO_Synthetic.MARK = true;
-        try {
-            insert toInsert;
-        } finally {
-            AAO_Synthetic.MARK = prior;
-        }
-        for (AAO_Evidence_Contract__c ec : toInsert) {
-            d.byCode.put(ec.AAO_Proposition_Code__c, ec);
+        if (!toInsert.isEmpty()) {
+            // Deliberately UNMARKED. A derived contract is what the system read out of the
+            // customer's own rubric; it is real output, not a rehearsal artefact, and the
+            // synthetic marker would say otherwise. It is therefore also undeletable under
+            // the session 14 law, which is correct: supersede is its retirement path.
+            Boolean prior = AAO_Synthetic.MARK;
+            AAO_Synthetic.MARK = false;
+            try {
+                insert toInsert;
+            } finally {
+                AAO_Synthetic.MARK = prior;
+            }
+            for (AAO_Evidence_Contract__c ec : toInsert) {
+                d.byCode.put(ec.AAO_Proposition_Code__c, ec);
+            }
         }
         return d;
     }
@@ -546,7 +580,22 @@ public class AAO_Discovery {
                 }
             }
 
+            // Day-one red against the DERIVED rubric, not the seeded one. Session 15's
+            // law: a deal is red against the rubric it is adjudicated under.
+            AAO_Synthetic.MARK = true;
+            try {
+                out.add(
+                    'day-one red: raised ' +
+                    AAO_Flags.raiseFor(new Set<Id>{ oppId }, RUBRIC_VERSION) +
+                    ', standing ' +
+                    AAO_Flags.standing(oppId)
+                );
+            } finally {
+                AAO_Synthetic.MARK = false;
+            }
+
             // The pipeline judges against what discovery produced, not against the seed.
+            AAO_Rubric.active = RUBRIC_VERSION;
             AAO_Pipeline.contractsOverride = d.byCode;
             AAO_Synthetic.MARK = true;
             try {
@@ -561,8 +610,10 @@ public class AAO_Discovery {
             } finally {
                 AAO_Synthetic.MARK = false;
                 AAO_Pipeline.contractsOverride = null;
+                AAO_Rubric.active = AAO_Seed.RUBRIC_VERSION;
             }
 
+            out.add('reds standing after both passes: ' + AAO_Flags.standing(oppId));
             out.add(verify(oppId));
             List<String> replayDiff = AAO_Replay.diff(
                 AAO_Replay.rebuild(oppId),
@@ -651,6 +702,13 @@ public class AAO_Discovery {
         try {
             if (!opps.isEmpty()) {
                 Set<Id> ids = new Map<Id, Opportunity>(opps).keySet();
+                // Flags too. Purging the deal's evidence and leaving its flags meant a
+                // red cleared by a previous run stayed cleared against evidence that no
+                // longer existed, so a reset did not return the deal to day one.
+                out.add('flags ' + del([
+                    SELECT Id FROM AAO_Flag__c
+                    WHERE AAO_Opportunity__c IN :ids AND AAO_Synthetic__c = TRUE
+                ]));
                 out.add('bases ' + del([
                     SELECT Id FROM AAO_Claim_Basis__c
                     WHERE AAO_Claim__r.AAO_Opportunity__c IN :ids AND AAO_Synthetic__c = TRUE
@@ -672,16 +730,20 @@ public class AAO_Discovery {
                     WHERE AAO_Opportunity__c IN :ids AND AAO_Synthetic__c = TRUE
                 ]));
             }
-            // By rubric version alone. AAO_Evidence_Contract__c carries no delete law,
-            // unlike Source, Claim and Flag, so the synthetic marker here was only ever a
-            // query filter and not a guard. "discovered-v1" is our namespace by
-            // construction, which makes it the honest ownership test. The first version of
-            // this filtered on the marker as well and stranded six unmarked contracts from
-            // an earlier run, which then collided on AAO_Contract_Key__c.
-            out.add('derived contracts ' + del([
-                SELECT Id FROM AAO_Evidence_Contract__c
-                WHERE AAO_Rubric_Version__c = :RUBRIC_VERSION
-            ]));
+            // CONTRACTS ARE NOT PURGED. Ruled session 15: derived contracts are real
+            // system output and the session 14 delete law makes them undeletable anyway.
+            // Re-running discovery reuses them by contract key, so there is nothing to
+            // clean up: unchanged text produces the same key and the same row. A contract
+            // whose text HAS changed upstream is superseded, not deleted, and that path is
+            // still owed.
+            out.add(
+                'derived contracts kept ' +
+                [
+                    SELECT COUNT()
+                    FROM AAO_Evidence_Contract__c
+                    WHERE AAO_Rubric_Version__c = :RUBRIC_VERSION
+                ]
+            );
         } finally {
             AAO_Synthetic.PURGING = false;
         }

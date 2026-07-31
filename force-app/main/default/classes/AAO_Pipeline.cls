@@ -200,7 +200,7 @@ public class AAO_Pipeline {
             // Apex forbids a callout after DML in the same transaction, so if a single
             // row were written above this line the model call would fail at runtime with
             // an error that reads like a platform problem rather than an ordering one.
-            contracts = liveContracts(src.AAO_Opportunity__c);
+            contracts = liveContracts();
             if (contracts.isEmpty()) {
                 o.status = 'no_staged_proposal';
                 o.note = 'No evidence contracts exist in this org, so there is nothing to ask.';
@@ -232,13 +232,6 @@ public class AAO_Pipeline {
                 : contractsOverride;
             proposals = fromFixture(staged, src);
         }
-
-        // Bind on first adjudication, after the callout, because it is DML. A deal already
-        // bound is left alone: its claims were judged under that rubric.
-        AAO_Rubric.bind(
-            src.AAO_Opportunity__c,
-            proposalSource == FROM_MODEL ? AAO_Rubric.active : AAO_Seed.RUBRIC_VERSION
-        );
 
         Boolean mark = src.AAO_Synthetic__c == true;
         Boolean priorMark = AAO_Synthetic.MARK;
@@ -510,18 +503,15 @@ public class AAO_Pipeline {
     /**
      * The rubric THIS DEAL is adjudicated under, read only so it is callout safe.
      *
-     * Was "every non-superseded contract in the org", which after discovery ran meant two
-     * rubrics at once: twelve propositions sent to the charter where six were the deal's,
-     * and an abstention row for every one of the six that were not. Session 15 made
-     * rubric scoping a law and AAO_Rubric the only reader.
+     * Was "every non-superseded contract in the org", which after discovery ran meant the
+     * seeded fixture and the derived rubric at once: twelve propositions sent to the
+     * charter where six were the product's, and an abstention row for every one of the six
+     * that were not. Session 15 made this a law and AAO_Rubric the only reader; session 17
+     * settled which set the law selects. The product's set is the org's current questions,
+     * and the seeded fixture is not one of them.
      */
     public static Map<String, AAO_Evidence_Contract__c> liveContracts() {
         return AAO_Rubric.byCode();
-    }
-
-    /** The rubric THIS DEAL is judged under, read from the deal itself. */
-    public static Map<String, AAO_Evidence_Contract__c> liveContracts(Id opportunityId) {
-        return AAO_Rubric.byCodeForDeal(opportunityId);
     }
 
     // ====================================================================== internals

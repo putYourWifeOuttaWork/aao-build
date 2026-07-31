@@ -199,6 +199,11 @@ private class AAO_ExtractTest {
 
     private static Id stageDeal() {
         AAO_Ingest.AUTO = false;
+        // These tests drive the MODEL path, which is the product path, and by session 17's
+        // rule the product path reads unmarked contracts. So the rubric is stood up
+        // unmarked here, before scaffold, which then finds it and leaves it alone. The
+        // contract key is unique, so a proposition cannot be in both populations at once.
+        AAO_Seed.ensureContracts(AAO_Seed.fixture(), false);
         AAO_Demo.Ctx c = AAO_Demo.scaffold();
         Id oppId = c.oppByDeal.get(AAO_Demo.OPP_LIVE);
         AAO_Synthetic.MARK = true;
@@ -656,6 +661,7 @@ private class AAO_ExtractTest {
     @IsTest
     static void everyVocabularyInTheSchemaIsBuiltFromOrgRecords() {
         AAO_Ingest.AUTO = false;
+        AAO_Seed.ensureContracts(AAO_Seed.fixture(), false);
         AAO_Demo.Ctx c = AAO_Demo.scaffold();
         List<AAO_Evidence_Contract__c> ecs = [
             SELECT
@@ -1145,6 +1151,7 @@ private class AAO_ExtractTest {
     @IsTest
     static void theSchemaStillRequiresAnInterpretationField() {
         AAO_Ingest.AUTO = false;
+        AAO_Seed.ensureContracts(AAO_Seed.fixture(), false);
         AAO_Demo.scaffold();
         List<AAO_Evidence_Contract__c> ecs = [
             SELECT

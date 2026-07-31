@@ -163,10 +163,9 @@ public class AAO_Demo {
         AAO_Synthetic.MARK = true;
         try {
             c.contractByCode = AAO_Seed.ensureContracts(c.fixture);
-            for (Id oppId : c.oppByDeal.values()) {
-                AAO_Rubric.bind(oppId, AAO_Seed.RUBRIC_VERSION);
-            }
-            AAO_Flags.raiseFor(new Set<Id>(c.oppByDeal.values()), AAO_Seed.RUBRIC_VERSION);
+            // Explicitly the synthetic set. The rehearsal answers the fixture's questions,
+            // and the product path cannot see them.
+            AAO_Flags.raiseFor(new Set<Id>(c.oppByDeal.values()), true);
         } finally {
             AAO_Synthetic.MARK = false;
         }

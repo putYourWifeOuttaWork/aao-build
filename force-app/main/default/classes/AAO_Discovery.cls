@@ -570,9 +570,6 @@ public class AAO_Discovery {
             oppId = found[0].Id;
         }
 
-        // The binding is a fact about the deal, written at cold start. Session 16.
-        AAO_Rubric.bind(oppId, RUBRIC_VERSION);
-
         List<ALTF__Opportunity__c> alt = [
             SELECT Id FROM ALTF__Opportunity__c WHERE ALTF__Opportunity__c = :oppId LIMIT 1
         ];
@@ -641,13 +638,13 @@ public class AAO_Discovery {
                 }
             }
 
-            // Day-one red against the DERIVED rubric, not the seeded one. Session 15's
-            // law: a deal is red against the rubric it is adjudicated under.
+            // Day-one red against the PRODUCT set, which is what discovery derived. The
+            // seeded fixture is marked synthetic and invisible here.
             AAO_Synthetic.MARK = true;
             try {
                 out.add(
                     'day-one red: raised ' +
-                    AAO_Flags.raiseFor(new Set<Id>{ oppId }, RUBRIC_VERSION) +
+                    AAO_Flags.raiseFor(new Set<Id>{ oppId }, false) +
                     ', standing ' +
                     AAO_Flags.standing(oppId)
                 );
@@ -656,7 +653,6 @@ public class AAO_Discovery {
             }
 
             // The pipeline judges against what discovery produced, not against the seed.
-            AAO_Rubric.active = RUBRIC_VERSION;
             AAO_Pipeline.contractsOverride = d.byCode;
             AAO_Synthetic.MARK = true;
             try {
@@ -671,7 +667,6 @@ public class AAO_Discovery {
             } finally {
                 AAO_Synthetic.MARK = false;
                 AAO_Pipeline.contractsOverride = null;
-                AAO_Rubric.active = AAO_Seed.RUBRIC_VERSION;
             }
 
             out.add('reds standing after both passes: ' + AAO_Flags.standing(oppId));

@@ -22,7 +22,7 @@ Wave 1 plus Flag is live: seven objects (136 fields), five triggers, three froze
 composers, span verification, the speaker rule, commit, replay, the mini-rubric and the
 dummy transcripts, plus two charters, the credential scaffolding they call through, and the
 second reader that decides coverage, discovery with supersede, and day-one red.
-**127 AAO tests, 127 passing.** One pre-existing sandbox
+**128 AAO tests, 128 passing.** One pre-existing sandbox
 test still fails on a customer validation rule, and that failure is not ours.
 
 **The rehearsal is durable.** `AAO Demo - Tungsten Rehearsal` carries two claims and one
@@ -2206,3 +2206,67 @@ only. The journal remains the write surface.
    meaning under a stable identity. Fine while the fixture is frozen, wrong the moment it is
    not.
 3. Escalation, with projection. Everything remaining on session 4's list.
+
+---
+
+## 2026-07-31 · session 17 · version is attribution, never routing
+
+**Did.** Item 45 revised; the previous 45 is cancelled and its field deleted from source and
+from the org. **128 AAO tests, 128 passing**, discovery exit test green.
+
+**The ruling, and it corrects me.** A deal always answers the org's **current active
+questions**. Version is **attribution on receipts** and never routing: a claim records the
+contract it was adjudicated under so anyone can see what the question said at the time, which
+is a fact about the receipt rather than an instruction about which questions to ask next.
+
+Session 16 built the opposite. It read a rubric version off the deal to decide which
+questions to ask, and its justification was that two rubrics coexist in the org. **That is a
+test-org artefact, not a product state**: it exists because this sandbox holds a seeded
+fixture beside a derived rubric, and no customer org does that. Building a routing mechanism
+on it made a scaffolding condition permanent.
+
+`Opportunity.AAO_Rubric_Version__c` is deleted. Confirmed gone by query: no `AAO%` field
+remains on Opportunity.
+
+**The rule that replaces it.** The product path reads contracts that are **active,
+non-superseded and unmarked**. Seeded rows are synthetic and invisible to it. Test and demo
+entries opt into the synthetic set **by saying so at the call site**.
+
+```
+PRODUCT set (unmarked, active): 6
+  AAO_T1..AAO_T6  rubric=discovered-v1   (T5 Awaiting_Ratification, the rest Derived)
+SYNTHETIC set (opt-in): 6
+```
+
+**The default is the safe one**, and that is the point of choosing this discriminator. A new
+reader that calls `AAO_Rubric.contracts()` and has never heard of any of this gets the
+product's questions and never the fixture's. An accident fails towards asking real questions
+about nothing rather than answering real deals with rehearsal questions.
+
+**The caller-set static is retired.** It made the answer depend on execution order, and
+nothing that reads a rubric should have to know what ran first. The scoped-reader structure
+from item 41 stays: `AAO_Rubric` is still the only reader, and it still exists because an
+unscoped read gave every deal four reds where two were its own.
+
+**Supersede is untouched**, exactly as specified. When upstream text changes the old
+generation retires and the new one is simply the question. That is now the *only* mechanism
+by which a rubric changes generation, which is what the ruling means: there is no old
+generation still being asked of anybody, only old claims still naming what they were judged
+under.
+
+**Read from the org.** The extraction tests failed on the revision, and they were right to.
+They drive the model path, the model path is the product path, and the only rubric they had
+was the marked fixture, so the product set was empty and every one of them reported *"No
+evidence contracts in the org. There is nothing to ask about."* The fix is not a seam: they
+now stand up their rubric **unmarked**, via a new `AAO_Seed.ensureContracts(fixture,
+synthetic)`, which is them declaring that what they are testing is the org's questions rather
+than a rehearsal fixture. The contract key is unique, so a proposition cannot exist in both
+populations at once and the choice has to be made once, at creation.
+
+**Assumed, not verified.** That no other caller depends on seeing both populations at once.
+`AAO_Rubric` is the only reader and both its entries are explicit, so the compiler would have
+caught a third, but nothing proves a future one will not call `contracts()` meaning
+`contracts(true)`. The naming is the only guard.
+
+**Owed.** Unchanged, minus the binding, which no longer exists to be owed. The proof register
+is still behind the org, and nothing supersedes a seeded contract.

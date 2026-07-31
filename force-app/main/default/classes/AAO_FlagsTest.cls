@@ -72,7 +72,7 @@ private class AAO_FlagsTest {
         Integer before = AAO_Flags.standing(c.oppByDeal.get(AAO_Demo.OPP_LIVE));
 
         Test.startTest();
-        Integer raised = AAO_Flags.raiseFor(opps, AAO_Seed.RUBRIC_VERSION);
+        Integer raised = AAO_Flags.raiseFor(opps, true);
         Test.stopTest();
 
         System.assertEquals(0, raised);
@@ -163,23 +163,38 @@ private class AAO_FlagsTest {
     }
 
     /**
-     * A deal is red against the rubric it is adjudicated under. Once discovery has run an
-     * org holds more than one rubric, and the first version of this flagged every deal
-     * against every rubric in the org.
+     * The product path cannot see the fixture. Session 17: a deal answers the org's current
+     * active questions, and the seeded rubric is marked synthetic precisely so it is not
+     * one of them. Before the rule, an org holding both gave every deal four reds where
+     * two were its own.
      */
     @IsTest
-    static void aDealIsRedOnlyAgainstItsOwnRubric() {
+    static void seededContractsAreInvisibleToTheProductPath() {
         AAO_Demo.Ctx c = scaffold();
         Id oppId = c.oppByDeal.get(AAO_Demo.OPP_LIVE);
-        Integer own = AAO_Flags.standing(oppId);
+        Integer fromFixture = AAO_Flags.standing(oppId);
+        System.assert(fromFixture > 0, 'The rehearsal raised its own reds.');
 
-        // A second rubric in the same org, gating, and nothing to do with this deal.
-        AAO_Evidence_Contract__c other = new AAO_Evidence_Contract__c(
-            AAO_Question_Record_Id__c = 'OTHER_RUBRIC_Q1',
-            AAO_Proposition_Code__c = 'OTHER_1',
-            AAO_Proposition_Short__c = 'Somebody else rubric',
-            AAO_Proposition_Text__c = 'A gating proposition from another rubric entirely.',
-            AAO_Guidance_Text__c = 'Not this deal business.',
+        System.assertEquals(
+            0,
+            AAO_Rubric.contracts().size(),
+            'Nothing unmarked exists yet, so the product set is empty. An empty product ' +
+            'set is the cold-start condition, not a view of the fixture.'
+        );
+        System.assertEquals(
+            fromFixture,
+            AAO_Flags.standing(oppId),
+            'And asking the product set raised nothing new.'
+        );
+
+        // A real question, unmarked, the way discovery writes one.
+        AAO_Synthetic.MARK = false;
+        insert new AAO_Evidence_Contract__c(
+            AAO_Question_Record_Id__c = 'PRODUCT_Q1',
+            AAO_Proposition_Code__c = 'PRODUCT_1',
+            AAO_Proposition_Short__c = 'A real question',
+            AAO_Proposition_Text__c = 'A gating proposition the org actually asks.',
+            AAO_Guidance_Text__c = 'Real guidance.',
             AAO_Elements__c = '[{"id":"e1","text":"the only part"}]',
             AAO_Element_Count__c = 1,
             AAO_Elements_Basis__c = 'Authored',
@@ -188,22 +203,40 @@ private class AAO_FlagsTest {
             AAO_Decay_Class__c = 'Standing',
             AAO_Gating__c = true,
             AAO_Contract_State__c = 'Ratified',
-            AAO_Rubric_Version__c = 'some-other-rubric'
+            AAO_Rubric_Version__c = 'discovered-v1'
         );
-        insert other;
 
         Test.startTest();
-        Integer raised = AAO_Flags.raiseFor(
-            new Set<Id>{ oppId },
-            AAO_Seed.RUBRIC_VERSION
-        );
+        Integer raised = AAO_Flags.raiseFor(new Set<Id>{ oppId });
         Test.stopTest();
 
-        System.assertEquals(0, raised);
+        System.assertEquals(1, raised, 'The product set has exactly one gating question.');
         System.assertEquals(
-            own,
+            1,
+            AAO_Rubric.contracts().size(),
+            'And the fixture is still invisible to it.'
+        );
+        System.assertEquals(
+            fromFixture + 1,
             AAO_Flags.standing(oppId),
-            'The other rubric gating proposition must not appear on this deal.'
+            'Both populations can stand on one deal in a test org. Neither can see the ' +
+            'other, which is the whole rule.'
+        );
+    }
+
+    /** The default is the safe one: forgetting the argument gets the product set. */
+    @IsTest
+    static void theDefaultReadIsTheProductSetNotTheFixture() {
+        scaffold();
+        System.assert(
+            AAO_Rubric.contracts(true).size() > 0,
+            'The fixture exists and has to be asked for by name.'
+        );
+        System.assertEquals(
+            0,
+            AAO_Rubric.contracts().size(),
+            'A reader that forgets the distinction gets the product questions and never ' +
+            'the fixture, which is the direction an accident should fail in.'
         );
     }
 }

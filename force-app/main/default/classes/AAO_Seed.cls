@@ -64,6 +64,23 @@ public class AAO_Seed {
     public static Map<String, AAO_Evidence_Contract__c> ensureContracts(
         Map<String, Object> fixture
     ) {
+        return ensureContracts(fixture, true);
+    }
+
+    /**
+     * `synthetic` decides which population these contracts join. True is the seeder's
+     * default and what the rehearsal uses: marked rows, invisible to the product path.
+     *
+     * False exists for tests that exercise the PRODUCT path, which by session 17's rule
+     * reads unmarked contracts only. Such a test is not opting out of the marker law, it
+     * is declaring that the rubric it is standing up is the org's questions rather than a
+     * rehearsal fixture. The contract key is unique, so the same proposition cannot exist
+     * in both populations at once and the choice has to be made once, here.
+     */
+    public static Map<String, AAO_Evidence_Contract__c> ensureContracts(
+        Map<String, Object> fixture,
+        Boolean synthetic
+    ) {
         Map<String, AAO_Evidence_Contract__c> byCode =
             new Map<String, AAO_Evidence_Contract__c>();
         for (AAO_Evidence_Contract__c ec : [
@@ -113,7 +130,7 @@ public class AAO_Seed {
             // from the demo path, unmarked from AAO_Seed.load. With a delete law on the
             // object that inconsistency decided whether the purge could remove a row.
             Boolean priorMark = AAO_Synthetic.MARK;
-            AAO_Synthetic.MARK = true;
+            AAO_Synthetic.MARK = synthetic == true;
             try {
                 insert toCreate;
             } finally {

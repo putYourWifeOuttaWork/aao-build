@@ -36,40 +36,27 @@ public class AAO_Flags {
      * Called on deal setup and again whenever discovery adds a gating contract, because a
      * rubric that gains a gating proposition gains it for deals that already exist.
      */
-    /**
-     * Each deal against its own rubric, read from the deal. The overload taking an explicit
-     * version stays for callers setting a deal up before it has been bound.
-     */
+    /** The product path: the org's current questions. */
     public static Integer raiseFor(Set<Id> opportunityIds) {
-        Integer raised = 0;
-        for (Id oppId : opportunityIds) {
-            raised += raiseFor(
-                new Set<Id>{ oppId },
-                AAO_Rubric.versionFor(oppId)
-            );
-        }
-        return raised;
+        return raiseFor(opportunityIds, false);
     }
 
-    public static Integer raiseFor(Set<Id> opportunityIds, String rubricVersion) {
+    public static Integer raiseFor(Set<Id> opportunityIds, Boolean synthetic) {
         if (opportunityIds == null || opportunityIds.isEmpty()) {
             return 0;
         }
 
-        // SCOPED TO A RUBRIC, and this is not a detail. Once discovery has run, an org
-        // holds more than one rubric at a time: the seeded one and the one derived from
-        // the customer's own tables. A raise path that asked only "which contracts are
-        // gating" flagged every deal against every rubric in the org, and the demo deals
-        // came back carrying four reds where two were theirs. A deal is red against the
-        // rubric it is adjudicated under, not against every rubric that exists.
-        List<AAO_Evidence_Contract__c> gating = [
-            SELECT Id
-            FROM AAO_Evidence_Contract__c
-            WHERE
-                AAO_Gating__c = TRUE
-                AND AAO_Contract_State__c != 'Superseded'
-                AND AAO_Rubric_Version__c = :rubricVersion
-        ];
+        // SCOPED TO THE APPLICABLE SET. Not a detail: an unscoped read gave every deal
+        // four reds where two were its own, because the org held a seeded fixture and a
+        // derived rubric at the same time. Session 17 settled the discriminator: the
+        // product's questions are the unmarked ones, and a demo or test entry says so at
+        // the call site rather than being guessed at here.
+        List<AAO_Evidence_Contract__c> gating = new List<AAO_Evidence_Contract__c>();
+        for (AAO_Evidence_Contract__c ec : AAO_Rubric.contracts(synthetic)) {
+            if (ec.AAO_Gating__c == true) {
+                gating.add(ec);
+            }
+        }
         if (gating.isEmpty()) {
             return 0;
         }
@@ -198,8 +185,8 @@ public class AAO_Flags {
      * already established. The one-shot for bringing an org that predates the raise path
      * into a consistent state.
      */
-    public static String backfill(Set<Id> opportunityIds, String rubricVersion) {
-        Integer raised = raiseFor(opportunityIds, rubricVersion);
+    public static String backfill(Set<Id> opportunityIds, Boolean synthetic) {
+        Integer raised = raiseFor(opportunityIds, synthetic);
 
         for (AAO_Flag__c f : [
             SELECT AAO_Opportunity__c, AAO_Evidence_Contract__c

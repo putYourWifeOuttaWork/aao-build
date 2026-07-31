@@ -156,7 +156,7 @@ public class AAO_Seed {
         }
 
         // ---- the sources
-        String rosterJson = rosterFor(people, out.contactByKey);
+        String rosterJson = rosterFor(people, out.contactByKey, out.internalDomains);
         List<AAO_Source__c> sources = new List<AAO_Source__c>();
         List<String> sourceCodes = new List<String>();
         for (Object o : (List<Object>) f.get('sources')) {
@@ -303,7 +303,7 @@ public class AAO_Seed {
     // ------------------------------------------------------------------- internals
 
     /** "2026-06-15T15:00:00Z" as a GMT datetime, without relying on JSON coercion. */
-    private static Datetime gmt(String iso8601) {
+    public static Datetime gmt(String iso8601) {
         return Datetime.valueOfGmt(iso8601.replace('T', ' ').removeEnd('Z'));
     }
 
@@ -311,7 +311,7 @@ public class AAO_Seed {
      * The first available Opportunity stage. Read from the org rather than assumed:
      * stage picklists are customer data and "Qualification" is a default, not a promise.
      */
-    private static String defaultStage() {
+    public static String defaultStage() {
         for (Schema.PicklistEntry e : Opportunity.StageName.getDescribe().getPicklistValues()) {
             if (e.isActive()) {
                 return e.getValue();
@@ -320,7 +320,7 @@ public class AAO_Seed {
         throw new SeedException('The Opportunity stage picklist has no active values.');
     }
 
-    private static List<String> strings(List<Object> raw) {
+    public static List<String> strings(List<Object> raw) {
         List<String> out = new List<String>();
         if (raw == null) {
             return out;
@@ -331,7 +331,7 @@ public class AAO_Seed {
         return out;
     }
 
-    private static String normalizedTextFor(Map<String, Object> s) {
+    public static String normalizedTextFor(Map<String, Object> s) {
         if (s.get('diarization') == 'Unsegmented') {
             return (String) s.get('unsegmentedText');
         }
@@ -345,7 +345,11 @@ public class AAO_Seed {
         return AAO_NormalForm.compose(keys, utterances);
     }
 
-    private static String rosterFor(List<Object> people, Map<String, Contact> contactByKey) {
+    public static String rosterFor(
+        List<Object> people,
+        Map<String, Contact> contactByKey,
+        Set<String> internalDomains
+    ) {
         List<AAO_Model.Speaker> speakers = new List<AAO_Model.Speaker>();
         for (Object o : people) {
             Map<String, Object> p = (Map<String, Object>) o;
@@ -356,6 +360,12 @@ public class AAO_Seed {
             sp.mapRole = (String) p.get('mapRole');
             Contact c = contactByKey.get(sp.key);
             sp.contactId = c == null ? null : String.valueOf(c.Id);
+            // An internal participant is a User. In the sandbox that is whoever is running
+            // this, which is what makes key four exercised rather than dead.
+            String d = sp.domain();
+            if (d != null && internalDomains != null && internalDomains.contains(d)) {
+                sp.userId = UserInfo.getUserId();
+            }
             speakers.add(sp);
         }
         AAO_Model.Roster r = new AAO_Model.Roster();
@@ -369,7 +379,7 @@ public class AAO_Seed {
      * quote is not there, or is there more than once, that is a defect in the fixture and
      * it says so rather than picking one.
      */
-    private static AAO_Model.Span resolve(
+    public static AAO_Model.Span resolve(
         AAO_Source__c src,
         String quote,
         String speaker,

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <deploymentStatus>Deployed</deploymentStatus>
-    <description>The current-state row. Upserted. One per question per subject. Carries the accumulated quotes. Distinct from ALTF__Answer__c, the assessment answer.</description>
+    <description>A demand: it counts, it ages, it wants clearing, it comes looking for you. Type is set at birth and never changes. Colour is display, derived from type; nothing reasons about colour.</description>
     <enableActivities>false</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
@@ -10,14 +10,14 @@
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
-    <label>AAO Answer</label>
+    <label>AAO Flag</label>
     <nameField>
-        <displayFormat>ANS-{00000000}</displayFormat>
-        <label>AAO Answer Name</label>
+        <displayFormat>FLG-{00000000}</displayFormat>
+        <label>AAO Flag Name</label>
         <type>AutoNumber</type>
     </nameField>
-    <compactLayoutAssignment>AAO_Answer_Compact</compactLayoutAssignment>
-    <pluralLabel>AAO Answers</pluralLabel>
+    <compactLayoutAssignment>AAO_Flag_Compact</compactLayoutAssignment>
+    <pluralLabel>AAO Flags</pluralLabel>
     <sharingModel>ReadWrite</sharingModel>
     <visibility>Public</visibility>
 </CustomObject>

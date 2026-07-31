@@ -15,29 +15,35 @@ recorded as a finding is how a wrong belief becomes load-bearing.
 
 ## Current state
 
-**Deployed to `altify--aossb2` and green. The exit test passes in the org.**
+**Deployed to `altify--aossb2`, green, and clickable.** Org verified by query:
+`00DWD00000DV7iT2AT`, Name `Altify`, `IsSandbox true`.
 
-Wave 1 is live: six objects (110 fields), four triggers, three frozen key composers, span
-verification, the speaker rule, commit, replay, the mini-rubric, the dummy transcripts.
-67 AAO tests, 67 passing. `AAO_AccumulationTest.theAccumulationTest` passes, which means
-incrementalism is demonstrated in an org rather than in an argument.
+Wave 1 plus Flag is live: seven objects (136 fields), five triggers, three frozen key
+composers, span verification, the speaker rule, commit, replay, the mini-rubric and the
+dummy transcripts. **74 AAO tests, 74 passing.**
 
-One test fails in the run and **it is not ours**: `ConvertToOpportunityTest`, pre-existing
-sandbox code, failing on a customer validation rule. See session 2.
-
-```bash
-sf project deploy start --target-org aossb2
-```
+**The rehearsal is durable.** `AAO Demo - Tungsten Rehearsal` carries two claims and one
+answer, written in two separate transactions, and a second deal carries the seller-said-it
+case. Tabs, related lists and compact layouts are in place, and `AAO_Admin` is assigned to
+Matt.
 
 ```bash
-sf apex run test --target-org aossb2 --tests AAO_AccumulationTest AAO_TriggerLawTest AAO_EvidenceLayerTest AAO_AnswerKeyTest AAO_ScopeKeyTest --result-format human --wait 30
+sf apex run test --target-org aossb2 --tests AAO_AccumulationTest AAO_TriggerLawTest AAO_EvidenceLayerTest AAO_AnswerKeyTest AAO_ScopeKeyTest AAO_DemoTest --result-format human --wait 30
 ```
 
-**What is not yet done** is the part that makes this a real per-org discovery test rather
-than a schema demo: the mini-rubric is written straight into `AAO_Evidence_Contract__c`
-and **discovery is skipped entirely**. That is session 2's Owed item 1 and it is the
-biggest gap between this repo and the brief. Nothing has been seeded into the org as
-durable data either — the fixtures exist only inside test transactions, which roll back.
+The rehearsal, from anonymous Apex — passes are separate transactions on purpose:
+
+```bash
+sf apex run --target-org aossb2 --file /dev/stdin <<< "System.debug(AAO_Demo.status());"
+```
+
+`AAO_Demo.passOne()` · `AAO_Demo.passTwo()` · `AAO_Demo.passNegative()` ·
+`AAO_Demo.status()` · `AAO_Demo.purge()`.
+
+**Still not done, and it is the same gap as yesterday:** the mini-rubric is written
+straight into `AAO_Evidence_Contract__c` and **discovery is skipped entirely**. The ALTF
+rubric objects were confirmed present and empty in this org (session 3), so the ground is
+prepared, but discovery itself stays owed and was deliberately not started.
 
 ---
 
@@ -370,4 +376,179 @@ two additions.
     `ConvertToOpportunityTest`'s failure is the shape of the problem, sitting in the target
     org already.
 13. **The four project documents are still behind.** `docs/aao-corrections-v1_0.md` is
+    authoritative until they are bumped.
+
+---
+
+## 2026-07-31 · session 3
+
+**Did.** Verified the target org by query before touching anything. Built `AAO_Flag__c`
+and its trigger law. Added the synthetic marker across all seven objects. Wired key four.
+Built `AAO_Demo`, the durable rehearsal, and ran it as three separate transactions. Added
+tabs, compact layouts and Opportunity related lists, and assigned `AAO_Admin`. Confirmed
+the ALTF rubric objects exist in this org and are empty. **74 AAO tests, 74 passing.**
+Discovery was deliberately not started; it stays owed.
+
+**Decided, and why.**
+
+- **`AAO_Flag__c` was built, ahead of anything that raises flags.** The walkthrough asked
+  for a Flag tab and a Flag related list, and both need the object. The law arrives with
+  it — type immutable after insert, raised-at immutable, no delete on the live path — so
+  that when a raise path is eventually written it cannot quietly introduce a mutable type.
+  **The tab and the related list will be empty**, because nothing raises flags yet, and an
+  empty related list is the honest state rather than a fabricated red.
+
+- **`AAO_Synthetic__c` added to all seven objects.** Another addition to closed tables, and
+  it needs ratifying alongside `Opportunity` as a subject type. It is deliberately
+  *operational*: no law reads it, nothing routes on it. It exists so the rehearsal is
+  removable in one action and so anyone opening this org can tell a rehearsal row from a
+  real one without asking. Stamped by the before-insert triggers from a static, so the
+  demo concern stays out of `AAO_Commit` entirely.
+
+- **Purge needs two conditions, not one.** `AAO_Synthetic.PURGING` alone is not enough:
+  the handlers permit a delete only when purging **and** the row carries the marker. A real
+  claim cannot be deleted even with the flag on. This is a narrow synthetic-only door, not
+  the retirement path — confirm-then-purge with library acknowledgement first is still owed
+  and this is not it.
+
+- **Standard objects get no marker field.** Account, Opportunity and Contact are matched by
+  name in the purge instead, which is why the names are deliberately unmistakable
+  (`AAO Demo - Tungsten Rehearsal`). Adding a field to a standard object for a rehearsal
+  would be a permanent change to the customer's schema for a temporary purpose.
+
+- **Key four resolves by preference, not by presence.** `AAO_Internal_Person__c` takes the
+  internal participant who actually **spoke in the cited spans**, falling back to an
+  internal participant merely present on the call, and never the deal owner — who may not
+  have been in the room. The roster gained a `userId`, seeded with the running user.
+
+- **The Opportunity layout was retrieved and patched, never overwritten.** This sandbox has
+  real customisation on it — seventeen existing related lists, a `ConvertToOpportunity`
+  flow, Celigo layouts. The four new related lists were appended after the last existing
+  one so schema element order is preserved. Claims and Sources sort ascending on
+  `AAO_Evidence_Occurred__c`, so the page reads as a timeline rather than as processing
+  order.
+
+- **Motifs were read from the org rather than guessed.** Retrieved the existing custom tabs
+  and took five known-valid values from them. Flag gets `Custom53: Bell`, because it is the
+  thing that comes looking for you.
+
+- **Only the standard `Opportunity Layout` was patched.** The two Celigo layouts could not
+  be retrieved (see the org quote below) and were left alone rather than forced.
+
+**Read from the org.** All verbatim.
+
+Identity, which was the first thing done and the reason to do it first:
+
+> `Id,Name,IsSandbox,InstanceName,OrganizationType`
+> `00DWD00000DV7iT2AT,Altify,true,USA758S,Enterprise Edition`
+
+**The ALTF rubric objects exist here and every one is empty.** One describe, in
+`altify--aossb2` only. Nothing was read from `altify-pbo`.
+
+> `ALTF__Assessment_Question__c rows=0` · `ALTF__Assessment_Answer__c rows=0` ·
+> `ALTF__Account_Plan_Question__c rows=0` · `ALTF__Account_Question__c rows=0` ·
+> `ALTF__Account_Plan_Type_Question__c rows=0` · `ALTF__Sales_Process_Qualifier__c rows=0` ·
+> `ALTF__Template_Qualifier__c rows=0` · `ALTF__Qualifier_Answer__c rows=0` ·
+> `ALTF__Sales_Process__c rows=0` · `ALTF__Insight_Card__c rows=0` ·
+> `ALTF__Decision_Criteria__c rows=0` · `ALTF__Relationship_Map_Persona__c rows=0` ·
+> `ALTF__Contact_Map_Details__c rows=0` · `ALTF__Opportunity__c rows=0`
+
+This is the standing hazard, confirmed rather than argued: **a Developer sandbox copies
+metadata, not data.** Day one really is a per-org discovery test against empty rubric
+tables.
+
+**It also answers two of the four unwired subject types**, though nothing was wired
+tonight. `ALTF__Insight_Card__c` and `ALTF__Decision_Criteria__c` exist under those exact
+names. `Qualifier` has more than one candidate — `ALTF__Sales_Process_Qualifier__c`,
+`ALTF__Template_Qualifier__c`, `ALTF__Qualifier_Answer__c` — so which one a qualifier
+subject points at is a real decision and not a lookup. Recorded, not acted on.
+
+Layout retrieval:
+
+> `unpackaged/package.xml │ Entity of type 'Layout' named 'Opportunity-Celigo Opportunity Contract Layout' cannot be found`
+> `unpackaged/package.xml │ Entity of type 'Layout' named 'Opportunity-Celigo Opportunity Layout' cannot be found`
+
+Valid tab motifs, read from the org's own tabs:
+
+> `Custom15: People` · `Custom20: Airplane` · `Custom24: Building` · `Custom53: Bell` ·
+> `Custom98: Truck`
+
+Permission set assignment:
+
+> `matt.weisberg@altify.com.aossb2 │ AAO_Admin`
+
+Test run: `Tests Ran 74`, `Pass Rate 100%`, `Fail Rate 0%`.
+
+**The durable rehearsal, as it now stands in the org.** This is the QBR artifact, quoted
+from `AAO_Demo.status()`:
+
+> `--- AAO Demo - Tungsten Rehearsal (006WD00000Sj16IYAR)`
+> `    answer ANS-00000000 AAO_T1 = TRUE by MACHINE coverage={"v":1,"missing":[],"covered":["e1","e2","e3"]}`
+> `    claim  CLM-00000000 null -> UNVERIFIED (Established) occurred=2026-06-15 recorded=2026-07-31 12:08:05 key4=005V400000MCTUbIAP src=dummy/transcript-one`
+> `    claim  CLM-00000001 UNVERIFIED -> TRUE (Established) occurred=2026-06-26 recorded=2026-07-31 12:08:07 key4=005V400000MCTUbIAP src=dummy/transcript-two`
+> `    candidates=12 sources=2`
+> `--- AAO Demo - Tungsten Rehearsal (seller said it) (006WD00000Sj16JYAR)`
+> `    answer ANS-00000001 AAO_T1 = UNVERIFIED by MACHINE coverage={"v":1,"missing":[],"covered":["e1","e2","e3"]}`
+> `    claim  CLM-00000002 null -> UNVERIFIED (Downgraded) occurred=2026-06-26 recorded=2026-07-31 12:08:10 key4=005V400000MCTUbIAP src=dummy/transcript-two-wrong-speaker`
+> `    candidates=6 sources=1`
+
+`005V400000MCTUbIAP` is `Matt Weisberg, matt.weisberg@altify.com.aossb2`. Every claim
+carries it. **Key four is exercised, not dead.**
+
+Three things in that output are worth pointing at during the walkthrough:
+
+1. **`recorded=12:08:05` and `recorded=12:08:07`.** Two seconds apart, because they are two
+   transactions. `occurred=2026-06-15` and `occurred=2026-06-26` are eleven days apart,
+   because the transcripts say so. The exit test asserts the second pair and cannot produce
+   the first; this run produces both. Session 2's "still assumed — the exit test runs both
+   passes inside one transaction" is now settled.
+2. **`CLM-00000000` still says `UNVERIFIED` and always will.** The answer says `TRUE`. Both
+   are readable at once, and the delta between them is the thing a brief reads.
+3. **The negative deal has full coverage and an `UNVERIFIED` answer.**
+   `covered:["e1","e2","e3"]`, `missing:[]`, verdict `UNVERIFIED`, claim outcome
+   `Downgraded`. All three parts were said and it still does not establish, because the
+   seller said them. That is the Gate 1 run-two regrade, sitting in an org, clickable.
+
+Marker check:
+
+> `MARK 0 unmarked claims, 3 total`
+
+**Assumed, not verified.**
+
+- **The Flag tab and the Flag related list will be empty.** Correct, and stated so nobody
+  reads absence as a defect — but it does mean the walkthrough shows a flag *shape*, not a
+  flag.
+- **The Celigo Opportunity layouts were not touched.** If Matt's profile uses one of them
+  rather than the standard `Opportunity Layout`, the related lists will not appear and the
+  layout will need patching by hand. Not checked, because checking it means reading profile
+  layout assignments and the standard layout is the overwhelmingly likely one.
+- **`AAO_Demo.purge()` has been exercised in a test transaction, never for real.** The
+  order-of-deletion reasoning against the Restrict constraints is sound and tested, but the
+  durable rows in the org have not been through it.
+- **Compact layouts are assigned but have not been looked at in a browser.**
+
+**Owed.** Session 2's items, renumbered, with what changed.
+
+1. **Seed into the org's own rubric records — start discovery.** Unchanged and still the
+   largest gap, but the ground is now prepared: the rubric objects are confirmed present and
+   empty, and their API names are recorded above. Deliberately not started tonight.
+2. **Decide which object a `Qualifier` subject points at.** Three candidates, named above.
+   Wiring `Insight_Card` and `Decision_Criterion` is now a lookup rather than a guess;
+   `Qualifier` is not.
+3. **`AAO_Claim_Basis__c` is deployed and written by nothing.** Routes P and C need it.
+4. **Claim Basis parent: field tables say required Master-Detail to Claim, flags document
+   says polymorphic across claim-or-flag.** Unresolved contradiction. Matthew's call, and it
+   gets sharper now that Flag actually exists.
+5. **`AAO_Answer__c` has no subject-deleted flag**, though the field table says
+   "null-and-flag on subject delete".
+6. **`AAO_Candidate__c.AAO_Run__c` is not built.**
+7. **Internal domains are still a caller argument, not org configuration.**
+8. **Nothing raises flags.** The object and its law exist; the raise path does not. Day-one
+   red on a gating proposition is the obvious first case and would make the Flag tab real.
+9. **Three additions to CLOSED tables now need ratifying**, not two: `Opportunity` as a
+   subject type, `AAO_Synthetic__c` on all seven objects, and normal form v1.
+10. **The field tables mark five fields case-sensitive that cannot be.** See session 2.
+11. **Write-blocking customer constraints** — `ConvertToOpportunityTest`'s failure is a live
+    example sitting in this org.
+12. **The four project documents are still behind.** `docs/aao-corrections-v1_0.md` is
     authoritative until they are bumped.

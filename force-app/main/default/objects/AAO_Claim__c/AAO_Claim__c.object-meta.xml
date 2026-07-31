@@ -16,6 +16,7 @@
         <label>AAO Claim Name</label>
         <type>AutoNumber</type>
     </nameField>
+    <compactLayoutAssignment>AAO_Claim_Compact</compactLayoutAssignment>
     <pluralLabel>AAO Claims</pluralLabel>
     <sharingModel>ReadWrite</sharingModel>
     <visibility>Public</visibility>

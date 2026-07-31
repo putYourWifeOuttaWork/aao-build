@@ -21,6 +21,7 @@ public class AAO_AnswerTriggerHandler {
 
     public static void beforeInsert(List<AAO_Answer__c> rows) {
         for (AAO_Answer__c a : rows) {
+            a.AAO_Synthetic__c = AAO_Synthetic.MARK;
             a.AAO_Answer_Key__c = AAO_AnswerKey.compose(a);
         }
         enforce(rows, null);

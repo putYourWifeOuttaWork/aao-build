@@ -19,6 +19,7 @@ public class AAO_EvidenceContractTriggerHandler {
 
     public static void beforeInsert(List<AAO_Evidence_Contract__c> rows) {
         for (AAO_Evidence_Contract__c ec : rows) {
+            ec.AAO_Synthetic__c = AAO_Synthetic.MARK;
             if (String.isBlank(ec.AAO_Content_Hash__c)) {
                 ec.AAO_Content_Hash__c = AAO_ContractKey.contentHash(
                     ec.AAO_Proposition_Text__c,

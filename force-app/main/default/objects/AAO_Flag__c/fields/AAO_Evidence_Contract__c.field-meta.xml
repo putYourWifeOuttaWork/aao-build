@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Evidence_Contract__c</fullName>
+    <description>Written by: Raise. Read by: The proposition. Null on a ratification flag, which is about a pending write rather than a condition.</description>
+    <label>Evidence Contract</label>
+    <type>Lookup</type>
+    <referenceTo>AAO_Evidence_Contract__c</referenceTo>
+    <relationshipName>AAO_Flags</relationshipName>
+    <relationshipLabel>AAO Flags</relationshipLabel>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <required>false</required>
+</CustomField>

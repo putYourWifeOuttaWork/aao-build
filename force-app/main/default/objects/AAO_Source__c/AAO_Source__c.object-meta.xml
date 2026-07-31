@@ -16,6 +16,7 @@
         <label>AAO Source Name</label>
         <type>AutoNumber</type>
     </nameField>
+    <compactLayoutAssignment>AAO_Source_Compact</compactLayoutAssignment>
     <pluralLabel>AAO Sources</pluralLabel>
     <sharingModel>ReadWrite</sharingModel>
     <visibility>Public</visibility>

@@ -58,7 +58,9 @@ private class AAO_AccumulationTest {
                 AAO_Basis__c,
                 AAO_Spans__c,
                 AAO_Evidence_Occurred__c,
-                AAO_Recorded_At__c
+                AAO_Recorded_At__c,
+                AAO_Internal_Person__c,
+                AAO_External_Person__c
             FROM AAO_Claim__c
             WHERE AAO_Opportunity__c = :oppId
             ORDER BY AAO_Evidence_Occurred__c ASC
@@ -102,6 +104,18 @@ private class AAO_AccumulationTest {
             'One claim rests on one Source. The lookup is singular and correct.'
         );
         System.assertEquals(s.sourceByCode.get('T2SRC').Id, claims[1].AAO_Source__c);
+
+        // ---- key four of four is populated, not dead
+        for (AAO_Claim__c c : claims) {
+            System.assertEquals(
+                UserInfo.getUserId(),
+                c.AAO_Internal_Person__c,
+                'AAO_Internal_Person__c opens the seller-to-buyer grain, which is where ' +
+                'relationship standing lives. A grain not recorded cannot be declared ' +
+                'later without reprocessing the corpus. It is resolved from the roster ' +
+                'participants, never assumed from the deal owner.'
+            );
+        }
 
         // ---- 3. the answer reads TRUE, with quotes from both sources
         List<AAO_Answer__c> answers = [

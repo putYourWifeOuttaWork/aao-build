@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Answer_Compact</fullName>
+    <fields>AAO_Verdict__c</fields>
+    <fields>AAO_Established_By__c</fields>
+    <fields>AAO_Evidence_Occurred__c</fields>
+    <fields>AAO_Publication_State__c</fields>
+    <label>AAO Answer Compact</label>
+</CompactLayout>

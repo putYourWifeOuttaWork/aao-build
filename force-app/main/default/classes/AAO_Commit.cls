@@ -132,6 +132,12 @@ public class AAO_Commit {
             }
         }
 
+        // Key four of four, resolved from participants rather than assumed from the deal
+        // owner. A grain not recorded cannot be declared later without reprocessing the
+        // corpus, which means re-paying every model call, so it is resolved on the way
+        // past rather than left for later.
+        Id internalPerson = resolveInternalPerson(roster, internalDomains, sv.speakerByIndex);
+
         String claimOutcome = 'Established';
         if (!speakerOk) {
             // The regrade from Gate 1 run two. The words are real and the receipts are
@@ -171,7 +177,9 @@ public class AAO_Commit {
         }
 
         // 5 ------------------------------------------ upsert, DUPLICATE_VALUE as merge
-        AAO_Claim__c claim = buildClaim(cand, verdict, verdictBefore, claimOutcome, accumulated);
+        AAO_Claim__c claim = buildClaim(
+            cand, verdict, verdictBefore, claimOutcome, accumulated, internalPerson
+        );
 
         AAO_Answer__c answer = existing == null
             ? newAnswer(cand)
@@ -257,7 +265,8 @@ public class AAO_Commit {
         String verdictAfter,
         String verdictBefore,
         String outcome,
-        AAO_Model.Coverage accumulated
+        AAO_Model.Coverage accumulated,
+        Id internalPerson
     ) {
         return new AAO_Claim__c(
             AAO_Source__c = cand.AAO_Source__c,
@@ -267,6 +276,7 @@ public class AAO_Commit {
             AAO_Subject_Type__c = cand.AAO_Subject_Type__c,
             AAO_Subject_Contact__c = cand.AAO_Subject_Contact__c,
             AAO_External_Person__c = cand.AAO_Subject_Contact__c,
+            AAO_Internal_Person__c = internalPerson,
             AAO_Verdict_Before__c = verdictBefore,
             AAO_Verdict_After__c = verdictAfter,
             AAO_Spans__c = cand.AAO_Spans__c,
@@ -335,6 +345,37 @@ public class AAO_Commit {
         throw new CommitException(
             'Could not write the answer: ' + sr.getErrors()[0].getMessage()
         );
+    }
+
+    /**
+     * The internal participant behind this claim. Preference order matters: somebody who
+     * actually spoke in the cited spans, before anybody merely present on the call. Never
+     * the deal owner, who may not have been in the room.
+     */
+    private static Id resolveInternalPerson(
+        Map<String, AAO_Model.Speaker> roster,
+        Set<String> internalDomains,
+        Map<Integer, String> speakerByIndex
+    ) {
+        Set<String> spokeHere = new Set<String>(speakerByIndex.values());
+
+        Id fallback = null;
+        for (AAO_Model.Speaker sp : roster.values()) {
+            if (String.isBlank(sp.userId)) {
+                continue;
+            }
+            String d = sp.domain();
+            if (d == null || internalDomains == null || !internalDomains.contains(d)) {
+                continue;
+            }
+            if (spokeHere.contains(sp.key)) {
+                return (Id) sp.userId;
+            }
+            if (fallback == null) {
+                fallback = (Id) sp.userId;
+            }
+        }
+        return fallback;
     }
 
     private static void stampCandidate(AAO_Candidate__c cand, Result r, Id claimId) {

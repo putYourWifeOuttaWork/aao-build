@@ -11,6 +11,7 @@
 public class AAO_ClaimTriggerHandler {
     public static void beforeInsert(List<AAO_Claim__c> rows) {
         for (AAO_Claim__c c : rows) {
+            c.AAO_Synthetic__c = AAO_Synthetic.MARK;
             if (c.AAO_Recorded_At__c == null) {
                 c.AAO_Recorded_At__c = System.now();
             }
@@ -49,6 +50,9 @@ public class AAO_ClaimTriggerHandler {
 
     public static void beforeDelete(List<AAO_Claim__c> rows) {
         for (AAO_Claim__c c : rows) {
+            if (AAO_Synthetic.deletable(c.AAO_Synthetic__c)) {
+                continue;
+            }
             c.addError(
                 'AAO_Claim__c is not deletable. Claims leave by retirement, ' +
                 'confirm-then-purge, library acknowledgement first.'

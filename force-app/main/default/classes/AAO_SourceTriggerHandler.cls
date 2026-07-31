@@ -30,6 +30,7 @@ public class AAO_SourceTriggerHandler {
 
     public static void beforeInsert(List<AAO_Source__c> rows) {
         for (AAO_Source__c s : rows) {
+            s.AAO_Synthetic__c = AAO_Synthetic.MARK;
             if (s.AAO_Part_Index__c == null) {
                 s.AAO_Part_Index__c = 1;
             }
@@ -59,6 +60,9 @@ public class AAO_SourceTriggerHandler {
 
     public static void beforeDelete(List<AAO_Source__c> rows) {
         for (AAO_Source__c s : rows) {
+            if (AAO_Synthetic.deletable(s.AAO_Synthetic__c)) {
+                continue;
+            }
             s.addError(
                 'AAO_Source__c is not deletable on the live path. Claims cite it and spans ' +
                 'verify against it. Sources leave by retirement, confirm-then-purge, ' +

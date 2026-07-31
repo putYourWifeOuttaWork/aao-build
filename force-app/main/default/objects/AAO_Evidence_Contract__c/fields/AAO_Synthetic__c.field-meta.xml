@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Synthetic__c</fullName>
+    <description>Written by: the demo seeder, via AAO_Synthetic.MARK. Read by: AAO_Demo.purge, which deletes only rows carrying it, and by anyone asking whether a row in this org came from a real pass or from the rehearsal. Operational marker; no law reads it.</description>
+    <label>Synthetic</label>
+    <type>Checkbox</type>
+    <defaultValue>false</defaultValue>
+</CustomField>

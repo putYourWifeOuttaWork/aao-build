@@ -120,6 +120,11 @@ public class AAO_Model {
          */
         public String mapRole;
         public String contactId;
+        /**
+         * The User behind an internal participant. Key four on Claim resolves from this,
+         * from participants, rather than being assumed from the deal owner.
+         */
+        public String userId;
 
         public String domain() {
             if (String.isBlank(email) || !email.contains('@')) {

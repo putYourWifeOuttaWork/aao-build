@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Acknowledged_By__c</fullName>
+    <description>Written by: Acknowledgement. Contention only. Read by: Captured at the instant it happens; the correlation to deal outcome is permanently lost otherwise.</description>
+    <label>Acknowledged By</label>
+    <type>Lookup</type>
+    <referenceTo>User</referenceTo>
+    <relationshipName>AAO_Acknowledged_Flags</relationshipName>
+    <relationshipLabel>AAO Acknowledged Flags</relationshipLabel>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <required>false</required>
+</CustomField>

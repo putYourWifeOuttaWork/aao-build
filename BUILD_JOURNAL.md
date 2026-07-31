@@ -35,9 +35,9 @@ sf apex run test --target-org aossb2 --tests AAO_AccumulationTest AAO_TriggerLaw
 
 **What is not yet done** is the part that makes this a real per-org discovery test rather
 than a schema demo: the mini-rubric is written straight into `AAO_Evidence_Contract__c`
-and **discovery is skipped entirely**. That is Owed item 3 and it is the biggest gap
-between this repo and the brief. Nothing has been seeded into the org as durable data
-either — the fixtures exist only inside test transactions, which roll back.
+and **discovery is skipped entirely**. That is session 2's Owed item 1 and it is the
+biggest gap between this repo and the brief. Nothing has been seeded into the org as
+durable data either — the fixtures exist only inside test transactions, which roll back.
 
 ---
 

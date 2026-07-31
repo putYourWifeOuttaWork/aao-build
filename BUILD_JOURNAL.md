@@ -72,12 +72,17 @@ after every change tonight: Tungsten Rehearsal `TRUE`, seller-said-it `UNVERIFIE
 **AAO Demo - Live empty** and ready for a live ingest. Opportunity ids changed on the
 session 6 reseed.
 
-**The first real model call is wired and has not been fired.** A charter assembles its
-prompt from `AAO_Evidence_Contract__c` records at runtime, the model writes Candidates only
-through `AAO_Pipeline`, and every existing gate decides. **99 AAO tests, 99 passing**,
-including eleven that exercise the model path against mocked responses. What is missing is
-the API key: it is pasted once into the `AAO_Anthropic` external credential in Setup, and
-until it is, the callout fails with `The external credential isn't fully configured`.
+**The first real model call has run.** `claude-opus-5` read both dummy transcripts through
+the Named Credential on 31 July, wrote Candidates only through `AAO_Pipeline`, and every
+existing gate decided. Zero hallucinated spans across six citations. **99 AAO tests, 99
+passing**, including eleven that exercise the model path against mocked responses.
+
+**It also exposed a defect in the coverage derivation added the same night, and that defect
+is not yet fixed.** A span that refutes an element is counted as covering it, which let a
+wrong `FALSE` be written as an established claim on a run where correct coverage would have
+produced the right answer unaided. See the session 7 addendum before quoting the model run
+to anyone. The three demo deals are unaffected: they are charter version `0.1.0` and read
+`UNVERIFIED -> TRUE` as they always did.
 
 Gate 1 round two, once the key is in, on `AAO Gate1 - Model Round Two`, which is isolated
 from the three demo deals:
@@ -1216,3 +1221,92 @@ And the empty state, rendered on the live deal, which is where a live-ingest dem
    made, because it would alter what the demo does.
 7. Normal form v1 and `AAO_Ingest.AUTO` are still additions to closed tables awaiting
    ratification. v0.10 ratified the other four.
+
+---
+
+## 2026-07-31 · session 7 addendum · the run happened, and it found a defect in the run
+
+**Did.** Synced `aao-context 4`. Thirteen of its fifteen files are byte-identical to what
+session 7 already carried; two are new: `aao-proof-register-v0_1.md` and
+`aao-competitive-rebuttals-v0_1.md`. Neither is listed in `MANIFEST.md`.
+
+The register records a live model pass that this session had left blocked on the key. It
+happened, and it is real. **Verified against the org rather than taken from the document.**
+
+**Read from the org (verbatim).** Both artifacts on `AAO Gate1 - Model Round Two`, charter
+version `1.0.0`, created `2026-07-31 18:48:31` and `19:00:51` UTC:
+
+```
+transcript-one AAO_T1 verdict=FALSE outcome=Upheld cov={"missing":[],"covered":["e1","e2","e3"]}
+transcript-two AAO_T1 verdict=TRUE  outcome=Upheld cov={"missing":[],"covered":["e1","e2","e3"]}
+ten abstentions, all nobody_said, model_missed=0, spansDropped=0
+CLM-00000014 null  -> FALSE (Established)
+CLM-00000015 FALSE -> TRUE  (Established)
+answer AAO_T1 = TRUE
+```
+
+The spans the model cited on transcript one:
+
+```
+[e1] dana: "The funding is approved."
+[e2] dana: "It came out of the operations modernisation pot, so it is earmarked for this
+           project specifically, not a general pool."
+[e3] dana: "That I cannot tell you yet. Finance is still working through the calendar."
+```
+
+**The defect, and it is mine, introduced tonight.** The e3 span is verbatim, is genuinely the
+passage that bears on e3, and **refutes it**. Dana says she cannot confirm the fiscal year.
+`AAO_Pipeline.fromModel` counts every located span's element as covered, so coverage read
+full. Coverage is what routes the outcome: full writes the verdict, partial writes
+`UNVERIFIED` with the spans that exist. Full coverage therefore wrote `FALSE` as an
+established claim.
+
+**With coverage computed correctly this run would have produced the right answer without any
+model improvement at all.** e1 and e2 supported, e3 refuted and so not covered, coverage
+partial, and the partial route writes `UNVERIFIED` with its receipts, which is exactly the
+staged ground truth. The gate that would have caught the model was disabled by my
+derivation, not absent from the design.
+
+Session 7 claimed coverage was "computed, not accepted". That was half right and the half it
+got wrong is the half that mattered: the span's **existence** is verified, the span's
+**element label** is still taken on trust, and nothing checks whether the quote supports or
+refutes what it is filed under. Verbatim is not the same as supporting.
+
+**The model's verdict was also wrong, separately.** "That I cannot tell you yet" is the
+absence of a confirmation, not a denial, so `UNVERIFIED` is correct and `FALSE`
+over-commits. Two independent errors landed on the same row and neither caught the other.
+
+**Decided, and why.** Nothing in the pipeline was changed on discovering this. The register
+now cites this run as a receipt, the demo state references it, and silently altering the
+behaviour that produced a cited number would leave the register describing a run that can no
+longer happen. The fix is specified below and is owed, not applied.
+
+**Corrections to the register, offered rather than made.**
+
+- **Row 12 is right about the mechanism and generous about the outcome.** The comparison
+  caught the wrong verdict; the *gates* did not, and `outcome=Upheld` is what they recorded.
+  It is evidence that the four checks are non-substitutable, which is what the row says. It
+  is also evidence that one of the four was miscomputed, which the row does not say.
+- **Row 11's "zero hallucinated spans" is accurate and is a real result.** Three of three
+  quotes on each artifact were verbatim and located. Worth keeping.
+- **The model path demonstrates correction, not accumulation.** `FALSE -> TRUE` is a
+  different story from the fixture path's `UNVERIFIED -> TRUE`. The incrementalism claim at
+  QBR rests on the demo deals, which are unaffected and still read `UNVERIFIED -> TRUE`.
+
+**Assumed, not verified.** That the fixture is right and the model wrong about e3 coverage.
+The transcript is the tiebreaker and a human should read it: the fixture treated e3 as
+unaddressed, the model treated it as addressed and denied. The model's reading is arguably
+the better one, which is precisely why the support-or-refute distinction has to be recorded
+rather than inferred from whether a span exists.
+
+**Owed, added to session 4's list.**
+
+1. **Coverage must count supporting spans only.** Minimal fix that keeps the judgement out of
+   trust: add a closed `stance` field to each span in the output schema, `supports` or
+   `refutes`, and count only `supports` toward covered. The gate still computes coverage; the
+   model only reports which way its own citation points. Re-run Gate 1 after.
+2. **Tighten the charter wording.** "Offer each span against the specific element it
+   evidences" reads as *bears on* and was followed as such. It should say what it means.
+3. **Token counts are not persisted anywhere.** They come back on the Outcome and are printed
+   to a terminal. The register's numbers for this run cannot be re-derived from the org.
+   `AAO_Candidate__c.AAO_Run__c` is still not built and this is what it is for.

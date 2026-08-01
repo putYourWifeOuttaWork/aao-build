@@ -10,6 +10,11 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
+                <fullName>Line_Item</fullName>
+                <default>false</default>
+                <label>Line Item</label>
+            </value>
+            <value>
                 <fullName>Source</fullName>
                 <default>false</default>
                 <label>Source</label>

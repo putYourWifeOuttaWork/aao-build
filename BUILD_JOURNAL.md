@@ -3476,3 +3476,69 @@ derived thing rather than the evidence.
 
 **Owed.** Unchanged, plus: the volume shape is now built, so what remains for Solutions is the
 line-item reader itself, which needs the cited-type ruling and the two new cited types.
+
+---
+
+## 2026-08-03 · session 37 · the line-item reader, and the edge it refuses to write
+
+**Did.** Synced v1.7, deleted v1.5. Built the Solution route. **158 tests, 158 passing**
+(was 153).
+
+### The cited-type ruling gave the enum a test, which is the useful part
+
+`Line_Item` added with an `AAO_Cited_Line_Item__c` lookup. `Product2` deliberately not, and
+**the rule now has a criterion rather than a case-by-case argument**: a value earns a lookup
+when we will compare its live state against the frozen snapshot, because that comparison is
+the whole reason Claim Basis is half frozen and half live, and a text Id cannot do it.
+
+A line item earns one — quantity, price and product all move, and a claim resting on a line
+that has since changed is exactly the drift then-and-now exists to expose. **A product does
+not, and the reason is sharper than reachability:** citing it would cite a *classification*
+rather than a fact about this deal. The fact is that this deal carries this line. A claim
+citing the product would still read as true after the line was removed.
+
+### The route
+
+`OpportunityLineItem` → `PricebookEntry` → `Product2.ALTF__Solution__c`, one traversal, no
+model. A line whose product carries no solution is **skipped rather than guessed at**: not
+every product is a methodology solution.
+
+**No ratification, and the reason is not leniency.** Every other machine write asks a person
+because a person can see something the machine cannot. Here there is nothing to see — the
+claim says a line item exists and names the product it carries, and re-reading it confirms or
+refuses that outright. **State verification already does what ratification would do**, so
+asking would be asking someone to agree with a row they can read themselves.
+
+**The route refuses a contract the org never asked.** There is no Solution proposition in the
+rubric, so `contractCode` is declared by the caller and the route throws by name when it is
+not in the applicable set. Choosing one would be the same mistake as manufacturing a Source.
+Pinned as a test.
+
+### What it may never do, which is the whole discipline
+
+**It may say a solution is on this deal. It may never say which pressure or obstacle that
+solution answers.** A line item records what was quoted; inferring a causal link from a
+purchase order manufactures the one thing this build exists to refuse to manufacture.
+
+So the gap gets a flag instead of a guess, and **the flag is Altify's own published test**,
+not ours — the Solution admission test asks three questions about links to other cards, so an
+unlinked Solution fails the methodology's own bar. Read from the org rather than assumed:
+`ALTF__Insight_Card_Edge__c` carries the Solution on `ALTF__Solution_Insight_Card__c` and the
+card it answers on `ALTF__Insight_Card__c`, so an edge existing *is* the question.
+
+**Held by a test that asserts an absence**, which is the one worth keeping: after the route
+runs on a deal with an unlinked Solution card, the flag stands, names the card, **and
+`ALTF__Insight_Card_Edge__c` is still empty.** Another asserts the only exit — a human or a
+span inserting the edge clears it, and nothing else does.
+
+### Two laws recorded as general, both from refusals rather than from design
+
+**Flags age from when the question became askable, not from when the answer last turned
+bad.** This came out of the trigger refusing my reopen-restarts-the-clock code, and it is now
+the stated rule rather than a property of one flag.
+
+**Lose the derived thing, never the evidence.** The after-insert exposure, general: a throw in
+derived work rolls back the primary fact we were given.
+
+**Owed.** A Solution proposition in the rubric, which is contract-authoring rather than code.
+Plus the standing list.

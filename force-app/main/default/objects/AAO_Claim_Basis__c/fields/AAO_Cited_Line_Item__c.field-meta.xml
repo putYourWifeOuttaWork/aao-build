@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+<!--
+  THE CITED-TYPE RULING, v1.7, and this field is the test case for it.
+
+  The enum grows TYPED, and what earns a lookup is whether we will ever compare the row's
+  LIVE state against the FROZEN snapshot. That comparison is the whole reason Claim Basis is
+  half frozen and half live, and a text Id cannot do it: it can record what we read, but not
+  let anyone traverse to what the row says now. A line item earns one because quantity, price
+  and product all move, and a Solution claim resting on a line item that has since changed is
+  exactly the drift then-and-now exists to expose.
+
+  PRODUCT2 DELIBERATELY DOES NOT GET ONE. It is reachable by traversal from the line item, so
+  citing it separately would cite a CLASSIFICATION rather than a fact about this deal. The
+  fact is that this deal has this line on it; the product behind it is a property of the
+  catalogue, and a claim that cited the product would still read as true after the line was
+  removed.
+-->
+    <fullName>AAO_Cited_Line_Item__c</fullName>
+    <description>Written by: the Solution route. Read by: the live record, for the current-state half of then-and-now. The frozen half is AAO_Snapshot__c.</description>
+    <label>Cited Line Item</label>
+    <type>Lookup</type>
+    <referenceTo>OpportunityLineItem</referenceTo>
+    <relationshipLabel>AAO Claim Bases</relationshipLabel>
+    <relationshipName>AAO_Line_Item_Claim_Bases</relationshipName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <required>false</required>
+</CustomField>

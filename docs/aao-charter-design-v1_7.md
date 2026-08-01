@@ -1,6 +1,30 @@
 # AAO Charter Design
 
-**v1.5 · 2 August 2026 · Missing-relation flag shape ruled (per deal per relation kind). The three v1.1 gaps are built and green. Solutions ruled: the card is state, the edge is evidence**
+**v1.7 · 2 August 2026 · The Problems charter CLOSED. Solution's admission test recovered. Machine confirmation ruled an autonomy level. Flags age from when the question became askable. The cited-type enum ruled**
+
+**Changed in v1.7 — three laws, two of them found by the build refusing a design.**
+
+**Flags age from when the question became askable, not from when the answer last turned bad · LAW.** CODE wrote a reopen path that restarted a flag's clock and **the deploy refused it**, because `AAO_Raised_At__c` is immutable and is what age is measured from. The refusal is right and it generalises past this flag. A missing-relation flag is one standing question about a deal — *does this deal have solutions with no stated problem* — and that question has been askable since the deal existed. **A gap reappearing is the same question answering yes again, not a new question.** Restarting the clock would let a deal launder itself by closing and reopening and come back looking freshly imperfect, which is exactly the optimistic drift this build exists to refuse. **The field enforced this before either party reasoned to it**, which is the argument for putting laws in the schema rather than in the code that uses it.
+
+**The after-insert exposure · LAW, stated generally.** Anything hung off an after-insert trigger can turn our defect into the customer's lost evidence, because a throw there rolls back the row that caused it — **so a failure in derived, secondary work destroys the primary fact we were given.** `AAO_Ingest` already ruled it for the enqueue path; the participant writer was the second instance rather than a special case, and every future after-insert consumer inherits it. **The safe direction is always to lose the derived thing rather than the evidence.**
+
+**One flag per deal per relation kind is held by the database, not by convention.** `AAO_Relation_Key__c` is unique, so two passes cannot raise two flags and make the count a lie — the same discipline as the scope key. **`AAO_MissingRelation` is built general and does not know what a Solution or a Pressure is**; it takes a kind and a list of members, and whoever knows the relation computes them. All three kinds are in the enum. **The count is the headline and the members are the work**, because a rolled-up flag carrying only a number tells a seller there is a problem without telling them where.
+
+**The cited-type enum · RULED.** It grows typed rather than generic, with a test: a type earns a lookup when we will compare its live state against the frozen snapshot, which is the whole reason the object is half frozen and half live. **Only `OpportunityLineItem` is added, not `Product2`** — the product is reachable by traversal from the line item, so citing it separately would cite a classification rather than a fact about this deal.
+
+**Reserved-word collisions now six:** `commit`, `json`, `system`, `merge`, `any`, `when` (from `switch`). Four refuse loudly, two resolve silently (`json`, `system`), and the silent two are the dangerous ones.
+
+**Build state: 153 tests green (was 146).**
+
+**Changed in v1.6.**
+
+**The Solution admission test is recovered and it has four questions, not three.** Three of them ask about links to Obstacles, Pressures and Goals. **Altify's own definition of a Solution is what it connects to**, which means the unlinked-Solution flag ruled in v1.4 is not our invention — a Solution card with no edges fails the vendor's published test. That is the sentence to use when explaining the flag to anyone at Altify. The fourth question, *would a key player be able to articulate your unique business value from this Solution*, is **the strongest evidence proposition on the map**: everything else records what the seller believes or was told, and this one is checkable from a transcript because it asks whether the buyer said the value back in their own words, from a subject set that is already closed and queryable. Solution's terminal state is **Implemented**, the fifth distinct one; no two card types share a lifecycle.
+
+**Machine confirmation · RULED as an autonomy level**, resolving the v0.5 tension by making it configurable rather than choosing among its three options. Whether a card moving to Confirmed raises a yellow flag first or is written directly is a per-customer setting, the same shape autonomy has everywhere: it governs who approves, never what is checked. The evidence rules are unchanged, with **a decision maker's statement confirming on its own**, which is the speaker-rank law applied rather than a new principle. **The tension lost most of its force to evidence:** Confirmed already does not mean a named human vouched, since five cards written inside twenty seconds all carry it true with a named confirmer who could not have read them.
+
+**Recorded, not ruled: the enablement sections.** An `ALTF__Solution__c` carries `ALTF__Solution_Section__c` children — Key Messages, Sales Tools, Case Studies, Competitive Positioning — so where a Solution card points at a real solution record, **authored enablement content is one join from the flag that needs it.** That is what a separate enablement tool delivers, arriving inside the same application and driven by evidence rather than by a content recommender. Not this wave; recorded because guidance should be designed for it rather than discover it later.
+
+**The Problems charter is CLOSED.** Parked and not blocking: quick-links from insights to qualifiers.
 
 **Changed in v1.5.**
 
@@ -505,7 +529,15 @@ Same finding as the People charter, same place: **each insight type carries an a
 
 **Obstacle** — Is this a task, situation or process that can be fixed with your solution? · Is this a task, situation or process significant enough to establish substantial value if you can fix it? · Is this a task, situation or process that will have negative consequences if it is not fixed?
 
-**Terminal states differ per type** and are not a shared lifecycle: Goal runs Unconfirmed → Confirmed → **Achieved**, Pressure → **Resolved**, Initiative → **Completed**, Obstacle → **Overcome**.
+**Solution** — **four questions, not three** — How does your Solution address the Obstacles for your customer's initiative? · What Pressure(s) will your Solution have the most impact? · How does your Solution contribute to achieving their Goals? · Would a key player be able to articulate your unique business value from this Solution?
+
+**Terminal states differ per type** and no two share a lifecycle: Goal runs Unconfirmed → Confirmed → **Achieved**, Pressure → **Resolved**, Initiative → **Completed**, Obstacle → **Overcome**, Solution → **Implemented**.
+
+**Two things about Solution's test that change other rulings.**
+
+**Three of its four questions are about links to other cards.** Obstacles, Pressures, Goals. **Altify's own definition of a Solution is what it connects to**, which means the unlinked-Solution flag is not our invention: a Solution card with no edges fails the vendor's published test. That is a materially stronger position than the one the flag was ruled on, and it should be the sentence used when the flag is explained to anyone at Altify.
+
+**The fourth question is the strongest evidence proposition on the whole map.** *Would a key player be able to articulate your unique business value from this Solution?* Everything else on the insight map records what the seller believes or what the seller was told. **This one is checkable from a transcript in a way almost nothing else is**, because it asks whether the buyer said the value back in their own words — a span, from a named key player, byte-verified. It also composes with the People charter, since *key player* is a defined state on the map (`ALTF__Is_Key_Player__c`, derived from political status of inner circle or political structure), so the subject set is closed and queryable.
 
 **Examples lists exist per type** and are few-shot grounding rather than vocabulary. Initiative's twelve, verbatim: digital transformation, improve employee productivity, leverage employee strengths, improve quality processes, recruit top talent, streamline core business process and tools, improve product release cycle, technology innovation, expense control initiatives, optimise sales process, improve reporting and transparency, maintain alignment across the organization.
 
@@ -609,17 +641,35 @@ So the two candidate sources are not alternatives. **Line items give you the car
 
 So the flag is keyed on **deal plus relation kind**, and it **names the specific cards inside it** rather than only counting them, because a seller cannot act on a number. **It clears when the count reaches zero**, and the count is itself the progress indicator, which is consistent with a flag clearing only when its cause is gone and never by dismissal.
 
-### Consequences for Claim Basis · the cited-type enum is growing per question
+### The cited-type enum · RULED 2 Aug · it grows typed, and there is a test for what earns a lookup
 
-This ruling needs cited types for **OpportunityLineItem and Product2**, which is the **third** addition after `Source`, on an object whose declared job is citing arbitrary state and which today has lookups built for only two of its six declared types. **Worth deciding once whether the enum keeps growing per question or takes a general shape**, rather than discovering the same thing a fourth time. The field tables argued for typed lookups deliberately, for traversal and reporting and lookup filters, so growth may be the right answer — but it should be a decision rather than a habit.
+**One addition, not two.** The claim is *this product is on this deal*, and the evidence for it is the **OpportunityLineItem**. Product is a field on that line item and is reachable by traversal, so citing `Product2` separately would be citing a classification rather than a fact about this deal. **`Product2` is not added.**
+
+**The enum grows typed rather than taking a generic shape, and the test is this: a cited type earns a typed lookup when we will compare its current state against the frozen snapshot.** That comparison is the entire reason Claim Basis is half frozen and half live — one subquery returning what a row said when the claim was written beside what it says today — and a text Id with a type name cannot do it, nor support lookup filters, reporting by related record, or the orphan sweep. **Anything we would never look at again does not need a lookup**, because the snapshot alone is the whole evidence, and such a row can carry a plain reference for audit instead.
+
+That gives a line to hold rather than a habit of adding, and it explains the existing set: `Answer`, `Map_Row`, `Insight_Card`, `Decision_Criterion`, `Qualifier_Status` and `Shadow_Person` are all things whose live value we expect to diverge from what was cited. **Four of those six still have no lookup built and remain owed.**
 
 ### Parked
 
 Quick-links from insight cards to **qualifiers**: guidance enrichment, not this wave. *(The solution half of this item is ruled above.)*
 
+### Machine confirmation · RULED 2 Aug · an autonomy level, not a fixed answer
+
+**The v0.5 tension is resolved by making it configurable rather than by choosing one of its three options.** Whether a card moving to Confirmed raises a yellow flag for a human first, or is written directly, is **a per-customer autonomy setting**, the same shape autonomy already has everywhere else: it governs who approves, never what is checked. A cautious org gets a flag on every confirmation. A confident one lets the evidence rules write it.
+
+**The evidence rules are the ones already ruled and do not change:** expressed twice in one call confirms, expressed once lands unconfirmed, re-mention in a later call notes the date and confirms, a different person appends attribution. **Added: a statement from a decision maker confirms on its own**, which is the speaker-rank law applied to confirmation rather than a new principle.
+
+**The reason the original tension has lost most of its force is evidence, not argument.** Confirmed was supposed to mean a named human vouched. In production it does not: five cards created inside twenty seconds on 31 July all landed with `ALTF__Confirmed__c` true, `ALTF__ConfirmedBy__c` naming a person who could not have read them. **The word drifted before we touched it.** Watermarking our confirmations would distinguish ours from a corpus that is already mixed, which is worth doing for our own rows and cannot repair theirs.
+
+### Enablement sections · a guidance surface, recorded not ruled
+
+Where a Solution card is attached to a real `ALTF__Solution__c` record, that record carries **`ALTF__Solution_Section__c`** children, seen in production as *Key Messages, Discovery & Business Case*, *Sales Tools*, *Case Studies & Customer Success Stories*, *Competitive Positioning*. **This is authored enablement content already sitting inside the CRM, keyed to the solution being sold.**
+
+Its significance is that guidance can reach it: when a red or a flag concerns a specific solution against a specific obstacle, the material to act on is one join away, in the customer's own words rather than a generic library. **That is the value a separate enablement or DAM tool delivers, arriving inside the same application, driven by evidence rather than by a content recommender.** Not ruled and not this wave; recorded because it changes what guidance is capable of and should be designed for rather than discovered later.
+
 ### Open — Matthew's
 
-**(a) Machine-confirm versus Altify's Confirmed semantics.** In ALTF panels today, Confirmed has meant a named human vouched. If projection writes machine-confirmed cards into those panels, the word silently changes meaning for every existing user. Options: project confirmation with a visible machine watermark; hold machine confirmation on our side and project only the card; or leave projection off until this is ruled. Not urgent; blocks projection of confirmations only.
+*(Nothing structural. The v0.5 confirmation tension is ruled above.)*
 
 ---
 

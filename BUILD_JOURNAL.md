@@ -3989,3 +3989,82 @@ silently. Pinned as a test.
 
 **Owed.** The label-read ruling, which is Matthew's. Until then the ontology assembles from
 supplied labels and authors nothing on its own.
+
+---
+
+## 2026-08-04 · session 45 · influence and conflict: what the labels actually carry
+
+**Did.** Read-only pattern scan. **No build action.** Guard applied: **the ALTF label table
+holds 2,930 rows**, so every zero below is a filter result and not an empty table.
+
+### The suggested pattern would have missed the most important hit
+
+**`%CONFLICT%` returns five labels. It does NOT return `CONFCLIT_MODE_HELP_TEXT`, because the
+label name is misspelled in the package.** That row is the only conflict help text there is:
+
+> **`CONFCLIT_MODE_HELP_TEXT`** — *Select the contact this person is in conflict with. (To
+> focus on another person, click their power menu icon and select the action you want to
+> take).*
+
+Its influence twin is spelled correctly:
+
+> **`INFLUENCE_MODE_HELP_TEXT`** — *Select the contact this person influences. (To focus on
+> another person, click their power menu icon and select the action you want to take).*
+
+**A pattern read must tolerate the vendor's typos**, and there is no rule that finds this one
+in advance. What found it was reading the whole `%HELP_TEXT%` family in session 42 and looking
+at the list — **the family sweep caught what the targeted pattern could not.** That is a third
+face of the read-by-pattern-filter-by-family law: **the pattern must be wider than the thing
+you are looking for, because the name you are looking for may be wrong.**
+
+`%RELATIONSHIP_TYPE%` returns **zero** against a 2,930-row table, and `%DETRACT%` likewise.
+Confirmed empty, not unread.
+
+### The answer to the actual question: there is NO authored ontology
+
+**Sixteen labels across influence and conflict, and every one is a UI string.** *Add Conflict.
+Influences. Influenced By. Conflicts. No Conflicts Set.* Plus the two mode help texts above.
+
+**The two help texts are interaction instructions, not propositions.** *Select the contact
+this person influences* tells a user how to operate a picker. It does not say what influence
+IS, what makes one person influence another, or how a seller would know. Set beside
+`AM_OM_SUPPORT_GUIDED_QUESTION_5` — *is this person mentoring you by providing guidance,
+political insight, or competitive information* — the difference is total. **One is a question
+about the buyer; the other is a caption on a button.**
+
+**So v1.8's claim that Politics has no authored ontology is CONFIRMED, and now it is confirmed
+by a read rather than by a UI walk.** This is the case where a confirmed empty was worth as
+much as a hit: the last two times absence was assumed the text was there, and this time it
+genuinely is not.
+
+### And the schema says the same thing, more sharply
+
+`ALTF__Contact_Influence__c` carries **fourteen fields and only four that matter**:
+
+| Field | |
+|---|---|
+| `ALTF__Influencing_Contact__c` | → Contact |
+| `ALTF__Influenced_Contact__c` | → Contact |
+| `ALTF__Type__c` | picklist: **`Conflict`, `Influence`** |
+| `ALTF__AltifyId__c` | the external key |
+
+**One object holds both, discriminated by a two-value picklist**, and there is no
+`ALTF__Contact_Conflict__c` — it does not exist. **No strength, no direction beyond the two
+contact lookups, no basis, no note, no date.** An edge is a bare triple: who, whom, which
+kind.
+
+**That is the same shape as the person-to-card finding and it is worth naming as a pattern.**
+`ALTF__Insight_Card_Contact__c.ALTF__Type__c` collapses four authored questions into
+`Informer` and `Owner`; `ALTF__Contact_Influence__c.ALTF__Type__c` collapses two relationship
+kinds into one row with no room for why. **Altify's relationship layer stores the fact and
+never the evidence for it** — which is precisely the gap this product exists to fill, and it
+means our claims carry everything the edge cannot: the span, the speaker, the date, the
+receipt.
+
+**Consequence for the Politics charter, and it is a simplification.** There is nothing to
+discover, so nothing to reconcile against a vendor ontology, so no AM/OM split, no sparse
+numbering, no localization overlay to apply on the way in. **Politics is authored by us from
+zero, contracts land `Inferred_Pending` until a human ratifies them, and that is the whole
+story** — the same position Buyer Role is in, and now demonstrated rather than assumed.
+
+**Owed.** Unchanged.

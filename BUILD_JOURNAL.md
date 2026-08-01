@@ -3880,3 +3880,49 @@ not.**
 
 **Owed.** Unchanged. v1.7's Support ontology is not to be built against; the enumeration above
 is the input for correcting it.
+
+---
+
+## 2026-08-04 · session 43 · the opportunity-map paste, read from labels
+
+**Did.** Synced v2.7, deleted v2.6. **Nothing built**, and nothing will be built against
+v1.7's Support or Political sets, now marked SUPERSEDED.
+
+**Delivered the opportunity-map set: 35 labels requested, 35 found, none missing, zero
+overrides applying.** Read from `ExternalString` by exact name with the localization overlay
+queried and found empty for all thirty-five. Every string below is verbatim from the org and
+none is reconstructed from the walk. The full paste is in the reply to this instruction.
+
+**Support 9, Political Status 7 (four shared + three OM-only), Coverage 3, and the five
+insight admission sets — Goal 3, Pressure 3, Initiative 3, Obstacle 3, Solution 4.**
+
+### Three things visible only once the OM set is isolated
+
+**Support `_5` and `_7` are a matched pair pointing opposite ways.** *Is this person mentoring
+**you**…* against *is this person mentoring **your competition** and working to help them
+win*. Likewise `_2` and `_6`: preferring your solution against preferring an alternate one.
+**Altify authored the negative half of the ladder explicitly**, which the walk missed entirely
+because the walked path never went down the No branch far enough. The five recovered questions
+were all on the positive spine.
+
+**Political Status `_6` and `_7` were never walked and are not about authority at all.**
+*Track record of success in implementing projects that deliver value* and *collects and
+provides information to people of power and influence* — the first is competence, the second
+is brokerage. The three walked questions were all about position. **A four-question ontology
+read as three would have lost the two dimensions that are not hierarchy.**
+
+**`PRESSURE_HELP_TEXT_3` differs from what §2.2 recorded.** The label reads *will this
+pressure prevent a goal from being achieved?* — §2.2 lists Pressure with only two questions
+and no third. So the insight side had a gap too, and it is the question that carries the
+Pressure-to-Goal link the record separately notes as *taught but not stored*. **The
+methodology asks about the edge that the schema cannot hold.**
+
+### The spelling and punctuation are kept exactly
+
+`organisation` in `OM_POLITICAL_STATUS_GUIDED_QUESTION_9` against `organization` in the AM
+variant; `jeopardise` in `_16`; the stray hyphen in `_11`'s *-including*; the curly
+apostrophes in `company's` and `customer's`. **None of it is normalised.** These strings
+become proposition text, and a normalised quote is a paraphrase — the same rule that makes
+the byte check possible on spans.
+
+**Owed.** Unchanged. v1.8 is written from labels or not at all, and this is the input.

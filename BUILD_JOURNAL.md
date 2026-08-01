@@ -3337,3 +3337,73 @@ own. That is the discovery pattern exactly: read what is there, never write what
 as though it were given.
 
 **Owed.** Unchanged, plus the substantive threshold, which is a measured number.
+
+---
+
+## 2026-08-03 · session 35 · v1.4 did not arrive; the Solutions join verified anyway
+
+**Did not sync.** `aao-charter-design-v1_4.md` is **not on disk**. No file matching `v1_4`
+anywhere under `~/Downloads` at any depth, and the newest `aao-context*.zip` is from 31 July.
+`docs/` still holds v1.3. **Nothing copied, nothing deleted, nothing built.** Second time this
+has happened; the v0.7 drop went the same way and the content reappeared folded into the next
+version, so the rulings are recorded here and nothing is lost by waiting.
+
+**No build action would have been correct regardless** — the message flags two things as
+undecided (flag volume shape, and whether the cited-type enum keeps growing) and one as
+explicitly Matthew's.
+
+### The join is real, verified hop by hop against the org
+
+`OpportunityLineItem` → `PricebookEntry` → `Product2.ALTF__Solution__c` →
+`ALTF__Insight_Card__c.ALTF__Solution__c`:
+
+| Object | Field | Type | Points at |
+|---|---|---|---|
+| `OpportunityLineItem` | `PricebookEntryId` | reference | `PricebookEntry` |
+| `PricebookEntry` | `Product2Id` | reference | `Product2` |
+| `Product2` | `ALTF__Solution__c` | reference | `ALTF__Solution__c` |
+| `ALTF__Insight_Card__c` | `ALTF__Solution__c` | reference | `ALTF__Solution__c` |
+
+**Both ends land on the same object, so the chain genuinely closes** rather than merely
+looking like it does. It also traverses in one SOQL — `SELECT
+PricebookEntry.Product2.ALTF__Solution__c FROM OpportunityLineItem` parses and runs. **Zero
+rows in `aossb2`**, which is a fact about the sandbox and not about the join: nothing here
+has line items. Worth a production read before anyone leans on the shape of the data.
+
+**Why route P is right for it, and this is the strongest case yet.** A line item is a record,
+there is no judgment in reading it, and the claim cites the row it read. That is exactly the
+Coverage shape and exactly the map-row shape. **And no ratification is the correct call for
+the same reason state verification exists:** re-reading the line item confirms or refuses it,
+so there is nothing for a human to ratify that the byte-check twin does not already do.
+
+**The edge is correctly ruled underivable.** A line item says what was quoted. It says nothing
+about which pressure that solution answers, and inferring one would be inventing a causal
+claim from a purchase order — the precise failure the whole build refuses.
+
+### Two things this needs that do not exist yet
+
+**A fifth flag type.** `AAO_Type__c` carries `Methodological`, `Contention_Negative`,
+`Contention_Positive`, `Ratification`. The Identification flag was ratified as the fifth and
+**has never been built either**, so a general missing-relation flag would be the sixth value
+on a picklist currently holding four. Building it general rather than solution-specific is
+right and matches how every other law here generalized — the Pressure-to-Goal hole and the
+Politics edges want the same shape, and a flag that says *this thing has no edge to anything*
+is one rule, not three.
+
+**The cited-type question is worth answering now rather than per-request.**
+`AAO_Cited_Type__c` holds **seven** values today — `Source`, `Map_Row`, `Insight_Card`,
+`Decision_Criterion`, `Answer`, `Qualifier_Status`, `Shadow_Person` — and **only three have
+lookup fields built**: `AAO_Cited_Answer__c`, `AAO_Cited_Map_Row__c`, `AAO_Cited_Source__c`.
+`OpportunityLineItem` and `Product2` would make nine values and five lookups.
+
+**The shape of the growth is what matters, not the count.** Every value is a distinct object
+needing its own typed lookup, so the table grows one enum value plus one field per kind of
+record we ever cite — and it is already four values ahead of its own implementation. The
+alternative is a polymorphic reference, which Salesforce does not offer on custom lookups, so
+the honest options are: keep growing the typed table, or store the cited row as an id string
+plus its object name and lose referential integrity and the live half of then-and-now. **The
+typed table is the one that keeps then-and-now working**, which is the whole reason Claim
+Basis exists. Recorded for the ruling rather than decided here.
+
+**Owed.** Re-drop v1.4. Plus the standing list, the substantive threshold, and now the four
+declared-but-unbuilt cited lookups.

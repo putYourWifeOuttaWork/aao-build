@@ -2849,3 +2849,51 @@ projection, the setup-time inference pass for speaker requirement and route, the
 and Ratification flags having no raise path, and the session-4 remainder — plus the two
 charter items recorded and not built: the insight-card annotation law, which has no writer
 to attach to yet, and Inferred attribution, gated on its strip-and-restore harness.
+
+---
+
+## 2026-08-02 · session 27 · context 14, and one number checked
+
+**Did.** Synced `docs/` to context 14. One addition, `aao-seed-v3_0.md`; the other seventeen
+byte-identical. Nothing built, nothing deployed, no build action taken.
+
+### Verified from the org, because the seed says receipts not claims
+
+The seed is an orientation document whose whole argument is *receipts, not roadmap*, so the
+numbers in it are the ones most likely to be repeated in a room. Checked what is mine to
+check:
+
+| Claim in seed v3.0 | Read from the org | |
+|---|---|---|
+| `139 AAO tests green` | 139, 100 % | correct |
+| org `00DWD00000DV7iT2AT`, `IsSandbox true` | same id, `IsSandbox = True`, name `Altify` | correct |
+| Model Config all human-written, `Active` defaults False | matches the describe in session 24 | correct |
+| **`Eight objects live with trigger laws, plus AAO_Model_Config__mdt`** | **seven** objects, seven triggers, one per object; `AAO_Model_Config` is the eighth row | **off by one** |
+
+**`SELECT DeveloperName FROM CustomObject WHERE DeveloperName LIKE 'AAO%'` returns eight, and
+`AAO_Model_Config` is one of the eight** — a custom metadata type is a CustomObject row in
+the tooling API. So the sentence as written reads eight *plus* one and lands on nine. The
+true shape:
+
+> **Seven objects live with trigger laws** — Answer, Candidate, Claim, Claim Basis, Evidence
+> Contract, Flag, Source, each with its own before-trigger — **plus `AAO_Model_Config__mdt`,
+> which has no trigger because nothing machine-written ever touches it.** Eight rows in the
+> org, seven of them data.
+
+That last clause is why the miscount is worth correcting rather than rounding past: Model
+Config genuinely does not belong in a count of objects-with-trigger-laws, and the reason it
+does not is the same reason it exists.
+
+**Consistent elsewhere, so this is one sentence and not a systemic error.** Field tables
+v0.13 says six CLOSED plus a Flag pointer section plus a Model Config section, which is eight
+sections and correct. Corrections v2.1's "fifteen entities" is the design object model rather
+than deployed objects, a different count of a different thing.
+
+**Not corrected by me.** The seed is authored elsewhere and is context only, per the
+instruction. Reported here so it can be fixed before the QBR, where a builder in the room may
+well ask how many objects.
+
+Nothing owed changes. The build-owed list the seed carries back matches mine exactly:
+escalation with projection, the setup-time inference pass, Contention and Ratification raise
+paths, the session-4 remainder, the insight-card annotation writer once Problems closes, and
+the Inferred attribution harness.

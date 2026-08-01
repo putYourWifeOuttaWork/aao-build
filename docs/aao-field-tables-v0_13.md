@@ -1,6 +1,8 @@
 # AAO Field Tables
 
-**v0.12 · 1 August 2026 · Source, Evidence Contract, Candidate, Answer, Claim, Claim Basis CLOSED · Flag outstanding**
+**v0.13 · 2 August 2026 · Source, Evidence Contract, Candidate, Answer, Claim, Claim Basis CLOSED · Model Config documented · Flag lives in the flags doc, said so at last**
+
+**Changed in v0.13 — the Model Config stub paid, from CODE's verbatim describe (session 24).** Section 7 is now the full enumeration, thirteen custom fields plus the two platform name fields, writer and reader named per field. Two facts carried in as stated design, not trivia: **every field is human-written** — this is the one place a person decides which model and which charter version the whole build runs under, and no code may reach past it; and **nine of thirteen are required while `AAO_Active__c` defaults to False**, so a hand-authored second generation is inert until someone deliberately turns it on — the accident fails in the safe direction, the same shape as the product-set default on rubric reads. Also fixed: **the tables now say where Flag lives.** `AAO_Flag__c` is specified in the flags and guidance document, which was defensible and unstated; a reader working from the tables alone would have concluded the object does not exist.
 
 Companion to: Architecture, Object Model, Glossary, Data Flow. This file is the packet Claude Code builds from: one section per object, each field naming its type, constraints, the process that writes it and the process that reads it. A field that cannot name both is invented and does not ship (standing rule).
 
@@ -213,13 +215,32 @@ Per proposition, per version of its text. Rule data, derived at runtime from the
 
 ---
 
-## 7 · AAO_Model_Config__mdt · fields v0.12 · **STUB — enumeration owed**
+## 7 · AAO_Model_Config__mdt · fields v0.13 · **DOCUMENTED — from the org's verbatim describe, session 24**
 
-**Custom metadata, not an object: the pinning record for the model layer.** Which model, which endpoint, which charter at which version, cache and token parameters. It exists in the org with **13 fields, none of which are documented here**, which is this file failing its own standing rule — every field must name its writer and reader or it is invented, and a field that shipped without a row here is the same defect in the other direction.
+**Custom metadata, not an object: the pinning record for the model layer.** One record, `Default`. **Every field is human-written — that is the object's identity:** the one place a person decides which model and which charter version the whole build runs under, with no code allowed to reach past it. The API secret is **not** here; it lives in the Named Credential's write-only slot, merged after Apex builds the request, unreadable from code and absent from logs. Changing a value here is a versioned act visible on every subsequent claim's charter stamp.
 
-**Owed:** CODE pastes the verbatim describe of `AAO_Model_Config__mdt` back; the enumeration is absorbed in v0.13 with writer and reader named per field. Until then, nothing cites a Model Config field by name from this document.
+| Field | Type | Constraints | Written by | Read by |
+|---|---|---|---|---|
+| `DeveloperName` / `MasterLabel` | Text(40) | Required, platform | Human, the one record `Default` | `AAO_Extract.config()` |
+| `AAO_Active__c` | Checkbox | **Default False** | Human | The config reader — disable a generation without deleting it. **A hand-authored second generation is inert until deliberately enabled: the accident fails in the safe direction**, same shape as the product-set default on rubric reads |
+| `AAO_Model_Name__c` | Text(80) | Required | Human | `AAO_Extract.send()` — **the pin.** Never hardcoded |
+| `AAO_Charter__c` / `AAO_Charter_Version__c` | Text(80) / Text(20) | Required | Human | Stamped on every Candidate and Claim as attribution; bumping the version is how a charter change becomes visible on receipts |
+| `AAO_Blind_Charter__c` / `AAO_Blind_Charter_Version__c` | Text(80) / Text(20) | Required | Human | The second reader's name and version — separate fields because coverage is adjudicated by a different charter than the one that proposed, versioned independently |
+| `AAO_Blind_Enabled__c` | Checkbox | Default False | Human | Whether the blind reader runs at all. Off is the unsafe setting and the field description says so |
+| `AAO_Effort__c` | Text(20) | Required | Human | Passed to the API |
+| `AAO_Max_Output_Tokens__c` | Number(9,0) | Required | Human | Passed to the API |
+| `AAO_Named_Credential__c` | Text(80) | Required | Human | Which credential; the key itself is never here |
+| `AAO_Endpoint_Path__c` | Text(120) | Required | Human | Appended to the named credential |
+| `AAO_Timeout_Ms__c` | Number(9,0) | Required | Human | Callout timeout |
+| `AAO_Anthropic_Beta__c` | Text(255) | Nullable | Human | Beta header, null today |
 
-What is already ruled about it, independent of the field list: model and charter versions are pinned here, never inline in Apex; the API secret is **not** here — it lives in the Named Credential's write-only slot and is merged after Apex builds the request; changing a value here is a versioned act that shows up on every subsequent claim's charter stamp.
+Live `Default` record as of 2 August: `claude-opus-5` · `AAO_Extract_Evidence` 1.1.0 · `AAO_Blind_Reader` 1.0.0, enabled · effort high · 16,000 max output · `AAO_Anthropic` `/v1/messages` · 120,000 ms · beta null.
+
+---
+
+## 8 · AAO_Flag__c · fields v0.13 · **specified elsewhere, and the tables now say so**
+
+**Flag's fields, trigger law and five types live in the flags and guidance document, not here.** That split is deliberate — Flag is not in the replay path and its law travels with surfacing — but until this section existed the tables never said so, and a reader working from them alone would have concluded the object does not exist. It exists, is deployed, and day-one red writes to it.
 
 ---
 

@@ -2798,3 +2798,54 @@ with a question the document raises and does not answer.
 **Owed.** The `AAO_Model_Config__mdt` describe was paid in session 24 above, all thirteen
 fields with writer and reader named plus the live `Default` record; re-surfaced this session
 in the reply for pasting into v0.13.
+
+---
+
+## 2026-08-02 · session 26 · context 13, the swap, and both audits closing
+
+**Did.** Synced `docs/` to context 13, which supersedes both earlier drops tonight. Nothing
+built, nothing deployed. **The two superseded files are gone rather than orphaned:**
+`aao-field-tables-v0_12.md` and `aao-corrections-v2_0.md` no longer exist in `docs/`, so
+there is no stale copy of either sitting beside its replacement waiting to be read by
+mistake.
+
+### Field tables v0.13 — verified against the org, not taken on trust
+
+**Section 7 is real.** All **thirteen** `AAO_Model_Config__mdt` fields are enumerated; I
+checked the doc against the field directory rather than against my own session-24 entry, so
+the check is doc-versus-org rather than doc-versus-me. Nothing missing.
+
+**Both observations came back as stated design**, which is the outcome I wanted rather than
+being quoted as opinion: the all-human writer column is the object's identity — *no code may
+reach past it* — and `AAO_Active__c` defaulting to `False` is recorded as failing in the safe
+direction.
+
+**Section 8 closes the Flag gap the honest way**: a pointer saying the object is specified in
+the flags doc. **I checked the pointer resolves** — the flags doc carries 19 of 20 fields,
+the twentieth being `AAO_Synthetic__c`, which the tables cover once as a standing convention
+across every AAO object. A pointer to a document that did not actually specify the thing
+would have been worse than the silence it replaced, so it was worth checking.
+
+**Nothing further owed on the field tables.** The full field audit is clean for the first
+time: every field on every AAO object either appears in its own section or is covered by the
+synthetic convention.
+
+### Corrections v2.1 — the three omissions landed, correctly
+
+All three, and each is stated in the form that makes it usable rather than merely present:
+
+- **The rubric-scoped-reader law**, with the diagnosis I gave — v2.0 recorded how the
+  applicable set is *not* decided without the rule that decides it.
+- **The synthetic marker as the product-versus-test discriminator**, including `unmarked`.
+- **The speaker gate's not-applicable**, with the reasoning intact: *a record has no utterer,
+  so a speaker requirement asked of a state claim is a question that does not apply, and left
+  alone the gate would downgrade every state claim forever.* That last clause is the part
+  that matters, and it survived.
+
+Test count reads **139**, matching the suite as re-run last session.
+
+**Nothing owed on either document.** The remaining owed list is build work — escalation with
+projection, the setup-time inference pass for speaker requirement and route, the Contention
+and Ratification flags having no raise path, and the session-4 remainder — plus the two
+charter items recorded and not built: the insight-card annotation law, which has no writer
+to attach to yet, and Inferred attribution, gated on its strip-and-restore harness.

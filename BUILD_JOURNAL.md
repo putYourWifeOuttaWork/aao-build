@@ -2992,3 +2992,62 @@ on the discovery half — which is the honest version and matches how the byte c
 state check both work: find the thing already true and check against it.
 
 **Owed.** Unchanged. Build starts on Matthew's word.
+
+---
+
+## 2026-08-02 · session 30 · v0.7 did not arrive; the element-count question answered
+
+**Did not sync.** `aao-charter-design-v0_7.md` is **not on disk**.
+`~/Downloads/aao-context_14/` still holds `aao-charter-design-v0_6.md`, unmodified since
+09:25, and `~/Downloads/aao-context/` is a stale 30 July folder holding field tables v0.8.
+A search of `~/Downloads` finds no v0.7 at any depth. **Nothing copied, nothing deleted,
+nothing committed against a file I cannot read.** The rulings in the message are recorded
+here; the packet they belong to is not in the repo, so no build starts against a summary of
+a document.
+
+### Reportable 1, answered — and it does not need v0.7
+
+**Single-element contracts carry `AAO_Element_Count__c` of one. Zero does not appear.**
+Read from `aossb2`, all twelve live contracts across both populations:
+
+| code | population | `AAO_Element_Count__c` | actual list length | elements basis |
+|---|---|---|---|---|
+| AAO_T1 | product | 3 | 3 | Authored |
+| **AAO_T2** | product | **1** | 1 | Authored |
+| AAO_T3 | product | 2 | 2 | Authored |
+| AAO_T4 | product | 2 | 2 | Authored |
+| **AAO_T5** | product | **1** | 1 | Inferred_Pending |
+| AAO_T6 | product | 2 | 2 | Authored |
+| **AAO_T2** | synthetic | **1** | 1 | Authored |
+| *(T1, T3–T6 synthetic)* | | 3, 2, 2, 2, 2 | matching | |
+
+**Count matches list length on every row, and no row is zero or null.**
+
+**Zero is unreachable by construction, not by luck.** `AAO_Discovery.parseElements` states it
+in its own header — *"The number of parts is never unknown, so an unauthored proposition
+still gets one element, and it is the proposition itself"* — and returns `Inferred_Pending`
+with a single element rather than an empty list when Help carries no `Elements:` block. The
+discovery test `helpWithNoElementsBlockIsInferredPendingNotAuthored` holds that.
+
+**And if a zero ever did appear it fails safe**, which is the reason the question is worth
+asking. `AAO_Model.Coverage.isFull` returns **false** on an empty element list, with the
+reason recorded at the branch: *returning true would establish propositions out of an empty
+list.* So a zero-element contract can never establish anything; it can only fail to.
+
+One difference worth naming since it shows in the table: **product `AAO_T5` has one element,
+synthetic `AAO_T5` has two.** That is not drift. The seeded fixture authored two; discovery
+read the same question from Altify's Help, found no authored `Elements:` block, and honestly
+derived one element with basis `Inferred_Pending`. The two populations disagree because one
+was typed and the other was read, which is exactly what the marker exists to keep apart.
+
+### Reportable 2, blocked
+
+**The output token count on the first live People pass cannot be measured yet.** There is no
+People charter deployed and no People pass to run. It arrives with the build, and
+`AAO_Extract.Usage` already logs input and output per call, so the number falls out of the
+first run rather than needing separate instrumentation. Against the 16,000 ceiling on
+`AAO_Model_Config__mdt.AAO_Max_Output_Tokens__c`, and worth watching precisely because the
+People handed unit is now person crossed with dimension: the handed set multiplies where
+extraction's did not.
+
+**Owed.** Both reportables, one answered above and one pending the build. Re-drop v0.7.

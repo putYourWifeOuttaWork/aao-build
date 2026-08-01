@@ -4187,3 +4187,46 @@ itself — which makes the honest rule *the first read of any family is done by 
 every read after that is guarded*.
 
 **Owed.** Unchanged. Waiting on the sourcing decision.
+
+---
+
+## 2026-08-04 · session 48 · the handoff set
+
+**Did.** Synced context 19. **Nothing built**, per the drop. Seed v5.0 in; **seed v4.0 and
+corrections v1.0 deleted** as instructed. The other three files arrived **byte-identical** to
+the copies already here, so this drop is one new file and two deletions.
+
+**Seed v5.0's `171 tests green` verified against the org: 171 run, 171 passing.** Checked
+rather than carried forward, because a handoff document's numbers are the ones a new
+conversation will repeat without re-checking.
+
+### Deleting corrections v1.0 leaves two dangling references
+
+Nothing in the corrections chain depended on it — **v2.9 contains zero references to v1.0**,
+which is why the deletion is clean at that level. But two older documents still point at the
+file, and one of them points at it as the top authority:
+
+- **`aao-code-build-brief-v1_0.md`, line 14:** *"`docs/aao-corrections-v1_0.md` — the
+  Answer/Claim correction. **Where this disagrees with anything else, it wins.**"*
+- **`MANIFEST.md`, line 10:** lists it as *"Authoritative over the four project documents
+  until they are bumped."*
+
+**A pointer to a deleted file that claims precedence over everything is worse than a stale
+copy**, because a reader who follows it finds nothing and has no way to tell whether the
+authority moved or was withdrawn. The build brief and the manifest are both below the
+corrections chain and neither has been bumped in this whole run, so they were always going to
+drift; this is the first deletion that makes the drift visible.
+
+**Not fixed by me** — both are authored elsewhere and `docs/` is read-reference. Reported so
+the next bump of either can drop the line or repoint it at v2.9, which is where that authority
+now lives.
+
+### What is still in docs/ and deliberately so
+
+Seed v1.0 and v2.0 remain. The instruction named v4.0 only, and earlier drops carried the
+older seeds alongside the current one, so they read as kept history rather than oversight.
+Flagging in case that assumption is wrong, since this drop was described as the full current
+set and those two are the only files that could contradict it.
+
+**Owed.** Unchanged. Waiting on the label sourcing decision; `AAO_PeopleOntology` remains an
+assembler and reads nothing on its own.

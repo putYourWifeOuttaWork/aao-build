@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+<!--
+  INVARIANT 9, and it was owed. Every creation path carries an upper bound and abstains and
+  flags past it.
+
+  We named the sixteen-thousand-token output ceiling on the People pass and never applied the
+  guard, which is the law that already covered it. A ceiling that is only discussed is not a
+  ceiling: the run either refuses at a stated number or it discovers the number by failing
+  against the model's own limit, and the second one loses the pass AND the record of having
+  tried.
+-->
+    <fullName>AAO_Bounded_Path__c</fullName>
+    <description>Written by: the cardinality guard. WHICH creation path hit its bound. Named rather than numbered, because "something produced too many rows" is not actionable and "the People pass on this deal would have produced 54 findings" is.</description>
+    <label>Bounded Path</label>
+    <type>Text</type>
+    <length>80</length>
+    <required>false</required>
+</CustomField>

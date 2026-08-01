@@ -3542,3 +3542,69 @@ derived work rolls back the primary fact we were given.
 
 **Owed.** A Solution proposition in the rubric, which is contract-authoring rather than code.
 Plus the standing list.
+
+---
+
+## 2026-08-03 · session 38 · invariant 9 applied, and the ordering law it nearly broke
+
+**Did.** Built the cardinality guard. **164 tests, 164 passing** (was 158). No sync.
+
+**The miss was mine and it was not a detail.** I wrote down that nine people against six
+dimensions is fifty-four findings, named the sixteen-thousand-token ceiling beside it, and
+**connected neither to the law that already governed both.** Invariant 9 has said all along
+that every creation path carries an upper bound and abstains and flags past it. A ceiling
+that is only discussed is not a ceiling.
+
+### Why abstaining beats truncating, which is the substance rather than the mechanism
+
+Without the guard the run does not refuse at a stated number. It discovers the number by
+failing against the model's own limit, mid-pass, having already paid for the call. **And a
+truncated response is worse than a refused one.** The parse law says a derived fact may never
+be derivable from a parse failure — and a findings array cut off at the token ceiling
+produces exactly that. **The comparator would read every unit past the cut as `not_returned`,
+which is a fact about arithmetic wearing the clothes of a fact about evidence.** Fourteen
+fabricated rows nobody could tell from real ones.
+
+So it refuses the whole pass and says so, with both numbers recorded and **the ceiling frozen
+on the flag**: raising the bound later must not silently rewrite why an older run abstained.
+
+### The bug this nearly was, caught by the codebase's own comment
+
+`AAO_Pipeline` carries an ordering law in its own words: *everything before the callout is
+SOQL, because Apex forbids a callout after DML and a single row written above this line fails
+the model call with an error that reads like a platform problem rather than an ordering one.*
+
+**My first guard wrote a flag on the way past.** That would have broken the model call on
+every pass that was WITHIN its bound — the passes nobody would think to test, because they
+are the ones that work. The failure would have looked like the callout being broken rather
+than the guard existing.
+
+So the check is **pure**, and the writing is split:
+
+- `check(proposed)` — no DML, safe before a callout, decides only.
+- `refuse(...)` — writes, and only on the abstaining branch where no callout follows.
+- `clearIfStanding(...)` — writes, and only after the pass.
+
+**Pinned as a test that asserts a DML count of zero**, because that is the property, not a
+side effect of how it happens to be written today.
+
+### Where the bound lives
+
+`AAO_Model_Config__mdt.AAO_Max_Findings_Per_Pass__c`, set to 60. It belongs there for the
+same reason the model name does: the one place a person decides what the build runs under,
+with no code allowed to reach past it, and it sits beside `AAO_Max_Output_Tokens__c`, which
+is the reason it exists at all.
+
+**A missing configuration is NOT read as unbounded.** An unbounded creation path is precisely
+what invariant 9 forbids, so an absent value falls back to a finite 50 rather than to
+infinity: **forgetting to configure must never be the same as choosing no limit.**
+
+### Wired live, not left as a library
+
+The guard runs on the extraction pass today, before the callout, so it is exercised rather
+than waiting for the People charter to arrive and use it correctly. A test asserts the
+rehearsal is well inside its bound — **a guard that fired on the rehearsal would be a bound
+set wrong, not a bound doing its job.** `PEOPLE_PASS` is named and ready.
+
+**Owed.** Unchanged, plus: the People assembler must call `check` before it builds its handed
+set, which is the whole point of doing this now rather than after.

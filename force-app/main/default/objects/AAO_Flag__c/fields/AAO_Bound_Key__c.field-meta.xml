@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Bound_Key__c</fullName>
+    <description>Written by: the cardinality guard. Opportunity id plus bounded path. Unique, so a path that keeps hitting its bound raises one flag that updates rather than one per attempt.</description>
+    <label>Bound Key</label>
+    <type>Text</type>
+    <length>120</length>
+    <required>false</required>
+    <unique>true</unique>
+    <externalId>true</externalId>
+</CustomField>

@@ -10,6 +10,11 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
+                <fullName>Cardinality_Exceeded</fullName>
+                <default>false</default>
+                <label>Cardinality Exceeded</label>
+            </value>
+            <value>
                 <fullName>Relation_Missing</fullName>
                 <default>false</default>
                 <label>Relation Missing</label>

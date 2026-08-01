@@ -25,6 +25,11 @@
                 <label>Contention_Positive</label>
             </value>
             <value>
+                <fullName>Cardinality</fullName>
+                <default>false</default>
+                <label>Cardinality</label>
+            </value>
+            <value>
                 <fullName>Missing_Relation</fullName>
                 <default>false</default>
                 <label>Missing Relation</label>

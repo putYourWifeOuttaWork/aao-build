@@ -207,6 +207,23 @@ public class AAO_Pipeline {
                 return o;
             }
 
+            // INVARIANT 9, applied before the call rather than discovered by it. The
+            // check is pure: writing a flag here would break the ordering law two comments
+            // above, and would break it only on passes that were within their bound.
+            AAO_Cardinality.Verdict bound = AAO_Cardinality.check(contracts.size());
+            if (!bound.withinBound) {
+                o.status = 'cardinality_exceeded';
+                o.note = bound.reason;
+                // Safe: we are abstaining, so no callout follows this DML.
+                AAO_Cardinality.refuse(
+                    src.AAO_Opportunity__c,
+                    src.AAO_Account__c,
+                    AAO_Cardinality.EXTRACTION_PASS,
+                    bound
+                );
+                return o;
+            }
+
             AAO_Extract.Result ex = AAO_Extract.run(src.Id);
             o.extraction = ex;
             o.charter = ex.charter;

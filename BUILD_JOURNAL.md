@@ -2937,3 +2937,58 @@ That is also why the enum is four values on the picklist and three in the schema
 `model_missed` retired-valid on top.
 
 **Owed.** Unchanged.
+
+---
+
+## 2026-08-02 · session 29 · charter design v0.6 read against the deployed parser
+
+**Did.** Synced the three-file drop (charter design v0.6, rebuttals v0.2, seed v3.1) and
+deleted the three superseded copies. **No build action, on instruction.** Read v0.6 against
+`AAO_ExtractCharter.parse` 1.1.0 and the schema as deployed. **Five things will not build as
+written**, all in the generalization rather than the rulings.
+
+**The claim that fails.** v0.6 says the extraction charter *"predates the generic `ref`/`body`
+naming; its `proposition_code` is the `ref` and its body fields sit inline — the writer's
+parser treats them identically."* The parser does not. It reads `f.get('proposition_code')`
+literally and returns `Map<String, Finding>` keyed on it.
+
+1. **`ref` fails silently, and fails as the worst possible signal.** An unknown key yields
+   `code = null`, `knownCodes.contains(null)` is false, `continue`. **No exception, empty map,
+   and the pipeline then writes `not_returned` for every handed unit.** `not_returned` is
+   defined as a charter-quality signal — so a *parser* mismatch would present as the reader
+   having answered nothing, which is exactly the fact that metric exists to detect. Rename
+   with a fallback that reads either key and **throw** on a findings array that parses to
+   zero recognised refs.
+
+2. **A map keyed by `ref` cannot hold discovery findings.** `byCode.put(code, fin)`. Every
+   discovery finding carries `ref: "NEW"`, so **N new people collapse to one** — last write
+   wins, silently. Today they never arrive at all, because `knownCodes.contains('NEW')` is
+   false and they are dropped. The return type has to become handed-map plus discovered-list,
+   and both callers change with it.
+
+3. **A closed enum cannot contain values the model invents in the same emission.** `element`
+   is closed at runtime from the contracts' element ids. v0.6 has People spans tag
+   `emission_id` (`m1`, `m2`…) — invented by the model *during* the emission, so unlistable
+   before the call. Either the field goes open for those charters, losing the closure
+   extraction depends on, or emission slots are pre-handed.
+
+4. **And the same field is load-bearing arithmetic.** `AAO_Accumulate.verdictFor` returns the
+   proposal only when `coverage.isFull(contractElements)`, comparing span `element` values
+   against the contract's element ids. Fill that field with emission ids and coverage never
+   matches: **every People finding lands UNVERIFIED at best and Abstained at worst**, by
+   arithmetic rather than by judgment. Coverage needs its own field, or per-charter coverage.
+
+5. **`NONE` has nowhere to be stored.** `AAO_Candidate__c.AAO_Proposed_Verdict__c` is
+   restricted to `TRUE`/`FALSE`/`UNVERIFIED`. v0.6 has People and Problems emit `addressed`
+   with `proposed_verdict: NONE` and the proposal in the body. That candidate is refused at
+   insert with `INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST`. Today it never happens because only
+   `addressed` findings build candidates and those always carry a real verdict. `UP_ONE` and
+   `DOWN_ONE` have no home either.
+
+**What is sound.** The status-mapping law is stated exactly right, including that the model
+cannot emit `not_returned` by construction. The handed-versus-discovered split is the right
+cut. And v0.6 names its own riskiest assumption — that ledger completeness has no comparator
+on the discovery half — which is the honest version and matches how the byte check and the
+state check both work: find the thing already true and check against it.
+
+**Owed.** Unchanged. Build starts on Matthew's word.

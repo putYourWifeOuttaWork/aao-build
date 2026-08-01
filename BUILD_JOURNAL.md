@@ -2731,3 +2731,70 @@ defaulting to the product set.
 **Owed.** `AAO_Flag__c` still has no section in the field tables; it lives in the flags doc,
 which is defensible, but the tables never say so. `AAO_Synthetic__c` is covered once as a
 standing convention rather than per object, which I still read as correct.
+
+---
+
+## 2026-08-02 · session 25 · context 12, corrections v2.0, and the annotation law
+
+**Did.** Synced `docs/` to context 12. **139 tests, 139 passing**, re-run to confirm the org
+still stands behind what corrections v2.0 claims on its behalf.
+
+### The annotation law, recorded — there is nothing yet to build it into
+
+Charter design v0.5 changed in place, without a version bump, and the change is a
+ratification: **the machine annotates only machine-authored insight cards** (2× prepend,
+reiteration date append). Reinforcement of a **human-authored** card writes a Claim with
+outcome `Reinforced` and surfaces **beside** the card, never inside its text.
+
+The instruction says build against this. **There is nothing to build against yet.**
+`Insight_Card` exists in this repo only as a value on `AAO_Subject_Type__c` and
+`AAO_Cited_Type__c`; no writer touches an insight card, and the Problems charter is open. So
+this is recorded, not implemented, and I am saying so rather than manufacturing a surface to
+hang it on.
+
+**Why the law is the right one, so it survives to whoever writes that code.** Prepending "2×"
+onto a card a human wrote is a machine edit to a human's words. That is the same violation
+the pipeline already refuses in a different place: `AAO_Commit` returns
+`Superseded_By_Human` rather than overwriting an answer a person established. **The
+annotation rule is human precedence applied to text instead of to verdicts**, and the
+`Reinforced` outcome it uses is the one already written when new evidence confirms something
+standing without moving it. Nothing new is needed to obey it; the existing outcome already
+means exactly this.
+
+Tension (a) stays open. Nothing builds against projection of confirmations.
+
+### Corrections v2.0, read against the build
+
+Accurate where I can check it: the evidence-family law is stated correctly including the
+reason for enforcing in triggers rather than by required flags, the five collisions are
+right, no-rubric-binding is right, and the replay and downgrade claims match the suite.
+
+**Three things it does not carry, one of which was explicitly directed into it.**
+
+1. **The rubric-scoped-reader law is absent.** Item 41 said, verbatim, that the fix is
+   *"promoted from bug fix to law, recorded for corrections v2.0: a deal is red against the
+   rubric it is adjudicated under, and every reader of contracts is rubric-scoped."* v2.0
+   records that no binding field exists — the *negative* — but not the rule that replaced it.
+   **A reader of v2.0 alone would not know how the applicable set is decided**, only that it
+   is not decided by a field on the deal.
+2. **The synthetic marker as the product/test discriminator is absent** — the session-17
+   revision, which is the answer to the question item 1 leaves open. `AAO_Rubric.contracts()`
+   returns active, non-superseded, **unmarked** contracts; test and demo entries opt into the
+   synthetic set by name. This is the mechanism behind "a deal always answers the org's
+   current active questions."
+3. **The speaker gate's *not applicable* for basis State is absent.** Ruled 48. It matters
+   in a record aimed at corporate because it is the one place the family law changes what a
+   *gate* does, not merely what a row looks like.
+
+Two smaller notes: v2.0 says "over one hundred tests green" — true, and the number is **139**.
+And `AAO_Flag__c` still has no section in the field tables; it lives in the flags doc, which
+is defensible, but the tables never say so.
+
+**Not authored by me.** These are absences in a document authored elsewhere and aimed at
+corporate, so they are reported rather than written. Item 41's is the one I would act on
+first: it was an explicit instruction to record, and it is the only one that leaves a reader
+with a question the document raises and does not answer.
+
+**Owed.** The `AAO_Model_Config__mdt` describe was paid in session 24 above, all thirteen
+fields with writer and reader named plus the live `Default` record; re-surfaced this session
+in the reply for pasting into v0.13.

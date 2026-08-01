@@ -126,11 +126,11 @@ Evidence patterns drive it, never gestures:
 
 **(a) Machine-confirm versus Altify's Confirmed semantics.** In ALTF panels today, Confirmed has meant a named human vouched. If projection writes machine-confirmed cards into those panels, the word silently changes meaning for every existing user, and a human's Confirmed and ours become indistinguishable. Options: project confirmation with a visible machine watermark; hold machine confirmation on our side and project only the card; or let projection stay off until this is ruled. Costs differ; the ruling is yours.
 
-**(b) Annotating human-authored cards violates precedence.** Prepending "2x" onto a card a human wrote is a machine edit to a human's words — the exact thing the write law forbids. Proposed resolution, awaiting your word: the machine annotates only machine-authored cards; reinforcement of a human card is recorded as a Claim with outcome Reinforced and surfaces beside the card, never inside its text.
+**(b) Annotating human-authored cards violates precedence · RATIFIED 1 Aug.** Prepending "2x" onto a card a human wrote is a machine edit to a human's words, the exact thing the write law forbids. Ruled: the machine annotates only machine-authored cards; reinforcement of a human card is recorded as a Claim with outcome Reinforced and surfaces beside the card, never inside its text.
 
 ### Open, next in line
 
-1. The two tensions above.
+1. Tension (a) above: whether a projected machine confirmation is visually distinct from Altify's human Confirmed.
 2. Output schema, alongside the People charter's.
 
 ---

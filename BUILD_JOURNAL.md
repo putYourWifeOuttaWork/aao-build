@@ -3926,3 +3926,66 @@ become proposition text, and a normalised quote is a paraphrase — the same rul
 the byte check possible on spans.
 
 **Owed.** Unchanged. v1.8 is written from labels or not at all, and this is the input.
+
+---
+
+## 2026-08-04 · session 44 · the People ontology built, and the read that cannot run in Apex
+
+**Did.** Synced v1.8, deleted v1.7. Built `AAO_PeopleOntology`. **171 tests, 171 passing**
+(was 164). And found a blocker in the discovery story that is worth more than the class.
+
+### The read cannot happen in Apex, established from the org rather than reasoned about
+
+v1.8 and v2.6 both say a pattern query recovers any org's set at install with no human in it.
+**That is true of the Tooling API and false of Apex**, and I only found out by trying to
+compile it:
+
+- **`ExternalString` is a Tooling API object.** Apex SOQL cannot see it. The compiler answers
+  `Invalid type: ExternalString`.
+- **`System.Label.ALTF.<name>` is the other door and it is shut too.** The compiler answers
+  `External string does not exist` — because **2,576 of the 2,930 ALTF labels are
+  `IsProtected = true`, including every guided question**, and a protected managed-package
+  label is invisible to subscriber Apex. Only 354 are public.
+
+**The finding stands and the mechanism changes.** The labels are the source of truth and they
+are readable; what moves is WHERE the read runs. Two ways out, both rulings:
+
+1. **A Tooling API callout at setup time**, through a Named Credential pointing at the org
+   itself. This is the shape already ruled for state-based questions — read once, freeze on
+   the contract, re-run when the content hash moves — and setup is where a callout is
+   affordable. **The cost is that *zero customer-admin action* becomes one action**, because
+   somebody must authorise a credential to their own org.
+2. **The read happens outside the org and the labels arrive as data.** Honest, and it gives
+   up the install-time automatic property that made this better than a walk.
+
+**This is the third time a design sentence about our own reach has been wrong in the same
+direction** — Coverage-as-a-frozen-query, the `required` flag on Source, and now this. All
+three were claims about what the platform would let us do, made without asking it. The
+standing rule already covers it and it keeps needing to fire.
+
+### What was built regardless, because the rules are the valuable part
+
+`AAO_PeopleOntology` is the **assembler**, and the seam is deliberate rather than a
+workaround: whoever performs the read, the rules that turn labels into contracts are the
+same and live in one place.
+
+- **The family guard, which is the one that would have caught v1.7.** The expected shape is
+  declared — Support 1, 2, 4, 5, 6, 7, 11, 14, 16 and the rest — while the TEXT always comes
+  from the org. A short read refuses and names exactly which questions are missing. **Held by
+  a test that removes the four the walk missed and asserts the refusal says `6, 7, 11, 14`.**
+- **Byte-exact.** Tested on `organisation`, `jeopardise`, and the stray hyphen in `_11`'s
+  `-including`. A normalised quote is a paraphrase.
+- **Route per dimension.** Coverage P, Support and Political E.
+- **`Subject_Person` only where the question says *told you*** — `_2`, `_4`, `_6`. Not `_16`,
+  which asks whether the SELLER holds evidence, so it is observational rather than reported
+  and requiring the subject to have said it would make it unanswerable.
+- **Compound questions become elements and the decomposition is marked as OURS.** `_4`, `_5`
+  and `_16` land `Inferred_Pending` and `Awaiting_Ratification`; the undecomposed fifteen
+  land `Authored`, because Altify wrote those whole. **Altify authored the question; we split
+  it; a human ratifies the split.**
+
+`read()` refuses by name and explains both ways out, so the blocker cannot be walked past
+silently. Pinned as a test.
+
+**Owed.** The label-read ruling, which is Matthew's. Until then the ontology assembles from
+supplied labels and authors nothing on its own.

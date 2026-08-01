@@ -1,5 +1,15 @@
 # AAO Charter Design
 
+> **The version lives on the stamp line below and nowhere else.**
+
+**v1.8 · 2 August 2026 · The real ontology, enumerated from labels. v1.7's Support and Political sets are SUPERSEDED — they were a walk presented as the ontology.**
+
+**Changed in v1.8.** The wizard questions are **custom labels in `ExternalString`**, not UI-only text, so the ontology is a query rather than a manual walk — which is what makes *discovered rather than paraphrased* true in a customer org rather than only in this file. 35 labels read by exact name, none missing, localization overlay queried and **empty in this org** (all 56 overrides are account-manager UI rebranding), and **the overlay must still be applied in code, because empty here proves nothing about a customer**.
+
+**Support is nine, not five, and its structure is symmetric rather than a tree** — matched pairs pointing opposite ways, with the negative half authored explicitly. **Political is seven, not three**, and two of the seven are not about authority at all, so the walked version collapsed political standing into hierarchy. **Coverage is three and was complete**, because it is the only dense family, which is exactly why a partial read felt like a whole one.
+
+**Also from the enumeration:** the insight admission tests split by map unevenly, with Goal, Pressure and Initiative carrying six each and Obstacle three; `PRESSURE_HELP_TEXT_3` requires knowing which Goal a pressure blocks, **an edge the schema cannot hold**; and **proposition text is stored byte-exact**, because a normalised quote is a paraphrase.
+
 **v1.7 · 2 August 2026 · The Problems charter CLOSED. Solution's admission test recovered. Machine confirmation ruled an autonomy level. Flags age from when the question became askable. The cited-type enum ruled**
 
 **Changed in v1.7 — three laws, two of them found by the build refusing a design.**
@@ -421,17 +431,29 @@ Values, verbatim from the manual list: **No Contact** "You have never met." **Br
 
 **This also settles decay for Coverage with no mechanism at all.** *Recently* and *regularly* are time-windowed reads, so the answer changes tomorrow because the window moved, not because a job ground a number down. Consistent with the no-decay ruling: nothing decays, the staleness is simply visible. **A human-set Coverage still wins forever** under the override ruling, window or no window.
 
-#### Support · verbatim · five propositions
+#### Support · **nine propositions** · enumerated from labels, opportunity map
 
-1. Has this person expressed a preference for a specific solution?
-2. Has this person told you they prefer your solution over all other alternatives?
-3. Is this person willing to provide you helpful information when asked?
-4. Does this person believe your solution is critical to their success and do they sell internally for you in your absence?
-5. Is this person mentoring you by providing guidance, political insight, or competitive information?
+*v1.8. **The v1.7 set of five is superseded** — it was a walk of the positive spine presented as the ontology. Read from `ExternalString` by exact label, overlay queried and empty, spelling and punctuation untouched.*
 
-**The tree.** Q1 No ends at Neutral. Q1 Yes goes to Q2. Q2 Yes goes to Q3; Q3 No ends at **Unknown**; Q3 Yes goes to Q4; Q4 No ends at Supporter; Q4 Yes goes to Q5; Q5 Yes gives **Mentor**, Q5 No gives **Supporter**. Q2 No goes to a second branch: *has this person told you they prefer an alternate solution, including an internal solution or do nothing at all* — No ends at Neutral, Yes goes to *is this person mentoring your competition and working to help them win* (Yes / No / **Not sure**), Yes giving **Enemy** and No giving **Non-Supporter**.
+| Label | Proposition |
+|---|---|
+| `AM_OM_SUPPORT_GUIDED_QUESTION_1` | Has this person expressed a preference for a specific solution? |
+| `AM_OM_SUPPORT_GUIDED_QUESTION_2` | Has this person told you they prefer your solution over all other alternatives? |
+| `AM_OM_SUPPORT_GUIDED_QUESTION_4` | Does this person believe your solution is critical to their success and do they sell internally for you in your absence? |
+| `AM_OM_SUPPORT_GUIDED_QUESTION_5` | Is this person mentoring you by providing guidance, political insight, or competitive information? |
+| `AM_OM_SUPPORT_GUIDED_QUESTION_6` | Has this person told you they prefer an alternate solution, including an internal solution or do nothing at all? |
+| `AM_OM_SUPPORT_GUIDED_QUESTION_7` | Is this person mentoring your competition and working to help them win? |
+| `AM_OM_SUPPORT_GUIDED_QUESTION_11` | Does this person prefer an alternative solution -including an internal solution or nothing at all? |
+| `AM_OM_SUPPORT_GUIDED_QUESTION_14` | Is this person vocal in their support of your competition? |
+| `AM_OM_SUPPORT_GUIDED_QUESTION_16` | Do you have evidence that this person believes your success will hurt their company or jeopardise their personal success? |
 
-**Q4 is compound** (believes it is critical, and sells internally) and **Q5 is a three-way or** (guidance, political insight, competitive information), which is exactly the element structure Evidence Contracts already carry. **Q2 and Q4's "told you" fixes a speaker requirement**: the person themselves, to the seller.
+**The structure is symmetric rather than a tree, and that is the correction.** `_1` is a direction-neutral gate. Then **matched pairs point opposite ways**: `_2` prefers *your* solution against `_6` prefers an *alternate*; `_5` mentors *you* against `_7` mentors *your competition*. `_11`, `_14` and `_16` extend the negative side alone. **Altify authored the negative half of the ladder explicitly**, and a walk down the positive spine structurally cannot see it.
+
+> **This strengthens the tree-owns-the-rung ruling rather than complicating it.** Enemy is not the far end of a scale reached by running out of positives. **It is a positively established state with its own evidence questions**, and `_16` says so outright by asking for *evidence that* this person believes your success will hurt them. That is **absence never establishes, honoured in the vendor's own authoring.** Nine propositions, and four of them establish the negative direction.
+
+**Element structure.** `_4` is compound (believes it is critical **and** sells internally). `_5` is a three-way or (guidance, political insight, competitive information). `_16` is compound the same way (their company **or** their personal success). **`_6` and `_11` are near-duplicates with different wording and a stray hyphen, and they stay two propositions** — collapsing them is paraphrasing, and an authored set edited over years is supposed to look like this.
+
+**Speaker requirement.** `_2`, `_4` and `_6` say *told you*, which fixes `Subject_Person`: this finding's own person, speaking to the seller. `_14` and `_16` do not, and `_16` asks whether **the seller** holds evidence, which makes it observational rather than reported.
 
 **RULED 2 Aug — the tree owns the rung. Ontology where ontology is feasible, inference only where it is not.**
 
@@ -455,17 +477,31 @@ Matthew's principle: **the ability to infer binary is superior to feeling out sc
 
 **Matthew's, and it is the last open decision in the People charter.**
 
-#### Political Status · verbatim · not binary
+#### Political Status · **seven propositions** · enumerated from labels, opportunity map
 
-1. Does this person approve and sponsor initiatives, or do they execute projects after they are approved? · **Approves/Sponsors · Executes · Not sure**
-2. Do others seek this person out for advice and direction? · **Yes · No · Not sure**
-3. Does this person control the outcomes or are they called on to make it happen? · **Controls · Implements · Not sure**
+*v1.8. **The v1.7 set of three is superseded.** Four are shared with the account map; three are opportunity-only, and the account map carries its own differently-worded `AM_` versions of those three — so **no single list is the ontology** and reading one map's for the other puts the wrong proposition on a contract.*
 
-Values, verbatim: **Inner Circle** "Decides what will be prioritized and controls the outcomes." **Political Structure** "Trusted by the Inner Circle to make things happen." **Outside Political Structure** "Has little to no political power, but is called upon by key players to provide evaluations and information." The Inner Circle outcome panel adds: "This person is a key player. They initiate or sponsor initiatives, and define how success is measured… The customer buying team may have 1 to 3 people in the Inner Circle."
+| Label | Proposition |
+|---|---|
+| `OM_POLITICAL_STATUS_GUIDED_QUESTION_1` | Does this person define the company’s goals and objectives, or do they merely have a good understanding of them? |
+| `OM_POLITICAL_STATUS_GUIDED_QUESTION_2` | Does this person approve and sponsor initiatives, or do they execute projects after they are approved? |
+| `AM_OM_POLITICAL_STATUS_GUIDED_QUESTION_3` | Do others seek this person out for advice and direction? |
+| `AM_OM_POLITICAL_STATUS_GUIDED_QUESTION_4` | Does this person control the outcomes or are they called on to make it happen? |
+| `AM_OM_POLITICAL_STATUS_GUIDED_QUESTION_6` | Does this person have a track record of success in implementing projects that deliver value? |
+| `AM_OM_POLITICAL_STATUS_GUIDED_QUESTION_7` | Does this person collect and provide information to people of power and influence? |
+| `OM_POLITICAL_STATUS_GUIDED_QUESTION_9` | Is this person aware of the politics in the organisation? |
 
-**Two things worth naming.** The options are semantic rather than yes-or-no, so the shared envelope's proposal enum for this dimension is runtime-closed from the wizard's options rather than from a verdict picklist. And **Not sure is a first-class answer in Altify's own methodology**, which is abstention built into the vendor's design and an argument we can use directly.
+**Two of the seven are not about authority at all, and the walk lost both.** `_6` is **track record** — has this person actually delivered before. `_7` is **information brokering** — the person who holds no power and is connected to those who do, and feeds them. The three walked questions were all about position, so **a seven-question ontology read as three collapsed political standing into hierarchy**, which is precisely the reading a relationship map exists to improve on.
 
-**Owed:** only the Approves/Sponsors · Yes · Controls path was walked, which terminates at Inner Circle. The mapping of the remaining combinations to Political Structure and Outside Political Structure is **not yet read and is not guessed here.** One more pass through the wizard closes it.
+**`_1`, `_2` and `_4` are two-sided rather than yes-or-no** (defines *or* merely understands; approves *or* executes; controls *or* is called on), which is why the wizard offers semantic options. The proposal enum for this dimension is runtime-closed from those options rather than from a verdict picklist. And **Not sure is a first-class answer in Altify's own methodology**, which is abstention built into the vendor's design and an argument usable directly.
+
+Values, verbatim: **Inner Circle** "Decides what will be prioritized and controls the outcomes." **Political Structure** "Trusted by the Inner Circle to make things happen." **Outside Political Structure** "Has little to no political power, but is called upon by key players to provide evaluations and information." The Inner Circle panel adds that the buying team may have one to three people in it.
+
+#### Proposition text is stored byte-exact · LAW · v1.8
+
+**`organisation` on the opportunity map against `organization` on the account map. `jeopardise`. The stray hyphen in `_11`'s `-including`. The curly apostrophes in `company’s` and `customer’s`.** None of it is tidied on the way in.
+
+**A normalised quote is a paraphrase.** This is the same law that makes the byte check possible on spans, applied to the proposition instead of to the evidence, and it is what lets a flag say *the qualifier says each, and here is who is missing* without having quietly rewritten the sentence first.
 
 #### Buyer Role · verbatim · **no wizard exists**
 
@@ -528,6 +564,12 @@ Same finding as the People charter, same place: **each insight type carries an a
 **Initiative** — Are there internal or external pressures that have caused this initiative to be Funded/Sponsored/Prioritised? · Is this initiative in place to address internal or external pressures? · Will the success of this initiative have an impact on the decision maker's goal?
 
 **Obstacle** — Is this a task, situation or process that can be fixed with your solution? · Is this a task, situation or process significant enough to establish substantial value if you can fix it? · Is this a task, situation or process that will have negative consequences if it is not fixed?
+
+> **v1.8, from the label enumeration. The insight tests split by map too, and unevenly.** Goal, Pressure and Initiative each carry **six** — `_1.._3` plus a separate account-map set `_AM_1.._AM_3` — while **Obstacle carries three with no account variant at all**, and Solution's four have `SOLUTION_DEF_AM` and `_OM` that are identical. That asymmetry is informative rather than accidental: **obstacles are deal-local, while goals, pressures and initiatives exist at account level too.** No walk can reveal this, because a walk sees one map at a time.
+>
+> **And `PRESSURE_HELP_TEXT_3` is the sharpest line in the whole enumeration.** *Will this pressure prevent a goal from being achieved?* **A Pressure cannot pass its own admission test without knowing which Goal it blocks — and the schema has no field for that relation.** `ALTF__Impact__c` is free text doing double duty as desired-outcome for Initiatives, and the only structural card-to-card edge points at Solutions. **The methodology asks about the edge its own schema cannot hold**, so every Pressure card that ever passed this test carried knowledge the record then threw away. That is the argument for the edge work, stated by the vendor.
+>
+> **One pattern hazard, from both directions at once.** `%HELP_TEXT%` **over-collects** — `PRESSURE_EDIT_TYPES_HELP_TEXT` and `SOLUTION_EDIT_HELP_TEXT` are edit-form guidance rather than admission tests. Sparse numbering means an iterator **under-collects**. **So an assembler reads by pattern, filters by family, and is loud when the families do not match what it expected** — the discovery-filter-fault law, pointed at labels.
 
 **Solution** — **four questions, not three** — How does your Solution address the Obstacles for your customer's initiative? · What Pressure(s) will your Solution have the most impact? · How does your Solution contribute to achieving their Goals? · Would a key player be able to articulate your unique business value from this Solution?
 

@@ -1,4 +1,10 @@
-# AAO Corrections and Change Record, v2.2
+# AAO Corrections and Change Record
+
+> **The version lives on the stamp line below and nowhere else.** The H1 carried a version through v2.4 and went stale, which is the same defect the glossary carried through three versions, Architecture through one and Data Flow through two. Removing it is the only fix that cannot rot.
+
+**v2.5 · 2 August 2026 · The licensed-seller read is settled from the org; package licence and module licence separated; what the permission harness proves and what it cannot.**
+
+**Changed in v2.5.** CODE found the read that §4c recorded as owed, and it is platform rather than managed so nothing breaks on package upgrade: **`UserPackageLicense` joined to `PackageLicense.NamespacePrefix = 'ALTF'`** answers who holds a seat, per user, with 80 assignments in the sandbox. Two things follow. **`AllowedLicenses = -1` means unlimited**, so the seat pool cannot be used to infer scarcity and only the assignment rows tell the truth. And **a package licence is not a module licence** — it says the user may use Altify, never which of the four modules the org holds, so §4c conflated two reads and only one of them is now solved. Also sharpened: **the permission harness proves degradation, not detection.** A permission failure and a licence failure arrive as the same DML error, so *a projection failure never touches the claim, the flag or the roll-up* is fully testable today; *which modules this customer holds* stays unverifiable until a differently-licensed org exists. Numbers moved: **164 tests green**, and Claim Basis now has **four of eight cited types built**.
 
 **v2.4 · 2 August 2026 · Adds scope, licensing and partial product ownership as a build phase of its own (§4c), and the Politics sequencing ruling (§4d).**
 
@@ -77,9 +83,9 @@ The methodology asks **who is responsible for** a Goal and an Initiative, **who 
 
 ### 2.4 · Smaller corrections to v2.1's own numbers
 
-**Nine objects live, not eight** — `AAO_Participant__c` added. **153 tests green, not 139.** **Reserved-word collisions are six, not five:** `commit`, `json`, `system`, `merge`, `any`, **`when`** (from `switch`). Four refuse loudly; `json` and `system` resolve silently and are the dangerous pair.
+**Nine objects live, not eight** — `AAO_Participant__c` added. **164 tests green** (139 at v2.1, 153 mid-session). **Reserved-word collisions are six, not five:** `commit`, `json`, `system`, `merge`, `any`, **`when`** (from `switch`). Four refuse loudly; `json` and `system` resolve silently and are the dangerous pair.
 
-**Claim Basis declares eight cited types and has built two.** v2.1 records six typed lookups; the org has lookups for `Answer` and `Map_Row` only. `Source` is added (a Coverage claim cites the Sources it counted) and `OpportunityLineItem` is added. **`Product2` is deliberately not added** — reachable by traversal from the line item, so citing it separately would cite a classification rather than a fact about this deal. **The rule for what earns a lookup: a cited type gets one when we will compare its live state against the frozen snapshot.** That is the whole reason the object is half frozen and half live, and a text Id cannot do it.
+**Claim Basis declares eight cited types and has built four** *(v2.5 — was two)*. Built: `Answer`, `Map_Row`, `Source`, `Line_Item`. **Still enum values pointing at nothing: `Insight_Card`, `Decision_Criterion`, `Qualifier_Status`, `Shadow_Person`.** v2.1 recorded six typed lookups and the org had two. `Source` is added (a Coverage claim cites the Sources it counted) and `OpportunityLineItem` is added. **`Product2` is deliberately not added** — reachable by traversal from the line item, so citing it separately would cite a classification rather than a fact about this deal. **The rule for what earns a lookup: a cited type gets one when we will compare its live state against the frozen snapshot.** That is the whole reason the object is half frozen and half live, and a text Id cannot do it.
 
 **Two laws the build taught us, both from the deploy refusing a design.** `AAO_Raised_At__c` is immutable, so a reopened flag cannot restart its clock — **a flag ages from when its question became askable, not from when the answer last turned bad**, or a deal launders itself by closing and reopening. And **anything hung off an after-insert trigger can turn our defect into the customer's lost evidence**, because a throw there rolls back the row that caused it; the safe direction is always to lose the derived thing rather than the evidence.
 
@@ -146,7 +152,19 @@ The glossary says *state is reconstructible from the journal by summing deltas.*
 
 ### Three scoping filters, all new as global rules
 
-**Licensed sellers only.** Only opportunities owned by a licensed seller enter the pipeline. The filter existed for the note poll and is now global. **Its source of truth is a read, not an assumption** — Altify's `sfLma__License__c` is the ISV's own licence management and is about their customers rather than about who holds a seat in the customer's org.
+**Licensed sellers only · the read is SETTLED, v2.5, from the org.** Only opportunities owned by a licensed seller enter the pipeline. The filter existed for the note poll and is now global.
+
+| Object | What it is | In `aossb2` |
+|---|---|---|
+| `sfLma__License__c` | the ISV's own licence management, about **their** customers | **0 rows** — present and empty, as ruled |
+| `PackageLicense` | the installed package and its seat pool | 1 ALTF row, `AllowedLicenses = -1`, `UsedLicenses = 80` |
+| **`UserPackageLicense`** | **who actually holds a seat** | **80 ALTF assignments** |
+
+**`UserPackageLicense` joined to `PackageLicense.NamespacePrefix = 'ALTF'` is the read.** Platform objects rather than managed ones, so nothing breaks on package upgrade, and it answers per user rather than per org.
+
+**`AllowedLicenses = -1` means unlimited**, so the seat pool cannot be used to infer scarcity. Only the assignment rows tell the truth.
+
+**And a package licence is not a module licence.** This says the user may use Altify. It says nothing about which of the four modules the org holds, so the two reads that §4c treated as one are separate and **only the seller read is solved.** The module read is still owed, and per the ruling below it has to probe rather than count, because the difference surfaces as permission rather than as absence. The four modules correspond to the content tabs observed in the production UI — Process, Relationships, Insights, Assessment — which should be confirmed rather than assumed.
 
 **Opportunity types out of scope.** Some types are excluded by configuration, the same shape as the applicable-set chain.
 
@@ -162,7 +180,9 @@ The glossary says *state is reconstructible from the journal by summing deltas.*
 
 ### The testing problem, and it is the standing hazard again
 
-**None of this can be tested in Altify's own org, which is fully licensed with every module.** The harness is therefore **permission sets rather than a differently-licensed org**: strip a test user of access to the insight card object, run the pipeline, and confirm it degrades correctly rather than failing. That is buildable in the sandbox today and it is the only way to see the behaviour at all.
+**None of this can be tested in Altify's own org, which is fully licensed with every module.** The harness is therefore **permission sets rather than a differently-licensed org**: strip a test user of access to the insight card object, run the pipeline, and confirm it degrades correctly rather than failing. Buildable in the sandbox today.
+
+**Be precise about what it buys · v2.5. It proves degradation, not detection.** A permission failure and a licence failure arrive as the same DML error, so a permission-stripped user reproduces the real failure mode exactly, and *a projection failure never touches the claim, the flag or the roll-up* is **fully testable now**. What stays unverifiable until a differently-licensed org exists is **detecting which modules a customer holds**, because in an org that has everything the difference between not licensed and not installed is invisible.
 
 **This is a build phase of its own** — licence detection, type scoping, the capability matrix, projection probing, the error log, the Contact toggle, and a permission-restricted test harness for all of it.
 
@@ -237,4 +257,4 @@ The **Politics / Link charter**, now the only unopened loop-one charter and the 
 
 ---
 
-*End v2.2. The session's design work stands. What it did not hold was the memory plane, and that is where all four breakages live — cold seeding above all, because the tree ruling is right about the present and silent about the past.*
+*End of record, v2.5. The session's design work stands. What it did not hold was the memory plane, and that is where all four breakages live — cold seeding above all, because the tree ruling is right about the present and silent about the past.*

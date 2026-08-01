@@ -3741,3 +3741,70 @@ would give. Detection stays unverifiable until a differently-licensed org exists
 six reserved words with `when` included.
 
 **Owed.** Unchanged. The scope phase is recorded and not started.
+
+---
+
+## 2026-08-04 · session 41 · corrections v2.5 synced; §5's open read is closed, and the answer is the opposite
+
+**Did.** Synced `aao-corrections-v2_5.md`, deleted v2.4. **Nothing built.** The stamp fix is
+right and structural: a version that lives in one place cannot go stale in another.
+
+### The open read in §5 is closed, and §2.1's retrieval note is wrong
+
+§2.1 says *"the text is in the managed package UI, not in any queryable table"* and §5 keeps
+*"whether the wizard's help text is reachable as custom labels through the Tooling API"* as
+unsettled. **It is reachable, it is custom labels, and it was answered in session 33 — that
+finding never reached this record.**
+
+`ExternalString` in `aossb2` holds **2,930 ALTF labels**, and the wizard questions are among
+them under a naming convention that makes them discoverable by pattern rather than by search:
+
+```
+AM_OM_SUPPORT_GUIDED_QUESTION_1   Has this person expressed a preference for a specific solution?
+AM_OM_COVERAGE_GUIDED_QUESTION_2  Have you or a team member recently had multiple meaningful
+                                  conversations with this person?
+```
+
+**Twenty-six `%GUIDED_QUESTION%` labels**, prefixed `AM_OM_` (both maps), `AM_` (account map)
+or `OM_` (opportunity map). The insight admission tests are there too, as
+`GOAL_HELP_TEXT_1..3`, `PRESSURE_HELP_TEXT_*`, `INITIATIVE_HELP_TEXT_*`,
+`OBSTACLE_HELP_TEXT_*`, plus `*_DEF_AM` and `*_DEF_OM` definitions.
+
+**This changes discovery from a manual transcription to a query.** The ontology §2.1 calls
+the most consequential finding of the session is not trapped in a UI — it can be read the way
+the assessment rubric is read, which is what "discovered rather than paraphrased" requires to
+be true in a customer org rather than in a document.
+
+### Three things in the enumeration that a discovery pass must handle
+
+**1 · The account map and the opportunity map ask DIFFERENT questions, not translated ones.**
+`AM_SUPPORT_GUIDED_QUESTION_1` reads *a specific **provider***; `AM_OM_SUPPORT_GUIDED_QUESTION_1`
+reads *a specific **solution***. Q2 likewise: *your **company*** versus *your **solution***.
+**These are different propositions, and reading one for the other would put the wrong
+proposition text on a contract** — the exact failure the verbatim rule exists to prevent.
+
+**2 · The numbering is sparse and is not a sequence.** Support runs 1, 2, 4, 5, 6, 7, 11, 14,
+16; Political Status runs 1, 2, 3, 4, 6, 7, 9. **An assembler that iterates 1..N silently
+misses questions and produces a short rubric that looks complete.** The set must be read by
+pattern and taken whole.
+
+**3 · The gaps are not the whole tree.** The recovered Support tree has five questions; the
+labels carry nine, including *is this person vocal in their support of your competition* and
+*do you have evidence that this person believes your success will hurt their company or job*.
+**The wizard walk found the path taken, not the tree.** The labels are the superset, which is
+another reason to read them rather than transcribe a click-through.
+
+### And the label-override hazard applies directly
+
+Recorded at session 33 and worth restating here because §2.1 now depends on it: **56
+`ExternalString` localizations in this org override ALTF labels**, 55 with changed text (one
+consistent rebranding, *Account Manager plan* → *Book of Business plan*). None touches the
+question labels today.
+
+**But a customer can silently rewrite any of them, and the override lives in a different
+table from the label.** So a discovery pass deriving proposition text from labels **must read
+the localization layer, not the packaged value**, or it authors contracts from words no user
+of that org has ever seen. That is the label-layer twin of the `ALTF__Status_Answer__c`
+hazard: **the stored artifact and the displayed truth can disagree.**
+
+**Owed.** Unchanged. The scope phase is recorded and not started.

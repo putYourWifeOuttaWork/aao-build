@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Missing_Members__c</fullName>
+    <description>JSON. Written by: the missing-relation reconciler. WHICH rows are missing the relation, by id and by name. A rolled-up flag that only carried a count would tell a seller there is a problem without telling them where, which is the failure the whole receipts discipline exists to prevent.</description>
+    <label>Missing Members</label>
+    <type>LongTextArea</type>
+    <length>32768</length>
+    <visibleLines>6</visibleLines>
+</CustomField>

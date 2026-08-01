@@ -1,6 +1,20 @@
 # AAO Charter Design
 
-**v1.3 · 2 August 2026 · The People charter CLOSED. Ontology owns every rung. The person-to-card relation recovered: four questions, two stored values**
+**v1.5 · 2 August 2026 · Missing-relation flag shape ruled (per deal per relation kind). The three v1.1 gaps are built and green. Solutions ruled: the card is state, the edge is evidence**
+
+**Changed in v1.5.**
+
+**The missing-relation flag is keyed on deal plus relation kind**, rolling up the specific cards inside it and naming them rather than only counting. Neither per-card (eight flags on an eight-line-item deal) nor per-deal (a blended count nobody can act on). **The deciding reason is that the action differs per relation kind** — solutions with no stated problem, pressures with no linked goal, and people with no influence edges are three different conversations. Clears when the count reaches zero; the count is the progress indicator.
+
+**Built and deployed since v1.1, from CODE, 146 tests green (was 139).** The **participant junction** `AAO_Participant__c` writes in the Source's after-insert, synchronously and outside the adjudication path, because participation is a fact about evidence arriving rather than a product of judging it — a deal that never runs a pass still knows who was on its calls. **It counts distinct artifact hashes rather than Source rows**, reusing the same source-event definition the sentiment counter uses, so a ninety-minute call arriving as three rows reads as one occasion. `AAO_Substantive__c` is deliberately **the weakest possible test** — any content past the small-talk boundary, with missing boundary data counting as substantive — so coverage **understates rather than overstates**, and no threshold is asserted because none is measured. **`Source` is a cited type** with its lookup, and a Coverage claim cites the Sources it counted rather than carrying a Source lookup, since the latter would make a state claim look like a transcript claim to the family check. **`Subject_Person`** is in the speaker-requirement enum and **refuses when no subject is supplied**, on the principle that a check which cannot run has not been met.
+
+**A near-miss worth generalising, found and fixed by CODE.** Because the junction writes in after-insert, a roster it could not parse would have failed the **Source insert itself** — a defect of ours becoming lost evidence. Fixed so a parse failure records no participants and the artifact still lands, matching the ruling `AAO_Ingest` already makes about a failed enqueue. **This should be stated generally in the field tables rather than as one fix:** anything hung off after-insert carries the same exposure, and it is the no-triggers-on-objects-we-do-not-own law reproduced one layer in, on our own object.
+
+**`when` is a sixth Apex reserved-word collision** (from `switch`), after `commit`, `json`, `system`, `merge`, `any`. Owed to the field tables at the next bump.
+
+**Changed in v1.4.** **Solutions are derivable from line items and their edges are not.** The join exists end to end — the Altify package puts a Solution lookup on standard `Product2`, and Solution insight cards point at the same records — so a Solution card asserting *this product is on this deal* is route P, basis `State`, citing the line item, with **no ratification needed because there is no judgment in it.** The projection toggle still applies. **The edge is the opposite:** asserting that a product addresses a given Obstacle cannot come from a line item, which records what is sold and never which problem it solves, so the edge requires spans or a human. Line items give the card; calls give the edge.
+
+**The first missing-relation flag · required, yellow.** A Solution card with no edge to any Pressure or Obstacle raises it. The value is the absence, not the card: *you are selling this and nobody has told you what problem it solves.* Fires from the start, cleared only by the edge existing, no dismissal. **Every existing flag fires on an unmet proposition; this one fires on a missing relation**, and the Politics charter and the Pressure-to-Goal hole need the same shape, so it is built as a kind rather than a one-off. **Volume shape is open and recommended as one flag per deal rather than one per card.**
 
 **Changed in v1.3 — Matthew's finding, confirmed against the schema.** The insight methodology distinguishes **four** relations between a person and a card and the object stores **two**. Goal asks who is *responsible for* it, Initiative asks who is *responsible for its success or failure*, Pressure and Obstacle ask who is *impacted by* it, and every type separately asks who *told you*. `ALTF__Insight_Card_Contact__c.ALTF__Type__c` offers only `Informer` and `Owner`, so **impacted-by and responsible-for are the same row.** That distinction is what makes guidance addressable: *this takes that pressure off your shoulders* versus *you own this obstacle*, which means nothing to the person hearing it. **Ruled: derive on read for existing human cards, record explicitly on our own claims**, because the buckets are noisy and a mistyped card would derive the wrong relation.
 
@@ -569,9 +583,39 @@ Both carry `AAO_Proposed_Verdict__c` of `TRUE` where they propose (this reinforc
 
 **Recorded as NEEDS MEASUREMENT:** the meaning-match is machine judgment with no byte-verifiable gate. `same_meaning_because` and `nearest_existing` make it auditable, not proven. Whether it warrants a second blind reader is decided by measuring disagreement on staged truth, not by ruling now.
 
+### Solutions · RULED 2 Aug · the card is state, the edge is evidence
+
+**Moved in from parked.** v0.5 listed quick-links from insights to solution cards as guidance enrichment, not this wave. This ruling brings the solution half in; the qualifier half stays parked.
+
+**The join exists end to end, read from the org 2 Aug.** The Altify package puts a Solution lookup on the standard **`Product2`** object, and `ALTF__Insight_Card__c.ALTF__Solution__c` points at the same `ALTF__Solution__c` records. So the chain runs **OpportunityLineItem → PricebookEntry → Product2 → ALTF__Solution__c → Solution insight card**, entirely readable, with no model anywhere in it.
+
+**The line, and it falls between the card and the edge.**
+
+**The card is a fact.** A Solution card derived from a line item asserts *this product is on this deal*, read from records. Route P, basis `State`, citing the line item. **No ratification**, because ratification exists to get permission for a machine judgment and there is no judgment here. **The projection toggle still applies**, because it is a write into an object we do not own.
+
+**The edge is a claim.** An edge from a Solution card to an Obstacle or Pressure asserts *this product addresses that problem*, and a line item cannot establish that. It records what is being sold, never which of the customer's problems it solves. **Deriving the edge from the line item would be inference wearing the costume of a record**, which is the exact failure this build exists to prevent. The edge requires someone to have said it, with spans, or a human to draw it.
+
+So the two candidate sources are not alternatives. **Line items give you the card. Calls give you the edge.**
+
+### The unlinked-Solution flag · RULED 2 Aug · required, yellow
+
+**A Solution card with no edge to any Pressure or Obstacle raises a required yellow flag.** The value is not the card, it is the absence: the system saying out loud that *you are selling this and nobody has told you what problem it solves*. That gap is real, it is invisible today, and the card is only the thing that makes it visible.
+
+**Clearance is the ordinary rule and there is no dismissal**: the flag goes when the edge exists, which means when evidence establishes the link or a human draws it. **It fires from the start**, consistent with day-one red firing from opportunity CreatedDate rather than waiting for discovery to happen.
+
+**A new kind of flag, and it should be built as a kind.** Every existing flag fires on a **proposition** being unmet. This one fires on a **missing relation**. The Politics charter will need exactly the same shape for missing influence edges, and the Pressure-to-Goal chain has the same hole, so it is worth building as a general missing-edge flag rather than a solution-specific one.
+
+**Volume · RULED 2 Aug · one flag per deal per relation kind, rolling up the cards inside it.** Neither of the two shapes first proposed. One flag per unlinked card produces eight on a deal with eight line items, and Matthew's constraint is that guidance must be selective or it becomes noise. One flag per deal is too coarse, and the reason is the one that decides it: **the action differs per relation kind.** Clearing *solutions with no stated problem* is one conversation; clearing *pressures with no linked goal* is a different one; clearing *people with no influence edges* is a third. Blended into a single flag they produce a count nobody can act on.
+
+So the flag is keyed on **deal plus relation kind**, and it **names the specific cards inside it** rather than only counting them, because a seller cannot act on a number. **It clears when the count reaches zero**, and the count is itself the progress indicator, which is consistent with a flag clearing only when its cause is gone and never by dismissal.
+
+### Consequences for Claim Basis · the cited-type enum is growing per question
+
+This ruling needs cited types for **OpportunityLineItem and Product2**, which is the **third** addition after `Source`, on an object whose declared job is citing arbitrary state and which today has lookups built for only two of its six declared types. **Worth deciding once whether the enum keeps growing per question or takes a general shape**, rather than discovering the same thing a fourth time. The field tables argued for typed lookups deliberately, for traversal and reporting and lookup filters, so growth may be the right answer — but it should be a decision rather than a habit.
+
 ### Parked
 
-Quick-links from insight cards to solution cards and qualifiers: guidance enrichment, not this wave.
+Quick-links from insight cards to **qualifiers**: guidance enrichment, not this wave. *(The solution half of this item is ruled above.)*
 
 ### Open — Matthew's
 

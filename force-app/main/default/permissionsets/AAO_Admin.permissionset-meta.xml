@@ -5,6 +5,26 @@
     <label>AAO Admin</label>
     <fieldPermissions>
         <editable>true</editable>
+        <field>AAO_Flag__c.AAO_Relation_Kind__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>AAO_Flag__c.AAO_Relation_Key__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>AAO_Flag__c.AAO_Missing_Count__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>AAO_Flag__c.AAO_Missing_Members__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>AAO_Participant__c.AAO_Contact__c</field>
         <readable>true</readable>
     </fieldPermissions>

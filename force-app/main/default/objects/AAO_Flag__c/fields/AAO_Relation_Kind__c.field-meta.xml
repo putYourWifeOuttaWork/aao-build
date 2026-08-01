@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+<!--
+  GENERAL, NOT SOLUTION-SPECIFIC, ruled v1.5 and built that way on purpose.
+
+  The Solutions case is what surfaced it, but the Pressure-to-Goal hole and the Politics
+  influence edges want the same shape. "This thing has no edge to anything" is one rule, not
+  three, and building it three times would be three places for it to drift.
+-->
+    <fullName>AAO_Relation_Kind__c</fullName>
+    <description>Written by: the missing-relation reconciler. Read by: what the flag is asking for. THE FLAG IS KEYED ON DEAL PLUS THIS, ruled v1.5, because the action differs per kind: solutions with no stated problem, pressures with no linked goal, and people with no influence edges are three different conversations, and one flag holding all three would be a list nobody can act on.</description>
+    <label>Relation Kind</label>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value><fullName>Solution_Without_Problem</fullName><default>false</default><label>Solution without a stated problem</label></value>
+            <value><fullName>Pressure_Without_Goal</fullName><default>false</default><label>Pressure with no linked goal</label></value>
+            <value><fullName>Person_Without_Influence_Edge</fullName><default>false</default><label>Person with no influence edges</label></value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

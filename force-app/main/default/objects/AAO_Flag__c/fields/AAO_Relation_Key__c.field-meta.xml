@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Relation_Key__c</fullName>
+    <description>Written by: the missing-relation reconciler. Opportunity id plus relation kind. UNIQUE, so one-flag-per-deal-per-kind is a law the database holds rather than a convention the code remembers. Without it two passes would raise two flags for the same gap and the count would be a lie.</description>
+    <label>Relation Key</label>
+    <type>Text</type>
+    <length>80</length>
+    <required>false</required>
+    <unique>true</unique>
+    <externalId>true</externalId>
+</CustomField>

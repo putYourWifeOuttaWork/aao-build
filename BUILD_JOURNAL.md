@@ -3407,3 +3407,72 @@ Basis exists. Recorded for the ruling rather than decided here.
 
 **Owed.** Re-drop v1.4. Plus the standing list, the substantive threshold, and now the four
 declared-but-unbuilt cited lookups.
+
+---
+
+## 2026-08-03 · session 36 · the missing-relation flag, built general
+
+**Did.** Synced `aao-charter-design-v1_5.md`, deleted v1.3. Built the missing-relation flag
+to the ruled shape. **153 tests, 153 passing** (was 146).
+
+### The shape, and both halves of why it is neither of the obvious ones
+
+Keyed on **deal plus relation kind**, rolling up, **naming the rows inside it**, cleared only
+when the count reaches zero.
+
+- **Per card would be noise.** Twelve solutions with no stated problem is twelve flags saying
+  one sentence, and a flag list nobody reads protects nobody.
+- **Per deal would be useless.** *Something is missing an edge* cannot be acted on, because
+  the three kinds are three different conversations — a discovery gap, a qualification gap,
+  and a mapping gap.
+
+**Built general rather than solution-specific**, per the ruling. `AAO_MissingRelation` does
+not know what a Solution or a Pressure is: it takes a kind and a list of members, and whoever
+knows the relation computes them. The moment it knows the domain it stops being general and
+becomes three classes wearing one name.
+
+**The count is the headline and the members are the work.** A rolled-up flag carrying only a
+number would tell a seller there is a problem without telling them where — the exact failure
+the receipts discipline exists to prevent — so `AAO_Missing_Members__c` names each row by id
+and label.
+
+**`AAO_Relation_Key__c` is unique**, so one-flag-per-deal-per-kind is a law the database holds
+rather than a convention the code remembers. Without it two passes raise two flags and the
+count becomes a lie.
+
+### An existing law made a ruling I was about to make wrongly
+
+I wrote the reopen path to restart the clock, and **the deploy refused it**:
+
+> `AAO_Raised_At__c is immutable. It is what age is measured from, and on a gating
+> proposition it is opportunity creation.`
+
+**The refusal is right and I changed the design to match.** This flag is one standing question
+about the deal — *does this deal have solutions with no stated problem* — and that question
+has been askable since the deal existed. A gap reappearing is the same question answering yes
+again, not a new question. **Restarting would have let a deal launder itself into looking
+freshly imperfect by closing and reopening**, which is precisely the optimistic drift the
+whole build refuses. Held by a test now: after clear-and-reopen, `AAO_Raised_At__c` still
+reads the opportunity's `CreatedDate`.
+
+A flag is also never raised just to be cleared: nothing missing writes nothing, because the
+absence of a gap is not an event.
+
+### Two things owed to the field tables at their next bump, recorded here so they survive
+
+**1 · `when` is the sixth reserved-word collision**, from the `switch` statement. The list is
+`commit`, `json`, `system`, `merge`, `any`, `when` — three refused loudly with the identifier
+named (`commit`, `any`, `merge`), two resolved silently by case-insensitive shadowing (`json`,
+`system`), and `when` refused loudly, so it joins the first group.
+
+**2 · The after-insert exposure, stated generally.** Session 34 fixed it as one roster bug and
+that was too small a description. **Anything hung off an after-insert trigger can turn our
+defect into their lost evidence:** a throw there rolls back the row that caused it, so a
+failure in derived, secondary work destroys the primary fact we were given. `AAO_Ingest`
+already ruled this for the enqueue path — *a failure downstream of arrival must never undo the
+arrival* — and the participant writer is the second instance, not a special case. **Every
+future after-insert consumer inherits the rule**, and the safe direction is always to lose the
+derived thing rather than the evidence.
+
+**Owed.** Unchanged, plus: the volume shape is now built, so what remains for Solutions is the
+line-item reader itself, which needs the cited-type ruling and the two new cited types.

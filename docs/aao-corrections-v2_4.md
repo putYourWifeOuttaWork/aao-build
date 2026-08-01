@@ -1,6 +1,8 @@
 # AAO Corrections and Change Record, v2.2
 
-**v2.3 · 2 August 2026 · Adds the flags and contention rulings (§4a) and the persona ruling (§4b). Reconciliation body unchanged from v2.2.**
+**v2.4 · 2 August 2026 · Adds scope, licensing and partial product ownership as a build phase of its own (§4c), and the Politics sequencing ruling (§4d).**
+
+**Changed in v2.4.** **Three scoping filters become global rules**: licensed sellers only, opportunity types excluded by configuration, and **module ownership**, which is new and is not graceful absence — the objects exist because the package is installed and the customer is not licensed, so a write fails on permission rather than on absence. The shape uses a property already ruled: claims land on our objects and projection is what varies, so **a customer with relationship map only still gets the whole evidence engine.** The **admin error log** is the first admin-facing surface and needs expected-unavailable treated as configuration rather than error. **None of this is testable in Altify's own org**, which holds every module, so the harness is permission sets rather than a differently-licensed org. Also clarified: Opportunity and Account are never written and that is absolute, while **Contact remains toggleable exactly as originally designed** — toggle on, we write it and its children; toggle off, shadow persons persist and cannot reach the Altify map, because the map row's Contact lookup is required. **Politics opens on influence and conflict**, because that half needs only the relationship map.
 
 **Changed in v2.3.** **Flags get no charter** — existence and clearance stay deterministic, and the nuance Matthew was reaching for lives in guidance, where it is already named as owed. **Contention splits three ways**, and the configurable part is authored at setup and frozen rather than run by a model each night, because Calculated Insights are immutable once shipped. **Persona goes in the People charter as a fourth emission**, additive only, which dissolves the cross-deal collision the schema would otherwise create.
 
@@ -126,6 +128,53 @@ The glossary says *state is reconstructible from the journal by summing deltas.*
 **Owed, and the halves must land in order.** Persona *identification* works on any pass once the People charter carries it, including deals in flight. **Ghost *injection* on deals already in flight is undesigned** — the cold-start path fires at opportunity creation only, so a hundred open deals have no ghosts to graduate, and a rubric change that adds a persona requirement reaches nothing already running. **Identification without injection graduates nothing.** Injection first.
 
 **And the Role charter is the persona derivation wearing a name that hides it.** It writes exactly one field, `AAO_Required_Map_Role__c` on the Evidence Contract, whose sole reader is *which person must exist on the map — seeds the ghost*, answering from the persona vocabulary. It is not Buyer Role and not Decision Orientation. **The name collides with Buyer Role and should be retired for persona derivation.** Its classification as a charter stands, on Matthew's ruling that the charter is the unit of per-org configuration and injection, which is a better definition than one based on what a thing reads.
+
+---
+
+## 4c · Scope, licensing and partial ownership · RULED 2 Aug · a build phase of its own
+
+### What may be written where
+
+| Target | Rule |
+|---|---|
+| **Opportunity, Account** | **Never written. Absolute.** |
+| **Contact** | **Toggleable**, and always was — toggle on, we write the Contact and its children; toggle off, a human creates it and shadow persons persist |
+| **Any native object** | **No metadata added, no triggers, no logic. Absolute.** |
+| **Altify managed objects and fields** | Written, toggleable per target. This is the project |
+
+**The consequence of the Contact toggle, stated because it changes what shadow objects are.** `ALTF__Contact_Map_Details__c.ALTF__Contact__c` is a **required** lookup to the standard Contact, so a map row cannot exist without one. With the toggle off, **a shadow person can never appear on the Altify map** until a human creates the Contact. Shadow objects are transitional for toggle-on customers and **permanent for toggle-off customers**, and they carry a whole class of people for the life of the deal on our surfaces alone. That architecture needs settling before shadow work starts.
+
+### Three scoping filters, all new as global rules
+
+**Licensed sellers only.** Only opportunities owned by a licensed seller enter the pipeline. The filter existed for the note poll and is now global. **Its source of truth is a read, not an assumption** — Altify's `sfLma__License__c` is the ISV's own licence management and is about their customers rather than about who holds a seat in the customer's org.
+
+**Opportunity types out of scope.** Some types are excluded by configuration, the same shape as the applicable-set chain.
+
+**Module ownership, and this one is genuinely new.** Customers hold different combinations: relationship map only, plus insight map, plus assessment, or all four. **This is not graceful absence.** Graceful absence covers an object or rubric record that is not there. Here the objects exist because the package is installed and the customer is not licensed for the module, so **a write fails on permission rather than on absence**, and nothing in the record handles that.
+
+### The shape, and it uses a property already ruled
+
+**Claims land on our objects first; Altify's fields receive a projection.** So a projection that cannot land does not touch the claim. **The capability matrix lives entirely in the projection layer and no charter knows about it.** A customer with relationship map only still gets the whole evidence engine and simply sees less of it in Altify's panels, which is the same property as running in an org that never had Altify, now earning its keep for a case nobody designed it for.
+
+**Projection probes before it writes**, records what it found, and a failure to project never affects the claim, the flag, or the roll-up.
+
+**The admin error log is the first admin-facing surface in the design, and it needs one distinction built in from the start: expected-unavailable is configuration, not an error.** A log filling nightly with *projection failed, module not licensed* trains an admin to ignore it, and then the one real failure arrives in a stream nobody reads. It carries a named contact or set of contacts at the org.
+
+### The testing problem, and it is the standing hazard again
+
+**None of this can be tested in Altify's own org, which is fully licensed with every module.** The harness is therefore **permission sets rather than a differently-licensed org**: strip a test user of access to the insight card object, run the pipeline, and confirm it degrades correctly rather than failing. That is buildable in the sandbox today and it is the only way to see the behaviour at all.
+
+**This is a build phase of its own** — licence detection, type scoping, the capability matrix, projection probing, the error log, the Contact toggle, and a permission-restricted test harness for all of it.
+
+---
+
+## 4d · Politics sequencing · RULED 2 Aug
+
+**Influence and conflict first; person-to-card links second.** Person-to-card links need the insight map, so they only work for customers licensed for it. **Influence and conflict need only the relationship map, which is the smallest footprint any customer has.** So the half that works for everyone is the half with no authored ontology behind it, and it is also the half that makes the map political rather than a list. The person-to-card half is more valuable for call prep, but it already has most of its design from the four-questions-two-values finding and can wait.
+
+**Politics has no authored ontology.** Confirmed by Matthew from the UI: influence and conflict carry no wizard and no help text. So Politics is the charter where **we author the propositions**, the same position Buyer Role is in, with the same consequence — contracts land at `Inferred_Pending` until a human ratifies them.
+
+**And it narrows further. The informer is deterministic from the participant roster**, so who said it is free and never reaches a model. What Politics must establish is who owns or is impacted by a card **where that differs from who said it**, plus influence, plus conflict. Three things, all pairs, all authored by us.
 
 ---
 

@@ -3678,3 +3678,66 @@ key four exists: **a grain not recorded cannot be declared later without reproce
 a Calculated Insight cannot be regrained without rebuilding its history.
 
 **Owed.** Unchanged.
+
+---
+
+## 2026-08-04 · session 40 · corrections v2.4 synced; the licence read found
+
+**Did.** Synced `aao-corrections-v2_4.md`, deleted v2.3. **Nothing built**, per the drop.
+§4c is scope for a phase, not a task.
+
+**A version-stamp inconsistency worth fixing before this goes to corporate.** The file's H1
+reads `# AAO Corrections and Change Record, v2.2` and its last line reads *End v2.2*, while
+the stamp on line 3 reads **v2.4**. The seed's own rule is *read the version stamp inside the
+file, never trust the filename* — and here the title and the footer disagree with the stamp,
+which is worse than a filename mismatch because both are inside the file.
+
+### The one thing I could settle rather than record: how to read a licensed seller
+
+§4c says the source of truth is a read and correctly rules out `sfLma__License__c`. **The
+read exists and I found it.** In `aossb2`:
+
+| Object | What it is | Read |
+|---|---|---|
+| `sfLma__License__c` | the ISV's own licence management, about *their* customers | **0 rows** — present but empty, exactly as the ruling says |
+| `PackageLicense` | the installed package and its seat pool | **1 ALTF row**, `AllowedLicenses = -1` (unlimited), `UsedLicenses = 80` |
+| `UserPackageLicense` | **who actually holds a seat** | **80 ALTF assignments** |
+
+So **`UserPackageLicense` joined to `PackageLicense.NamespacePrefix = 'ALTF'` is the licensed-
+seller read**, and it is a platform object rather than a managed one — no dependency on
+Altify's own tables, nothing to break when the package upgrades, and it answers per user
+rather than per org.
+
+Two things about it that matter for the phase. `AllowedLicenses = -1` means unlimited, so
+**the seat pool cannot be used to infer scarcity** and only the assignment rows tell the
+truth. And this is a *package* licence rather than a *module* licence — it says the user may
+use Altify, not which of the four modules they hold. **Module ownership needs a different
+read, and §4c is right that it surfaces as permission rather than absence**, which means the
+probe has to attempt or describe rather than count.
+
+### Where the permission-set harness idea lands
+
+**It is buildable today and it is the only honest option.** `aossb2` holds every module, so
+module ownership cannot be observed here by any query — the difference between *not licensed*
+and *not installed* is invisible in an org that has everything. Stripping a test user of
+object access and running the pipeline as that user reproduces the actual failure mode,
+because a permission failure and a licence failure arrive as the same DML error.
+
+Worth naming what that harness would prove and what it would not: it proves **degradation**,
+that a projection failure never touches the claim, the flag or the roll-up. It does not prove
+**detection**, because a permission-stripped user is not the same signal a real unlicensed org
+would give. Detection stays unverifiable until a differently-licensed org exists.
+
+### Two numbers in §2.4 that have moved since it was written
+
+- *"153 tests green"* — now **164**.
+- *"Claim Basis declares eight cited types and has built two"* — **eight declared, four
+  built.** `AAO_Cited_Answer__c`, `AAO_Cited_Map_Row__c`, `AAO_Cited_Source__c` and
+  `AAO_Cited_Line_Item__c` all exist in the org. The remaining four —
+  `Insight_Card`, `Decision_Criterion`, `Qualifier_Status`, `Shadow_Person` — are enum values
+  pointing at nothing.
+
+§2.4's other corrections check out: nine objects live counting `AAO_Model_Config__mdt`, and
+six reserved words with `when` included.
+
+**Owed.** Unchanged. The scope phase is recorded and not started.

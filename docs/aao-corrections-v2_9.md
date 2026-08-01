@@ -2,6 +2,22 @@
 
 > **The version lives on the stamp line below and nowhere else.** The H1 carried a version through v2.4 and went stale, which is the same defect the glossary carried through three versions, Architecture through one and Data Flow through two. Removing it is the only fix that cannot rot.
 
+**v2.9 · 2 August 2026 · Politics confirmed to have no ontology, by read rather than by memory. A third face of the pattern rule, and the guard gap it exposes.**
+
+**Changed in v2.9.** CODE swept both families read-only against a stated total of 2,930 ALTF labels, so **every zero is a filter result rather than an empty table.** `%RELATIONSHIP_TYPE%` → 0. `%DETRACT%` → 0.
+
+**Sixteen labels across influence and conflict, and every one is a UI string** — *Add Conflict*, *Influences*, *Influenced By*, *No Conflicts Set* — plus two mode help texts that are **interaction instructions rather than propositions**. *Select the contact this person influences* tells a user how to operate a picker; it never says what influence is or how a seller would know. **So Politics is authored by us from zero, `Inferred_Pending` until ratified, now demonstrated rather than assumed** — and with nothing to discover there is no vendor ontology to reconcile, no AM/OM split, no sparse numbering and no overlay, which makes Politics **simpler** than the two charters before it.
+
+**The schema says it harder.** `ALTF__Contact_Influence__c` holds both kinds in one object, discriminated by a two-value picklist (`Conflict`, `Influence`), with an influencing contact, an influenced contact and an external key. **`ALTF__Contact_Conflict__c` does not exist. No strength, no basis, no note, no date — an edge is a bare triple.** That is the third instance of one pattern and it is now recorded as the product's own argument in **competitive rebuttals §8**: nine Support questions collapse to one picklist value, four person-to-card questions collapse to `Informer`/`Owner`, two relationship kinds collapse to a bare triple. **Altify's relationship layer stores the fact and never the evidence for it.**
+
+### A third face of read-by-pattern-filter-by-family, and the guard does not cover it
+
+**The package misspells a label.** `CONFCLIT_MODE_HELP_TEXT` — so `%CONFLICT%` returns five labels and misses the only one that mattered. What found it was sweeping the whole `%HELP_TEXT%` family and reading the list.
+
+So the rule has three faces now: **an iterator under-collects** because numbering is sparse; **a family pattern over-collects** because edit guidance shares it; and **a targeted pattern under-collects because the name you are looking for may be wrong.** The rule that covers all three: **sweep wider than the question, read the list, filter after.**
+
+> **And the third face is not covered by the discovery-filter-fault guard, which is worth stating rather than glossing.** That guard fires on a populated table returning **zero** matches. `%CONFLICT%` returned five. **A non-empty result missing the one row you needed looks exactly like success**, and no guard we have detects it. The family guard CODE built for the guided questions catches this class only where an expected shape can be declared in advance, which is possible for a numbered set and impossible for a set you have never seen. **Some misses are only caught by a person sweeping wider than the question and reading the output.** Recorded as a limit rather than pretended away.
+
 **v2.8 · 2 August 2026 · The labels are unreachable from Apex. A capability law, the third instance that forced it, and the sourcing decision that follows.**
 
 **Changed in v2.8. CORRECTED: v2.6 and v2.7 both say a pattern query recovers any org's question set at install with no human in it. That is true of the Tooling API and false of Apex, and the product runs in Apex.** `ExternalString` is a Tooling API object — `Invalid type: ExternalString` from Apex SOQL. `System.Label.ALTF.<name>` is shut too, because **2,576 of the 2,930 ALTF labels are `IsProtected = true`, including every guided question**, and a protected managed-package label is invisible to subscriber Apex. Only 354 are public. Found by CODE trying to compile it.

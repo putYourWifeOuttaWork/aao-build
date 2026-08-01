@@ -1,5 +1,11 @@
 # AAO Competitive Rebuttals — living file
 
+> **The version lives on the stamp line below and nowhere else.**
+
+**v0.3 · 2 August 2026 · adds §8, the argument made by Altify's own schema — three reads, not an opinion**
+
+**Changed in v0.3.** One section, and it is the strongest thing in the file because **none of it is our claim.** Three separate reads of Altify's own data model on 2 August found the same shape each time: **the methodology asks a rich authored question and the schema stores the answer while discarding the reasoning.** Nine Support questions collapse to one picklist value. Four distinct person-to-card questions collapse to `Informer` or `Owner`. Two relationship kinds collapse to a bare triple with no room for why. This is the gap the product fills, stated from the incumbent's schema rather than from a slide, and it is usable in the room without a single register row.
+
 **v0.2 · 2 August 2026 · adds the value-curve argument (§6) and the KPI ledger (§7)**
 
 **Changed in v0.2.** Two sections added for the QBR, both from Matthew's framing: we are not arguing against an acquisition's price tag, we are arguing for the underlying value curve of this system against comparable systems. Every sales-AI architecture is on one of two curves, multiplicative improvement or multiplicative decay, and only certain metrics reveal which — metrics we will measure. The same framing requires naming the KPIs that are no longer indicative of success, and why. Register discipline unchanged and applied throughout: §6 is by-construction argument; its arithmetic is arithmetic, never a benchmark; no external number appears anywhere until the register carries it as measured.
@@ -112,6 +118,32 @@ Contact-centric, external infrastructure, two SMB clients. Toby's own words: "I 
 
 **Discipline note.** §6 contains no measured claim about any competitor and must never acquire one secondhand; if a number about their side ever enters this file, it enters with a source and a date or it does not enter. §7's right-hand column is the measurement plan; each row graduates to the register individually.
 
+## 8 · The argument Altify's own schema makes · v0.3 · **three reads, not an opinion**
+
+**This section contains no claim of ours.** It is what the incumbent's data model says about itself, read from production on 2 August, and it can be used in the room without a single register row because nothing in it is ours to be wrong about.
+
+**One shape, found three times independently.**
+
+| The methodology asks | The schema stores | Discarded |
+|---|---|---|
+| **Nine authored Support questions** — has this person told you they prefer your solution over all alternatives; is this person mentoring your competition; do you have evidence they believe your success will hurt them | **One picklist value.** Mentor / Supporter / Neutral / Non-Supporter / Enemy | Which of the nine were true, who said so, when, and in what words |
+| **Four different person-to-card questions** — who is *responsible for* this Goal, who is *impacted by* this Pressure, who is *impacted by* this Obstacle, who *told you* | **Two values.** `Informer` or `Owner` | That being crushed by a pressure and being accountable for an initiative are different facts |
+| **Two relationship kinds**, influence and conflict | **A bare triple.** Who, whom, which kind | Everything. No strength, no basis, no note, no date |
+
+**The sentence that carries it: Altify's relationship layer stores the fact and never the evidence for it.**
+
+**Why this is stronger than any pitch.** The questions are *good* — the nine Support propositions are better than anything we would have authored, and question sixteen asks for *evidence that* a person believes your success will hurt them, which is the right epistemics written by the vendor a decade before we arrived. **The methodology is not the problem. The storage is.** Every one of those authored questions is answered by a human, once, into a field that keeps the conclusion and throws away the reasoning, so nobody can ever ask *why does this say Mentor* and get an answer.
+
+> **That is the product, stated without adjectives:** the same methodology, with the reasoning retained. Not better questions. **The same questions, with receipts.**
+
+**Two supporting reads, both usable.**
+
+**`ALTF__Contact_Map_Details__c` carries a per-dimension `_Last_Modified__c` and only a record-level `LastModifiedById`.** So the schema knows *when* each attribute changed and only ever *who* touched the row. It was built to the edge of carrying provenance and stopped.
+
+**A Pressure cannot pass its own admission test without knowing which Goal it blocks** — `PRESSURE_HELP_TEXT_3`, verbatim: *will this pressure prevent a goal from being achieved?* **There is no field for that relation.** The pressure-to-goal link is free text on a field that doubles as desired-outcome for Initiatives, and the only structural card-to-card edge points at Solutions. **The methodology asks about an edge its own schema cannot hold**, so every Pressure card that ever passed that test carried knowledge the record then discarded.
+
+**Phrasing guardrail for this section.** Never *their schema is bad* — it is a good schema for the job it was built for, which is organising truth so it can be traversed. Say **the fields hold answers and the proof needs a home with room and grain.** The distinction is the difference between a critique Toby has to defend and an observation he already agrees with.
+
 ---
 
-*End v0.2. Append, don't rewrite; when an answer is battle-tested in a real meeting, mark it with the date it worked.*
+*End of record. Append, don't rewrite; when an answer is battle-tested in a real meeting, mark it with the date it worked.*

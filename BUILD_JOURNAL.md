@@ -4128,3 +4128,62 @@ and v2.5 already found that permission and licence failures arrive as the same D
 which is a hint that the probe may not be able to say which it hit.
 
 **Owed.** Unchanged.
+
+---
+
+## 2026-08-04 · session 47 · v2.9 and rebuttals v0.3; §8 verified against the org
+
+**Did.** Synced both, deleted v2.8 and rebuttals v0.2. **No build action** — the label
+sourcing decision is still Matthew's, so `AAO_PeopleOntology` stays an assembler and reads
+nothing on its own.
+
+### §8 is QBR-facing, so I checked it rather than trusting it
+
+Both checkable claims hold, and one is stronger than stated.
+
+**The per-dimension timestamp claim is right, and there are SIX not one.**
+`ALTF__Contact_Map_Details__c` carries `Account_Relationship`, `Buyer_Role`, `Coverage`,
+`Decision_Orientation`, `Political` and `Status` — each with its own `_Last_Modified__c` —
+against exactly one record-level `LastModifiedById` and one `CreatedById`.
+
+**That sharpens the sentence rather than merely confirming it.** Six separate decisions to
+record *when this attribute changed*, and not one to record *who changed it*. The schema was
+not built to the edge of provenance by accident; somebody went dimension by dimension adding
+the timestamp and stopped at the name every single time. **It is a per-dimension clock with
+no per-dimension author**, which is a better line than *built to the edge and stopped*.
+
+**The Support value set is right and carries a sixth value the table omits.**
+`ALTF__Status__c` is `Mentor`, `Supporter`, `Neutral`, `Non-Supporter`, `Enemy` — **plus
+`Unknown`**. `ALTF__Coverage__c` likewise ends in `Unknown` after the four named levels.
+
+**Worth adding to §8 rather than correcting**, because it strengthens the point: the schema
+already has a slot meaning *nobody has answered this*, so the vendor's own model distinguishes
+unanswered from neutral. **That is abstention in the storage layer, and it is the one thing
+the field does carry that a nine-question read would need** — which makes the discarded part
+even more precisely the reasoning, and only the reasoning.
+
+### The two stale items survive into v2.9's body
+
+The changelog records the read correctly, but neither downstream section moved:
+
+- **§4d still reads *Confirmed by Matthew from the UI*.** It is now confirmed by a read of a
+  2,930-row table. Worth upgrading precisely because a UI walk is the evidence class that
+  produced the five-question Support set — leaving it as-is has the weaker basis outliving
+  the stronger one in the same document.
+- **§5 still carries *Owed immediately* for the enumeration**, delivered in sessions 42 and
+  43. It should close the way the Tooling-API read did.
+
+Second time flagging both. Recorded rather than repeated further.
+
+### On the guard gap, which v2.9 states honestly and I want to sharpen slightly
+
+v2.9 says the filter-fault guard does not catch the misspelling, and that some misses are only
+caught by a person sweeping wider and reading the output. **That is true and it is the right
+thing to write down.** One narrowing worth having: **the family guard catches this class
+whenever a shape can be declared, and the misspelling is only invisible because nobody had
+seen the family before.** Once `CONFCLIT_MODE_HELP_TEXT` is known, it is declarable and
+guarded forever. So the uncatchable window is **first contact with a family**, not the family
+itself — which makes the honest rule *the first read of any family is done by a person, and
+every read after that is guarded*.
+
+**Owed.** Unchanged. Waiting on the sourcing decision.

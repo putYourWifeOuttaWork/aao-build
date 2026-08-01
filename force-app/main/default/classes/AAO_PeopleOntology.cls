@@ -1,41 +1,43 @@
 /**
- * THE PEOPLE ONTOLOGY, read from Altify's own authored labels rather than walked.
- * Unblocked by charter design v1.8.
+ * THE PEOPLE ONTOLOGY. OURS, seeded, overridable per org. Ruled v3.0 under LAW #1.
  *
- * The wizard questions are custom labels. `ExternalString` holds them, and a pattern query
- * recovers ANY org's set at install with no human in it — which is what makes "discovered
- * rather than paraphrased" true in a customer org rather than only in a document. A manual
- * walk recovers one org's wizard, and recovers it incompletely: the walk that produced v1.7
- * found five Support questions where nine exist, because it followed the path taken rather
- * than the tree, and every one of the four it missed establishes the NEGATIVE direction.
+ * THE SOURCE MOVED AND NOTHING ELSE DID. The questions were recovered from Altify's labels
+ * and they are the right questions, but nothing here reads that package, keys on its version,
+ * or behaves differently when it is absent. `AAO_People_Question__mdt` ships the text as our
+ * own seed data, and the upstream label name survives as an IDENTITY we chose to keep — so
+ * the family guard can assert a shape and so anyone comparing our wording to Altify's can
+ * find the counterpart — never as a dependency to satisfy.
  *
- * FOUR LAWS GOVERN THIS READ, and each of them is a defect that already happened.
+ * Why not read the labels: 2,576 of the 2,930 ALTF labels are protected, so `ExternalString`
+ * is Tooling-only and `System.Label` is shut to subscriber Apex. Every route to them either
+ * needed a callout or keyed on a package version, and LAW #1 forbids the second outright.
  *
- * 1. READ BY PATTERN, FILTER BY FAMILY. `%GUIDED_QUESTION%` under-collects if you iterate
- *    1..N — the numbering is sparse per family (Support runs 1, 2, 4, 5, 6, 7, 11, 14, 16) —
- *    and `%HELP_TEXT%` over-collects, because `PRESSURE_EDIT_TYPES_HELP_TEXT` is edit-form
- *    guidance rather than an admission test. So the pattern is the net and the family is the
- *    filter, and neither alone is right.
+ * TWO FIELDS, AND THE SECOND IS THE POINT. `AAO_Shipped_Text__c` is ours, DeveloperControlled,
+ * replaced on upgrade. `AAO_Org_Override__c` is theirs, SubscriberControlled, null until
+ * somebody sets it, and never touched by us. The reader prefers the override where it is
+ * populated. **This survives upgrade by construction rather than by trusting manageability
+ * semantics that cannot be tested from a subscriber org**, and it makes "has this org
+ * customised this question" a query rather than an inference.
  *
- * 2. BE LOUD WHEN THE FAMILIES DO NOT MATCH. The discovery filter-fault law, applied to
- *    labels: a populated table matching nothing is a failure, not an empty result. Here it
- *    is sharper, because a SHORT read looks exactly like a complete one — that is precisely
- *    how v1.7 shipped a five-question ontology.
+ * FOUR LAWS STILL GOVERN THE READ, and each is a defect that already happened.
  *
- * 3. APPLY THE LOCALIZATION OVERLAY. A customer may rewrite any label, and the override
- *    lives in a DIFFERENT TABLE from the label. It is empty in this org, which is a finding
- *    and not a licence to skip it: reading `ExternalString` alone would author contracts from
- *    words no user of that org has ever seen.
+ * 1. READ THE SET, FILTER BY FAMILY. The numbering is sparse (Support runs 1, 2, 4, 5, 6, 7,
+ *    11, 14, 16) and a family pattern over-collects, so an iterator under-collects and a bare
+ *    pattern over-collects. Neither alone is right.
  *
- * 4. BYTE-EXACT, ALWAYS. `organisation` on the opportunity map against `organization` on the
- *    account map. `jeopardise`. The stray hyphen in `_11`'s `-including`. The curly
- *    apostrophes. None of it is tidied on the way in, because A NORMALISED QUOTE IS A
- *    PARAPHRASE — the same law that makes the byte check possible on spans, applied to the
- *    proposition instead of the evidence.
+ * 2. BE LOUD WHEN THE FAMILIES DO NOT MATCH. A SHORT read looks exactly like a complete one —
+ *    that is precisely how v1.7 shipped a five-question ontology against a nine-question set.
  *
- * WHAT THIS CLASS DOES NOT DO. It does not walk, guess, or fill gaps. If the org's labels
- * disagree with the expected families it refuses and says which family was short, because a
- * rubric assembled from a partial read is the failure this whole file exists to prevent.
+ * 3. THE OVERRIDE IS PART OF THE READ. It is null everywhere today, which is a fact about
+ *    today and not a licence to skip it.
+ *
+ * 4. BYTE-EXACT, ALWAYS. `organisation` against `organization`. `jeopardise`. The stray hyphen
+ *    in `_11`'s `-including`. The curly apostrophes. None of it is tidied on the way in,
+ *    because A NORMALISED QUOTE IS A PARAPHRASE — the law that makes the byte check possible
+ *    on spans, applied to the proposition instead of the evidence.
+ *
+ * WHAT THIS CLASS DOES NOT DO. It does not walk, guess, or fill gaps. If the seeds disagree
+ * with the expected families it refuses and names which family was short.
  */
 public class AAO_PeopleOntology {
     public class OntologyException extends Exception {
@@ -163,48 +165,53 @@ public class AAO_PeopleOntology {
     // =========================================================== the read
 
     /**
-     * THE READ CANNOT HAPPEN IN APEX, and this is a finding rather than a limitation of this
-     * class. Established from the org, not reasoned about:
+     * The read, from our own seed records. No callout, no Tooling API, no package
+     * dependency — a plain SOQL query over custom metadata, which is why this works in an
+     * org that never had Altify installed.
      *
-     *   `ExternalString` is a TOOLING API object. Apex SOQL cannot see it at all — the
-     *   compiler answers `Invalid type: ExternalString`.
-     *
-     *   `System.Label.ALTF.<name>` is the other door and it is shut too. **2,576 of the
-     *   2,930 ALTF labels are `IsProtected = true`, including every guided question**, and a
-     *   protected managed-package label is invisible to subscriber Apex. The compiler
-     *   answers `External string does not exist`. Only 354 are public.
-     *
-     * So the sentence *a pattern query recovers any org's set at install with no human in
-     * it* is true of the Tooling API and false of Apex. The labels ARE the source of truth
-     * and they ARE readable; what changes is WHERE the read runs.
-     *
-     * TWO WAYS OUT AND BOTH ARE RULINGS, not implementation choices:
-     *
-     *   1. A Tooling API callout at SETUP TIME, through a Named Credential pointing at the
-     *      org itself. This fits the shape already ruled for state-based questions — a read
-     *      performed once, frozen on the contract, re-run when the content hash moves — and
-     *      setup is exactly where a callout is affordable. It needs an admin to authorise a
-     *      credential to their own org, so *zero customer-admin action* becomes one action.
-     *
-     *   2. The read happens outside the org entirely and the labels arrive as data, the way
-     *      the mini-rubric did. Honest, and it gives up the install-time automatic property
-     *      that made this approach better than a walk.
-     *
-     * Until that is ruled, `read()` refuses and this class is the ASSEMBLER: hand it the
-     * labels and it applies every law — family guard, byte-exactness, element structure,
-     * speaker requirement, route. `assemble()` is the seam, and it is a seam rather than a
-     * workaround: whoever performs the read, the rules that turn labels into contracts are
-     * the same and live here.
+     * THE OVERRIDE WINS WHERE IT IS POPULATED, and null is not a value. An untouched org
+     * silently gets the shipped default; a customised org silently gets its own words. No
+     * flag, no migration, no branch anywhere else in the system.
      */
     public static Map<String, String> read() {
-        throw new OntologyException(
-            'The label read cannot run in Apex. ExternalString is a Tooling API object that ' +
-            'Apex SOQL cannot see, and System.Label is shut because 2,576 of 2,930 ALTF ' +
-            'labels are protected, including every guided question. The read must come from ' +
-            'the Tooling API — a setup-time callout through a Named Credential to this org, ' +
-            'or an out-of-org step — and this class assembles from whatever performs it. ' +
-            'Refusing rather than reading a different, wrong source.'
-        );
+        Map<String, String> byKey = new Map<String, String>();
+        for (AAO_People_Question__mdt q : [
+            SELECT AAO_Question_Key__c, AAO_Shipped_Text__c, AAO_Org_Override__c
+            FROM AAO_People_Question__mdt
+        ]) {
+            byKey.put(
+                q.AAO_Question_Key__c,
+                String.isNotBlank(q.AAO_Org_Override__c)
+                    ? q.AAO_Org_Override__c
+                    : q.AAO_Shipped_Text__c
+            );
+        }
+        return assemble(byKey);
+    }
+
+    /**
+     * Which questions this org has rewritten.
+     *
+     * Still a fact read off the record rather than an inference, but NOT a WHERE clause: a
+     * LongTextArea cannot be filtered in SOQL — `field 'AAO_Org_Override__c' can not be
+     * filtered in a query call` — so the null test happens in Apex over the whole set.
+     *
+     * The field stays long on purpose. Making it filterable means Text(255), and the longest
+     * shipped question is already 152 characters; a customer rewriting one has no reason to
+     * stay under a ceiling we chose for the convenience of a query. Thirty-five rows of
+     * custom metadata cost nothing to read, and the constraint is the platform's rather than
+     * the design's.
+     */
+    public static Set<String> customised() {
+        Set<String> out = new Set<String>();
+        for (AAO_People_Question__mdt q : [
+            SELECT AAO_Question_Key__c, AAO_Org_Override__c FROM AAO_People_Question__mdt
+        ]) {
+            if (String.isNotBlank(q.AAO_Org_Override__c)) {
+                out.add(q.AAO_Question_Key__c);
+            }
+        }
+        return out;
     }
 
     /**

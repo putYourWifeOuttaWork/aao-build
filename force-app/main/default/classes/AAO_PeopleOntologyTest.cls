@@ -51,7 +51,7 @@ private class AAO_PeopleOntologyTest {
     @IsTest
     static void theSupportSetIsNineAndComesFromLabels() {
         Test.startTest();
-        Map<String, String> labels = AAO_PeopleOntology.assemble(fixture());
+        Map<String, String> labels = AAO_PeopleOntology.read();
         Test.stopTest();
 
         Integer support = 0;
@@ -80,7 +80,7 @@ private class AAO_PeopleOntologyTest {
     @IsTest
     static void thePropositionTextIsByteExact() {
         Test.startTest();
-        Map<String, String> labels = AAO_PeopleOntology.assemble(fixture());
+        Map<String, String> labels = AAO_PeopleOntology.read();
         Test.stopTest();
 
         System.assert(
@@ -130,22 +130,22 @@ private class AAO_PeopleOntologyTest {
         );
     }
 
-    /** And the read itself refuses, because Apex cannot see these labels at all. */
+    /**
+     * THE READ WORKS NOW, and it works with no callout and no package. That is LAW #1 made
+     * checkable: this same query returns the ontology in an org that never had Altify.
+     */
     @IsTest
-    static void theApexReadRefusesAndExplainsWhy() {
+    static void theReadRunsInApexWithNoCallout() {
+        Integer before = Limits.getCallouts();
         Test.startTest();
-        String err;
-        try {
-            AAO_PeopleOntology.read();
-        } catch (AAO_PeopleOntology.OntologyException e) {
-            err = e.getMessage();
-        }
+        Map<String, String> labels = AAO_PeopleOntology.read();
         Test.stopTest();
-
-        System.assert(err != null && err.contains('protected'), 'Got: ' + err);
-        System.assert(
-            err.contains('Tooling API'),
-            'And name where the read must come from instead. Got: ' + err
+        System.assertEquals(19, labels.size(), 'The guided-question set, from our own seeds.');
+        System.assertEquals(before, Limits.getCallouts(), 'No callout. None is possible.');
+        System.assertEquals(
+            0,
+            AAO_PeopleOntology.customised().size(),
+            'And nothing is overridden yet, which is a query rather than an inference.'
         );
     }
 
@@ -187,7 +187,7 @@ private class AAO_PeopleOntologyTest {
     @IsTest
     static void compoundQuestionsCarryElementsMarkedAsOurs() {
         Test.startTest();
-        List<AAO_Evidence_Contract__c> built = AAO_PeopleOntology.build(fixture(), true);
+        List<AAO_Evidence_Contract__c> built = AAO_PeopleOntology.build(AAO_PeopleOntology.read(), true);
         Test.stopTest();
 
         Map<String, AAO_Evidence_Contract__c> byCode = new Map<String, AAO_Evidence_Contract__c>();

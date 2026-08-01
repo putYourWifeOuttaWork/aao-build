@@ -2,6 +2,60 @@
 
 > **The version lives on the stamp line below and nowhere else.** The H1 carried a version through v2.4 and went stale, which is the same defect the glossary carried through three versions, Architecture through one and Data Flow through two. Removing it is the only fix that cannot rot.
 
+**v3.0 · 2 August 2026 · LAW #1, and the end of the label sourcing question. The ontology becomes ours, seeded and injectable, and stops being a read of anybody's package.**
+
+**Changed in v3.0. Matthew's ruling, and it retires the whole option set rather than choosing from it.**
+
+### LAW #1 · No dependency on any 1GP package version, ever
+
+**The system works without Altify installed, and on any Altify package version.** Nothing we build may key on an ALTF package version, require a minimum version, or behave differently because a version differs. Version compatibility is **feature detection, never a version check** — which the Glossary already ruled under Graceful Absence. **This states it at full strength and places it above the sourcing question rather than inside it.**
+
+**Three options and one late addition are all killed by it, and that is the point.** Packaged text keyed by package version keys on a version. The Tooling callout reads one specific org's installed package. And the proposal to unprotect the guided-question labels in our own package — which would have made `System.Label` resolve from subscriber Apex with the localization overlay arriving free, no callout and no setup action — **reaches only orgs that upgrade to that release, so it is a version dependency wearing the costume of a fix.** It was the strongest option on fidelity and the clearest violation of the law, which is the useful thing about it.
+
+**The Publisher read is withdrawn as a design input.** `Publisher` carries `MajorVersion` and `MinorVersion` for `ALTF` and returned **Altify 9.19** on 2 August over the standard data path rather than the Tooling path. Whether Apex can see it no longer matters, because nothing may key on the answer. **Recorded as a fact about the org and removed from the decision.**
+
+### The ruling · the ontology is ours, assumed universal, overridable per org
+
+**Where the labels cannot be read, the recovered question text is treated as ontologically universal**, shipped as our own reference data — **unless configuration within the charters says otherwise for that org.** So **People and Problems must both accept injection of proposition text per label**, at setup, by configuration rather than by code.
+
+**This is not a new mechanism. It is the ontology injection point ruled in charter design v1.1, generalised.** That ruling already said: per-org, per-type authored description, defaulting to what was recovered from the package, confirmed by the admin through the recipe pattern's sentences-not-code surface. It was ruled for insight card types. **It now governs every proposition in both charters, and the default stops being *what we read from this org* and becomes *what we ship*.**
+
+### What this fixes that no other option did
+
+**The detection objection dissolves rather than being accepted.** Every option was faulted for being unable to tell that its text was wrong. That fault existed only because each one claimed to be reading the customer's own questions. **This design claims nothing it cannot back:** we ship a default, we show it to the admin in sentences, they confirm or revise. An org that has customised says so at setup, which is a configuration step rather than a silent failure. **Detecting that we do not know stops being load-bearing, because we are no longer asserting that we know.**
+
+**And it survives the standing hazard, which nothing else did.** Roughly eighty percent of installs have no Altify history and some will have no package at all. **Every earlier option produced no ontology whatsoever in an org with no ALTF package**, because every one of them was a read of that package. Under this ruling the evidence engine runs there unchanged and only projection degrades — the property already ruled in the licensing work, now earning its keep for a case nobody designed it for.
+
+### What it costs, declared rather than discovered
+
+**The recovered wording is Altify's and we now ship it.** Byte-exactness still binds: `organisation` against `organization`, `jeopardise`, the stray hyphen in `_11`'s `-including`, the curly apostrophes — all ship exactly as read, because **a normalised quote is a paraphrase whoever is holding it.**
+
+**A customer who has rewritten their wizard questions and never visits the config surface gets ours.** Same residual the packaged-text option carried, and smaller here, because the surface exists and sits inside setup rather than behind an optional upgrade nobody knows to enable.
+
+### The build consequence, and one trap that is the trap we just walked into
+
+**Seed text ships as custom metadata — not as data, not as labels.** Custom metadata is packaged, upgradeable, queryable from Apex with no callout, and editable in Setup, which is what makes the override a configuration motion rather than a deploy. **Discovery composes Evidence Contract rows from it exactly as it composes them from rubric records today; the assembler's seam does not move, only what feeds it.**
+
+> **Ship the type and its records PUBLIC, never protected.** A protected custom metadata record in a managed package is invisible and uneditable to the subscriber — **which is precisely the failure we have just spent a day ruling around, reproduced inside our own package by one checkbox.** 2,576 of 2,930 ALTF labels are protected and that is the entire reason the ontology was unreachable. The same flag exists on custom metadata types, on their records, and on their fields. **Unverified, and it is the first check:** that a subscriber can read and edit our seed records from a managed context, tried from Apex rather than from whichever tool is convenient.
+
+**One field-level question the ruling opens.** Evidence Contract records who decomposed a compound question in `AAO_Elements_Basis__c` and records **nothing about where the proposition text came from**, because until now there was one answer: read from the org. There are now two — our shipped seed, and the org's own injection — and the difference is visible to a seller, since a flag quotes the proposition and whether that sentence is their wording or ours changes how it reads. **Either a text-source discriminator on the contract, or the existing contract state carries it**: a seed lands `Derived`, an injected override lands `Ratified` by the admin who wrote it. The second adds no field and is probably right. **Owed to the field tables.**
+
+### Recovered, and a one-way drift the handoff loop is supposed to prevent
+
+**The demo run sheet exists.** It was listed as live from seed v3.0 onward, was not in project knowledge at any version, and was struck in seed v5.1 as possibly never having existed. It sits in CODE's repo at `docs/aao-demo-runsheet-v1_2.md`, committed at `c4d1ba2` in session 16 and unmodified since. **It was in the repo and never in the project**, and it went unnoticed for two weeks because nothing ever reads a file nobody remembers. Filed at v1.3 with three stale say-unprompted lines corrected.
+
+**The distinction that was never written down, and its absence is why this was invisible: the project keeps every version, `docs/` keeps one.** A document in the project and not in `docs/` is ordinary. **The reverse is a fault.** Now stated in the build brief.
+
+### A fourth face of read-by-pattern-filter-by-family, and this one is created by deletion
+
+Deleting corrections v1.0 left dangling pointers, and **the sweep for them found one of three.** The build brief carried the deleted filename in its read order, in its repo layout block, and in the closing paragraph of what is known to be missing — where it named the file as authoritative over the four project documents. **A pointer to a deleted file that claims precedence is worse than a stale copy**, because a reader who follows it finds nothing and cannot tell whether the authority moved or was withdrawn.
+
+**The root cause is a referencing style, not the deletion.** The brief named documents by a version embedded in a filename, while paths are frozen and the version lives on the stamp inside. **Every reference of that form was going to rot at the next bump whether or not anything was ever deleted.** Repaired in build brief v1.1, which now names each document by role with the filename as a locator only.
+
+**So the rule has a fourth face: a deletion silently converts every pointer to it into a false authority**, and the guard that fires on zero results does not fire, because the pointers are still there and still read as valid. **Sweep the whole tree for a filename before deleting it, and read the list.**
+
+---
+
 **v2.9 · 2 August 2026 · Politics confirmed to have no ontology, by read rather than by memory. A third face of the pattern rule, and the guard gap it exposes.**
 
 **Changed in v2.9.** CODE swept both families read-only against a stated total of 2,930 ALTF labels, so **every zero is a filter result rather than an empty table.** `%RELATIONSHIP_TYPE%` → 0. `%DETRACT%` → 0.
@@ -31,6 +85,8 @@ Three design sentences about our own reach have now been wrong in the same direc
 **This is narrower than *evidence over inference, including about our own schema*, and it needs its own line**, because the schema rule is satisfied by reading the org and this failure survives reading the org. What it does not survive is trying it from where the product will stand.
 
 ### The sourcing decision · Matthew's
+
+> **CLOSED IN v3.0, and none of the options below won.** LAW #1 forbids any dependency on a package version, which kills the first two outright and kills the recommendation with them. The ontology is shipped as our own seed data and injectable per org. **Retained below as the record of what was considered and why it was wrong**, per the rule that wrong text is marked wrong and never deleted.
 
 **One fact reframes the trade: the question text is a property of the package version, not of the org.** It ships in the managed package, so every org on a given version carries identical text, and **only the localization overlay is org-specific.**
 
@@ -96,7 +152,7 @@ That also settles a rules question before it is asked. *The package ships no que
 
 **Changed in v2.2.** A full session of design ran against a stale reading of the corporate record: project-knowledge retrieval served **Glossary v1.9 while v2.0 was current**, which is the retrieval hazard those documents warn about, working exactly as documented. The four current documents have now been opened directly rather than searched. **The session's work survives the check, with one apology, three corrections to the corporate record, and four things it broke that must reopen.** The corrections are the valuable half: one of them raises the standard for an entire class of proposition.
 
-**Who this is for.** Same as v2.1: the corporate project's agent, carrying results back into the canonical documents. Stamped corporate documents as of this writing: **Architecture v2.9, Glossary v2.0, Object Model v2.0, Data Flow v2.3**, Theory v1.3, Computable Share v1.5. This record supersedes them where they disagree. Charter detail lives in `aao-charter-design` (now v1.7), field detail in `aao-field-tables` (v0.13).
+**Who this is for.** Same as v2.1: the corporate project's agent, carrying results back into the canonical documents. Stamped corporate documents as of this writing: **Architecture v2.9, Glossary v2.0, Object Model v2.0, Data Flow v2.3**, Theory v1.3, Computable Share v1.5. This record supersedes them where they disagree. Charter detail lives in `aao-charter-design` (now v1.8), field detail in `aao-field-tables` (v0.13).
 
 ---
 
@@ -141,11 +197,15 @@ The glossary states, of schema-sourced propositions: *the field label plus the v
 
 **Why this raises a standard rather than adding a fact.** Schema-sourced propositions have been running on a field label where record-sourced propositions run on verbatim authored text. That asymmetry is now closed. **Every dimension gets proposition text from the customer's own methodology**, discovered rather than paraphrased, which is the same law that governs the assessment side.
 
+> **AMENDED IN v3.0.** The last sentence above is now half wrong and is corrected rather than deleted. **The text is not discovered from the customer's org, because it cannot be** — it is shipped by us as reference data and overridden by the customer at setup where they have customised. What survives, and it is the part that mattered: **the proposition is a verbatim authored sentence rather than a field label, and it is never paraphrased.** Where it comes from moved; what it is did not.
+
 **CORRECTED IN v2.6, and the v2.5 sentence here was wrong.** It read *the text is in the managed package UI, not in any queryable table*, and closed with the Tooling API as an open read. **The text is queryable, it is custom labels, and CODE had already established this in session 33 — the finding never reached this record.** `ALTF__Translation__c` being empty and the platform `Translation` object holding only language enablement are both true and were the wrong places to look.
 
 **`ExternalString` holds 2,930 ALTF labels**, and the questions sit under naming conventions that make them discoverable by pattern: **26 `%GUIDED_QUESTION%` labels** for the map dimensions, plus `GOAL_HELP_TEXT_*` and `PRESSURE_HELP_TEXT_*` for the insight admission tests and `*_DEF_AM` / `*_DEF_OM` for the value definitions.
 
 **This is what makes *discovered rather than paraphrased* true in a customer org rather than only in this document.** A manual walk recovers one org's wizard; a pattern query recovers any org's, at install, with no human in it.
+
+> **SUPERSEDED IN v2.8 and CLOSED IN v3.0.** Tooling can run that pattern query; Apex cannot, and the product runs in Apex. Under LAW #1 the point is moot: no read of the package may be relied on at all.
 
 **Four consequences, and two of them are defects in what shipped today.**
 
@@ -158,6 +218,8 @@ The glossary states, of schema-sourced propositions: *the field label plus the v
 **The labels are a superset of the walked tree, so the recovered set is INCOMPLETE.** Nine Support questions exist against the five recovered on 2 August, including *is this person vocal in their support of your competition* and *do you have evidence that this person believes your success will hurt their company or job*. **The wizard walk found the path taken, not the tree.** Charter design v1.7 presents five questions as the Support ontology and must be corrected against the full enumeration rather than patched by guessing.
 
 **Discovery must read the localization layer, never the packaged label.** 56 localizations already override ALTF labels in this org, 55 with changed text, one consistent Account Manager plan to Book of Business plan rebranding. None touches the question labels today, but a customer can override any of them, **and the override lives in a different table from the label.** Reading `ExternalString` alone would author contracts from words no user of that org has ever seen. **Same shape as the `ALTF__Status_Answer__c` hazard: the stored artifact and the displayed truth can disagree.**
+
+> **REPLACED IN v3.0.** The overlay is unreachable from Apex like the label itself, so this requirement cannot be met by reading. **It is met instead by the config surface**: an org whose wording differs states its own text at setup, which is the same protection reached by an honest route.
 
 **Process note, recorded because it is the day's recurring failure.** This was known in session 33 and never reached a document, so an afternoon was spent recovering it by hand and a charter closed on an incomplete set. Corrections go into versioned documents, never chat — and that rule is only load-bearing if it fires for findings as well as for rulings.
 
@@ -262,6 +324,8 @@ The glossary says *state is reconstructible from the journal by summing deltas.*
 
 **And a package licence is not a module licence.** This says the user may use Altify. It says nothing about which of the four modules the org holds, so the two reads that §4c treated as one are separate and **only the seller read is solved.** The module read is still owed, and per the ruling below it has to probe rather than count, because the difference surfaces as permission rather than as absence. The four modules correspond to the content tabs observed in the production UI — Process, Relationships, Insights, Assessment — which should be confirmed rather than assumed.
 
+> **v3.0 note.** `PackageLicense` carries no version field, confirmed by describe: eleven fields, namespace, seat counts, status, expiry and nothing else. Under LAW #1 that is now a comfort rather than a gap — **there is no version on the read we depend on, so the read cannot acquire a version dependency by accident.**
+
 **Opportunity types out of scope.** Some types are excluded by configuration, the same shape as the applicable-set chain.
 
 **Module ownership, and this one is genuinely new.** Customers hold different combinations: relationship map only, plus insight map, plus assessment, or all four. **This is not graceful absence.** Graceful absence covers an object or rubric record that is not there. Here the objects exist because the package is installed and the customer is not licensed for the module, so **a write fails on permission rather than on absence**, and nothing in the record handles that.
@@ -288,7 +352,9 @@ The glossary says *state is reconstructible from the journal by summing deltas.*
 
 **Influence and conflict first; person-to-card links second.** Person-to-card links need the insight map, so they only work for customers licensed for it. **Influence and conflict need only the relationship map, which is the smallest footprint any customer has.** So the half that works for everyone is the half with no authored ontology behind it, and it is also the half that makes the map political rather than a list. The person-to-card half is more valuable for call prep, but it already has most of its design from the four-questions-two-values finding and can wait.
 
-**Politics has no authored ontology.** Confirmed by Matthew from the UI: influence and conflict carry no wizard and no help text. So Politics is the charter where **we author the propositions**, the same position Buyer Role is in, with the same consequence — contracts land at `Inferred_Pending` until a human ratifies them.
+**Politics has no authored ontology.** Confirmed by Matthew from the UI and by CODE's sweep in v2.9: influence and conflict carry no wizard and no help text. So Politics is the charter where **we author the propositions**, the same position Buyer Role is in, with the same consequence — contracts land at `Inferred_Pending` until a human ratifies them.
+
+> **v3.0 note, and it is a simplification.** Politics was the one charter already in the shape LAW #1 now requires of all of them: **text authored by us, shipped, overridable per org.** Under the ruling, Politics stops being the exception and becomes the template. People and Problems move to where Politics already stood.
 
 **And it narrows further. The informer is deterministic from the participant roster**, so who said it is free and never reaches a model. What Politics must establish is who owns or is impacted by a card **where that differs from who said it**, plus influence, plus conflict. Three things, all pairs, all authored by us.
 
@@ -349,12 +415,12 @@ The glossary says *state is reconstructible from the journal by summing deltas.*
 
 ## 5 · What is still deliberately not settled
 
-The **Politics / Link charter**, now the only unopened loop-one charter, opening on influence and conflict. **Insight Contention's charter.** **Rule Discovery's charter.** The two open setup-time inference instances. Quick-links from insights to qualifiers. **The module-ownership read**, which must probe rather than count. **The contention aggregate's Calculated Insight grain**, which is one-way.
+The **Politics / Link charter**, now the only unopened loop-one charter, opening on influence and conflict. **Insight Contention's charter.** **Rule Discovery's charter.** The two open setup-time inference instances. Quick-links from insights to qualifiers. **The module-ownership read**, which must probe rather than count. **The contention aggregate's Calculated Insight grain**, which is one-way. **The proposition-text source discriminator** on Evidence Contract, opened by v3.0.
 
 *Closed in v2.6: whether the wizard's help text is reachable as custom labels. It is — `ExternalString`, 2,930 ALTF labels. See §2.1.*
-
-**Owed immediately, and it blocks a correction rather than a build:** the full `%GUIDED_QUESTION%` enumeration with its localization overlay, so charter design v1.7's Support set can be corrected from nine authored questions rather than the five that were walked.
+*Closed in v2.8: it is reachable from Tooling and not from Apex.*
+*Closed in v3.0: where the ontology comes from. It comes from us, and no read of any package version is relied on anywhere.*
 
 ---
 
-*End of record. The session's design work stands. What it did not hold was the memory plane, and that is where all four breakages live — cold seeding above all, because the tree ruling is right about the present and silent about the past.*
+*End of record. LAW #1 is the highest thing in this document and it outranks every option, recommendation and convenience below it. Where an earlier version reasons from what a package version contains, that reasoning is retained as history and is not to be built on.*

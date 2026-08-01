@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+<!--
+  THE TWO-FIELD SHAPE, and the second field is the whole point.
+
+  A single field would force one of two bad choices. DeveloperControlled: an upgrade
+  overwrites whatever the customer wrote, silently. SubscriberControlled: we can never ship a
+  correction, because the customer's value — including the one they never touched — wins
+  forever and we cannot tell an intentional edit from an untouched default.
+
+  Two fields dissolve it. The default is ours and upgradeable; the override is theirs and
+  untouchable by us. AND "has this org customised this question" stops being an inference
+  and becomes a query: AAO_Org_Override__c != null.
+
+  This survives upgrade BY CONSTRUCTION rather than by relying on manageability semantics we
+  cannot test from a subscriber org — which is why the shape matters more here than it would
+  if the upgrade behaviour were verifiable. See the journal, session 49.
+-->
+    <fullName>AAO_Shipped_Text__c</fullName>
+    <description>OUR text, shipped with the package. Byte-exact as authored. DeveloperControlled, so an upgrade replaces it and a subscriber cannot edit it — which is what makes it a dependable default rather than a value that drifts silently per org.</description>
+    <label>Shipped Text</label>
+    <type>LongTextArea</type>
+    <length>1024</length>
+    <visibleLines>3</visibleLines>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+</CustomField>

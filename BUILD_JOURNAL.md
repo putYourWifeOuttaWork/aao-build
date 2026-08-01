@@ -4230,3 +4230,105 @@ set and those two are the only files that could contradict it.
 
 **Owed.** Unchanged. Waiting on the label sourcing decision; `AAO_PeopleOntology` remains an
 assembler and reads nothing on its own.
+
+---
+
+## 2026-08-04 · session 49 · LAW #1: the ontology becomes ours
+
+**Did.** Synced context 20, verified the capability first, built the seed type, loaded 35
+records byte-exact and repointed the reader. **171 tests, 171 passing.**
+
+### The sync arrived under stale filenames and I filed by stamp
+
+The folder held `aao-code-build-brief-v1_0.md`, `aao-corrections-v2_0.md` and
+`aao-demo-runsheet-v1_2.md`. **The content was current — v1.1, v3.0 and v1.3 by internal
+stamp — and only the filenames were old.** Filed under the correct names and the stale ones
+deleted, per the seed's own rule: *read the version stamp inside the file, never trust the
+filename.* Syncing by filename would have regressed corrections from v2.9 to v2.0 and
+reinstated two documents I already held. Seeds v1.0 and v2.0 deleted as instructed.
+
+### Step 1 · verified from the platform, not from memory
+
+**(b) Apex reads custom metadata records with no callout. VERIFIED:** one row returned,
+`Limits.getCallouts()` = **0**, and this is already shipping in `AAO_Cardinality.ceiling()`.
+
+**(a) The manageability names, established by deploying each candidate and keeping what the
+platform accepted.** Guessing was refused first, and the refusal named the enum:
+
+> `Error parsing file: 'NotARealValue' is not a valid value for the enum 'FieldManageability'`
+
+| `FieldManageability` | accepted |
+|---|---|
+| `DeveloperControlled` | **yes** |
+| `SubscriberControlled` | **yes** |
+| `Locked` | **yes** |
+| `PackageProtected`, `Upgradeable`, `SubscriberEditable` | rejected |
+
+And the type-level enum is a different one, `SetupObjectVisibility`:
+
+> `Error parsing file: 'Private' is not a valid value for the enum 'SetupObjectVisibility'`
+
+`Public`, `Protected` and `PackageProtected` accepted; `Private` rejected. **`PackageProtected`
+is valid on the TYPE and invalid on a FIELD**, which is the kind of thing that reads as
+obvious once seen and would have been wrong if assumed.
+
+**(c) Upgrade behaviour per manageability: UNVERIFIABLE HERE, and named as such.** There is
+no packaging org, no packaged version of these components and no upgrade to observe —
+everything above is unmanaged metadata in a subscriber sandbox. **Establishing what an upgrade
+does to a subscriber's edit needs a packaging org, a separate subscriber org and a real
+version bump.** It sits beside module licensing on the list of things this org structurally
+cannot answer. Not assumed, and the build was shaped so it does not need the answer.
+
+### Step 2 · the two-field shape, and why the unverifiable item made it load-bearing
+
+`AAO_People_Question__mdt` with `AAO_Shipped_Text__c` (DeveloperControlled) and
+`AAO_Org_Override__c` (SubscriberControlled, null until set).
+
+**One field would force a choice between two failures.** DeveloperControlled alone: an upgrade
+overwrites whatever the customer wrote, silently. SubscriberControlled alone: we can never
+ship a correction, because the customer's value wins forever **and we cannot tell an
+intentional edit from an untouched default.** Two fields dissolve both, and the reader prefers
+the override only where it is populated, so **null is not a value** — an untouched org gets
+our words and a customised org gets its own, with no flag, no branch and no migration.
+
+**The recommendation was right and step 1 made it necessary rather than merely preferable.**
+Because (c) is unverifiable, a design that leaned on manageability semantics would be resting
+on an untested claim — the exact thing the capability law forbids. **This shape survives
+upgrade by construction**, so the untested claim never has to be true.
+
+### Step 3 and 4 · loaded and repointed
+
+**Thirty-five records**, byte-exact: Support nine, Political Status seven, Coverage three,
+plus Goal, Pressure, Initiative, Obstacle three each and Solution four. `organisation`,
+`jeopardise`, the stray hyphen in `_11`'s `-including` and the curly apostrophes all ship as
+read.
+
+**The byte-exactness tests passed unchanged against the new source**, which was the check that
+mattered: they assert the hyphen and the spellings and they never knew the source moved.
+
+`AAO_PeopleOntology.read()` now runs a plain SOQL query over our own metadata. **The seam did
+not move — only what feeds it.** The family guard is untouched and still refuses a short read,
+proven by a test that removes the four questions the walk missed and asserts the message names
+`6, 7, 11, 14`.
+
+**A new test asserts LAW #1 is checkable rather than aspirational:** the read returns nineteen
+guided questions with `Limits.getCallouts()` unchanged. **The same query returns the ontology
+in an org that never had Altify installed.**
+
+### Two refusals worth recording
+
+**`UNKNOWN_EXCEPTION` with zero component errors, again.** Same signature as session 2's
+type-and-record-in-one-deploy. This time the cause was different: my record files used the
+`xsd:` prefix without declaring `xmlns:xsd`. **A malformed namespace surfaces as an
+unattributed platform error rather than a parse error**, so the signature is worth knowing as
+*something in the XML is wrong* rather than as one specific cause.
+
+**`field 'AAO_Org_Override__c' can not be filtered in a query call`** — a LongTextArea cannot
+appear in a WHERE clause, so `customised()` reads the set and tests null in Apex. **The field
+stays long deliberately:** making it filterable means Text(255), the longest shipped question
+is already 152 characters, and a customer rewriting one has no reason to stay under a ceiling
+chosen for the convenience of a query. Thirty-five rows cost nothing.
+
+**Politics untouched**, per the instruction.
+
+**Owed.** The upgrade-behaviour verification, whenever a packaging org exists.

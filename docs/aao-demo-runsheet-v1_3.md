@@ -1,6 +1,16 @@
 # AAO Demo Run Sheet — live run first
 
-**v1.2 · 1 August 2026 · org `altify--aossb2` · audience: Toby**
+> **The version lives on the stamp line below and nowhere else.**
+
+**v1.3 · 2 August 2026 · org `altify--aossb2` · audience: Toby · the say-unprompted section is corrected, and three of its five lines were false**
+
+**Changed in v1.3. Recovered rather than rewritten.** This document was listed as live from seed v3.0 onward, was not found in project knowledge at any version, and was struck in seed v5.1 as possibly never having existed. **It exists.** CODE holds it at `docs/aao-demo-runsheet-v1_2.md`, 58 lines, committed at `c4d1ba2` in session 16, unmodified since. **It was in the repo and never in the project**, which is a one-way drift the handoff loop is supposed to make impossible, and it is recorded in corrections rather than passed over.
+
+**What changed in the text: three of the five say-unprompted lines were true on 1 August and are false now**, and a demo sheet whose honest-disclosure section understates what has been built is a worse defect than one that overstates it, because it is the section the audience trusts most. **The model slots are no longer stubbed** — Gate 1 round two ran and extraction 1.1.0 and the blind reader 1.0.0 are live. **Discovery is wired** — contracts derive from the ALTF rubric tables with supersede on hash change. **The rubric tables are no longer empty** — they were authored and read from in session 12.
+
+**One disclosure is added and it replaces what those three were doing.** A say-unprompted section exists to put the real current limitation in front of Toby before he finds it, so removing three stale limitations without naming the live one would leave the section performing honesty rather than doing it. The live one is that **the guided-question labels are unreachable from Apex.** That fact holds whichever way the sourcing decision goes, so it is safe to state now; **what we do about it is open and the line says so.**
+
+**The demo's spine is untouched and was all still accurate:** day-one red, two transactions, the negative deal, replay.
 
 **Changed in v1.2.** Day-one red is live, so the demo opens on a deal that is empty AND owes answers: two reds standing before any evidence, the count dropping only when TRUE is established, and the seller-said-it deal holding both reds at full coverage. The empty-Flag-tab line is retired; flags-do-not-age-yet takes its slot.
 
@@ -45,8 +55,12 @@
 
 ## Say unprompted, before he asks
 
-- **The model slots are stubbed.** The extraction proposals were authored and staged by artifact hash; no model has read anything. Everything you just watched, the trigger, the queue, verification, commit, accumulation, replay, is the shipping code path those model outputs will land on. Charters stay behind Gate 1's bar until round two clears.
-- **Discovery is not wired yet.** The six questions were seeded into our contract object. Altify's own rubric tables exist in this sandbox and are empty, which is exactly the customer condition, and reading from them is next.
+*Corrected in v1.3. The first three lines below replace three that were true on 1 August and false by 2 August; the fourth is new and is the live limitation.*
+
+- **The models are live and they are held to Gate 1's bar.** Extraction 1.1.0 and the blind reader 1.0.0 both run, pinned in Model Config, and round two came back twelve of twelve on outcomes and eleven of twelve on proposals against staged truth, with **zero hallucinated spans in any run.** The span check is what makes that last number a property of the system rather than a result. *(v1.2 said the slots were stubbed and no model had read anything. True on 1 August, false now.)*
+- **Discovery is wired.** Contracts derive from Altify's own rubric tables at runtime, and a question edited in place is caught by content hash and supersedes rather than overwrites. *(v1.2 said discovery was not wired and reading from the tables was next. It has since happened.)*
+- **The sandbox's rubric tables were empty and are not any more** — they were authored and read from in session 12, which is what made the per-org discovery path a real test rather than a described one. *(v1.2 offered the empty tables as the customer condition. The empty state was the point and it has been exercised; say it that way round.)*
+- **The guided questions are not readable from Apex, and that is the open one.** Altify decomposed the map dimensions into authored question sets years ago and ships them as custom labels — nine for Support, seven for Political Status, three for Coverage. **2,576 of the 2,930 ALTF labels are protected**, including every guided question, and `ExternalString` is a Tooling object Apex SOQL cannot see. So the ontology is real, it is enumerated, and **discovery cannot reach it at runtime from inside the org.** The assembler is built with the seam in the right place, so this is a sourcing decision rather than an architectural one, and it is **not yet ruled.** Say it before he asks; he will ask.
 - **Projection into Altify's objects is a later phase.** Their tables are untouched.
 - **Flags don't age yet.** Standing and clearing are live; urgency is not. The escalation threshold sits on the contract and nothing reads it, deliberately, because escalation's denominator is Altify's derived close date, which doesn't exist until Altify is configured on the deal. A red stands at the same weight however old it is, for now.
 - **The sandbox handed us a specimen:** its own pre-existing test fails on a customer validation rule, the write-blocking-constraint problem already on our list, alive in the target org.
@@ -56,3 +70,7 @@
 ## One sentence to leave with
 
 You just watched evidence arrive and truth accumulate, asynchronously, on the platform's own machinery, with every word traceable and the whole state rebuildable from receipts.
+
+---
+
+*End v1.3. The spine is unchanged from v1.2 and was accurate throughout. Only the say-unprompted section moved, and it moved because the build did.*

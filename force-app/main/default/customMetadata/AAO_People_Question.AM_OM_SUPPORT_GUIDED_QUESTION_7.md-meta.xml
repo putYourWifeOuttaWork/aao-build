@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <label>AM_OM_SUPPORT_GUIDED_QUESTION_7</label>
+    <protected>false</protected>
+    <values>
+        <field>AAO_Question_Key__c</field>
+        <value xsi:type="xsd:string">AM_OM_SUPPORT_GUIDED_QUESTION_7</value>
+    </values>
+    <values>
+        <field>AAO_Shipped_Text__c</field>
+        <value xsi:type="xsd:string">Is this person mentoring your competition and working to help them win?</value>
+    </values>
+    <values>
+        <field>AAO_Org_Override__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>AAO_Sequence__c</field>
+        <value xsi:type="xsd:double">6</value>
+    </values>
+</CustomMetadata>

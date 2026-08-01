@@ -1,5 +1,19 @@
 # AAO Sandbox Build Brief — for Claude Code
 
+> **The version lives on the stamp line below and nowhere else.**
+
+**v1.1 · 2 August 2026 · target org `altify--aossb2` · three dangling pointers repaired, and the rule that stops them recurring**
+
+**Changed in v1.1, and it is a repair rather than an addition.** `docs/aao-corrections-v1_0.md` was deleted under the one-live-copy rule and **this file pointed at it in three places, one of them claiming precedence over everything else in the repo.** CODE found one of the three. **A pointer to a deleted file that claims authority is worse than a stale copy**, because a reader who follows it finds nothing and cannot tell whether the authority moved or was withdrawn.
+
+**All three are repaired below and the old text is marked wrong rather than quietly replaced:** the read order, the repo layout listing, and the closing paragraph of *what is known to be missing*.
+
+**The root cause is this file's referencing style, not the deletion**, and that is the part worth fixing. **This file named documents by a version embedded in a filename.** Paths are frozen at their original names and the version lives on the stamp line inside, so a filename is a locator and never a version — which means every reference of the form *corrections v1.0* was going to rot at the next bump whether or not anything was ever deleted. **References below now name the document and its role, with the filename as a locator only.**
+
+**Also corrected: the last line of section 7 was wrong twice over.** It said the four project documents still carry the old vocabulary where Claim meant the current-state row. **The Glossary has since landed the Answer / Claim correction**, so that sentence is stale about the Glossary and it named the wrong file as authoritative in the same breath.
+
+**And a distinction that was never written down, which is why this drift was invisible.** **The project keeps every version; `docs/` keeps exactly one.** The project is the archive and is supposed to hold retired versions. `docs/` is CODE's read-reference and holds one live copy per document, superseded ones deleted. A file existing in the project and absent from `docs/` is correct and expected. **The reverse is not**, and it happened at least once: the demo run sheet lived in the repo from session 16 and never reached the project at any version.
+
 **v1.0 · 31 July 2026 · target org `altify--aossb2`**
 
 This is the instruction set for the coding agent. It is written to be read **cold**, by an agent that has none of the conversation this design came out of. Everything it needs is either in this file or in the repo it creates.
@@ -8,11 +22,16 @@ This is the instruction set for the coding agent. It is written to be read **col
 
 ## 0 · Read this order, first, every session
 
+**Read the stamp line inside each file, never the filename.** Paths are frozen at their original names so that pointers between documents do not rot; the version is on the stamp line and nowhere else. A file called `v0_8` routinely holds `v0.13`.
+
 1. `BUILD_JOURNAL.md` — what has already happened, what was verified, what is owed. **Always first.**
-2. `docs/aao-field-tables-v0_8.md` — the closed field tables for six objects.
-3. `docs/aao-flags-and-guidance-v1_0.md` — Flag, and guidance topology.
-4. `docs/aao-corrections-v1_0.md` — the Answer/Claim correction. **Where this disagrees with anything else, it wins.**
-5. This file.
+2. **The corrections and change record** — `docs/aao-corrections-v2_0.md`. **Where this disagrees with anything else, it wins**, including the four project documents, until each of them is bumped past it.
+3. **The field tables** — `docs/aao-field-tables-v0_8.md`. Closed field tables, one section per object.
+4. **The charter design** — `docs/aao-charter-design-v0_1.md`. The charters, the shared output envelope, and the recovered ontology. *(If this file is not in `docs/`, say so rather than proceeding without it — the ontology assembler was built from it.)*
+5. **Flags and guidance** — `docs/aao-flags-and-guidance-v1_0.md`. Flag's fields and trigger law live here and not in the field tables.
+6. This file.
+
+> **Marked wrong, from v1.0.** Item 4 of the old read order was `docs/aao-corrections-v1_0.md` — *the Answer/Claim correction. Where this disagrees with anything else, it wins.* **That file is deleted.** The authority did not lapse; it moved to the corrections and change record above, which contains the Answer / Claim correction in full along with everything ruled since. The old ordering also put the corrections record fourth, behind the field tables, while describing it as beating everything — **it is first among the documents now, which is what that sentence always meant.**
 
 ---
 
@@ -53,11 +72,16 @@ is how the next agent knows what to distrust.
 ```
 aao-sandbox/
   BUILD_JOURNAL.md            ← read first, append every session
+  MANIFEST.md                 ← what is in docs/ and what each is authoritative for
   README.md                   ← 10 lines: what this is, the read order above
-  docs/                       ← the design. Copied in, not linked
+  docs/                       ← the design. Copied in, not linked.
+                                One live copy per document; superseded versions deleted.
+                                Filenames are locators. The version is inside.
+    aao-corrections-v2_0.md
     aao-field-tables-v0_8.md
+    aao-charter-design-v0_1.md
     aao-flags-and-guidance-v1_0.md
-    aao-corrections-v1_0.md
+    aao-demo-runsheet-v1_2.md
     aao-code-build-brief-v1_0.md
   force-app/main/default/
     objects/                  ← metadata as source, one folder per object
@@ -71,6 +95,10 @@ aao-sandbox/
 
 **The docs folder is copied into the repo, not referenced.** The repo has to be self-sufficient, because the whole point is that it survives being opened somewhere else with nobody remembering to bring context along.
 
+> **Marked wrong, from v1.0.** The listing carried `aao-corrections-v1_0.md`, deleted. It also omitted `MANIFEST.md`, which exists and is the thing a cold reader would open second.
+
+**`docs/` holds one live copy per document. The project holds every version.** They are different stores with different jobs and neither is a backup of the other. **A document in the project and not in `docs/` is ordinary.** A document in `docs/` and not in the project is a fault, and it is how the demo run sheet sat in this repo from session 16 without existing anywhere else.
+
 ---
 
 ## 3 · Standing constraints — these are not negotiable
@@ -83,9 +111,11 @@ aao-sandbox/
 
 **Evidence over inference about schema.** Facts about the org come from querying the org. If a field cannot be justified by naming the process that reads it and the process that writes it, it is invented and does not ship.
 
+**A capability claim is unverified until it has been tried from the runtime that will make the call**, not from whichever tool was convenient. Three design sentences about our own reach have been wrong in the same direction — Coverage as a frozen query, `required` on Source, and the labels by pattern query — and each was a true fact generalised to a place it did not hold. *Added in v1.1; the law is ruled in the corrections record.*
+
 **Prefix `AAO_` on every API name.** The endgame is a 2GP sharing the `ALTF` namespace so our Apex can call Altify's non-global classes directly. `AAO_` now is the prove-it-first choice and a later rename and redeploy is an accepted cost. **Do not optimise against the rename.**
 
-**Nothing a model writes is trusted yet.** Schema and deterministic plumbing build now. Anything a charter writes stays governed by Gate 1's bar, and no model-written verdict is treated as trustworthy until test round two clears.
+**Nothing a model writes is trusted yet.** Schema and deterministic plumbing build now. Anything a charter writes stays governed by Gate 1's bar, and no model-written verdict is treated as trustworthy until test round two clears. *(Round two has since cleared: twelve of twelve on outcomes, eleven of twelve on proposals, zero hallucinated spans. The bar stands for everything after it.)*
 
 ---
 
@@ -200,8 +230,10 @@ Recorded so a fresh agent does not mistake absence for oversight.
 
 **Write-blocking customer constraints.** A customer requiring a mailing address before a contact may join a relationship map is a real, observed case. Discovery must read validation rules, required fields and record types alongside the rubric, as rule data on core — **not on the memory plane, because deciding whether a write will succeed cannot be a cross-plane read inside the write path.** A blocked write records itself as blocked with the rule named, and never throws.
 
-**The four project documents are behind.** Architecture, Glossary, Object Model and Data Flow still carry the old vocabulary where Claim meant the current-state row. `docs/aao-corrections-v1_0.md` is authoritative until they are bumped.
+**The four project documents are behind, and the corrections and change record is authoritative over them until each is bumped.** *Corrected in v1.1.*
+
+> **Marked wrong, from v1.0.** This paragraph read: *Architecture, Glossary, Object Model and Data Flow still carry the old vocabulary where Claim meant the current-state row. `docs/aao-corrections-v1_0.md` is authoritative until they are bumped.* **Both halves are wrong now.** The named file is deleted. And **the Glossary has since landed the Answer / Claim correction in full** — Claim is the immutable establishment, Answer is the upserted current-state row, Claim Basis is the junction, and Journal Event is retired as both term and entity. The Glossary is behind for other reasons, chiefly its statement that a schema-sourced proposition has no authored sentence to find, which the label enumeration falsifies. **Read the corrections record for what is behind and why; do not carry a list of stale documents in this file, because that list is exactly the thing that goes stale.**
 
 ---
 
-*End v1.0. The journal is the thing that makes this repo portable. Write it every session, quote the org verbatim, and carry the owed list forward.*
+*End v1.1. The journal is the thing that makes this repo portable. Write it every session, quote the org verbatim, and carry the owed list forward. And name documents by what they are, never by a version in a filename.*

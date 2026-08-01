@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  THE PEOPLE ONTOLOGY, OURS. Ruled v3.0 under LAW #1.
+
+  These questions were recovered from Altify's own labels and they are the right questions,
+  but nothing here reads that package at runtime, keys on its version, or degrades when it is
+  absent. The text ships as our seed data. The upstream label name is kept as an identity so
+  the family guard can assert a shape and so anyone comparing our wording to Altify's can find
+  the counterpart — a name we chose to keep, never a dependency we have to satisfy.
+
+  Custom metadata rather than a custom object for the reason the Model Config type gives:
+  configuration deploys with the code and is readable without a query against data the running
+  user may not have access to. It is also the only shape that carries a shipped default and a
+  per-org override in one row, which is what LAW #1 needs and what a package label could never
+  give us, because 2,576 of 2,930 ALTF labels are protected and invisible to subscriber Apex.
+-->
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>AAO People Question</label>
+    <pluralLabel>AAO People Questions</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

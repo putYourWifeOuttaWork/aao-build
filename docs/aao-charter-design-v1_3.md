@@ -1,6 +1,32 @@
 # AAO Charter Design
 
-**v0.9 · 2 August 2026 · The People ontology recovered from the org; four dimensions route four different ways; Coverage ruled a query; Buyer Role is the only dimension we author**
+**v1.3 · 2 August 2026 · The People charter CLOSED. Ontology owns every rung. The person-to-card relation recovered: four questions, two stored values**
+
+**Changed in v1.3 — Matthew's finding, confirmed against the schema.** The insight methodology distinguishes **four** relations between a person and a card and the object stores **two**. Goal asks who is *responsible for* it, Initiative asks who is *responsible for its success or failure*, Pressure and Obstacle ask who is *impacted by* it, and every type separately asks who *told you*. `ALTF__Insight_Card_Contact__c.ALTF__Type__c` offers only `Informer` and `Owner`, so **impacted-by and responsible-for are the same row.** That distinction is what makes guidance addressable: *this takes that pressure off your shoulders* versus *you own this obstacle*, which means nothing to the person hearing it. **Ruled: derive on read for existing human cards, record explicitly on our own claims**, because the buckets are noisy and a mistyped card would derive the wrong relation.
+
+**Also found: the causal chain is taught but not stored.** Pressure-to-Goal linkage is free text on a field that doubles as desired-outcome for Initiatives. The only structural card-to-card edge points at Solutions. **Altify's own guidance calls Pressures → Goals → Initiatives → Solutions the healthy pattern while the schema cannot answer whether it holds.** Recorded as Politics charter territory and a larger opening than the person mapping.
+
+**Changed in v1.2.** Matthew's governing principle, and it decides the last open question in this charter: **the ability to infer binary is superior to feeling out scores — ontology where ontology is feasible, inference wherever it is not.**
+
+All four map dimensions are ontology-backed, three from Altify's own recovered question sets and one authored by us. So **the tree owns the rung on every one of them and no dimension uses a score.**
+
+**Withdrawn for ontology-backed dimensions: the one-per-source law and the minus-three-to-plus-three clamp, both ruled in v0.8.** Marked withdrawn rather than deleted, because they were ruled and built against. The reason they go is that they guarded against a single call's *feel* teleporting someone, and movement is no longer a feel — it is five propositions with byte-verified spans. **CODE's teleport objection is answered by dissolving its premise.** The counter itself survives as the **inference fallback** for any dimension with no ontology; that is none of the four today, and it should not be thrown away.
+
+**What survives intact:** one FALSE on the mentoring question still drops a Mentor to Supporter immediately, and Mentor still costs two establishments to enter and one to lose, because it sits two conditions above Supporter in the tree. **The v0.8 asymmetry is structural now rather than arithmetic.** The trend line is the count of conditions met, zero through five, every step naming its condition and quoting its words.
+
+**The People charter is CLOSED.**
+
+**Changed in v1.1.**
+
+**Marked wrong, from v1.0:** *Coverage is a frozen query on the P route.* **Withdrawn.** Participation is not queryable — there is no Source-to-Contact relation, and the roster lives in a JSON text blob SOQL cannot filter into. This was a claim made by reasoning about our own schema instead of reading it, which the standing rule forbids, and it is recorded as wrong rather than quietly replaced. Coverage stays deterministic and model-free; it is not a query until a **participant junction** exists, which is now ruled. Two further gaps ruled with it: **`Source` must become a cited type on Claim Basis**, or a Coverage claim is refused by our own evidence-family law, and **`Subject_Person` must become a speaker requirement**, or Support Q2 and Q4 would pass on a colleague vouching for someone else.
+
+**The insight admission tests are guidance, not rules · RULED.** Insight cards in production are in practice notes loosely fitted into buckets, and the authored questions are discovery-completeness prompts wearing the clothes of definitions — *do you know how the decision maker is measured* tests the seller, not the card. So **admission stays exactly as v0.5 ruled it, on genuineness**, and the questions move to the guidance layer as what-to-ask-next. The v1.0 proposal to carry them as contract elements is **withdrawn**: elements drive coverage adjudication and coverage drives the verdict, so a card meeting one of three would land UNVERIFIED, which is a gate wearing a different hat. **The authored text must stay out of the reader's input entirely**, or the model will treat it as criteria whatever the charter says.
+
+**Guidance eligibility · RULED: guide where we hold evidence.** Our own cards always qualify, since every one carries spans. A human-authored card qualifies only once one of our Claims attaches to it, because then the prompt is grounded in words we can quote. Everything else stays silent. **Origin-based eligibility was rejected on evidence:** `ALTF__Generated_By_Max__c` exists and marks cards from Altify's own AI, but a card written through MCP by an outside assistant has it false and reads as human, and `ALTF__Confirmed__c` is set by exactly those writes. Altify's own attempt at origin marking is the proof that origin marking does not hold. **Dedup goes type-blind** for the same reason the buckets are noisy: a card saying the same thing under a different type is the same insight, and a proposed type is a suggestion beside a human's card, never a correction to it.
+
+**The ontology injection point · RULED, and it is smaller than it looked.** `ALTF__Type__c` is a restricted picklist whose API values are hardcoded, so a customer renaming Goals to KPIs changes only the **label** and our contracts key on the value. **Divergence is always detectable**, because a relabelled picklist shows label differing from value in the ordinary describe. What does not follow a rename is the meaning, which lives in package help text. So the injection point is per-org, per-type authored description, defaulting to what was recovered from the package, confirmed by the admin through the recipe pattern's sentences-not-code surface. **Detecting that we do not know is the load-bearing half**, the same shape as the discovery filter fault: when an org has diverged, hold and say so rather than read KPI cards through a Goal ontology.
+
+**Changed in v1.0.** The insight side of the same discovery. **Each insight type carries an authored three-question admission test**, shipped behind the *What is a…* link, with an examples list beside it. Goal, Pressure, Initiative and Obstacle recovered verbatim; Solution owed. Two consequences. **Altify already has the provenance field** — every card panel carries *Who told you about this?* and it is empty on every card inspected, so our citation goes there rather than into a field we add. And **the authored tests contradict the v0.5 admission ruling**, because Altify's bar is explicitly material (an Obstacle must be *significant enough to establish substantial value*) while v0.5 ruled genuineness and never importance. Three options, one recommended, recorded in the Problems charter. Matthew's.
 
 **Changed in v0.9.** The premise that the relationship map carries no ontological description is **wrong, and the org says so.** Altify decomposed three of its four map dimensions into authored question sets years ago and ships them in the Help me select wizard. Recovered this session by reading the org and walking the wizard in production (read-only, nothing saved): the Support tree from Matthew's click-through, the Political and Coverage trees driven directly. **The verbatim question sets are recorded below and are the People charter's ontology.** We do not paraphrase a picklist label into a proposition, for the same reason assessment propositions come from the rubric table verbatim.
 
@@ -347,7 +373,13 @@ Attendance is not evidence of position; a silent attendee establishes at most co
 
 Values, verbatim from the manual list: **No Contact** "You have never met." **Brief contact** "You or a team member have met this person, but it was brief." **Multiple contacts** "You or a team member have had several substantive conversations with this person." **In-depth** "You or a team member regularly have substantive discussions with this person."
 
-**Every question is about us.** Question one is whether a Source exists with this person as a participant. Question two is a count inside a window. Question three is a frequency. **So Coverage is answered by counting our own Sources and never by reading what a buyer said**, which makes it the cleanest case in the build for collapsing data entry to zero: it maintains itself, costs no tokens, and cannot abstain.
+**Every question is about us**, so Coverage is answered by counting our own Sources and never by reading what a buyer said. It costs no tokens and cannot abstain.
+
+**Corrected in v1.1, and the v1.0 text was wrong.** v1.0 called Coverage *a frozen query on the P route*. **It cannot be a frozen query, because participation is not queryable.** There is no Source-to-Contact relation in the schema. Participation lives only in `AAO_Source__c.AAO_Speaker_Roster__c`, a `LongTextArea(32768)` holding JSON, and SOQL cannot filter into a text blob. The recipe ruling does not reach this case: it presumes the question is expressible as a query, and *did this person participate* is not. This is a design claim made by reasoning about our own schema instead of reading it, which is the exact failure the standing rule forbids.
+
+**Ruled: build the participant junction.** One row per Source per person, written at ingest, on our own object, breaking no constraint. It makes all three questions ordinary SOQL and gives the window and frequency counts somewhere to be counted. **The argument is key four's argument:** a grain not recorded cannot be declared later without reprocessing the corpus, and participation is exactly such a grain. The alternative, Apex deserialising rosters at read time, is deterministic and model-free but is not a frozen query and carries a governor ceiling the junction does not.
+
+**One thing the junction does not solve, named rather than papered over.** Questions two and three are not pure counts: they say *meaningful* conversations and *high quality* conversations. A junction counts occasions, not substance. The material for the distinction already exists on Source — `AAO_Substantive_Offset__c` from the small-talk boundary detector, and `AAO_Duration_Seconds__c` — so a conversation with no substantive content beyond the boundary can be excluded deterministically. **The threshold is a measured number and no document carries one until it is measured.**
 
 **This also settles decay for Coverage with no mechanism at all.** *Recently* and *regularly* are time-windowed reads, so the answer changes tomorrow because the window moved, not because a job ground a number down. Consistent with the no-decay ruling: nothing decays, the staleness is simply visible. **A human-set Coverage still wins forever** under the override ruling, window or no window.
 
@@ -363,7 +395,27 @@ Values, verbatim from the manual list: **No Contact** "You have never met." **Br
 
 **Q4 is compound** (believes it is critical, and sells internally) and **Q5 is a three-way or** (guidance, political insight, competitive information), which is exactly the element structure Evidence Contracts already carry. **Q2 and Q4's "told you" fixes a speaker requirement**: the person themselves, to the seller.
 
-**Open, and the only open decision in this file:** whether Support becomes these five contracts with Altify's tree computing the rung, retiring the minus-three-to-plus-three counter ruled in v0.8. The case for it is that every rung change would then name which condition moved and quote the words, and the count of conditions met (zero to five) is a better trend line than an opaque score. The case against is that v0.8 is ruled and built-to. **Matthew's.**
+**RULED 2 Aug — the tree owns the rung. Ontology where ontology is feasible, inference only where it is not.**
+
+Matthew's principle: **the ability to infer binary is superior to feeling out scores.** Applied here, it decides every dimension we have. Support, Political and Coverage all carry authored question sets recovered from the org, and Buyer Role we author ourselves, so **all four are ontology-backed and none of them uses a score.** A person's Support rung is what Altify's tree computes from five propositions, each established with the person's own quoted words.
+
+**The one-per-source law and the clamp are WITHDRAWN for ontology-backed dimensions**, and the reason is that the thing they guarded against no longer exists. They stopped a single call's *feel* from teleporting someone, which was correct while movement came from reading sentiment. Movement is now caused by specific propositions, byte-verified against frozen bytes. If a person said all five of those things in one conversation and we hold the spans, they are a mentor, and refusing to say so would be our arithmetic overruling both the customer's methodology and the evidence. **CODE's teleport objection is answered by dissolving its premise rather than by overriding it.**
+
+**The counter is demoted, not deleted.** The clamped integer from minus three to plus three, one increment per source-event, remains the **inference fallback for any dimension that has no ontology.** After this recovery that is none of the four, but a bare org, a customer-invented dimension, or a future charter may need it, and it is a ruled and built mechanism that should not be thrown away.
+
+**Two things survive intact, which is what makes this safe.** *People are fickle:* one FALSE on the mentoring question still drops a Mentor to Supporter, immediately. *It takes more to earn an extreme than to lose it:* Mentor sits behind two conditions beyond Supporter, so reaching it requires two distinct establishments while losing it requires one. **That is the plus-two-to-enter, minus-one-to-leave asymmetry ruled in v0.8, arrived at structurally instead of arithmetically.** And the trend line is better than the counter's: the count of conditions met, zero through five, where every step names which condition moved and quotes the words that moved it.
+
+*(Superseded discussion retained below for the record.)*
+
+**The v1.1 analysis, now resolved.** CODE's audit turned this from a preference into a fact, and the fact decided it.
+
+**The tree and the counter cannot both own the rung.** The tree derives a rung from five booleans held *now*: five conditions landing in one call would move someone Neutral to Mentor in a single source-event, **which is exactly the teleport the one-per-source law exists to forbid.** The counter derives standing from movement over occasions. One is a state read, the other a history. If the tree owns the rung, the one-per-source law and the clamp stop meaning anything and must be **withdrawn rather than left sitting beside it.** They compose in one direction only.
+
+**Recommended: the counter keeps the rung, and the five contracts become what generates each move.** A contract answer changing is the movement: Q4 going UNVERIFIED to TRUE proposes plus one, Q5 going TRUE to FALSE proposes minus one, and **at most one increment per source-event however many contracts moved.** That keeps every ruling intact — one per source, the clamp, terminal rungs costing two to enter and one to leave — while giving every single move a receipt that names which condition changed and quotes the words. It also preserves the two trend lines and makes them more useful, because the counter and the count-of-conditions-met can legitimately disagree: a person whose standing rose over five occasions while only two conditions are established reads as warming without commitment, which is a true and useful thing to see.
+
+**The case against the tree owning it, beyond teleport:** the tree makes entry as easy as exit. One TRUE on Q5 would promote to Mentor instantly, which is the opposite of *it takes a lot for you to have a negative sentiment on a call* and of terminal rungs being earned.
+
+**Matthew's, and it is the last open decision in the People charter.**
 
 #### Political Status · verbatim · not binary
 
@@ -383,9 +435,17 @@ Manual pick only, with definitions and nothing else. **Approver** "Senior level 
 
 **This is the one dimension where we author the propositions**, because Altify never decomposed it and the definition text is all that exists. Contracts authored this way carry `AAO_Elements_Basis__c` of `Inferred_Pending` until ratified, which is the existing law doing exactly what it was built for. **Decision Orientation is deliberately skipped** — it was null on every live row sampled, so nobody fills it.
 
-#### Consequences for the object model
+#### Consequences for the object model · three gaps found by CODE's audit, all ruled in v1.1
 
-Every People contract needs `AAO_Route__c` set per the table above, `AAO_Speaker_Requirement__c` from the wizard's wording (Q2 and Q4 of Support demand the person themselves), and `AAO_Elements__c` from the compound questions. **Coverage contracts carry a frozen query and never reach a model.** One org fact is still owed from CODE: whether single-element contracts carry `AAO_Element_Count__c` of one, or whether zero appears anywhere.
+Every People contract needs `AAO_Route__c` set per the table above, and `AAO_Elements__c` from the compound questions. Three things v1.0 assumed have nowhere to land in the org as it stands.
+
+**1 · A participant junction, per the Coverage correction above.** New object, one row per Source per person, written at ingest.
+
+**2 · `Source` must become a cited type on Claim Basis.** Route P writes basis `State`, and the evidence-family law requires at least one Claim Basis row, with `requireBasisRows` throwing in-transaction otherwise. `AAO_Cited_Type__c` offers `Map_Row`, `Insight_Card`, `Decision_Criterion`, `Answer`, `Qualifier_Status`, `Shadow_Person` and **no `Source`** — so a Coverage claim citing the Sources it counted is refused by our own law. Add the value and an `AAO_Cited_Source__c` lookup. **Recorded alongside it, a documentation-versus-org drift worth fixing separately: only two of the six declared cited types (`Answer`, `Map_Row`) have lookup fields built. The other four are enum values pointing at nothing.**
+
+**3 · `Subject_Person` must become a speaker requirement.** Support Q2 and Q4 say *told you*, which v1.0 read as fixing a speaker requirement. It does not, because every existing value — `Seller`, `Any_Participant`, `Buyer_Side`, `Decision_Maker_Or_Influencer` — names a **class** of speaker, and these questions name a **subject**: this finding's own person said it. Without it, Q2 and Q4 would pass on a colleague vouching for someone else's preference, which is precisely what the wizard's wording excludes. **It is cheap here and nowhere else**, because the People handed unit is person crossed with dimension, so the gate already knows who the finding is about; `evaluate` gains the subject to compare against.
+
+**Answered, from CODE's read of the org:** `AAO_Element_Count__c` carries one for single-element contracts and zero does not appear. All twelve live contracts match their element-list length. Zero is unreachable by construction, since `AAO_Discovery.parseElements` returns the proposition itself as a single element when Help carries no `Elements:` block, and a zero would fail safe anyway because `Coverage.isFull` returns false on an empty list.
 
 ### Owed by the next version
 
@@ -418,6 +478,60 @@ Expressed twice in one call confirms. Expressed once lands unconfirmed. Re-menti
 ### Annotation law · RATIFIED
 
 **The machine annotates only machine-authored cards; reinforcement of a human card is a Claim with outcome Reinforced beside the card, never inside its text.** Under the no-channel-recognition ruling this covers agent-written cards too.
+
+### The insight ontology · RECOVERED FROM THE ORG 2 Aug · and it contradicts the admission ruling
+
+Same finding as the People charter, same place: **each insight type carries an authored three-question admission test**, shipped behind the *What is a…* link on the card panel, plus an examples list. Read from production 2 August, read-only. Four of five recovered; **Solution is owed** because that lane was empty on the map walked.
+
+**Goal** — Is this a goal of the decision maker specifically and not a company goal? · Do you know how the decision maker is measured or compensated? · Is the anticipated result or goal quantified and within a specific time frame?
+
+**Pressure** — Does the pressure fall into one or more of the pressure categories: Financial, Operational, Customer, Partner, Technology, Supplier, Market or Competitive? · Has the pressure caused a project to be sponsored, funded and prioritized by the decision maker? · Will this pressure prevent a goal from being achieved?
+
+**Initiative** — Are there internal or external pressures that have caused this initiative to be Funded/Sponsored/Prioritised? · Is this initiative in place to address internal or external pressures? · Will the success of this initiative have an impact on the decision maker's goal?
+
+**Obstacle** — Is this a task, situation or process that can be fixed with your solution? · Is this a task, situation or process significant enough to establish substantial value if you can fix it? · Is this a task, situation or process that will have negative consequences if it is not fixed?
+
+**Terminal states differ per type** and are not a shared lifecycle: Goal runs Unconfirmed → Confirmed → **Achieved**, Pressure → **Resolved**, Initiative → **Completed**, Obstacle → **Overcome**.
+
+**Examples lists exist per type** and are few-shot grounding rather than vocabulary. Initiative's twelve, verbatim: digital transformation, improve employee productivity, leverage employee strengths, improve quality processes, recruit top talent, streamline core business process and tools, improve product release cycle, technology innovation, expense control initiatives, optimise sales process, improve reporting and transparency, maintain alignment across the organization.
+
+#### The person-to-card relation · **four questions, two stored values** · read from the org 2 Aug
+
+**The methodology distinguishes four relations and the schema stores two.** Every card panel asks a type-specific question about the people attached to it, and they are not the same question:
+
+| Card type | The question the panel asks | The relation |
+|---|---|---|
+| **Goal** | Who is the Decision Maker responsible for this Goal? | **responsible for** (one or more) |
+| **Initiative** | Who is responsible for the success or failure of the Project/Initiative? | **responsible for** |
+| **Pressure** | Who is impacted by this Pressure? | **impacted by** |
+| **Obstacle** | Who is impacted by this Obstacle? | **impacted by** |
+| *all types* | Who told you about this? | **informer** — provenance, distinct from both |
+
+`ALTF__Insight_Card_Contact__c.ALTF__Type__c` carries exactly two values: **`Informer`** and **`Owner`**. So *impacted by* and *responsible for* are stored identically. **Being crushed by a pressure and being accountable for an initiative are the same row.**
+
+**Why this matters more than it looks: it is the difference between guidance that lands and guidance that is nonsense.** Speaking to someone impacted by a pressure, where we hold a solution for that pressure, the sentence is *this takes that pressure off your shoulders* or *this removes that obstacle from your job.* The same row read as ownership produces *you own this obstacle*, which means nothing to the person hearing it. **The relation is what makes the guidance addressable to the human in front of you.**
+
+**Ruled: derive on read, record on write.** For existing human-authored cards the relation is recoverable from the card type, since the type determines which question was asked, and that is all those rows carry. **We do not derive it for our own claims.** The buckets are demonstrably noisy — cards are notes loosely fitted, which is why dedup went type-blind — so a problem typed as a Goal would derive as *responsible for* when the truth is *impacted by*. Our own establishments record the relation explicitly. **Do not infer what you can record**, and this is a grain that cannot be declared later without reprocessing.
+
+#### The causal chain is taught, not stored
+
+Pressure cards uniquely name the **Goal(s) being impacted**, but that is `ALTF__Impact__c`, a free-text area doing double duty (*for pressures, the goals being impacted; for initiatives, the desired outcomes*). **There is no structural Pressure-to-Goal relation.** The only real card-to-card edge is `ALTF__Insight_Card_Edge__c`, whose second lookup is `ALTF__Solution_Insight_Card__c` — it links a card to a **Solution** and nothing else.
+
+So the chain the methodology teaches, pressures driving goals driving initiatives driving solutions, **is queryable for exactly one hop.** Altify's own MCP server lists *clear linkage: Pressures → Goals → Initiatives → Solutions* as the healthy pattern while the schema cannot answer whether it holds. **This is Politics charter territory and it is a larger opening than the person mapping**, since the charter's job is mapping people into insights and the insight-to-insight structure is missing underneath it.
+
+**Initiatives additionally carry `ALTF__Priority__c` (Low / Medium / High)**, the only insight type with a priority field. Whether we write it is open; it is a human's ranking, not an establishment.
+
+#### The provenance field already exists · **"Who told you about this?"**
+
+Every card panel carries a **Who told you about this?** contact field, and in production it is **empty on every card inspected.** Altify's methodology already provides the provenance slot; nobody fills it. **Our citation belongs in that field, not in a field we add.** Pressure and Obstacle additionally carry *Who is impacted by this*, Goal carries *Who is the Decision Maker responsible for this Goal*, and Pressure carries a Pressure Type checkbox set matching its admission question's categories.
+
+#### The contradiction, and it is Matthew's
+
+**v0.5 ruled: every genuine insight goes on the map, no materiality threshold, the filter is genuineness and never importance.** Altify's own admission test disagrees. Obstacle question two is *significant enough to establish substantial value* — that is a materiality threshold, authored by the methodology. Goal question one excludes company goals in favour of the decision maker's personal goal, which would refuse most of what a call actually surfaces. Initiative and Pressure both require a funding or sponsorship consequence.
+
+So the two cannot both govern, and the choice is real. **Take Altify's test** and the map stays small, every card is defensible against the customer's own methodology, and we admit far less than v0.5 intends. **Keep v0.5's admission** and the map is fuller and more useful for call prep, but our cards would not pass the vendor's own published bar, which is an awkward thing to demo to Toby. **A third path exists:** admit on genuineness as ruled, and run the three authored questions as *elements* on the card's contract, so every card records which of the three it meets. Nothing is refused, and materiality becomes queryable rather than a gate.
+
+The third path is the one that fits the rest of the build, since it is the same move as element coverage on assessment answers, but it is a ruling and it is yours.
 
 ### The Problems output schema · v0.7
 

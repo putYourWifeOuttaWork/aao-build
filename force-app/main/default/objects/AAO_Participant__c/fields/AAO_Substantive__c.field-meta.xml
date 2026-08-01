@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Substantive__c</fullName>
+    <description>Written by: the participant writer, from the Source's substantive offset and duration. Read by: Coverage questions two and three, which say MEANINGFUL and HIGH QUALITY rather than merely counting occasions. A junction counts occasions; this is the only thing on it that speaks to substance, and the threshold behind it is a MEASURED number that no document carries until it is measured.</description>
+    <label>Substantive</label>
+    <type>Checkbox</type>
+    <defaultValue>false</defaultValue>
+</CustomField>

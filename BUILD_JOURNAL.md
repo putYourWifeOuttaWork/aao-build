@@ -3256,3 +3256,84 @@ label is exactly the kind of thing Translation Workbench can move, so it is not 
 about any customer org.
 
 **Owed.** Unchanged.
+
+---
+
+## 2026-08-03 · session 34 · the three routing gaps built; v1.3 synced
+
+**Did.** Built all three gaps ruled in v1.1. **146 tests, 146 passing** (was 139). Also
+synced `aao-charter-design-v1_3.md`, deleting v1.1; **no build action on the v1.3 Problems
+section**, which lands with the Politics charter.
+
+### 1 · `AAO_Participant__c`, the participant junction
+
+One row per Source per person, written in the Source's **after-insert, synchronously, and
+not behind `AAO_Ingest.AUTO`**. Participation is a fact about the ARRIVAL of evidence rather
+than a product of adjudicating it: a deal that never runs a pass still knows who was on its
+calls, and coverage is answerable the moment the artifact lands.
+
+**The subtlety worth the field, and it is inherited rather than invented.** A ninety-minute
+call arrives as two or three Source rows of ONE artifact. Counting rows would report one
+conversation as two and inflate every coverage answer that rests on a count. So each row
+carries `AAO_Artifact_SHA256__c` and **coverage counts DISTINCT HASHES, not rows** — the same
+source-event definition the sentiment counter uses, for the same reason. Held by a test:
+three Source rows across two artifacts read as **two occasions**.
+
+`AAO_Participant_Key__c` is unique, so re-ingesting cannot double-count anybody. That matters
+more here than anywhere else, because a duplicate row here is a wrong answer there.
+
+**What it cannot do, named rather than papered over.** It counts occasions, and questions two
+and three say *meaningful* and *high quality*. `AAO_Substantive__c` is the only field that
+speaks to substance, derived from the small-talk boundary the normalizer already finds, and
+it is deliberately the weakest possible test — any substantive content at all. **Anything
+stronger would be a threshold and no threshold is measured.** Missing boundary data counts as
+substantive, so coverage understates rather than overstates.
+
+**A real defect found while testing, and it was mine.** My first test wrote a roster in the
+wrong JSON shape and the Source insert failed — which revealed that **a roster we cannot
+parse would have rejected the evidence itself.** This runs in after-insert, so a throw rolls
+back the artifact. Fixed: a parse failure records no participants and lets the artifact land.
+Same ruling `AAO_Ingest` already makes about a failed enqueue — *a failure downstream of
+arrival must never undo the arrival* — and the cost is one-directional, since coverage
+under-counts rather than over-counts.
+
+**The junction is not deletable outside a purge**, because deleting a row silently lowers an
+answer claims already rest on. That surfaced immediately: `Restrict` on the Source lookup
+broke three purge paths, so participants now clear first in `AAO_Demo.purge`,
+`AAO_Gate1.purgeDeal` and `AAO_Live.reset`. Worth noting the constraint did exactly its job —
+it refused to let evidence leave while something still pointed at it.
+
+### 2 · `Source` as a cited type
+
+`AAO_Cited_Type__c` gains `Source`, with an `AAO_Cited_Source__c` lookup. Without it a
+Coverage claim was refused by our own evidence-family law: route P writes basis `State`,
+`requireBasisRows` demands at least one cited row, and there was no value for a Source.
+
+**What a Coverage claim cites is the point.** It cites the Sources it counted and never the
+transcript text, because the answer rests on nothing anybody said. That is why this is a
+cited row rather than a Source lookup on the claim itself, which would have made a state
+claim look like a transcript claim to the family check.
+
+### 3 · `Subject_Person`
+
+Added to `AAO_Speaker_Requirement__c`; `evaluate` gains a fifth argument. Every other value
+names a **class** of speaker; this names a **subject**. Held by a test: Dana saying it
+herself passes, a colleague saying it about her fails with *"this proposition is about
+someone else and asks what that person told you"*.
+
+**With no subject supplied it REFUSES rather than passes** — a check that cannot run has not
+been met. The argument is null on every other charter and the branch never fires.
+
+**`when` is a reserved word**, from the `switch` statement. **Sixth in the family** after
+`commit`, `json`, `system`, `merge`, `any`.
+
+### v1.3, read not built
+
+The four person-to-card questions collapsing to `Informer` / `Owner` is the same shape as the
+`ALTF__Status_Answer__c` hazard and the label-override finding: **the customer's stored value
+carries less than the question that produced it.** The ruling matches what the build already
+does everywhere — derive from type when reading someone else's rows, record explicitly on our
+own. That is the discovery pattern exactly: read what is there, never write what we inferred
+as though it were given.
+
+**Owed.** Unchanged, plus the substantive threshold, which is a measured number.

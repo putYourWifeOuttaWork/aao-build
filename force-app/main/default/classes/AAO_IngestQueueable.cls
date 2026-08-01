@@ -51,7 +51,11 @@ public class AAO_IngestQueueable implements Queueable {
         }
     }
 
-    private static Set<String> internalDomains() {
+    /**
+     * Public since v1.1: the participant writer needs the same answer this does, and two
+     * derivations of which side someone is on is one too many.
+     */
+    public static Set<String> internalDomains() {
         Set<String> out = new Set<String>();
         Map<String, Object> fixture = AAO_Seed.fixture();
         for (Object d : (List<Object>) fixture.get('internalDomains')) {

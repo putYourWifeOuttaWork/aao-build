@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+<!--
+  ADDITION TO A CLOSED TABLE, ruled v1.1 from the audit.
+
+  Route P writes basis State, and the evidence-family law requires at least one Claim Basis
+  row: AAO_EvidenceFamily.requireBasisRows throws in-transaction otherwise. Coverage is a
+  state read over OUR OWN Sources, so the rows it cites are Sources, and AAO_Cited_Type__c
+  had no value for one. A Coverage claim was refused by our own law before it could be
+  written.
+
+  Note what a Coverage claim cites and what it does not: it cites the Sources it counted,
+  never the transcript text, because the answer does not rest on anything anybody said. That
+  is why this is a cited row rather than a Source lookup on the claim itself, which would
+  have made a state claim look like a transcript claim to the family check.
+-->
+    <fullName>AAO_Cited_Source__c</fullName>
+    <description>Written by: the Coverage route. Read by: the live record, for the current-state half of then-and-now. The frozen half is AAO_Snapshot__c.</description>
+    <label>Cited Source</label>
+    <type>Lookup</type>
+    <referenceTo>AAO_Source__c</referenceTo>
+    <relationshipLabel>AAO Claim Bases</relationshipLabel>
+    <relationshipName>AAO_Cited_Claim_Bases</relationshipName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <required>false</required>
+</CustomField>

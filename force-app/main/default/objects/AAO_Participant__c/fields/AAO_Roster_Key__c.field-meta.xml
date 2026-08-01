@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Roster_Key__c</fullName>
+    <description>Written by: the participant writer. The roster key this person speaks under in the normalized text. Always present, even when the Contact lookup is null, because it is what the spans point at.</description>
+    <label>Roster Key</label>
+    <type>Text</type>
+    <length>80</length>
+    <required>true</required>
+</CustomField>

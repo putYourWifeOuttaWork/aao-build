@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Evidence_Occurred__c</fullName>
+    <description>Written by: the participant writer, denormalized from the Source. DENORMALIZED ON PURPOSE: Coverage asks "recently" and "regularly", which are window counts, and a window count that has to traverse to the parent to read a date is not one query.</description>
+    <label>Evidence Occurred</label>
+    <type>DateTime</type>
+    <required>false</required>
+</CustomField>

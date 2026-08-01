@@ -43,12 +43,25 @@ public class AAO_SpeakerRule {
      * The reason string records which was used, so a verdict can never be traced back to a
      * source nobody can identify.
      */
+    /**
+     * Which side of the table. Public so the participant writer records the same answer the
+     * gate would give, rather than re-deriving it slightly differently — Coverage's
+     * questions all say "you or a team member", so this decides what Coverage counts.
+     */
+    public static Boolean isInternal(AAO_Model.Speaker sp, Set<String> internalDomains) {
+        if (sp == null) {
+            return false;
+        }
+        String domain = sp.domain();
+        return domain != null && internalDomains != null && internalDomains.contains(domain);
+    }
+
     public static Verdict evaluate(
         String requirement,
         AAO_Model.Speaker sp,
         Set<String> internalDomains
     ) {
-        return evaluate(requirement, sp, internalDomains, null);
+        return evaluate(requirement, sp, internalDomains, null, null);
     }
 
     public static Verdict evaluate(
@@ -56,6 +69,29 @@ public class AAO_SpeakerRule {
         AAO_Model.Speaker sp,
         Set<String> internalDomains,
         Map<Id, String> roleByContact
+    ) {
+        return evaluate(requirement, sp, internalDomains, roleByContact, null);
+    }
+
+    /**
+     * SUBJECT_PERSON, ruled v1.1, and it is a different kind of requirement from the others.
+     *
+     * Every other value names a CLASS of speaker: the selling side, the buying side, a
+     * decision maker. Support Q2 and Q4 say "has this person TOLD YOU", which names a
+     * SUBJECT — this finding's own person, and nobody else. Without it those questions would
+     * pass on a colleague vouching for someone else's preference, which is precisely what
+     * the wizard's wording excludes.
+     *
+     * It is cheap here and would be expensive anywhere else, because the People handed unit
+     * is a person crossed with a dimension, so the gate already knows who the finding is
+     * about. `subjectContactId` is null on every other charter and the branch never fires.
+     */
+    public static Verdict evaluate(
+        String requirement,
+        AAO_Model.Speaker sp,
+        Set<String> internalDomains,
+        Map<Id, String> roleByContact,
+        Id subjectContactId
     ) {
         if (String.isBlank(requirement)) {
             return new Verdict(false, 'no speaker requirement was supplied');
@@ -77,6 +113,28 @@ public class AAO_SpeakerRule {
         Boolean internal = domain != null && internalDomains != null &&
             internalDomains.contains(domain);
 
+        if (requirement == 'Subject_Person') {
+            if (subjectContactId == null) {
+                // Refusing rather than passing. A requirement that the speaker BE the
+                // subject cannot be checked without a subject, and a check that cannot run
+                // has not been met.
+                return new Verdict(
+                    false,
+                    'this requires the subject of the finding to have said it, and no ' +
+                    'subject was supplied to check against'
+                );
+            }
+            Id spoke = String.isBlank(sp.contactId) ? null : (Id) sp.contactId;
+            if (spoke == subjectContactId) {
+                return new Verdict(true, sp.display + ' said it themselves');
+            }
+            return new Verdict(
+                false,
+                sp.display +
+                ' said it, but this proposition is about someone else and asks what that ' +
+                'person told you. Somebody vouching for a colleague does not establish it.'
+            );
+        }
         if (requirement == 'Any_Participant') {
             return new Verdict(true, 'any participant');
         }

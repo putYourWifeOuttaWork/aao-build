@@ -45,6 +45,14 @@ public class AAO_SourceTriggerHandler {
      * pipeline can never roll back the arrival of the artifact itself.
      */
     public static void afterInsert(List<AAO_Source__c> rows) {
+        // WHO WAS ON IT, recorded synchronously and unconditionally. Ruled v1.1.
+        //
+        // Not behind AAO_Ingest.AUTO and not in the queueable, because participation is a
+        // fact about the ARRIVAL of evidence rather than a product of adjudicating it. A
+        // deal that never runs a pipeline pass still knows who was on its calls, and
+        // coverage is answerable the moment the artifact lands.
+        AAO_Participants.record(rows, AAO_IngestQueueable.internalDomains());
+
         AAO_Ingest.onSourceInserted(rows);
     }
 

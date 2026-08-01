@@ -102,6 +102,16 @@ public class AAO_Gate1 {
         AAO_Synthetic.PURGING = true;
         List<String> out = new List<String>();
         try {
+            // Participants first: they hang off Sources under a Restrict constraint, so a
+            // Source cannot leave while one still points at it.
+            out.add(
+                'participants ' +
+                del([
+                    SELECT Id
+                    FROM AAO_Participant__c
+                    WHERE AAO_Opportunity__c IN :oppIds AND AAO_Synthetic__c = TRUE
+                ])
+            );
             out.add(
                 'bases ' +
                 del([

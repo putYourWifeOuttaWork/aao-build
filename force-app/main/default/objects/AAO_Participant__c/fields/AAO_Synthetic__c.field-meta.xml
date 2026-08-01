@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Synthetic__c</fullName>
+    <description>Written by: the trigger, from the standing marker. Ratified as a permanent field on every AAO object.</description>
+    <label>Synthetic</label>
+    <type>Checkbox</type>
+    <defaultValue>false</defaultValue>
+</CustomField>

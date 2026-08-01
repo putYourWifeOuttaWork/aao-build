@@ -396,6 +396,7 @@ public class AAO_Demo {
             out.add('flags       ' + del([SELECT Id FROM AAO_Flag__c WHERE AAO_Synthetic__c = TRUE]));
             out.add('candidates  ' + del([SELECT Id FROM AAO_Candidate__c WHERE AAO_Synthetic__c = TRUE]));
             out.add('answers     ' + del([SELECT Id FROM AAO_Answer__c WHERE AAO_Synthetic__c = TRUE]));
+            out.add('participants' + del([SELECT Id FROM AAO_Participant__c WHERE AAO_Synthetic__c = TRUE]));
             out.add('sources     ' + del([SELECT Id FROM AAO_Source__c WHERE AAO_Synthetic__c = TRUE]));
             out.add('contracts   ' + del([SELECT Id FROM AAO_Evidence_Contract__c WHERE AAO_Synthetic__c = TRUE]));
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>AAO_Speaker_Requirement__c</fullName>
-    <description>Written by: Element resolution. Read by: Who must be the source of the span carrying the assertion. Not who may appear in the set.</description>
+    <description>Written by: Element resolution. Read by: Who must be the source of the span carrying the assertion. Not who may appear in the set. Subject_Person added v1.1: every other value names a CLASS of speaker, and Support Q2 and Q4 ("has this person told you") name a SUBJECT. Without it those questions pass on a colleague vouching for someone else, which is what the wizard's wording excludes.</description>
     <label>Speaker Requirement</label>
     <type>Picklist</type>
     <required>true</required>
@@ -23,6 +23,11 @@
                 <fullName>Buyer_Side</fullName>
                 <default>false</default>
                 <label>Buyer_Side</label>
+            </value>
+            <value>
+                <fullName>Subject_Person</fullName>
+                <default>false</default>
+                <label>Subject Person</label>
             </value>
             <value>
                 <fullName>Decision_Maker_Or_Influencer</fullName>

@@ -3608,3 +3608,73 @@ set wrong, not a bound doing its job.** `PEOPLE_PASS` is named and ready.
 
 **Owed.** Unchanged, plus: the People assembler must call `check` before it builds its handed
 set, which is the whole point of doing this now rather than after.
+
+---
+
+## 2026-08-03 · session 39 · context 17 synced; the persona field read ahead of building it
+
+**Did.** Synced three files. Seed v4.0 and corrections v2.3 in. **Nothing built**, per the
+drop. `aao-charter-design-v1_7.md` arrived **byte-identical** to the copy already here.
+
+**A deletion correction.** The instruction said delete corrections v2.2; **v2.2 never reached
+this repo.** What was here was **v2.1**, which v2.3 supersedes, so that is what I deleted —
+the standing rule is one live copy per document and superseded versions are never kept beside
+their replacement. `aao-corrections-v1_0.md` stays, because v2.3 itself says v1.0 remains
+true. Seed v3.1 likewise never arrived; seeds v1.0 and v2.0 are kept upstream deliberately
+and were left alone.
+
+### Persona, read from the org before anyone builds against it
+
+**`ALTF__Contact__c.ALTF__Altify_Personas__c` exists and is what the ruling says it is:**
+multipicklist, **restricted**, twelve active values — CEO, CRO, Executive Sponsor, Sales
+Leader, RevOps Leader, Enablement Leader, IT Leader, Procurement Lead, Altify Program Owner,
+Consultant, Legal, Partner. Field length 4,099.
+
+**Restricted is good news and closes a question in advance:** the persona emission's enum is
+runtime-closed from these twelve, exactly like every other closed enum in the envelope. Free
+text is structurally impossible, so the charter cannot invent a persona.
+
+### Two hazards, both concrete, both worth ruling before the build
+
+**1 · There are TWO persona fields on two different objects, and they disagree.**
+
+- `ALTF__Contact__c.ALTF__Altify_Personas__c` — multipicklist, twelve values, the one ruled.
+- **`Contact.Persona__c`** — a *different* field on the *standard* Contact: single picklist,
+  restricted, three values, `Economic` / `Technical` / `Champion`.
+
+`ALTF__Contact__c` is a custom junction of only seventeen fields carrying
+`ALTF__Contact__c → Contact`, so **it is not the standard Contact and the two are one letter
+apart in conversation.** This is the `AAO_Answer__c` versus `ALTF__Answer__c` hazard again,
+and it is worse here because both fields are called persona and both are restricted, so a
+write to the wrong one would succeed. **Say the Altify contact row or the standard contact,
+never bare persona.**
+
+**2 · "Additive only, the machine never removes a value" has no atomic form on a
+multipicklist.**
+
+A multipicklist is a semicolon-delimited string. There is no add-one-value operation: adding
+means read, append, write the whole set back. **So two writers adding two different personas
+in overlapping transactions produce last-write-wins, and one addition disappears with no
+error.** That is precisely the failure the additive-only rule exists to prevent, arriving by
+a different door.
+
+The build already has the shape that solves it, twice over: the `DUPLICATE_VALUE` merge path
+on `AAO_Answer__c`, and `requireBasisRows` verifying inside the transaction rather than
+trusting. The persona writer needs the same discipline — **re-read and re-merge at write
+time, and verify the value survived before returning** — rather than a read at the top of a
+method and a write at the bottom.
+
+Worth naming which law governs the write at all: this updates a field on a managed object we
+do not own, so it falls under the **projection-pattern law — toggleable per customer** — not
+under "data rows on managed objects are allowed", which covers creating rows rather than
+editing someone else's.
+
+### The Calculated Insight grain
+
+Recorded, not acted on: it is a one-way door and must be decided before the insight ships.
+Nothing in this repo touches Data Cloud, so there is no code position to protect yet — but
+the reason it is one-way is worth having written down here, because it is the same reason
+key four exists: **a grain not recorded cannot be declared later without reprocessing**, and
+a Calculated Insight cannot be regrained without rebuilding its history.
+
+**Owed.** Unchanged.

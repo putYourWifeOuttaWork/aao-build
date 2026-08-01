@@ -2897,3 +2897,43 @@ Nothing owed changes. The build-owed list the seed carries back matches mine exa
 escalation with projection, the setup-time inference pass, Contention and Ratification raise
 paths, the session-4 remainder, the insight-card annotation writer once Problems closes, and
 the Inferred attribution harness.
+
+---
+
+## 2026-08-02 · session 28 · the two output schemas, read out of the org
+
+**Did.** No build action. Dumped the deployed output schemas for `AAO_Extract_Evidence`
+1.1.0 and `AAO_Blind_Reader` 1.0.0 and pasted them back to design for charter design v0.6.
+
+**Read from the org, not transcribed from source.** Ran anonymous Apex against `aossb2`
+calling `AAO_ExtractCharter.schema(contracts, roster)` and `AAO_BlindCharter.schema(reviews)`
+against the six live mini-rubric contracts, and serialized what came back. The distinction
+matters here more than usual: **these schemas are not literals in the charter classes.** The
+enums are closed at runtime from org data — `proposition_code` from the contract codes,
+`element` from each contract's element list, `speaker` from the artifact's roster keys — so
+a schema transcribed from source would have shown the shape and none of the values, and
+design would have built an envelope against a template rather than against what the model
+is actually handed.
+
+### The finding that matters for a shared envelope
+
+**The model's three-way status and the stored three-way abstention reason are different
+triples, and the mapping is not identity.**
+
+| Model emits `status` | Stored `AAO_Abstention_Reason__c` | Stored `AAO_Outcome__c` |
+|---|---|---|
+| `addressed` | — | as adjudicated |
+| `not_addressed` | `nobody_said` | `Abstained` |
+| `abstained` | `model_declined` | `Abstained` |
+| *(nothing emitted for that code)* | `not_returned` | `Not_Returned` |
+
+**The model cannot emit `not_returned`**, by construction: it is the record of a proposition
+the reader never reported, so the only thing that can observe it is the pipeline noticing a
+contract with no finding against it. Any shared envelope has to keep this shape — a charter
+declares *addressed / not_addressed / abstained* and the fourth fact is derived by whatever
+compares the emission against the rubric it was given.
+
+That is also why the enum is four values on the picklist and three in the schema, with
+`model_missed` retired-valid on top.
+
+**Owed.** Unchanged.

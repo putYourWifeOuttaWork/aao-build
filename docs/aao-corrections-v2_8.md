@@ -2,6 +2,46 @@
 
 > **The version lives on the stamp line below and nowhere else.** The H1 carried a version through v2.4 and went stale, which is the same defect the glossary carried through three versions, Architecture through one and Data Flow through two. Removing it is the only fix that cannot rot.
 
+**v2.8 · 2 August 2026 · The labels are unreachable from Apex. A capability law, the third instance that forced it, and the sourcing decision that follows.**
+
+**Changed in v2.8. CORRECTED: v2.6 and v2.7 both say a pattern query recovers any org's question set at install with no human in it. That is true of the Tooling API and false of Apex, and the product runs in Apex.** `ExternalString` is a Tooling API object — `Invalid type: ExternalString` from Apex SOQL. `System.Label.ALTF.<name>` is shut too, because **2,576 of the 2,930 ALTF labels are `IsProtected = true`, including every guided question**, and a protected managed-package label is invisible to subscriber Apex. Only 354 are public. Found by CODE trying to compile it.
+
+### The capability law · RULED, and it took three instances
+
+**A capability claim is unverified until it has been tried from the runtime that will make the call, not from whichever tool was convenient.**
+
+Three design sentences about our own reach have now been wrong in the same direction: **Coverage as a frozen query** (participation is not queryable), **`required` on Source** (a required field cannot express a conditional law), and **labels by pattern query** (Tooling can see them, Apex cannot). Each was a claim about what the platform would allow, asserted without asking it. Each was also a true fact generalised to a place it did not hold — the Tooling API really does return those labels, and nothing about that tells you what Apex can see.
+
+**This is narrower than *evidence over inference, including about our own schema*, and it needs its own line**, because the schema rule is satisfied by reading the org and this failure survives reading the org. What it does not survive is trying it from where the product will stand.
+
+### The sourcing decision · Matthew's
+
+**One fact reframes the trade: the question text is a property of the package version, not of the org.** It ships in the managed package, so every org on a given version carries identical text, and **only the localization overlay is org-specific.**
+
+That also settles a rules question before it is asked. *The package ships no questions* exists so a customer who rewrote their rubric still works, and their rubric is the **record-sourced** propositions — assessment questions and qualifiers — which are genuinely readable from their records. Altify's own packaged wizard text is not that.
+
+| Option | Fidelity | Cost |
+|---|---|---|
+| **Tooling API callout at setup**, Named Credential to the org itself, frozen on the contract, re-read on hash change — the recipe-ruling shape | Full, including overlay | **Zero admin action becomes one**, and Tooling scope is broad enough to be an InfoSec conversation |
+| **Package text keyed by version, shipped as reference data** | Packaged wording only; overrides undetected | Zero admin action |
+| **Recommended: the second, with the overlay read as an optional upgrade** | Full where a customer has customised | Zero in the common case; **per-customer configuration rather than an architectural fork**, the same shape as polling versus Change Data Capture |
+
+**The honest cost of the recommendation, declared rather than discovered:** an org that overrides a question label without enabling the upgrade gets the packaged wording. Given 56 overrides exist here and **none touches a question**, that is rare — but *rare* was the reasoning that produced two wrong assumptions today, so it is declared loudly and never assumed.
+
+**None of this touches the assembler.** `AAO_PeopleOntology` was built with the seam in the right place: whoever performs the read, the rules that turn labels into contracts live in one place. **This is a sourcing decision, not an architectural one.**
+
+### Built with it · 171 tests green
+
+**The family guard is the law that would have caught v1.7.** Expected shape is declared (Support 1, 2, 4, 5, 6, 7, 11, 14, 16 and so on) while **the text always comes from the org**. A short read refuses and names what is missing, and the test removes exactly the four questions the walk missed and asserts the refusal names `6, 7, 11, 14`. The discovery-filter-fault law, pointed at labels, with our own failure as its fixture.
+
+**Byte-exactness is tested** on `organisation`, `jeopardise` and `_11`'s stray hyphen. **Routes:** Coverage P, Support and Political E.
+
+**`Subject_Person` only where the question says *told you*** — `_2`, `_4`, `_6`. **Not `_16`**, and CODE's reason is sharper than v1.8's: `_16` asks whether **the seller** holds evidence, so requiring the subject to have said it would make the question unanswerable rather than merely strict.
+
+**A new distinction worth keeping · the question is authored, the decomposition is ours.** `_4`, `_5` and `_16` are compound, so their elements are our split rather than Altify's authoring, and they land `Inferred_Pending` / `Awaiting_Ratification` while the rest land `Authored`. **Altify authored the question; we split it; a human ratifies the split.** `AAO_Elements_Basis__c` therefore records who decomposed, never who wrote the text.
+
+---
+
 **v2.7 · 2 August 2026 · The full enumeration, 68 labels with the overlay applied. Charter design v1.7's ontology is SUPERSEDED and must be rebuilt from labels, not from the walk.**
 
 **Changed in v2.7.** CODE produced the owed enumeration. **The walk recovered a minority of an authored set that is larger, split per map, and sparse in a way that made a partial read feel complete.**

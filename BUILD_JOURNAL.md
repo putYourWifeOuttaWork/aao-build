@@ -4068,3 +4068,63 @@ zero, contracts land `Inferred_Pending` until a human ratifies them, and that is
 story** — the same position Buyer Role is in, and now demonstrated rather than assumed.
 
 **Owed.** Unchanged.
+
+---
+
+## 2026-08-04 · session 46 · v2.8 synced; the capability law applied to its own recommendation
+
+**Did.** Synced v2.8, deleted v2.7. **No build action** — the sourcing decision is Matthew's
+and is not ruled. But the new law says a capability claim is unverified until tried from the
+runtime that will make the call, so I tried the recommendation's before it is ruled, and it
+comes back mostly good.
+
+### The recommendation is viable in Apex, with one boundary
+
+Option 2 keys packaged text by package version. That only works if Apex can read the version
+of somebody else's package. **It can.** `Publisher` is a real Apex-queryable object:
+
+```
+Publisher: NamespacePrefix = ALTF, MajorVersion = 9, MinorVersion = 18
+```
+
+**So the version selector is available where the product stands**, unlike the labels
+themselves. That is the first of these four capability questions to come back positive.
+
+**The boundary, and it is a real one.** `Publisher` gives **major and minor only.** The org
+actually runs **9.18.3 build 1** — Tooling sees the patch and the build, Apex does not.
+
+**A patch can change a label.** Salesforce permits label edits in a patch release, so
+reference data keyed to `9.18` would serve 9.18.0's wording to an org running 9.18.3 and have
+no way to know. Three honest responses, none of them mine to pick:
+
+- **Accept it and say so**, on the same grounds as the overlay: rare, declared loudly, never
+  assumed. A patch that rewords a guided question is unusual.
+- **Key to major.minor and verify one canary label at runtime** — cheap, catches a reworded
+  set without needing the patch number, and turns an invisible drift into a loud one. This is
+  the shape I would build if it were mine.
+- **Read the patch through Tooling**, which puts the callout back and defeats the point of
+  option 2.
+
+### Two stale items in v2.8 worth clearing
+
+**§5's "owed immediately" is already paid.** It still asks for the `%GUIDED_QUESTION%`
+enumeration with overlay; that was delivered in session 42 and the opportunity-map paste in
+session 43. The line should close the way the Tooling-API read did.
+
+**§4d's basis for "Politics has no authored ontology" is weaker than what we now hold.** It
+reads *confirmed by Matthew from the UI*. **It is now confirmed by a read** — session 45,
+sixteen labels across both families and every one a UI string, against a 2,930-row table so
+the zero is a filter result rather than an unread table. Worth upgrading, because a UI walk is
+exactly the evidence class that produced the five-question Support set.
+
+### The capability law, and where I would point it next
+
+The law is right and the three instances it names are the three that happened. **The fourth
+is already visible in v2.8's own §4c:** *projection probes before it writes* assumes Apex can
+distinguish a permission failure from a licence failure at probe time. **That is a capability
+claim about the runtime and it has not been tried.** It is also the one where being wrong is
+expensive, because the whole partial-ownership design rests on the probe telling the truth —
+and v2.5 already found that permission and licence failures arrive as the same DML error,
+which is a hint that the probe may not be able to say which it hit.
+
+**Owed.** Unchanged.

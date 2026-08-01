@@ -3185,3 +3185,74 @@ list — all twelve live contracts match their element-list length, zero is unre
 `AAO_Discovery.parseElements` returns the proposition itself as a single element when Help
 carries no block, and a zero would fail safe anyway because `Coverage.isFull` returns false on
 an empty list.
+
+---
+
+## 2026-08-03 · session 33 · ALTF custom labels and the insight-card type picklist
+
+**Did.** Read-only Tooling API queries against **`aossb2`**. Nothing changed. No build action.
+
+**Which org, and why.** `sf org list` offers `altify-dev`, `altify-pbo`, `aossb2`. There is
+no `altify-prod` connection on this machine, and **`altify-pbo` is forbidden by standing
+constraint**, so this is the sandbox. Anything below is true of `aossb2` and is **not** a
+production finding.
+
+**Guard applied before every filter**, per item 37: totals first, so a zero match is
+distinguishable from an empty table. `ExternalString` holds **6,437** rows, **2,930** of them
+`ALTF`. `ExternalStringLocalization` holds **25,965**.
+
+### 1. Yes — the four definitions are custom labels, and they are richer than expected
+
+They are not one help string each. Each concept carries a **definition, split account-level
+and opportunity-level, plus numbered qualifying questions**, nearly all in category
+`PeopleAndProblems`:
+
+- `GOAL_DEF_OM` — *"A Goal is an end result which the Approver and Decision Maker need to
+  achieve specific to the initiative, ideally with a measurable outcome and a specified time
+  frame."* `GOAL_DEF_AM` is the account variant.
+- `PRESSURE_DEF_OM` / `_AM`, `INITIATIVE_DEF_OM` / `_AM`, `OBSTACLE_DEF_OM` / `_AM`, all
+  present and all similarly worded.
+- **`GOAL_HELP_TEXT_1..3`, `PRESSURE_HELP_TEXT_1..2`, `INITIATIVE_HELP_TEXT_1..3`,
+  `OBSTACLE_HELP_TEXT_1..3`**, each a qualifying question — *"Is this a goal of the decision
+  maker specifically and not a company goal?"*, *"Is this a task, situation or process that
+  will have negative consequences if it is not fixed?"*
+- Account-plan variants exist as `*_HELP_TEXT_AM_*` and, notably, **sit in category `None`
+  rather than `PeopleAndProblems`**, so a category filter would silently miss them. That is
+  the `LIKE 'AAO\_%'` failure shape again and worth remembering if discovery ever reads these.
+
+**Why this matters beyond the answer.** These are the same shape as the Support wizard
+questions recovered in v0.9: **numbered, closed, authored by Altify, and phrased as
+yes-or-no qualifiers.** They are Evidence Contract propositions in everything but storage —
+which means the Problems charter has an authored ontology available to it exactly as People
+does, rather than needing us to author one.
+
+### 2. Yes — this org overrides ALTF labels, but not these
+
+**Zero `ExternalStringLocalization` rows carry the `ALTF` namespace.** Every one of the
+25,965 is `dfsle` (DocuSign) except **56 in the org's own namespace**, and resolving each
+back to its parent shows **all 56 override `ALTF` labels**. So Translation Workbench override
+of a managed label is live in this org and demonstrably works.
+
+**55 of the 56 differ from the packaged value.** They are one rebranding, applied
+consistently: **"Account Manager plan" → "Book of Business plan"** across the AM_* UI banners.
+
+**None of them touches Goal, Pressure, Initiative or Obstacle.** The four definitions and
+every numbered help question read exactly as packaged in this org.
+
+**The lesson generalizes and is the thing to carry.** A customer *can* silently rewrite any
+ALTF label, one already has, and the override lives in a different table from the label. **If
+discovery ever derives propositions from label text, it must read the org's localization
+layer and not the packaged value**, or it will author contracts from words no user of that
+org has ever seen. That is the label-layer twin of the `ALTF__Status_Answer__c` hazard v0.9
+recorded: the stored artifact and the displayed truth can disagree.
+
+### 3. No — the insight-card type picklist has no label drift
+
+`ALTF__Insight_Card__c.ALTF__Type__c`, restricted, five active values: **Goal, Pressure,
+Initiative, Obstacle, Solution.** **Label equals API value on every one**, and none is
+default. So the type may be read and written by API value directly with no translation step
+in this org. **Note the scope of that claim:** it is a describe of `aossb2`, and a picklist
+label is exactly the kind of thing Translation Workbench can move, so it is not a statement
+about any customer org.
+
+**Owed.** Unchanged.

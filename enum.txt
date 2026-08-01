@@ -1,0 +1,223 @@
+# 68 labels matched
+
+# org-level overrides applying to these labels: 0
+
+
+## BOTH MAPS · AM_OM_ · guided questions  (16)
+
+AM_OM_COVERAGE_GUIDED_QUESTION_1
+    Have you or a team member met with this person?
+
+AM_OM_COVERAGE_GUIDED_QUESTION_2
+    Have you or a team member recently had multiple meaningful conversations with this person?
+
+AM_OM_COVERAGE_GUIDED_QUESTION_3
+    Do you or a team member regularly and routinely have high quality conversations with this person?
+
+AM_OM_POLITICAL_STATUS_GUIDED_QUESTION_3
+    Do others seek this person out for advice and direction?
+
+AM_OM_POLITICAL_STATUS_GUIDED_QUESTION_4
+    Does this person control the outcomes or are they called on to make it happen?
+
+AM_OM_POLITICAL_STATUS_GUIDED_QUESTION_6
+    Does this person have a track record of success in implementing projects that deliver value?
+
+AM_OM_POLITICAL_STATUS_GUIDED_QUESTION_7
+    Does this person collect and provide information to people of power and influence?
+
+AM_OM_SUPPORT_GUIDED_QUESTION_1
+    Has this person expressed a preference for a specific solution?
+
+AM_OM_SUPPORT_GUIDED_QUESTION_11
+    Does this person prefer an alternative solution -including an internal solution or nothing at all?
+
+AM_OM_SUPPORT_GUIDED_QUESTION_14
+    Is this person vocal in their support of your competition?
+
+AM_OM_SUPPORT_GUIDED_QUESTION_16
+    Do you have evidence that this person believes your success will hurt their company or jeopardise their personal success?
+
+AM_OM_SUPPORT_GUIDED_QUESTION_2
+    Has this person told you they prefer your solution over all other alternatives?
+
+AM_OM_SUPPORT_GUIDED_QUESTION_4
+    Does this person believe your solution is critical to their success and do they sell internally for you in your absence?
+
+AM_OM_SUPPORT_GUIDED_QUESTION_5
+    Is this person mentoring you by providing guidance, political insight, or competitive information?
+
+AM_OM_SUPPORT_GUIDED_QUESTION_6
+    Has this person told you they prefer an alternate solution, including an internal solution or do nothing at all?
+
+AM_OM_SUPPORT_GUIDED_QUESTION_7
+    Is this person mentoring your competition and working to help them win?
+
+
+## ACCOUNT MAP ONLY · AM_ · guided questions  (7)
+
+AM_POLITICAL_STATUS_GUIDED_QUESTION_1
+    Does this person define the company’s goals?
+
+AM_POLITICAL_STATUS_GUIDED_QUESTION_2
+    Does this person sponsor and prioritize initiatives or do they execute the initiatives required to achieve the company’s goals?
+
+AM_POLITICAL_STATUS_GUIDED_QUESTION_9
+    Is this person aware of the politics in the organization to influence decisions?
+
+AM_SUPPORT_GUIDED_QUESTION_1
+    Has this person expressed a preference for a specific provider?
+
+AM_SUPPORT_GUIDED_QUESTION_2
+    Has this person told you they prefer your company over all other alternatives?
+
+AM_SUPPORT_GUIDED_QUESTION_4
+    Does this person believe your company is critical to their success and do they sell internally for you in your absence?
+
+AM_SUPPORT_GUIDED_QUESTION_6
+    Has this person told you they prefer something else; i.e. an alternate provider or alternate use of capital?
+
+
+## OPPORTUNITY MAP ONLY · OM_ · guided questions  (3)
+
+OM_POLITICAL_STATUS_GUIDED_QUESTION_1
+    Does this person define the company’s goals and objectives, or do they merely have a good understanding of them?
+
+OM_POLITICAL_STATUS_GUIDED_QUESTION_2
+    Does this person approve and sponsor initiatives, or do they execute projects after they are approved?
+
+OM_POLITICAL_STATUS_GUIDED_QUESTION_9
+    Is this person aware of the politics in the organisation?
+
+
+## INSIGHT ADMISSION TESTS · HELP_TEXT  (32)
+
+CONFCLIT_MODE_HELP_TEXT
+    Select the contact this person is in conflict with. (To focus on another person, click their power menu icon and select the action you want to take).
+
+GOAL_HELP_TEXT_1
+    Is this a goal of the decision maker specifically and not a company goal?
+
+GOAL_HELP_TEXT_2
+    Do you know how the decision maker is measured or compensated?
+
+GOAL_HELP_TEXT_3
+    Is the anticipated result or goal quantified and within a specific time frame?
+
+GOAL_HELP_TEXT_AM_1
+    Is this a business goal which an executive needs to achieve?
+
+GOAL_HELP_TEXT_AM_2
+    What KPI will the executive use to measure results?
+
+GOAL_HELP_TEXT_AM_3
+    Does the result need to be achieved within a specific time frame?
+
+IMPORT_MOST_RECENT_ATTRIBUTES_HELP_TEXT
+    If enabled, the latest attributes of selected contacts are added to your map. If disabled, all attributes of added contacts are set to 'Unknown'. Further details: <a href="${entity}">Altify online help.</a>'
+
+INFLUENCE_MODE_HELP_TEXT
+    Select the contact this person influences. (To focus on another person, click their power menu icon and select the action you want to take).
+
+INITIATIVE_HELP_TEXT_1
+    Are there internal or external pressures that have caused this initiative to be Funded/Sponsored/Prioritised?
+
+INITIATIVE_HELP_TEXT_2
+    Is this initiative in place to address internal or external pressures?
+
+INITIATIVE_HELP_TEXT_3
+    Will the success of this initiative have an impact on the decision maker's goal?
+
+INITIATIVE_HELP_TEXT_AM_1
+    Is the initiative in place to address internal or external pressures on the business?
+
+INITIATIVE_HELP_TEXT_AM_2
+    Is a business pressure causing the initiative to be prioritized, sponsored, and funded by a key player?
+
+INITIATIVE_HELP_TEXT_AM_3
+    Will success of the initiative have an impact on the executive's goals?
+
+OBSTACLE_HELP_TEXT_1
+    Is this a task, situation or process that can be fixed with your solution?
+
+OBSTACLE_HELP_TEXT_2
+    Is this a task, situation or process significant enough to establish substantial value if you can fix it?
+
+OBSTACLE_HELP_TEXT_3
+    Is this a task, situation or process that will have negative consequences if it is not fixed?
+
+PRESSURE_EDIT_NAME_HELP_TEXT
+    Name the customer’s business Pressure impacting the Goal(s).
+
+PRESSURE_EDIT_TYPES_HELP_TEXT
+    Select the type of pressures on the business (internal or external) which is forcing them to take action
+
+PRESSURE_HELP_TEXT_1
+    Does the pressure fall into one or more of the pressure categories: Financial, Operational, Customer, Partner, Technology, Supplier, Market or Competitive?
+
+PRESSURE_HELP_TEXT_2
+    Has the pressure caused a project to be sponsored, funded and prioritized by the decision maker?
+
+PRESSURE_HELP_TEXT_3
+    Will this pressure prevent a goal from being achieved?
+
+PRESSURE_HELP_TEXT_AM_1
+    How is this pressure on the business impacting the executive's goals?
+
+PRESSURE_HELP_TEXT_AM_2
+    Is the pressure causing an initiative to be prioritized, sponsored, and funded by a key player?
+
+PRESSURE_HELP_TEXT_AM_3
+    Is the pressure connected to a compelling event?
+
+SOLUTION_EDIT_HELP_TEXT
+    What is your Solution (set of capabilities, products, or services) that helps remove the customer’s Obstacles for their Initiative?
+
+SOLUTION_HELP_TEXT_1
+    How does your Solution address the Obstacles for your customer’s initiative?
+
+SOLUTION_HELP_TEXT_2
+    What Pressure(s) will your Solution have the most impact?
+
+SOLUTION_HELP_TEXT_3
+    How does your Solution contribute to achieving their Goals?
+
+SOLUTION_HELP_TEXT_4
+    Would a key player be able to articulate your unique business value from this Solution?
+
+STRAT_DELETE_COMPETITOR_HELP_TEXT
+    Are you sure you want to delete this competitor?
+
+
+## INSIGHT DEFINITIONS  (10)
+
+GOAL_DEF_AM
+    An Account Goal is an end result which an Executive needs to achieve, ideally with a measurable outcome and a specified time frame.
+
+GOAL_DEF_OM
+    A Goal is an end result which the Approver and Decision Maker need to achieve specific to the initiative, ideally with a measurable outcome and a specified time frame.
+
+INITIATIVE_DEF_AM
+    An Account Initiative is a project created to address the Pressure(s) and achieve the Goal(s).
+
+INITIATIVE_DEF_OM
+    An Initiative is a project created to address the Pressure(s) and achieve the Goal(s) specific to this opportunity.
+
+OBSTACLE_DEF_AM
+    An Account Obstacle is an internal operational problem, typically with either organization, process, culture, skills, or technology. Something that is broken, or doesnt exist, and needs to be enabled during the Initiative.
+
+OBSTACLE_DEF_OM
+    An Obstacle is an internal operational problem, typically with either organization, process, culture, skills, or technology. Something that is broken, or doesnt exist, and needs to be enabled during the Initiative.
+
+PRESSURE_DEF_AM
+    An Account Pressure is an internal and/or external business issue that significantly impacts achieving the Goal(s), and serves as a driver for Initiative(s).
+
+PRESSURE_DEF_OM
+    A Pressure is an internal and/or external business issue that significantly impacts achieving the Goal(s), and serves as the driver for the Initiative(s) specific to this opportunity.
+
+SOLUTION_DEF_AM
+    A set of capabilities, products, or services that help remove the Obstacles - enabling the success of the Initiative, relieving the Pressures, and contributing to achieving the Goals.
+
+SOLUTION_DEF_OM
+    A set of capabilities, products, or services that help remove the Obstacles - enabling the success of the Initiative, relieving the Pressures, and contributing to achieving the Goals.
+

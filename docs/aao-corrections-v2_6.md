@@ -2,6 +2,10 @@
 
 > **The version lives on the stamp line below and nowhere else.** The H1 carried a version through v2.4 and went stale, which is the same defect the glossary carried through three versions, Architecture through one and Data Flow through two. Removing it is the only fix that cannot rot.
 
+**v2.6 · 2 August 2026 · The wizard questions ARE queryable — §2.1 corrected, §5's open read closed, and the recovered Support set found incomplete.**
+
+**Changed in v2.6.** CODE closed §5's open read and it comes back the opposite of what §2.1 recorded. **The question text is custom labels: `ExternalString` holds 2,930 ALTF labels, 26 of them `%GUIDED_QUESTION%`, plus the insight admission tests as `GOAL_HELP_TEXT_*` and `PRESSURE_HELP_TEXT_*`.** Discovery becomes a pattern query rather than a manual walk, which is what makes *discovered rather than paraphrased* true in a customer org rather than only here. Four consequences. **The account map and opportunity map ask different questions** — provider and your company against solution and your solution — which independently confirms the cold-seeding ruling and improves it, because the durable half is the account map's own proposition rather than a seed. **The numbering is sparse** (Support runs 1, 2, 4, 5, 6, 7, 11, 14, 16), so an assembler iterating 1..N silently ships a short rubric. **The recovered Support set is incomplete — nine questions exist against five walked** — so charter design v1.7 must be corrected against the enumeration rather than patched. And **discovery must read the localization layer rather than the packaged label**, because 56 overrides already exist in this org and the override lives in a different table, which is the answer-string hazard in a new place.
+
 **v2.5 · 2 August 2026 · The licensed-seller read is settled from the org; package licence and module licence separated; what the permission harness proves and what it cannot.**
 
 **Changed in v2.5.** CODE found the read that §4c recorded as owed, and it is platform rather than managed so nothing breaks on package upgrade: **`UserPackageLicense` joined to `PackageLicense.NamespacePrefix = 'ALTF'`** answers who holds a seat, per user, with 80 assignments in the sandbox. Two things follow. **`AllowedLicenses = -1` means unlimited**, so the seat pool cannot be used to infer scarcity and only the assignment rows tell the truth. And **a package licence is not a module licence** — it says the user may use Altify, never which of the four modules the org holds, so §4c conflated two reads and only one of them is now solved. Also sharpened: **the permission harness proves degradation, not detection.** A permission failure and a licence failure arrive as the same DML error, so *a projection failure never touches the claim, the flag or the roll-up* is fully testable today; *which modules this customer holds* stays unverifiable until a differently-licensed org exists. Numbers moved: **164 tests green**, and Claim Basis now has **four of eight cited types built**.
@@ -63,7 +67,25 @@ The glossary states, of schema-sourced propositions: *the field label plus the v
 
 **Why this raises a standard rather than adding a fact.** Schema-sourced propositions have been running on a field label where record-sourced propositions run on verbatim authored text. That asymmetry is now closed. **Every dimension gets proposition text from the customer's own methodology**, discovered rather than paraphrased, which is the same law that governs the assessment side.
 
-**Retrieval note for whoever bumps the glossary: the text is in the managed package UI, not in any queryable table.** `ALTF__Translation__c` is empty; the platform `Translation` object holds only language enablement. Whether the strings are custom labels reachable through the Tooling API is an open read.
+**CORRECTED IN v2.6, and the v2.5 sentence here was wrong.** It read *the text is in the managed package UI, not in any queryable table*, and closed with the Tooling API as an open read. **The text is queryable, it is custom labels, and CODE had already established this in session 33 — the finding never reached this record.** `ALTF__Translation__c` being empty and the platform `Translation` object holding only language enablement are both true and were the wrong places to look.
+
+**`ExternalString` holds 2,930 ALTF labels**, and the questions sit under naming conventions that make them discoverable by pattern: **26 `%GUIDED_QUESTION%` labels** for the map dimensions, plus `GOAL_HELP_TEXT_*` and `PRESSURE_HELP_TEXT_*` for the insight admission tests and `*_DEF_AM` / `*_DEF_OM` for the value definitions.
+
+**This is what makes *discovered rather than paraphrased* true in a customer org rather than only in this document.** A manual walk recovers one org's wizard; a pattern query recovers any org's, at install, with no human in it.
+
+**Four consequences, and two of them are defects in what shipped today.**
+
+**The account map and the opportunity map ask different questions, not translations.** `AM_SUPPORT_GUIDED_QUESTION_1` asks about a specific **provider**; `AM_OM_SUPPORT_GUIDED_QUESTION_1` asks about a specific **solution**. Q2 likewise: **your company** against **your solution**. Reading one for the other puts the wrong proposition text on a contract, which is the exact failure the verbatim rule exists to prevent.
+
+> **This independently confirms the cold-seeding ruling and improves it.** §4c-era reasoning held that Support cannot carry across deals because its questions are about this deal's solution. **Altify encoded that distinction by authoring two separate question sets.** So the durable half is not a seed at all — it is the account map's own proposition, answered in its own right, about the provider relationship rather than this sale. Cold seeding does not attenuate account-level Support onto a deal; **the two are different propositions and both stand.**
+
+**The numbering is sparse and is not a sequence.** Support runs 1, 2, 4, 5, 6, 7, 11, 14, 16. **An assembler iterating 1..N produces a short rubric that looks complete**, which is the discovery-filter-fault shape again: assume nothing about density, read what is there, and be loud when the read does not match.
+
+**The labels are a superset of the walked tree, so the recovered set is INCOMPLETE.** Nine Support questions exist against the five recovered on 2 August, including *is this person vocal in their support of your competition* and *do you have evidence that this person believes your success will hurt their company or job*. **The wizard walk found the path taken, not the tree.** Charter design v1.7 presents five questions as the Support ontology and must be corrected against the full enumeration rather than patched by guessing.
+
+**Discovery must read the localization layer, never the packaged label.** 56 localizations already override ALTF labels in this org, 55 with changed text, one consistent Account Manager plan to Book of Business plan rebranding. None touches the question labels today, but a customer can override any of them, **and the override lives in a different table from the label.** Reading `ExternalString` alone would author contracts from words no user of that org has ever seen. **Same shape as the `ALTF__Status_Answer__c` hazard: the stored artifact and the displayed truth can disagree.**
+
+**Process note, recorded because it is the day's recurring failure.** This was known in session 33 and never reached a document, so an afternoon was spent recovering it by hand and a charter closed on an incomplete set. Corrections go into versioned documents, never chat — and that rule is only load-bearing if it fires for findings as well as for rulings.
 
 ### 2.2 · The insight ontology is authored too, and Solution's definition changes a ruling
 
@@ -253,8 +275,12 @@ The glossary says *state is reconstructible from the journal by summing deltas.*
 
 ## 5 · What is still deliberately not settled
 
-The **Politics / Link charter**, now the only unopened loop-one charter and the one carrying the missing insight-to-insight structure. **Insight Contention's charter.** **Rule Discovery's charter.** The two open setup-time inference instances. Quick-links from insights to qualifiers. Whether the wizard's help text is reachable as custom labels through the Tooling API.
+The **Politics / Link charter**, now the only unopened loop-one charter, opening on influence and conflict. **Insight Contention's charter.** **Rule Discovery's charter.** The two open setup-time inference instances. Quick-links from insights to qualifiers. **The module-ownership read**, which must probe rather than count. **The contention aggregate's Calculated Insight grain**, which is one-way.
+
+*Closed in v2.6: whether the wizard's help text is reachable as custom labels. It is — `ExternalString`, 2,930 ALTF labels. See §2.1.*
+
+**Owed immediately, and it blocks a correction rather than a build:** the full `%GUIDED_QUESTION%` enumeration with its localization overlay, so charter design v1.7's Support set can be corrected from nine authored questions rather than the five that were walked.
 
 ---
 
-*End of record, v2.5. The session's design work stands. What it did not hold was the memory plane, and that is where all four breakages live — cold seeding above all, because the tree ruling is right about the present and silent about the past.*
+*End of record. The session's design work stands. What it did not hold was the memory plane, and that is where all four breakages live — cold seeding above all, because the tree ruling is right about the present and silent about the past.*

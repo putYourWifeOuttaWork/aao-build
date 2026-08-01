@@ -3808,3 +3808,75 @@ of that org has ever seen. That is the label-layer twin of the `ALTF__Status_Ans
 hazard: **the stored artifact and the displayed truth can disagree.**
 
 **Owed.** Unchanged. The scope phase is recorded and not started.
+
+---
+
+## 2026-08-04 · session 42 · corrections v2.6 synced; the owed enumeration delivered
+
+**Did.** Synced v2.6, deleted v2.5. **Nothing built**, and nothing will be built against
+v1.7's Support set. Delivered the owed enumeration, read from `aossb2` with the localization
+overlay applied. **68 labels across the four patterns.**
+
+**The overlay is empty, and that is a finding rather than a formality.** Of the 56
+org-namespace overrides in this org, **zero touch any question, help-text or definition
+label** — all 56 are the `AM_*` UI-banner rebranding. So the effective text equals the
+packaged text here, and every string below is both. **The overlay still has to be applied in
+code**, because it is empty in this org and cannot be assumed empty in a customer's.
+
+### Guided questions · 26, and the split matters
+
+**BOTH MAPS — `AM_OM_` — 16.** Coverage 1, 2, 3. Political Status 3, 4, 6, 7. Support 1, 2,
+4, 5, 6, 7, 11, 14, 16.
+
+**ACCOUNT MAP ONLY — `AM_` — 7.** Political Status 1, 2, 9. Support 1, 2, 4, 6.
+
+**OPPORTUNITY MAP ONLY — `OM_` — 3.** Political Status 1, 2, 9.
+
+**Support is nine on the opportunity map, not five.** The four never walked:
+
+- `_6` — *Has this person told you they prefer an alternate solution, including an internal
+  solution or do nothing at all?*
+- `_11` — *Does this person prefer an alternative solution -including an internal solution or
+  nothing at all?*
+- `_14` — *Is this person vocal in their support of your competition?*
+- `_16` — *Do you have evidence that this person believes your success will hurt their company
+  or jeopardise their personal success?*
+
+**`_6` and `_11` are near-duplicates with different wording and a stray hyphen**, which is
+what an authored set looks like after years of edits. They are two labels and must stay two
+propositions; collapsing them would be paraphrasing, which is the thing the verbatim rule
+forbids.
+
+**Political Status is seven, not three**, and the split is sharper than Support's. `_1`, `_2`
+and `_9` exist in **separate AM and OM versions with genuinely different text** — the account
+map asks *does this person define the company's goals*, the opportunity map asks *does this
+person define the company's goals and objectives, **or do they merely have a good
+understanding of them***. `_3`, `_4`, `_6`, `_7` are shared. **So Political Status is four
+shared plus three per-map, and no single list is the ontology.**
+
+**Numbering confirmed sparse and per-family, not global:** Support 1, 2, 4, 5, 6, 7, 11, 14,
+16; Political Status 1, 2, 3, 4, 6, 7, 9; Coverage 1, 2, 3. Coverage is the only dense one and
+the only one fully recovered by the walk — which is why the walk felt complete.
+
+### The insight admission tests · YES, also a superset
+
+**Solution's four are in the labels**, `SOLUTION_HELP_TEXT_1..4`, matching §2.2 verbatim
+including *would a key player be able to articulate your unique business value from this
+Solution*. And `SOLUTION_DEF_AM` / `_OM` exist, identical to each other, which §2.2 recorded
+as owed.
+
+**But Goal, Pressure and Initiative each carry SIX, not three** — `_1.._3` plus
+`_AM_1.._AM_3`, a separate account-map set with different text. Obstacle carries **three
+only**, with no AM variant. So the insight side has the same AM/OM split as the map side,
+**and it is uneven across types** — which no walk would reveal, because a walk sees one map at
+a time.
+
+Two more that a pattern query catches and a walk would not: `PRESSURE_EDIT_TYPES_HELP_TEXT`
+and `SOLUTION_EDIT_HELP_TEXT` are edit-form guidance rather than admission tests, so **the
+`%HELP_TEXT%` pattern is broader than the ontology** and an assembler must filter by family
+rather than take the pattern whole. Same class of hazard as the sparse numbering, in the
+other direction: **the pattern under-collects if you iterate and over-collects if you do
+not.**
+
+**Owed.** Unchanged. v1.7's Support ontology is not to be built against; the enumeration above
+is the input for correcting it.

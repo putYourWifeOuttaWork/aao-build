@@ -3051,3 +3051,57 @@ People handed unit is now person crossed with dimension: the handed set multipli
 extraction's did not.
 
 **Owed.** Both reportables, one answered above and one pending the build. Re-drop v0.7.
+
+---
+
+## 2026-08-03 · session 31 · charter design v0.8 synced, the counter checked against the org
+
+**Did.** Unzipped `aao-context_16.zip`, one file. `aao-charter-design-v0_8.md` in, **v0.6
+deleted** — v0.7 never reached disk, so v0.6 was still the live copy here. **No build action
+taken.** v0.8 folds v0.7's rulings in as its own changelog, so the packet is whole despite
+the missing hop, and the accumulator-with-reset it withdraws was never built.
+
+### The counter reads as buildable, and it is smaller than what it replaces
+
+A clamped integer in −3…+3, moved by at most one per source-event, with rungs at fixed
+positions and the rung read as the highest named position at or below the number. **Nothing
+in it needs a mechanism I do not already have.** The properties the earlier versions wanted
+laws for fall out of the arithmetic: the clamp is what stops banking, mentor costs two up and
+one down because the rungs sit unevenly, and replay stays deterministic because a clamped sum
+is order-dependent only at the boundaries.
+
+**Verified the one claim it makes about my code.** v0.8 says *"The scope key is already scope
+plus artifact hash plus part index, so the occasion is scope plus artifact hash."* True as
+deployed. `AAO_ScopeKey` composes `S1|<Opportunity Id>|<Artifact SHA-256>|<Part Index>`, so
+the source-event is that key with its last segment dropped. The 90-minute part split really
+does collapse to one increment by construction rather than by a rule someone has to remember.
+
+**Two build notes, neither a blocker.**
+
+**The source-event key must be its own frozen composer, not a truncation at call sites.**
+Every identity in this build is composed once by a frozen, versioned, single-writer class —
+`AAO_AnswerKey`, `AAO_ScopeKey`, `AAO_ContractKey` — precisely so nobody re-derives it
+slightly differently somewhere else. A `substringBeforeLast('|')` sprinkled through the
+People writer would be the first identity in the system without an owner.
+
+**And it must carry its own version letter, not inherit `S1`.** If the source-event key is
+built by truncating the scope key, a future scope-key version bump silently changes what
+counts as one occasion, and **every sentiment counter in every org re-derives to a different
+number on the next replay.** The counter is a sum over occasions, so occasion identity is
+load-bearing in a way the scope key's own version was never asked to be. Its own prefix,
+bumped on its own schedule.
+
+**Human override absolute, and it already has its shape.** Contradicting evidence writes its
+claim and raises a flag while the value does not move — that is `Superseded_By_Human` applied
+to a map dimension instead of an answer, the same law `AAO_Commit` already enforces. The
+watermark is the part that is new: a human write must stop the machine writing that field
+*forever*, which is stronger than precedence-on-collision and needs somewhere to live.
+
+**Backdated evidence** re-derives in occurred order with no age cap, guarded only against
+dates preceding the opportunity's `CreatedDate` — consistent with replay, which already
+rebuilds in evidence-occurred order, and with day-one red, which already takes
+`CreatedDate` as the floor for a deal's clock.
+
+**Owed.** Unchanged, plus the two reportables: the element-count answer is delivered
+(single-element contracts carry one, zero is unreachable and would fail safe), and the live
+People output token count against the 16,000 ceiling arrives with the first pass.

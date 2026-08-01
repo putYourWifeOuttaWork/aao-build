@@ -1,6 +1,12 @@
 # AAO Charter Design
 
-**v0.8 · 2 August 2026 · The sentiment counter ruled (clamped integer, minus three to plus three); human override ruled absolute; backdated evidence ruled; no decay mechanism; neutral ruled as disposition, never a quota**
+**v0.9 · 2 August 2026 · The People ontology recovered from the org; four dimensions route four different ways; Coverage ruled a query; Buyer Role is the only dimension we author**
+
+**Changed in v0.9.** The premise that the relationship map carries no ontological description is **wrong, and the org says so.** Altify decomposed three of its four map dimensions into authored question sets years ago and ships them in the Help me select wizard. Recovered this session by reading the org and walking the wizard in production (read-only, nothing saved): the Support tree from Matthew's click-through, the Political and Coverage trees driven directly. **The verbatim question sets are recorded below and are the People charter's ontology.** We do not paraphrase a picklist label into a proposition, for the same reason assessment propositions come from the rubric table verbatim.
+
+**The structural finding: the four dimensions are four different kinds of thing and route four different ways.** Coverage is a count of our own activity and is a query, not a judgment. Support is five propositions about what the buyer said and did, and is transcript evidence. Political is three questions about organisational dynamics, none of them binary. Buyer Role has **no wizard at all** and is the only dimension where we author the questions ourselves, from the definition text, which is all that exists.
+
+**Recorded as a hazard: never derive from the stored answer strings.** `ALTF__Status_Answer__c` holds the wizard path as `Yes;Yes;Yes;Yes;No` and similar. Live production rows show it disagreeing with the stored value: one contact's answer string resolves to Supporter under the tree recovered this session while her Support field reads Mentor, because the wizard has a **Select manually** toggle and a later manual pick leaves the old answer string behind. **The questions are the asset. The answers are exhaust.**
 
 **Changed in v0.8.** The movement arithmetic is settled and it is smaller than the two versions that preceded it. **A single integer from minus three to plus three, clamped at both ends, moved by at most one per source-event, with the named rungs at fixed positions on it.** Matthew's model, and it dissolves the machinery v0.7 was reaching for.
 
@@ -318,9 +324,72 @@ Research grounding: LLM post-processing corrects who-said-what from text alone w
 
 Attendance is not evidence of position; a silent attendee establishes at most coverage. Roles are never inferred from job titles. Absence never establishes. Per-charter admission gates: on a town-hall call this charter abstains while insight proceeds. Cardinality guards on every creation path.
 
+### Where People Evidence Contracts come from · RULED 2 Aug · recovered from the org
+
+`AAO_Candidate__c.AAO_Evidence_Contract__c` is required, so every People emission needs a contract. **The contracts derive from Altify's own Help me select question sets**, recovered verbatim below, exactly as assessment contracts derive from the rubric tables. Discovery reads the wizard's questions, not the picklist labels.
+
+**Provenance of everything in this section:** read from `altify--prod` on 2 August by walking the wizard in the relationship map (Salesforce.com October-2026 Renewal), plus the field describe on `ALTF__Contact_Map_Details__c`. Read-only throughout; every modal was cancelled and nothing was saved.
+
+#### The four routes
+
+| Dimension | Wizard | What it is really about | Route |
+|---|---|---|---|
+| **Coverage** | 3 questions, Yes / No / Not sure | **Our own activity**, not the buyer | **P — a frozen query.** No model call, no abstention |
+| **Support** | 5 questions, Yes / No | What the buyer said and did | **E — transcript evidence**, spans, five contracts |
+| **Political Status** | 3 questions, 3-way semantic options | Organisational dynamics and deference | **E, overlapping the Politics charter's influence edges** |
+| **Buyer Role** | **none — manual pick only** | Structural role in the purchase | **Authored by us** from the definition text |
+
+#### Coverage · verbatim · **RULED a query, not a judgment**
+
+1. Have you or a team member met with this person?
+2. Have you or a team member recently had multiple meaningful conversations with this person?
+3. Do you or a team member regularly and routinely have high quality conversations with this person?
+
+Values, verbatim from the manual list: **No Contact** "You have never met." **Brief contact** "You or a team member have met this person, but it was brief." **Multiple contacts** "You or a team member have had several substantive conversations with this person." **In-depth** "You or a team member regularly have substantive discussions with this person."
+
+**Every question is about us.** Question one is whether a Source exists with this person as a participant. Question two is a count inside a window. Question three is a frequency. **So Coverage is answered by counting our own Sources and never by reading what a buyer said**, which makes it the cleanest case in the build for collapsing data entry to zero: it maintains itself, costs no tokens, and cannot abstain.
+
+**This also settles decay for Coverage with no mechanism at all.** *Recently* and *regularly* are time-windowed reads, so the answer changes tomorrow because the window moved, not because a job ground a number down. Consistent with the no-decay ruling: nothing decays, the staleness is simply visible. **A human-set Coverage still wins forever** under the override ruling, window or no window.
+
+#### Support · verbatim · five propositions
+
+1. Has this person expressed a preference for a specific solution?
+2. Has this person told you they prefer your solution over all other alternatives?
+3. Is this person willing to provide you helpful information when asked?
+4. Does this person believe your solution is critical to their success and do they sell internally for you in your absence?
+5. Is this person mentoring you by providing guidance, political insight, or competitive information?
+
+**The tree.** Q1 No ends at Neutral. Q1 Yes goes to Q2. Q2 Yes goes to Q3; Q3 No ends at **Unknown**; Q3 Yes goes to Q4; Q4 No ends at Supporter; Q4 Yes goes to Q5; Q5 Yes gives **Mentor**, Q5 No gives **Supporter**. Q2 No goes to a second branch: *has this person told you they prefer an alternate solution, including an internal solution or do nothing at all* — No ends at Neutral, Yes goes to *is this person mentoring your competition and working to help them win* (Yes / No / **Not sure**), Yes giving **Enemy** and No giving **Non-Supporter**.
+
+**Q4 is compound** (believes it is critical, and sells internally) and **Q5 is a three-way or** (guidance, political insight, competitive information), which is exactly the element structure Evidence Contracts already carry. **Q2 and Q4's "told you" fixes a speaker requirement**: the person themselves, to the seller.
+
+**Open, and the only open decision in this file:** whether Support becomes these five contracts with Altify's tree computing the rung, retiring the minus-three-to-plus-three counter ruled in v0.8. The case for it is that every rung change would then name which condition moved and quote the words, and the count of conditions met (zero to five) is a better trend line than an opaque score. The case against is that v0.8 is ruled and built-to. **Matthew's.**
+
+#### Political Status · verbatim · not binary
+
+1. Does this person approve and sponsor initiatives, or do they execute projects after they are approved? · **Approves/Sponsors · Executes · Not sure**
+2. Do others seek this person out for advice and direction? · **Yes · No · Not sure**
+3. Does this person control the outcomes or are they called on to make it happen? · **Controls · Implements · Not sure**
+
+Values, verbatim: **Inner Circle** "Decides what will be prioritized and controls the outcomes." **Political Structure** "Trusted by the Inner Circle to make things happen." **Outside Political Structure** "Has little to no political power, but is called upon by key players to provide evaluations and information." The Inner Circle outcome panel adds: "This person is a key player. They initiate or sponsor initiatives, and define how success is measured… The customer buying team may have 1 to 3 people in the Inner Circle."
+
+**Two things worth naming.** The options are semantic rather than yes-or-no, so the shared envelope's proposal enum for this dimension is runtime-closed from the wizard's options rather than from a verdict picklist. And **Not sure is a first-class answer in Altify's own methodology**, which is abstention built into the vendor's design and an argument we can use directly.
+
+**Owed:** only the Approves/Sponsors · Yes · Controls path was walked, which terminates at Inner Circle. The mapping of the remaining combinations to Political Structure and Outside Political Structure is **not yet read and is not guessed here.** One more pass through the wizard closes it.
+
+#### Buyer Role · verbatim · **no wizard exists**
+
+Manual pick only, with definitions and nothing else. **Approver** "Senior level person who retains the right to review, approve or veto decisions, and typically release the funds." **Decision Maker** "Listens to recommendations, evaluates evaluation results, makes a commitment to a partner, vendor and/or strategic direction." **Evaluator** "Responsible for analysing proposed solutions against defined criteria." **User** "Uses your products/services." **Signature Approver** carries no definition. **Unknown** "Unknown buying role."
+
+**This is the one dimension where we author the propositions**, because Altify never decomposed it and the definition text is all that exists. Contracts authored this way carry `AAO_Elements_Basis__c` of `Inferred_Pending` until ratified, which is the existing law doing exactly what it was built for. **Decision Orientation is deliberately skipped** — it was null on every live row sampled, so nobody fills it.
+
+#### Consequences for the object model
+
+Every People contract needs `AAO_Route__c` set per the table above, `AAO_Speaker_Requirement__c` from the wizard's wording (Q2 and Q4 of Support demand the person themselves), and `AAO_Elements__c` from the compound questions. **Coverage contracts carry a frozen query and never reach a model.** One org fact is still owed from CODE: whether single-element contracts carry `AAO_Element_Count__c` of one, or whether zero appears anywhere.
+
 ### Owed by the next version
 
-**Where People Evidence Contracts come from.** `AAO_Candidate__c.AAO_Evidence_Contract__c` is required, so every People emission needs a contract, and dimensions are not in Altify's rubric tables the way propositions are. Discovery has no answer for them yet. One org fact settles part of it and CODE is asked for it: whether single-element contracts carry `AAO_Element_Count__c` of one, or whether zero appears anywhere.
+The remaining Political Status terminals. The Problems charter's use of Altify's existing **"Who told you about this?"** field on insight cards, observed empty in production on 2 August: the provenance slot the methodology already provides and nobody fills, which is where our citation belongs rather than in a field we add.
 
 ---
 

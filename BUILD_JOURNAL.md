@@ -3105,3 +3105,83 @@ rebuilds in evidence-occurred order, and with day-one red, which already takes
 **Owed.** Unchanged, plus the two reportables: the element-count answer is delivered
 (single-element contracts carry one, zero is unreachable and would fail safe), and the live
 People output token count against the 16,000 ceiling arrives with the first pass.
+
+---
+
+## 2026-08-03 · session 32 · charter design v0.9 synced; three schema gaps in the People routes
+
+**Did.** `aao-charter-design-v0_9.md` in, **v0.8 deleted**. **No build action.** Read the new
+People-contracts section against the org. The ontology recovery is the strongest thing in the
+file — the questions taken verbatim from Altify's own wizard rather than paraphrased from a
+picklist label is the same discipline as reading propositions from the rubric table, and the
+`ALTF__Status_Answer__c` hazard is well found: **the questions are the asset, the answers are
+exhaust.** Three gaps, all in the routing rather than the ontology.
+
+### 1. Coverage cannot be a frozen query, because participation is not queryable
+
+All three Coverage questions are per-person counts over our own Sources: *have you met*,
+*multiple recently*, *regularly*. **There is no Source-to-Contact relation in the schema.**
+Participation lives only in `AAO_Source__c.AAO_Speaker_Roster__c`, a `LongTextArea` of 32,768
+characters holding JSON, and **SOQL cannot filter into a text blob.**
+
+So the recipe ruling does not reach this case as written. *A model writes the query once, the
+query is frozen on the contract, Apex executes it* presumes the question is expressible as a
+query, and *did this person participate* is not. Two ways out, both Matthew's:
+
+- **A participant junction written at ingest** — a row per Source per person, which makes all
+  three questions ordinary SOQL and also gives Coverage's window and frequency counts
+  somewhere to be counted. It is our own object, so it breaks no constraint.
+- **Coverage becomes Apex that deserializes rosters** for the deal's Sources. Deterministic,
+  no model, still route P in spirit — but it is **not** a frozen query, so it should not be
+  described as one, and it carries a governor ceiling the junction would not.
+
+The junction is the one I would build. It is the same move key four already made: **a grain
+not recorded cannot be declared later without reprocessing the corpus**, and participation is
+exactly such a grain.
+
+### 2. A Coverage claim has nothing it is allowed to cite
+
+Route P writes basis `State`, and the evidence-family law **requires at least one Claim Basis
+row** — `AAO_EvidenceFamily.requireBasisRows` throws otherwise, inside the transaction.
+`AAO_Cited_Type__c` offers `Map_Row`, `Insight_Card`, `Decision_Criterion`, `Answer`,
+`Qualifier_Status`, `Shadow_Person`. **No `Source`.** A Coverage claim citing the Sources it
+counted is refused by our own law.
+
+Needs a `Source` cited type plus an `AAO_Cited_Source__c` lookup. Worth noting the wider
+state while we are here: **only two of the six declared cited types have lookup fields** —
+`AAO_Cited_Answer__c` and `AAO_Cited_Map_Row__c`. The other four are enum values with nowhere
+to point. Not urgent, but the table is smaller than it reads.
+
+### 3. Support Q2 and Q4 need a speaker requirement that does not exist
+
+v0.9 reads *"told you"* as fixing a speaker requirement: the person themselves, to the seller.
+`AAO_Speaker_Requirement__c` offers `Seller`, `Any_Participant`, `Buyer_Side`,
+`Decision_Maker_Or_Influencer`. **Every one of those is a CLASS of speaker. Q2 and Q4 need a
+SUBJECT: this finding's own person said it.**
+
+That is a genuinely new kind of requirement and it is cheap here and nowhere else — the
+People handed unit is person crossed with dimension, so the gate already knows who the
+finding is about. A new value, `Subject_Person`, and `AAO_SpeakerRule.evaluate` gains the
+subject to compare against. **Without it, Q2 and Q4 would pass on a colleague vouching for
+someone's preference**, which is the precise thing the wizard's wording excludes.
+
+### On the open decision, one build-side fact rather than an opinion
+
+Whether Support becomes five contracts with Altify's tree computing the rung is Matthew's.
+The build-relevant fact is that **the tree and the counter answer different questions and
+cannot both own the rung.** The tree derives a rung from five booleans held *now*: five
+conditions landing in one call moves a person Neutral to Mentor in a single source-event,
+which is exactly the teleport the ±1 law exists to forbid. The counter derives standing from
+*movement over occasions*. One is a state read, the other is a history. If the tree owns the
+rung, the ±1 law and the clamp stop meaning anything and should be withdrawn rather than left
+sitting beside it; if the counter owns the rung, the five contracts are still worth having as
+the evidence that justifies each move. **They compose only in that direction.**
+
+### Still owed to design, and already answered here
+
+**`AAO_Element_Count__c` carries one for single-element contracts. Zero does not appear.**
+Answered from the org in session 30 and restated in the reply, since it came back on the owed
+list — all twelve live contracts match their element-list length, zero is unreachable because
+`AAO_Discovery.parseElements` returns the proposition itself as a single element when Help
+carries no block, and a zero would fail safe anyway because `Coverage.isFull` returns false on
+an empty list.

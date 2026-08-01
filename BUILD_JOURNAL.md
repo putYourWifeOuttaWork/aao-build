@@ -2649,3 +2649,85 @@ once rather than eight times. `AAO_Flag__c` lives in the flags doc rather than t
 
 **Owed, new.** The four corrections and the three omissions both need to reach the authored
 tables. The script holds the first four; nothing holds the last three but this entry.
+
+---
+
+## 2026-08-02 · session 24 · context 11, the audit closed, and the Model Config describe
+
+**Did.** Synced `docs/` to context 11. **Nothing built, nothing deployed** — charter design
+v0.5 read only.
+
+### The carry-forward script is deleted, its job done
+
+v0.12 carries **all four** corrections from session 23's audit, verified against the org
+field by field:
+
+- `AAO_Answer__c.AAO_Basis__c` has its row, union semantics stated.
+- `AAO_Candidate__c.AAO_Basis__c` corrected to nullable — and the doc now gives the reason
+  I gave, that required-at-the-field is the same mistake the family law replaced on
+  `AAO_Source__c`.
+- `AAO_Claim__c.AAO_Basis__c` stays required, correctly: the org has it required.
+- The collision list reads five, with `any` present.
+
+**So the script goes.** Its header named the condition for deleting it and the condition is
+met; keeping it would be keeping a patch over a divergence that no longer exists, and a
+second place where truth lives. It never once silently double-applied, and it broke loudly
+on the v0.10 → v0.11 rename exactly as designed.
+
+**One correction of mine that landed differently and better.** v0.12 also expanded
+typed-lookup shorthand to full API names, on the reasoning that a shorthand like
+`_Answer__c` is how a builder ships `Answer__c` without the prefix. I had read
+`AAO_Cited_Answer__c` and `AAO_Claim__c.AAO_Subject_Contact__c` as *absent*; they were
+present as shorthand and I misread the shorthand as an omission. Both are documented now,
+and the naming hazard is a better catch than the one I reported.
+
+### Owed and now paid: the verbatim describe of `AAO_Model_Config__mdt`
+
+v0.12 adds the section as a **STUB** and asks for this. Read from `aossb2` on 2 August 2026,
+verbatim from `sf sobject describe`:
+
+| API name | Type | Length | Required | Default | Writer | Reader |
+|---|---|---|---|---|---|---|
+| `DeveloperName` | string | 40 | yes | | The one record, `Default` | `AAO_Extract.config()` |
+| `MasterLabel` | string | 40 | yes | | | |
+| `AAO_Active__c` | boolean | | no | `False` | Human | The config reader, to disable a generation without deleting it |
+| `AAO_Model_Name__c` | string | 80 | yes | | Human | `AAO_Extract.send()` — **the pin.** Never hardcoded, per items 20–21 |
+| `AAO_Charter__c` | string | 80 | yes | | Human | Stamped on every Candidate and Claim as attribution |
+| `AAO_Charter_Version__c` | string | 20 | yes | | Human | Same. Bumping it is how a charter change becomes visible on receipts |
+| `AAO_Blind_Charter__c` | string | 80 | yes | | Human | The second reader's name. Distinct field because coverage is adjudicated by a different charter than the one that proposed |
+| `AAO_Blind_Charter_Version__c` | string | 20 | yes | | Human | Same, versioned independently |
+| `AAO_Blind_Enabled__c` | boolean | | no | `False` | Human | Whether the blind reader runs at all |
+| `AAO_Effort__c` | string | 20 | yes | | Human | Passed to the API |
+| `AAO_Max_Output_Tokens__c` | double | 9,0 | yes | | Human | Passed to the API |
+| `AAO_Named_Credential__c` | string | 80 | yes | | Human | Which credential; the key itself is never here |
+| `AAO_Endpoint_Path__c` | string | 120 | yes | | Human | Appended to the named credential |
+| `AAO_Timeout_Ms__c` | double | 9,0 | yes | | Human | Callout timeout |
+| `AAO_Anthropic_Beta__c` | string | 255 | no | | Human | Beta header, null today |
+
+**The live record**, `Default`, read the same day:
+
+```
+AAO_Active__c                True          AAO_Effort__c                'high'
+AAO_Model_Name__c            'claude-opus-5'
+AAO_Charter__c               'AAO_Extract_Evidence'   AAO_Charter_Version__c        '1.1.0'
+AAO_Blind_Charter__c         'AAO_Blind_Reader'       AAO_Blind_Charter_Version__c  '1.0.0'
+AAO_Blind_Enabled__c         True          AAO_Max_Output_Tokens__c     16000
+AAO_Named_Credential__c      'AAO_Anthropic'          AAO_Endpoint_Path__c '/v1/messages'
+AAO_Timeout_Ms__c            120000        AAO_Anthropic_Beta__c        null
+```
+
+**Two observations worth carrying into v0.13.**
+
+**Nothing on this type is written by machine.** Every row above says Human, and that is the
+point of the object: it is the one place a person decides which model and which charter
+version the whole build runs under, and no code may reach past it. It is configuration
+pretending to be nothing else.
+
+**Nine of thirteen are `required`, and `AAO_Active__c` defaults to `False`.** So a second
+generation authored by hand is inert until someone deliberately turns it on, which is the
+right direction for an accident to fail in — the same shape as `AAO_Rubric.contracts()`
+defaulting to the product set.
+
+**Owed.** `AAO_Flag__c` still has no section in the field tables; it lives in the flags doc,
+which is defensible, but the tables never say so. `AAO_Synthetic__c` is covered once as a
+standing convention rather than per object, which I still read as correct.

@@ -44,6 +44,8 @@ Discipline: three statuses. **PROVEN** carries the receipt and may be stated fla
 
 27. **Language guardrail: Trust Layer is target, not current.** Model calls today go directly to the Anthropic API via Named Credential; the Einstein Trust Layer gateway is the packaged endgame and is drawn on the target-architecture diagram as such. Safe sentence: "runs inside the customer's org, with the Trust Layer as the packaged model path." Unsafe: "every model call already runs through the Trust Layer." Recorded so the two never blur in anything Toby-facing.
 
+28. **The insight-card failure mode exists in production, read directly, 1 Aug.** Five deals, 349 insight cards, read over MCP from Altify's own org (read-only). Human-authored cards show real conversational fingerprints but **zero provenance** — no card can say who said it or when. Max-generated cards are 10-K boilerplate: on the Revizto deal, 51 of 61 cards are generated, including **three contradictory NRR targets (115, 115, 120) coexisting on one map**. Roughly 20% of cards confirmed across the sample. The outlier proves the direction: the T-Mobile **won** deal carries 44 of 66 confirmed and zero generated cards. This is the evidence the Problems charter's rulings rest on (citations, keep-parent dedup, seller-owned confirmation). Receipt: MCP reads 1 Aug 2026, deal names and counts recorded in the Problems charter section; card-level IDs retrievable by re-running the same read-only queries.
+
 ## UNVERIFIED — do not repeat externally
 21. **Foundations credits make the PoC free for every customer.** Verify the entitlement story.
 22. **All Altify customers on Salesforce Enterprise with Trust Layer available.** Verify.

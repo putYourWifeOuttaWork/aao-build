@@ -1,6 +1,8 @@
 # AAO Charter Design
 
-**v0.4 · 1 August 2026 · People charter CLOSED except output schema; Inferred attribution ruled, gated on measurement**
+**v0.5 · 1 August 2026 · People charter CLOSED except output schema; Problems charter OPENED — admission, dedup, citation and confirmation ruled; two tensions flagged for Matthew**
+
+**Changed in v0.5.** Problems charter opened on production evidence (the Tungsten insight-card read: 349 cards across 5 deals, human cards with real fingerprints and zero provenance, Max-generated boilerplate with three contradictory NRR targets coexisting, ~20% confirmed; the won-deal outlier at 44/66 confirmed with zero generated cards). Matthew's rulings recorded: admission for every genuine insight, keep-parent dedup with the count prepended and the reiteration date appended, citations as short plain sentences (date plus speaker, no URLs, no IDs, no hyperlinks), confirmation driven by evidence patterns not gestures, drag-a-card never load-bearing. Quick-links from insights to solution cards and qualifiers parked as guidance enrichment. Two tensions flagged, not settled — they are Matthew's.
 
 **Changed in v0.2.** Self-report ruled: sentiment moves one rung conservatively; terminal rungs (Mentor, Enemy) are earned across multiple separate sources and lost the same way; no behavioral-pattern inference for support — stated sentiment and human input only; a human write watermarks the dimension forever (existing precedence law). The Identification flag is RATIFIED as the fifth type, its own thing: not Ratification (which asks permission for a known write), linked to whatever red its resolution would release. New surfacing law from Matthew: a red that is one answer away from clearing is surfaced proactively regardless of tier or value. PENDING ONE RULING: Source optional on Candidate and Claim, with the evidence-family law (words → Source required; state → Claim Basis rows required; both → both) — recommended, awaiting Matthew's word; the P route is blocked on it.
 
@@ -88,7 +90,51 @@ Matthew's constraint: orgs with unstructured transcripts are unstructured foreve
 
 ---
 
-## 2 · The Problems charter (insights + criteria) — not yet opened
+## 2 · The Problems charter (insights + criteria) · charters v0.5 · **OPEN — core rulings landed 1 Aug**
+
+### What the map is for · RULED
+
+**Call prep: who has what problem, why it matters, in their own words.** The production read proved the failure mode this charter exists to prevent: cards generated from public filings read as research notes, carry no provenance, contradict each other, and sit unconfirmed forever. A card earns its place when a person said the thing, and the card can say who and when. The moat, confirmed by the won-deal outlier: citations plus dedup plus a section the seller owns.
+
+### Admission · RULED
+
+**Every genuine insight caught goes on the map.** No materiality threshold, no cap. The filter is genuineness (a person expressed a problem or criterion), never importance — importance is what confirmation counts measure over time. Duplication is handled at write time, not by refusing admission: **the machine must infer duplicated meaning**, because the same problem restated in new words is reinforcement, not a new card.
+
+### Dedup and reinforcement · RULED, with one tension flagged below
+
+**Keep the parent card. Never write a sibling.** When an insight already on the map is expressed again: prepend the count to the card text ("2x", then "3x"), append the reiteration in plain words ("reiterated again on June eighth"). A different person expressing the same insight appends "said by John on June eighth" without restating the insight. **Completely different language is a different insight** — the boundary between reinforcement and novelty is meaning, and the model judges it (this is the inference the admission ruling requires). Underneath the card text, every reinforcement is a Claim with outcome Reinforced, so the count on the card is always reconstructible from receipts.
+
+### Citations on cards · RULED
+
+**Extremely short, plain text, human-readable.** Date plus speaker: "on a demo call June eighth." **No URLs, no record IDs, no hyperlinks** — these are plain text fields in Altify panels and a citation that looks like plumbing poisons the card. The full receipt (span, source, locator) lives on the Claim; the card carries only the sentence a seller would say out loud.
+
+### Confirmation · RULED, with one tension flagged below
+
+Evidence patterns drive it, never gestures:
+- Expressed **twice in one call** → confirmed.
+- Expressed **once** → on the map, unconfirmed.
+- **Re-mentioned in a later call** → note the date, confirm.
+- **Different person, same insight** → attribution note appended, confirmation follows the same counting.
+
+**Humans will never drag cards. Never assume a gesture** — ruled by Matthew, consistent with the collapse-data-entry-to-zero premise. A drag, where it happens, is human input and wins like any human input; the design leans on none of it.
+
+### Parked
+
+**Quick-links from insight cards to solution cards and qualifiers** — guidance enrichment, valuable, not this wave.
+
+### Two tensions, flagged for Matthew, not settled
+
+**(a) Machine-confirm versus Altify's Confirmed semantics.** In ALTF panels today, Confirmed has meant a named human vouched. If projection writes machine-confirmed cards into those panels, the word silently changes meaning for every existing user, and a human's Confirmed and ours become indistinguishable. Options: project confirmation with a visible machine watermark; hold machine confirmation on our side and project only the card; or let projection stay off until this is ruled. Costs differ; the ruling is yours.
+
+**(b) Annotating human-authored cards violates precedence.** Prepending "2x" onto a card a human wrote is a machine edit to a human's words — the exact thing the write law forbids. Proposed resolution, awaiting your word: the machine annotates only machine-authored cards; reinforcement of a human card is recorded as a Claim with outcome Reinforced and surfaces beside the card, never inside its text.
+
+### Open, next in line
+
+1. The two tensions above.
+2. Output schema, alongside the People charter's.
+
+---
+
 ## 3 · The Politics charter (links, influence, conflict) — not yet opened
 
-*End v0.1. One charter at a time, same as the objects: present, close, move on.*
+*One charter at a time, same as the objects: present, close, move on.*

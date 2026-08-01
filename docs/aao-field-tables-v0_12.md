@@ -1,8 +1,10 @@
 # AAO Field Tables
 
-**v0.8 · 31 July 2026 · Source, Evidence Contract, Candidate, Answer, Claim, Claim Basis CLOSED · Flag outstanding**
+**v0.12 · 1 August 2026 · Source, Evidence Contract, Candidate, Answer, Claim, Claim Basis CLOSED · Flag outstanding**
 
-Companion to: Architecture, Object Model, Glossary, Data Flow. Every heading stamped `fields v0.8`. This file is the packet Claude Code builds from: one section per object, each field naming its type, constraints, the process that writes it and the process that reads it. A field that cannot name both is invented and does not ship (standing rule).
+Companion to: Architecture, Object Model, Glossary, Data Flow. This file is the packet Claude Code builds from: one section per object, each field naming its type, constraints, the process that writes it and the process that reads it. A field that cannot name both is invented and does not ship (standing rule).
+
+**Changed in v0.12 — CODE's audit of v0.11, 1 August. Four wrongs fixed, one section added.** The v0.11 changelog promised the evidence-family law consolidated on all three objects; the body delivered it on two. Fixed: **`AAO_Answer__c.AAO_Basis__c` now has its row** (the changelog described it; the Answer table never carried it). **`AAO_Candidate__c.AAO_Basis__c` corrected from required to nullable** — a required picklist would make every pre-law row un-updatable, and the triggers, not the field, enforce the family law; required-at-the-field was the exact mistake the family law replaced on `AAO_Source__c`. **The reserved-word list is five, not two and not four:** `commit`, `json`, `system`, `merge`, `any` — the body said "Two" while the v0.11 changelog said four, and `any` (fifth, from the discovery build) was in neither. **Typed-lookup shorthand expanded to full API names** on Candidate/Claim subject lookups and Claim Basis cited lookups, because a shorthand like `_Answer__c` is exactly how a builder ships `Answer__c` without the prefix. Added: **an `AAO_Model_Config__mdt` section**, stub until CODE's describe is pasted back — 13 fields exist in the org and are undocumented here, which is the file failing its own standing rule.
 
 **Changed in v0.11 — consolidated build ratifications, 1 August, ending the sync drift CODE flagged.** The authored copy had fallen behind built law three syncs running, silently reverting corrections on every wholesale replace; this version catches it up and CODE's carry-forward script retires. Consolidated: **the evidence-family law** (items 47-48) — `AAO_Source__c` nullable on Candidate and Claim; Transcript → Source required with spans, State → Source must be null with ≥1 Claim Basis row, Both → both; enforced in triggers, stronger than the `required` it replaced, which never stopped a state row carrying an artifact it had never read. **`AAO_Answer__c.AAO_Basis__c`** with union semantics (call-established then state-reinforced reads Both); pre-existing rows read as Transcript, never backfilled. **Candidate's three-way abstention enum** (`nobody_said`/`model_declined`/`not_returned`; `model_missed` retired-valid) and **`Not_Returned` on Outcome** — a row the reader never answered is a fact about the charter, not an abstention. **Blind-reader attribution fields on Candidate** — both readers named on every row. **Evidence Contract's delete law** — delete blocked outside the purge context; supersede is the only retirement (the marker was a filter pretending to be a guard). **`AAO_Cited_Map_Row__c` built** on Claim Basis, completing the shape the discriminator always described. **Speaker gate for basis State: recorded as not applicable, never skipped.** Reserved-word collision list grows to four: `commit`, `json`, `system`, `merge`.
 
@@ -28,13 +30,7 @@ Companion to: Architecture, Object Model, Glossary, Data Flow. Every heading sta
 
 **Case sensitivity, corrected from the org 31 July.** `CaseSensitive can only be set for fields with unique also set` — verbatim from the compiler. **Affected and now false:** `AAO_SHA256__c`, `AAO_Artifact_SHA256__c`, `AAO_Content_Hash__c`, `AAO_Question_Record_Id__c`, `AAO_Question_Fingerprint__c`. **Unaffected and keeping it:** `AAO_Scope_Key__c`, `AAO_Contract_Key__c`, `AAO_Answer_Key__c`, all three unique. The intent survives in Apex: the key composers reject anything that is not lowercase hex rather than folding case silently. Each affected field carries the reason in its org description so nobody re-adds the flag.
 
-**Five Apex reserved-word collisions, recorded because they are permanent.** v0.11's change note says four and this section still said two; both were short. `any` has never reached this document — it took down the first deploy of the pipeline view controller. They come in two kinds, and the second kind is the dangerous one.
-
-**Refused loudly, with the identifier named.** `commit`, because our vocabulary uses *commit* as a pipeline stage — fine as data on a picklist, never as an identifier. `any`. And `merge`, which is a DML statement, so `AAO_EvidenceFamily.merge(String, String)` failed to parse at the declaration itself and was renamed `combine`.
-
-**Resolved silently, with the error surfacing somewhere else entirely.** A parameter named `json` shadows the `JSON` system class, and a local named `system` shadows `System`. Both compile without complaint, because Apex is case-insensitive, and the failure appears later as a missing method on `String`. These are the two worth teaching, precisely because the compiler will not teach them.
-
-Every one is a naming hazard specific to this domain: the words that collide are the words an evidence ledger most wants to use.
+**Five Apex reserved-word collisions, recorded because they are permanent. Each one broke a deploy before it made this list.** `commit` is a reserved word and cannot be a method name — our vocabulary uses *commit* as a pipeline stage, which is fine as data on a picklist and never as an identifier. A parameter named `json` shadows the `JSON` system class, which resolves silently because Apex is case-insensitive. `system` collides with the `System` namespace the same silent way. `merge` is a reserved word (it is DML). `any` is reserved and cannot be an identifier. All five are naming hazards specific to this domain, because our vocabulary is full of exactly these words.
 
 **Name collision to watch.** Altify's assessment answer field is `ALTF__Answer__c`. Ours is `AAO_Answer__c` and they are distinct records, but the word is overloaded in conversation. When speaking to Toby or Bill, say *our answer row* or *the assessment answer*, never bare *answer*.
 
@@ -109,11 +105,11 @@ Per proposition, per version of its text. Rule data, derived at runtime from the
 |---|---|---|---|---|
 | `AAO_Evidence_Contract__c` | Lookup | Required | Extraction | Which question |
 | `AAO_Source__c` | Lookup | **Nullable — the evidence-family law (v0.11):** required when basis is Transcript or Both, **must be null** when basis is State | Extraction / the P route | Which artifact, where one exists. A state-derived candidate has none |
-| `AAO_Basis__c` | Picklist: `Transcript`/`State`/`Both` | Restricted, **nullable at field level** | The writer | The family discriminator; the triggers enforce the law against it. Deliberately not `required`: a required picklist would make every pre-47 candidate un-updatable, and enforcing on insert in the trigger lets the refusal say why |
+| `AAO_Basis__c` | Picklist: `Transcript`/`State`/`Both` | Restricted, **nullable — deliberately not required (v0.12):** the triggers enforce the family law, and a required picklist would make every pre-law row un-updatable | The writer | The family discriminator; the triggers enforce the law against it |
 | `AAO_Blind_Charter__c` / `AAO_Blind_Charter_Version__c` | Text | Nullable | The blind reader | Which reader adjudicated coverage — distinct from the extraction charter fields, so both readers are named on every row |
 | `AAO_Opportunity__c` / `AAO_Account__c` | Lookup | Required | Extraction | Scoping; the per-opportunity lease |
 | `AAO_Subject_Type__c` | Picklist | Restricted, required | Extraction | Mirrors Answer's discriminator |
-| `AAO_Subject_Contact__c`, `_Shadow_Person__c`, `_Insight_Card__c`, `_Qualifier__c`, `_Decision_Criterion__c` | Lookup | One populated | Extraction | The subject. Same typed shape as Answer, which forces one row per person on a per-person question |
+| `AAO_Subject_Contact__c`, `AAO_Subject_Shadow_Person__c`, `AAO_Subject_Insight_Card__c`, `AAO_Subject_Qualifier__c`, `AAO_Subject_Decision_Criterion__c` | Lookup | One populated | Extraction | The subject. Same typed shape as Answer, which forces one row per person on a per-person question |
 | `AAO_Proposed_Verdict__c` | Picklist: `TRUE`/`FALSE`/`UNVERIFIED` | Nullable | Extraction | What was proposed. Null on abstention |
 | `AAO_Spans__c` | Long Text, JSON | Nullable | Extraction: up to five spans with source ref, part index, locator | Span verification; the blind reader |
 | `AAO_Element_Coverage__c` | Long Text, JSON | Nullable | The blind reader, element by element | Routes the outcome: full writes the verdict, partial writes `UNVERIFIED` with the spans that exist, none writes nothing |
@@ -139,9 +135,10 @@ Per proposition, per version of its text. Rule data, derived at runtime from the
 | `AAO_Evidence_Contract__c` | Lookup | Required | Commit | Which question this answers |
 | `AAO_Opportunity__c` / `AAO_Account__c` | Lookup | Required | Commit | Scoping; roll-up; the live set |
 | `AAO_Subject_Type__c` | Picklist: `Opportunity`/`Contact`/`Shadow_Person`/`Insight_Card`/`Qualifier`/`Decision_Criterion` | Restricted, required | Commit | **The discriminator.** `Opportunity` added 31 July from the build: an assessment answer's natural key is opportunity plus proposition, with no person and no card, and the five typed lookups gave it no composable subject at all. **No new lookup** — the opportunity lookup already on the row is what the composer reads for this value. Without it, opportunity-plus-proposition and opportunity-plus-contact-plus-dimension rows are indistinguishable to any query that does not already know what it is hunting |
-| `AAO_Subject_Contact__c`, `_Shadow_Person__c`, `_Insight_Card__c`, `_Qualifier__c`, `_Decision_Criterion__c` | Lookup | One populated | Commit | Traversal, reporting by related record, lookup filters. **Null-and-flag on subject delete** |
+| `AAO_Subject_Contact__c`, `AAO_Subject_Shadow_Person__c`, `AAO_Subject_Insight_Card__c`, `AAO_Subject_Qualifier__c`, `AAO_Subject_Decision_Criterion__c` | Lookup | One populated | Commit | Traversal, reporting by related record, lookup filters. **Null-and-flag on subject delete** |
 | `AAO_Answer_Key__c` | Text(120) | **Unique, External ID, case-sensitive** | Trigger, frozen composer over subject type plus the populated lookup plus the contract | **The failure detector for the read-before-write that human precedence depends on.** `DUPLICATE_VALUE` is a merge path, never an error path: catch, re-read the colliding row, apply precedence, proceed |
 | `AAO_Verdict__c` | Picklist: `TRUE`/`FALSE`/`UNVERIFIED` | Restricted, required | Commit | The answer. Abstention and not-addressed never reach here |
+| `AAO_Basis__c` | Picklist: `Transcript`/`State`/`Both` | Restricted, nullable | Commit, **union semantics across the answer's claims:** call-established then state-reinforced reads `Both` | Which evidence families stand behind the current answer. **Pre-existing rows read as `Transcript`, never backfilled** — the reader supplies the default; the rows stay untouched. *(v0.12: the v0.11 changelog described this row; the table never carried it)* |
 | `AAO_Spans__c` | Long Text, JSON | — | Commit, **accumulating across claims** | The current evidence set. This is what lets call two say there was already partial evidence and now it is sufficient |
 | `AAO_Element_Coverage__c` | Long Text, JSON | — | Commit | What is covered and what is missing. **The flag over partial coverage reads this** to say here is what stands and here is the piece still needed |
 | `AAO_Interpretation__c` | Long Text | Nullable | Commit | The interpretation behind the current verdict |
@@ -151,7 +148,6 @@ Per proposition, per version of its text. Rule data, derived at runtime from the
 | `AAO_Publication_State__c` | Picklist: `Live`/`Held`/`Declined` | Restricted, required | Ratification | **Held is live for nothing** — not projection, not condition satisfaction, not a predicate's count, not contention's aggregate, not the roll-up, not guidance. One filter every reader applies |
 | `AAO_Projected_Value__c` | Text(255) | Nullable | Projection, outbound | Half of the compare-and-swap watermark |
 | `AAO_Projected_Modstamp__c` | Datetime | Nullable | Projection, outbound, **captured at the instant of our write** | The other half. A timestamp that moved while the value did not is a human confirmation, and it is the only evidence of one that exists. **Cannot be reconstructed later** |
-| `AAO_Basis__c` | Picklist: `Transcript`/`State`/`Both` | Restricted, nullable | Commit | **Ratified 48.** THE UNION OF THE CLAIMS THAT BUILT IT: call-established then state-reinforced reads `Both`. Decides what counts as this answer's citation — spans for `Transcript`, the claim's cited rows for `State`. Pre-48 rows are READ as `Transcript`, never backfilled |
 | `AAO_Last_Claim__c` | Lookup(Claim) | Nullable | Commit | The claim that most recently moved this. The frozen row beside the live one |
 | `AAO_Evidence_Occurred__c` | Datetime | — | Commit | When the establishing evidence happened, not when we processed it |
 
@@ -175,7 +171,7 @@ Per proposition, per version of its text. Rule data, derived at runtime from the
 | `AAO_Account__c` | Lookup | Required | Commit | **Key two.** Opens every account-grain question |
 | `AAO_External_Person__c` | Lookup(Contact) | Nullable | Commit | **Key three** |
 | `AAO_Internal_Person__c` | Lookup(User) | Nullable | Commit, resolved from participants rather than assumed from the deal owner | **Key four.** Opens the seller-to-buyer grain, which is where relationship standing lives. **A grain not recorded cannot be declared later without reprocessing the corpus, which means re-paying every model call** |
-| `AAO_Subject_Type__c` + typed subject lookups | Picklist + Lookup | Same form as Answer | Commit | Subject identity, composed by the same frozen function. **Without it replay cannot reconstruct the mirror** |
+| `AAO_Subject_Type__c` + `AAO_Subject_Contact__c`, `AAO_Subject_Shadow_Person__c`, `AAO_Subject_Insight_Card__c`, `AAO_Subject_Qualifier__c`, `AAO_Subject_Decision_Criterion__c` | Picklist + Lookup | Same form as Answer; one lookup populated | Commit | Subject identity, composed by the same frozen function. **Without it replay cannot reconstruct the mirror** *(v0.12: full API names spelled out; the shorthand invited unprefixed builds)* |
 | `AAO_Verdict_Before__c` | Picklist | Nullable | Commit | What the answer was. Null where this claim created it |
 | `AAO_Verdict_After__c` | Picklist: `TRUE`/`FALSE`/`UNVERIFIED` | Required | Commit | What it became. **The two together are the change the journal always carried** |
 | `AAO_Spans__c` | Long Text, JSON | Nullable | Commit | This claim's quotes, each with source ref, part index and locator. Frozen |
@@ -205,7 +201,7 @@ Per proposition, per version of its text. Rule data, derived at runtime from the
 |---|---|---|---|---|
 | `AAO_Claim__c` | Master-Detail(Claim) | Required | Commit | The claim this supports. Cascades with it at retirement |
 | `AAO_Cited_Type__c` | Picklist: `Map_Row`/`Insight_Card`/`Decision_Criterion`/`Answer`/`Qualifier_Status`/`Shadow_Person` | Restricted, required | Commit | Which lookup is populated; how to read the snapshot |
-| `AAO_Cited_Map_Row__c`, `_Insight_Card__c`, `_Decision_Criterion__c`, `_Answer__c`, `_Qualifier_Status__c`, `_Shadow_Person__c` | Lookup | One populated | Commit | **The live record.** Traversal, and the current-state half of the subquery |
+| `AAO_Cited_Map_Row__c`, `AAO_Cited_Insight_Card__c`, `AAO_Cited_Decision_Criterion__c`, `AAO_Cited_Answer__c`, `AAO_Cited_Qualifier_Status__c`, `AAO_Cited_Shadow_Person__c` | Lookup | One populated | Commit | **The live record.** Traversal, and the current-state half of the subquery *(v0.12: full API names spelled out — `AAO_Cited_Answer__c` in particular, since bare `Answer__c` collides with nothing and deploys clean, which is worse)* |
 | `AAO_Snapshot__c` | Long Text, JSON | **Immutable** | Commit: the cited fields and their values at claim time | **The frozen half.** What the row actually said when the claim was written |
 | `AAO_Snapshot_Taken__c` | Datetime | Immutable | Commit | When the freeze happened |
 | `AAO_Covers_Element__c` | Text(40) | Nullable | Commit, from the coverage adjudication | Which part of the proposition this row covers. **This is what makes partial coverage queryable** rather than buried in JSON |
@@ -214,6 +210,16 @@ Per proposition, per version of its text. Rule data, derived at runtime from the
 **The discipline this object needs, and it is the thing that will decide whether it stays useful.** **It records what was cited, not what was available.** A junction that points at six types and freezes state is exactly the object that becomes a general-purpose context dump, and a claim that lists everything on the deal reads as far better supported than it was. If a row cannot name which part of the proposition it covers, it does not belong here.
 
 **Answer-to-answer citation is permitted and unbounded reads are not.** A claim may rest on another answer's state — that is what makes one question able to reference qualifier statuses, other assessment answers, people and cards at once. Reconciliation's reads stay bounded to the proposition at hand; this junction records what was cited, it does not authorise scanning the deal.
+
+---
+
+## 7 · AAO_Model_Config__mdt · fields v0.12 · **STUB — enumeration owed**
+
+**Custom metadata, not an object: the pinning record for the model layer.** Which model, which endpoint, which charter at which version, cache and token parameters. It exists in the org with **13 fields, none of which are documented here**, which is this file failing its own standing rule — every field must name its writer and reader or it is invented, and a field that shipped without a row here is the same defect in the other direction.
+
+**Owed:** CODE pastes the verbatim describe of `AAO_Model_Config__mdt` back; the enumeration is absorbed in v0.13 with writer and reader named per field. Until then, nothing cites a Model Config field by name from this document.
+
+What is already ruled about it, independent of the field list: model and charter versions are pinned here, never inline in Apex; the API secret is **not** here — it lives in the Named Credential's write-only slot and is merged after Apex builds the request; changing a value here is a versioned act that shows up on every subsequent claim's charter stamp.
 
 ---
 

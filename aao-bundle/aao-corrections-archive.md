@@ -1,3 +1,5 @@
+# ARCHIVED · fully absorbed into the five living documents at the 2 August 2026 consolidation. Kept as the audit trail of the correction chain. Nothing here is authoritative over anything.
+
 # AAO Corrections and Change Record
 
 > **The version lives on the stamp line below and nowhere else.** The H1 carried a version through v2.4 and went stale, which is the same defect the glossary carried through three versions, Architecture through one and Data Flow through two. Removing it is the only fix that cannot rot.

@@ -1,3 +1,37 @@
+# AAO Charters
+
+> **The version lives on the stamp line below and nowhere else.**
+
+**v2.0 · 2 August 2026 · Formed in the consolidation: charter design v1.8, the scope resolver v0.4, the account ontology captures v0.2, and the People harness brief v0.2 merged into one document, plus the Process charter section written at last. Each absorbed part keeps its own stamped headings below; where parts state the same rule, the later stamp wins.**
+
+> **Authoritative for:** the AI — every charter, the shared output envelope, the recovered and authored ontologies, the scope resolver, and the harness briefs. **Defers to:** Glossary for vocabulary, Architecture for placement, Model & Flow for entities and fields.
+
+**Reading order for a single-purpose session:** the Board first, then this document's section for your focus: §P1 People, §P2 Problems, §P3 Politics (open), §P4 Process, §P5 Scope Resolver, §P6 Account-level ontology, §P7 Harness briefs.
+
+---
+
+## §P4 · The Process charter · charters v2.0 · RULED, written here for the first time
+
+**One charter over one merged corpus** of assessment questions and sales-process qualifiers. The charter never sees a module: its handed unit is the Evidence Contract, and extraction 1.1.0 proved the shape by running the mini-rubric with no module identity. Licensing gates discovery (what contracts exist) and projection (what is written), never the charter — the capability matrix stays in the projection layer. **Configuration is segmented by module regardless:** four surfaces, relationship map, insight map, sales process, assessment, each its own custom settings, none an open prompt template; the charter is the unit of injection, the module the unit of configuration, and they meet at the contract. **Graceful refusal:** a read-permission failure on an unlicensed module's tables is absence, a configuration note, never an error.
+
+**The proposition is the pair.** Criterion Text plus Long Question where the latter is populated, Criterion Text alone where not — it is the required half. Both byte-exact, neither paraphrased into the other; the content hash covers both. Help, Tip, and the per-question Yes and No labels (assessment side only, forty characters, no Unknown label) are authored rubric text read into the contract as qualifying-evidence guidance.
+
+**Stage scoping.** Reading is never stage-gated: every pass listens against the deal's whole rubric, including standing Yes answers, because a Yes can be undone and no model ever selects attention. Writing is gated at or behind the open stage; ordinary writes only where the answer is not Yes; a standing Yes moves only by demotion (machine) or contention (human). Evidence for a future-stage qualifier is claimed the day it is heard; stage advance triggers a deterministic projection sweep from our own answers, never a re-read. The open stage is a field read on the Altify Opportunity.
+
+**The qualifier surface.** Projection targets `ALTF__Qualifier_Answer__c`: composite-key upsert, Comment 32,768 for citations, status No / In progress / Yes with no Unknown slot — **In progress carries UNVERIFIED**, null stays never-asked, and a seller's In progress is human-authored forever. The assessment surface targets `ALTF__Assessment_Answer__c`: Unknown default, Note 2,048. Quantifier, compound and readability rulings for the corpus live in Architecture's Computable Share section.
+
+**Owed:** the five-part projection test recorded in the Board's sequence, after the People harness chain.
+
+---
+
+*The absorbed documents follow, stamps intact.*
+
+
+
+---
+
+# PART I · Charter Design (absorbed; stamps intact)
+
 # AAO Charter Design
 
 > **The version lives on the stamp line below and nowhere else.**
@@ -736,3 +770,341 @@ Its significance is that guidance can reach it: when a red or a flag concerns a 
 ## 3 · The Politics charter (links, influence, conflict) — not yet opened
 
 *One charter at a time, same as the objects: present, close, move on.*
+
+
+---
+
+# PART II · The Scope Resolver (absorbed)
+
+# AAO Scope Resolver
+
+> **The version lives on the stamp line below and nowhere else.**
+
+**v0.4 · 2 August 2026 · The net-new participant rule: added to BOTH maps on a dual-scope call, because coverage is a claim and presence establishes it in both scopes. Supersedes adds-nobody and the establishment-gated proposal. Dimensional writes stay establishment-gated per scope. This closes the last open behavior of the resolver except per-claim scope.**
+
+**v0.3 · 2 August 2026 · The B&V test ran and two rules graduate from it: the two-key lock and the dual-write rule. The which-opportunity match is no longer open — it worked on a real four-opportunity account, with one weighting correction.**
+
+**Changed in v0.3, ruled by Matthew from the test.**
+
+**The two-key lock · RULED.** Tests 1 and 2 both always run and **neither resolves alone.** Agreement resolves; disagreement falls to traversal. The org itself supplied the counterexample that forces this: Casey, a Customer Success Manager, owns both Black & Veatch renewal opportunities, so an account-oriented role owning deal calls is not an edge case, it is how renewals work. Role stops being a short-circuit and becomes half of a two-key lock, which also means a wrong entry in the role map can no longer misroute a call by itself.
+
+**The dual-write rule · RULED.** When both scopes resolve, the evidence is related to **both** — the account and the specific opportunity. **ECI's failure on the B&V call was singularity, not the pick:** its one-slot stamp chose the right deal and thereby lost forty minutes of account truth. Under the dual rule, map details update in both scopes for already-mapped people, each scope's rubrics reading their own side of the two-sided summary; establishment rules are unchanged, no establishment no write, restatements land as reinforcements, and nobody new is added to either map by a dual-scope call.
+
+**The overlap read weights curated rows, never bare membership · RULED from the clone finding.** Altify seeded the stamped deal's map by cloning all 44 account-map rows at creation; only nine were ever curated. Bare membership overlap is therefore inheritance, not signal. The discriminating read is rows a human touched — curated attributes, non-default values.
+
+**The B&V test result, recorded:** scope read on 61% of the transcript returned account-primary with expansion seeding (Adam Meloan's *"maybe that is one of our first business cases"*), which is the dual trigger per the ontology's own caveat. Which-opportunity resolved to Community Licenses-150 by agreement of curated-overlap (3 of 3 participants curated there; 1 of 3 on the demo deal; 0 of 3 on both renewals) and content match (community licenses and MCP use-case talk; zero renewal language). Participant-to-contact proved deterministic in ECI orgs: `VideoCallParticipant.RelatedPersonId` was populated with real Contact ids on every external row.
+
+**v0.2 · 2 August 2026 · Matthew's corrections land: the account-map check replaces the account-plan check, ownership traversal is demoted to a suggestive read, the which-opportunity match gains its method and stays OPEN pending the live test, and dual-scope gains the two-sided summary.**
+
+**Changed in v0.2, all from Matthew.** **The account-plan check is dead.** Account plans are an Altify schema most customers will not have — half or more run relationship and insight maps only — and a plan can live in a PowerPoint no system sees, so gating anything on plan existence fails orgs for not owning a feature. **The check is whether an account MAP exists** — account-scoped map or insight rows — which is readable in every org that has the smallest footprint. **Ownership traversal is demoted from deterministic to suggestive:** with CPQ or SAP carrying the commercials, the CRM cannot prove what an account owns; closed-won history over a trailing window suggests ownership and guarantees nothing. And one floor stated: **a call in scope at all means at least one open opportunity exists**, because licensed-owner scoping is what admitted the call, so which-opportunity always has a candidate.
+
+**What this file is.** How one piece of evidence learns which map it may speak to: an opportunity or the account itself. This decision runs before any charter and gates every write. Wrong scope on a call writes machine claims into a seven-figure deal record or pollutes a durable account map, so the resolver is held to the same bar as establishment even though it only routes.
+
+**Why nothing platform-supplied can carry it, measured 2 August.** ECI's `RelatedRecordId` is inference and unstable inference: the same recurring meeting (Altify | T-Mobile Lion Team, one series, five instances) was stamped to the account twice and to an opportunity three times inside five weeks. A CSM's account call (Altify | Black & Veatch Bi-weekly, 24 June) was stamped to an opportunity while its transcript discusses adoption, enablement, MCP rollout and QBR prep, with not one sentence about the deal it was filed under. And roughly 75% of target customers have no ECI at all; their transcripts arrive as files with no related record. **The stamp, where present, is one input. It is never the answer.**
+
+---
+
+## The tests, in order · RULED
+
+**The ladder is ordered by decisiveness, not by determinism.** That is the correction to the first draft of this design: a deterministic read whose meaning cannot be interpreted alone is not decisive. Ownership traversal is perfectly deterministic and means nothing by itself, because an account that owns product still runs new-business and expansion deals. So the cheap decisive test runs first, the near-decisive semantic test second, and the deterministic-but-ambiguous read serves as the interpreter's evidence, not as a verdict.
+
+### Test 1 · The call owner's role · deterministic at runtime
+
+**The owner-organizer of the call is the person whose work the call is.** An account manager organizing a call is doing account work even when she pulls in a seller to demo the product she needs demonstrated — the B&V call exactly. Speakers do not control; the organizer does.
+
+The owner's role resolves through the **role map**: this org's role names classified account-oriented or sales-oriented, **derived once per org at setup, model-proposed, admin-ratified in one sitting, cached forever** — setup-time inference, the same mechanism as persona derivation and computability. One ratification at install. **No per-call and no per-series ratification exists anywhere in this design.**
+
+Internal owner, mapped role → resolved. Sales-oriented → deal side, and Locate narrows to which deal (Test 3 supplies the match where no ID exists). Account-oriented → account scope, done. External or unmapped owner → fall through.
+
+### Test 2 · What is discussed · the scope read, basic inference
+
+A summary-level read of subject, agenda and transcript answering one authored question: **is this call about account matters or opportunity matters.** It runs second because its answer prunes everything after it: **an account verdict ends the resolver** — no traversal, no ownership check, nothing else to know.
+
+The sided vocabulary it reads against is **ours to author, shipped as seed metadata exactly like the People ontology** (two fields, org override, LAW #1 shape). Draft below, owed correction.
+
+This is inference and it is admitted deliberately: what a call is about is nearly always sayable from what was said, the classification **routes and never establishes**, nothing it produces is cited, and its failure mode falls through rather than deciding.
+
+### Test 3 · Traversal · suggestive evidence for the interpreter, and the map check
+
+Runs only when Tests 1–2 have not resolved, and always when an opportunity-side call needs its specific deal.
+
+**The map check, deterministic and first within this test:** does an account-level map exist for this account — account-scoped Contact Map Details or insight rows, opportunity lookup null. Readable in every org with any Altify footprint. **No account map and the summary reads opportunity → opportunity call, done.** An account map exists → the account is a live mapping surface and dual scope is possible, decided by what the summary found.
+
+**The ownership read, suggestive only · corrected in v0.2:** closed-won opportunities over a trailing window suggest the account owns something; CPQ in Salesforce or SAP means the CRM may never prove it. Owns-nothing-visible with no account map supports new business. **Ownership never decides anything alone.**
+
+**The which-opportunity match · method ruled, mechanism OPEN pending the live test.** A global account routinely holds two, three, four open opportunities, so knowing a call is opportunity-side is half the answer. Two reads combine, one deterministic and one inferred, both against the **closed candidate set of this account's open opportunities**:
+
+1. **Participant overlap, deterministic:** the call participants' email addresses against each candidate opportunity's Contact Map Details. The deal whose map holds the people on the call is the deal the call served.
+2. **Content match, inferred:** subject, agenda and the Test 2 summary against each candidate's attributes — name, type, stage, close-date talk.
+
+Agreement resolves. The model answers candidate, NONE, or AMBIGUOUS — the People identity-match shape reused — and AMBIGUOUS falls to the flag. **OPEN until the B&V test below is run and the method is seen to work on a real multi-opportunity account.**
+
+### Test 4 · Speakers · tiebreak only
+
+Who is speaking, last, weakest. This is ECI's entire method and the B&V misfile is what it produces when trusted; it enters only as a tiebreak between surviving candidates.
+
+### Test 5 · The flag
+
+Still unresolved → yellow flag asking where the call belongs. **Target rate: one in a hundred, not a workflow.** The evidence has already landed regardless — Sources always land; scope gates adjudication and writes, never arrival.
+
+---
+
+## The dual-scope call · Matthew's opening ruling, deeper design owed
+
+The expansion case is real: managed services on an owned product is an account-level opportunity, and one call legitimately serves both scopes.
+
+**The net-new participant rule · RULED, superseding two earlier positions.** *v0.1 ruled adds-nobody; an establishment-gated alternative was proposed in session and rejected; both are superseded by this, Matthew's ruling, and the reasoning is recorded because it corrects a miss.*
+
+**A net-new external participant on a dual-scope call is added to BOTH maps.** The argument is the system's own law applied honestly: **coverage is a claim, and presence establishes it** — a silent attendee establishes at most coverage, which is not nothing, it is a claim, and a claim that needs a person earns the row. Coverage is scope-symmetric by construction: the occasion happened for the account and for the deal alike. So the coverage claim alone justifies the row in both scopes, and the person lands on both maps with coverage counted and **every other dimension at Unknown, which the maps natively support.**
+
+**Why both rather than the inferred one, stated as the conservatism it is.** A wrong single-map placement by inference costs a team guidance on a person they cannot see — an account-level power hire filed only onto a deal map is invisible to account management forever. A person present on both maps with honest Unknowns costs nothing and lies about nothing. **We reduce the impact of our mistakes rather than the elegance of our placements.**
+
+**Dimensional claims remain establishment-gated per scope, unchanged.** Decision orientation moves on the account row only from account-side words; buyer role moves on the deal row only from deal-side words; coverage moves on both from the occasion itself. Addition is by presence; every dimension beyond coverage is by establishment.
+
+**Every existing guard binds untouched:** the admission gates and cardinality caps (a two-hundred-person webinar already fails the bounded-committee gate and adds nobody), the identity ladder and Identification flag before any row, and the Contact toggle governing whether any of it reaches Altify's own tables — shadow persons where it is off.
+
+For **already-mapped** people the v0.1 mechanics stand: the binary rubrics run over each person **once per scope** — account questions against the account row, opportunity questions against the deal row — and each claim lands in its own scope.
+
+**The two-sided summary · added in v0.2, Matthew's.** On a dual-scope call the scope read produces **two summaries from one pass**: the account-focused summary (maintenance, adoption, consumption of what is owned) and the opportunity-focused summary (the expansion, its future close, its decision talk), each side carrying the parts of the call the ontology assigns to it. Each summary then drives its own scope's reads, so the account rubrics see account content and the deal rubrics see deal content, from one transcript, with nothing read twice.
+
+**The dual trigger, restated with the v0.2 corrections:** an account map exists AND the content reads both sides. Ownership is not in the trigger — an account map plus mixed content is dual even where the CRM cannot prove ownership.
+
+**Named open, not settled here:** whether scope ultimately resolves per claim rather than per call. *(The net-new-person question is closed above in v0.4; the which-opportunity mechanism closed in v0.3 by the B&V test.)*
+
+---
+
+## The account/opportunity content ontology · DRAFT v0 · owed Matthew's correction
+
+Authored by us, shipped as seed, org-overridable. Sided vocabulary, not keywords — the read is what the conversation is about, and the lists below are the meaning of each side, not strings to grep.
+
+**Opportunity-side:** the decision process and decision criteria · a compelling event and its date · budget, funding, approval to spend · evaluation, proof, demos in an evaluation context · proposal, pricing, quote, negotiation · competition and alternatives · contract, legal, procurement, signature · timeline to a decision · who must say yes to a purchase · **renewal conversations** (renewals are opportunities in the methodology — two renewal processes exist) · ROI justification before a purchase.
+
+**Account-side:** adoption and utilization of an owned product · onboarding, training, enablement · business reviews and QBRs · support, escalations, service delivery · managed-services execution · value realization from what is owned · roadmap and relationship cadence · account team orchestration across many deals.
+
+**Authored caveats, in the ontology itself:** late-stage onboarding discussion inside a still-open deal reads account-shaped and is not · expansion seeding ("we could also use this for…") on an account call is the dual-scope trigger, not a scope flip · a seller demoing on an account call does not make it a deal call (the organizer test already said so).
+
+---
+
+## Where this sits
+
+Before the admission gate's per-charter checks, after Locate finds the account. The account is always findable — every call resolves to an account by participants and domains, D360 match rules supplying that join for file-dump orgs on the slow lane, the deterministic email-domain join staying the hot path. **Scope selection is the resolver's job alone; D360 identity resolution answers who, never which scope.**
+
+---
+
+*End v0.1. The ontology draft above is the piece owed correction; the ladder is ruled. Folds into charter design at its next bump.*
+
+
+---
+
+# PART III · Account-Level Ontology Captures (absorbed)
+
+# AAO Account-Level Ontology Captures
+
+> **The version lives on the stamp line below and nowhere else.**
+
+**v0.2 · 2 August 2026 · The account insight map ontology captured whole: five lane definitions, four admission tests, four example lists, and the person-to-card questions. One incident during the walk, logged in section 4.**
+
+**What this file is.** Verbatim ontological text captured from the production UI for the account-level halves of the People and Problems charters, held here until it folds into the charter design record at its next bump. Provenance for everything below: read from the Altify production org's own UI on 2 August 2026, screenshots taken by Matthew, transcribed byte-exact. Spelling and punctuation untouched.
+
+**Why this file exists.** The account map reopen needs ontological text for the dimensions and card types the account map actually uses. Decision Orientation is the account map's own dimension, filled on roughly 26 percent of account rows against 3 percent of opportunity rows, and it was scoped out of deal work for exactly that reason. It comes back into scope for the account-level People charter.
+
+**What this reopens, named rather than passed over.** The Scoped-Out Dimension ruling said Decision Orientation is humans-only: no `_Answer__c` field, no wizard questions, a judgment about character rather than a report of speech. **The first half stays true and the second half is now qualified by Matthew's direction: the definitions below become the ontology, the same shape as Buyer Role** — no vendor question set exists, so we author the propositions from the definition text, contracts land `Inferred_Pending` until ratified, and establishment still requires words a person actually said, never a personality read. The scope-out survives at deal level. At account level the dimension is in scope for the charter.
+
+---
+
+## 1 · Decision Orientation · the five values, verbatim from the wizard
+
+**Surface:** the Decision Orientation modal on the account relationship map, "Select manually" — there is no guided-question path, only definitions. Each value carries a card description, a "Who are they?" text, and a "What next?" text.
+
+### Financial
+
+**Card:** This person's primary interest is price, cost and economics.
+
+**Who are they?** This person's primary interest is the price, cost, and economics of your solution.
+
+**What next?** When meeting with this person, keep in mind your product must be viable while numbers and negotiations will be their priority.
+
+### Technical
+
+**Card:** This person's primary interest is product functionality and technical capability.
+
+**Who are they?** This person is often analytical and detail-oriented.
+
+Their primary interest is in your product functionality and technical capability.
+
+**What next?** When meeting with this person, keep in mind that product demonstrations, benchmarks, and careful deliberation will be their priority.
+
+### Relationship
+
+**Card:** This person is looking to partner with someone.
+
+**Who are they?** Their primary interest is the people and company that will be servicing their organization.
+
+**What next?** When meeting with this person, keep in mind your product must be viable while overall support, trust, effort, and responsiveness will be their priority.
+
+### Business
+
+**Card:** This person sees the big picture and considers the overall business impact your solution will have on their company's current and future state.
+
+**Who are they?** This person can properly balance the technical, financial, and relationship issues.
+
+Their vision is often strategic and extends beyond their company to include their clients, their competition, and their partner community.
+
+**What next?** When meeting with this person, industry knowledge and articulating business vs. product value will be key.
+
+### Unknown
+
+**Card:** Decision orientation is unknown.
+
+---
+
+## 2 · What the charter takes from this
+
+**The shape is Buyer Role's shape, exactly.** Manual pick, definitions and nothing else, so we author the propositions from the definition text and a human ratifies them. Contracts land `Inferred_Pending`.
+
+**The "Who are they?" text is the proposition source. The "What next?" text is guidance and never enters the reader's input** — it is seller coaching, the same class as the insight admission tests that were ruled guidance rather than gates.
+
+**Establishment stays evidence-bound.** *This person's primary interest is price, cost and economics* is establishable from words the person said — pressing on price, asking for the economics, negotiating terms. It is the speech-report reading of a definition that was written as a character sketch, and the charter takes the speech reading, because behavioural-pattern inference is already forbidden. One FALSE-direction hazard to carry into authoring: these four values are not mutually exclusive by evidence — a person can press on price and ask for benchmarks in one call — so the propositions must be authored as independent assertions with the value derived from which one dominates by count of establishments, or the dimension abstains as AMBIGUOUS. **That derivation rule is not settled here.**
+
+**The four "What next?" texts are enablement content for guidance**, the same join the Solution enablement sections ruling recorded: when guidance speaks about a person with an established orientation, the vendor's own coaching sentence is one read away.
+
+---
+
+## 3 · Account insight map · captured whole
+
+**Provenance:** walked in the production UI on 2 August 2026, Account Plan for Salesforce, Inc., Insights tab, via browser. Lane tooltips read by hover; admission tests and examples read from the *What is an account X?* link on an open card panel. Byte-exact, including one shipped typo. **The Acc Solutions lane exists** — it renders only when the Acc Solutions toggle is on, which is why it is easy to believe it absent.
+
+### 3.1 · The five lane definitions, verbatim
+
+**Acc Goals:** An Account Goal is an end result which an Executive needs to achieve, ideally with a measurable outcome and a specified time frame.
+
+**Acc Pressures:** An Account Pressure is an internal and/or external business issue that significantly impacts achieving the Goal(s), and serves as a driver for Initiative(s).
+
+**Acc Initiatives:** An Account Initiative is a project created to address the Pressure(s) and achieve the Goal(s).
+
+**Acc Obstacles:** An Account Obstacle is an internal operational problem, typically with either organization, process, culture, skills, or technology. Something that is broken, or doesnt exist, and needs to be enabled during the Initiative.
+
+> *"doesnt" ships without an apostrophe. It stays that way here, per the byte-exactness law, and it is another `CONFCLIT`-class specimen: the package contains typos and a sweep that assumes clean text misses things.*
+
+**Acc Solutions:** A set of capabilities, products, or services that help remove the Obstacles - enabling the success of the Initiative, relieving the Pressures, and contributing to achieving the Goals.
+
+> **The causal chain is authored INTO these definitions.** Pressure names Goals and Initiatives; Initiative names Pressures and Goals; Obstacle names the Initiative; Solution names Obstacles, Initiative, Pressures and Goals. The vendor states the edge structure per lane on the account map, in prose, while the schema still holds one typed edge. Rebuttals-grade.
+
+### 3.2 · The admission tests, verbatim, with the opportunity-map deltas
+
+**Account Goal** — You should think about the following to help you determine if this is an account Goal: Is this a business goal which an executive needs to achieve? · What KPI will the executive use to measure results? · Does the result need to be achieved within a specific time frame?
+
+> *Differs from the opportunity test on every question: deal-level asks about the decision maker's personal goal, how the decision maker is measured or compensated, and quantification. Account-level asks business goal, executive, KPI. **Personal versus business is the axis of the AM/OM split for Goal.***
+
+**Account Pressure** — Is this pressure on the business impacting the executive's goals? *(rendered as: How is this pressure on the business impacting the executive's goals?)* · Is the pressure causing an initiative to be prioritized, sponsored, and funded by a key player? · Is the pressure connected to a compelling event?
+
+> *Deal-level asks the pressure categories, sponsorship by the decision maker, and whether it prevents a goal. Account-level drops categories, moves sponsorship to a key player, and adds the compelling event. **The decision-maker role systematically becomes key player at account level.***
+
+**Account Initiative** — Is the initiative in place to address internal or external pressures on the business? · Is a business pressure causing the initiative to be prioritized, sponsored, and funded by a key player? · Will success of the initiative have an impact on the executive's goals?
+
+> *Same three-question shape as deal level with the same two substitutions: key player for decision maker, executive's goals for the decision maker's goal.*
+
+**Account Obstacle** — identical to the opportunity test, all three questions, fixed with your solution, significant enough to establish substantial value, negative consequences if not fixed. **Consistent with the label enumeration: Obstacle has no AM variant.**
+
+**Account Solution** — identical to the opportunity test, all four questions, ending on *Would a key player be able to articulate your unique business value from this Solution?* **Consistent with `SOLUTION_DEF_AM` and `_OM` being identical.** No examples link is offered for Solution.
+
+### 3.3 · The example lists, verbatim
+
+**Goals (7):** Grow revenue by 15% in next 6 quarters · Increase shareholder value by 2% in 3 years · Enter APAC market in next Financial year with new cloud product · Grow from 2k to 3k net new customers by end of this Financial year · Improve profitability margins by 3% · Expand market share by 6% · Become innovation leader
+
+**Pressures (11), category tags theirs:** Eroding market share (competitive) · Difficult mergers or acquisitions · Slow time to market (market) · Decreasing shareholder value (financial) · Cost rising by x percent (financial) · Profits down by x percent (financial) · ROI too slow (financial) · Insufficient revenue - flat or x % up or down (financial) · High turnover (operational) · Customer satisfaction down by 10% · Lack of trust from partners (partner)
+
+> *The parenthetical tags map examples onto the Pressure Type checkbox set, and two examples carry no tag. Authored, imperfect, kept as is.*
+
+**Initiatives (12): identical to the opportunity map's twelve**, already recorded verbatim in charter design. One list serves both maps.
+
+**Obstacles (9):** Managers not equipped to validate and coach · Tools and processes outdated · Low average deal size · Slipping deals · Sales cycles are too long · Can't get relationships at executive level · Not generating enough leads · Too many IT resources to meet reporting requirements · Data is in multiple systems
+
+### 3.4 · Person-to-card on the account map, read from the panels
+
+Goal asks **Who is the Key Player responsible for this Goal?** — where the opportunity map asks for the Decision Maker. Initiative asks **Who is responsible for the success or failure of the Project/Initiative?**, unchanged. Pressure and Obstacle ask **Who is impacted?**, unchanged. Every panel carries **Who told you about this?**, unchanged. **So the informer, impacted-by and responsible-for structure is identical across maps, and only the named role of the responsible party shifts, decision maker at deal level, key player at account level.** The four-questions-two-stored-values finding carries to the account map untouched.
+
+Also observed: the account Solution card carries the full enablement section stack live — Key Messages Discovery and Business Case, Case Studies and Customer Success Stories, Sales Tools, Competitive Positioning, Customer Value Stack — so the enablement join recorded for deal-level solutions exists at account level too. Initiative panels carry Desired outcome free text and the Low/Med/High priority, and an inline Solutions relation. Terminal states match deal level: Achieved, Resolved, Completed, Overcome, Implemented.
+
+---
+
+## 4 · Incident log · one accidental write in production, reverted
+
+During the walk, a click intended for a card's help icon landed on the small circled glyph on an unconfirmed card, **which is the confirmation control** — the unconfirmed-status marker and the confirm button are the same pixel. The card *Pressure: Customer expectations for integrated AI and data privacy compliance* on the Salesforce, Inc. account plan was **confirmed under Matt Weisberg's login and reverted to Unconfirmed within about two minutes.** No field content was changed; the LastModified trail retains both touches.
+
+**Recorded for three reasons.** Honesty: the walk was declared read-only and one click was not. Method: card text and named help links only, never the status glyph — the glyph is a write. And evidence: **a single stray click on a suggestion card produces a Confirmed insight with a named confirmer who never read it.** This is the mechanism behind the five-cards-in-twenty-seconds finding, demonstrated accidentally by the person building the system that exists to fix it. It goes beside that finding in rebuttals.
+
+---
+
+*End v0.2. Everything here folds into charter design at its next bump; this file is the capture surface, not the ruling surface.*
+
+
+---
+
+# PART IV · The People Harness Brief (absorbed)
+
+# AAO People Harness Brief
+
+> **The version lives on the stamp line below and nowhere else.**
+
+**v0.2 · 2 August 2026 · Both rulings closed. The citation budget is ruled, the stand-in narrows to one job, the related-list guidance is recorded, and the Surface enters as a proposed entity for Object Model. No design blockers remain on the harness.**
+
+## 1 · The rung derivation · RULED
+
+**The mapping table, authored by us because Altify's lives in wizard UI code no runtime can read.** From the nine Support propositions, by label number:
+
+| Rung | Condition |
+|---|---|
+| **Mentor** | Q2 ∧ Q4 ∧ Q5 established TRUE — prefers ours, sells internally, mentoring us. Two establishments beyond Supporter to enter; one FALSE on Q5 drops to Supporter |
+| **Supporter** | Q2 TRUE — told you they prefer your solution |
+| **Neutral** | Nothing established in either direction. **A state of not knowing, never a computed balance** |
+| **Non-Supporter** | Any of Q6 / Q11 / Q14 TRUE — prefers an alternative, vocal for competition |
+| **Enemy** | Q7 ∨ Q16 TRUE — mentoring the competition, or evidence they believe your success hurts them. Positively established, never the far end of a scale |
+
+Q1, the preference gate, opens the reading and places nobody. Political Status derives the same way from its seven once its table is authored; same session, second table, owed.
+
+**When both sides stand at once · RULED by Matthew: recency owns the rung.** The side with the most recent establishment on the **evidence-occurred clock** governs the map value. Neither side dominates by polarity, and nothing averages — Neutral is never the resolution of a conflict.
+
+**The displaced side becomes a contention flag of the opposite polarity, and both types already exist in the glossary.** Recent positive over older negative → the rung reads Supporter and a **negative contention flag** carries the June evidence, quoted: she was helping the competitor's renewal, here are the words. Recent negative over older positive → the darker rung and a **green flag**, positive contention, history better than the present, an opening to repair. The disagreement is never erased and never averaged; it is surfaced with receipts.
+
+**The two contentions run as one motion.** First **live contention**, within this deal, claims on core in evidence-occurred order — thirty days can hold the whole story. Then **historical contention**, the memory plane, current deal excluded, where three deals over three years can say the background is overwhelmingly positive or overwhelmingly adversarial. One comprehensive read of the person; the flag narrative weighs both and characterizes neither beyond what claim rows say.
+
+**Harness scope note, Matthew's:** Data 360 is not stood up, so **the harness exercises the first leg only** — live contention from claims on core, which needs nothing but the ledger the sandbox already has. The second leg is written into the charter and **skipped in the harness**, and skipping it is graceful absence doing its job: no memory plane means flag narratives cite in-deal history only, never an error, never a stub pretending. The one-motion composition gets its own test when the memory plane exists.
+
+**What replay means under this rule:** the rung is derived from standing answers plus the occurred-clock ordering, both of which replay reconstructs, so determinism holds. A backdated note that changes which side is most recent re-derives the rung and the flag, with the sequence spelled out, per the backdated-evidence ruling.
+
+## 2 · The citation budget · RULED, and three rulings that closed with it
+
+**The note ruling.** The 1,024-character map note carries a **current-state composite**: the most recent story of why this person reads the way they do, with a couple of plain citations, overwritten as newer content arrives. Overwriting the note never touches evidence, because the note was always a projection of receipts that live on our rows. This is Option C below, ruled with the overwrite stated explicitly.
+
+**Quotes live on Answer rows only.** Every dimension establishment already writes an Answer per person per dimension carrying the accumulated quotes, unbounded. **No other object ever duplicates quote text** — a second copy is the two-accounts-that-drift defect. The stand-in caches values; it never carries quotes.
+
+**The stand-in narrows to one job.** It is a stand-in for a missing Contact and nothing else: identity, scope (one row per map a person would occupy, account and opportunity separately), graduation state, and the four dimension values as a rebuildable cache. Field shape mirrors Contact Map Details for both scopes. It is not a citation surface and not the roll-up's reference surface. Field table owed, Wave 2.
+
+**The related-list guidance · admin guidance, never package metadata.** Customers who use the UI add a prefiltered related list on Contact Map Details showing our claims for that person on that map — every update that ever happened, with the words and why, reportable. It ships as a sentence in the administration guide, not as metadata on an ALTF object, which the law forbids anyway.
+
+### The Surface · proposed seventeenth entity, recorded for Object Model
+
+Matthew's, named in session, previously called snapshot in places (that name is taken twice in memory). **One row per opportunity answering: here is what you should care about most right now** — the prioritized digest of red flags, yellow flags, contention, guidance nodes, and where to answer — linking to the full assessment, process and map rather than replacing them. Serves the Salesforce UI and headless consumers alike: less querying, more determinism, because what should be seen, when, and why is computed once.
+
+**The tension with the guidance ruling, resolved rather than ignored.** Guidance is derived and holds no state because persistence goes stale between writing and reading. The Surface persists **and never goes stale, because it rebuilds only when something underneath changes** — it can be a year old and correct, since what deserves focus does not change until the underlying does. That places it in the Roll-Up's class: derived, outside the write law, no citations of its own, rebuildable identically from claims and flags, pointing at rows that carry the receipts. **Open, for Object Model:** whether it absorbs the reconciliation destination (the answer-inbox is a write surface, the Surface is a read digest — one parent row could host both), and its relation to the existing Roll-Up Record, which it extends from counts to content. Tiered flag surfacing, named and undesigned since v2.5, most naturally lands here.
+
+### The original options, retained for the record
+
+`ALTF__Note__c` on the map row is 1,024 characters **for the whole row** — four dimensions share one field, and the machine may write citations only into it. Open term 8 since glossary v1.6. The projection writer cannot be built until this is ruled.
+
+**Option A — allocate and truncate.** Each dimension gets ~250 characters: date, speaker, clipped quote. Self-contained on Altify's surface; loses words, and a clipped quote is at the edge of the paraphrase law.
+
+**Option B — pointer only.** Full receipts live on our rows; the note carries one plain sentence per dimension naming date and speaker, no quote. Never truncates a quote; the Altify surface alone is thin.
+
+**Option C — most-recent-only (recommended).** The note carries the full plain-language citation for the **most recent establishment per dimension** — "Supporter — told Renee she prefers Altify, call 24 June" — and every older receipt lives on our rows, one read away. Fits the recency ruling exactly: the note explains the value currently showing, which is the recency winner, and history lives where history lives. Degrades to Option B behavior only when even one citation cannot fit.
+
+All three keep the citation law: dates and speakers in plain words, never a record ID on a human surface.
+
+## 3 · What the harness asserts, once both rulings are closed
+
+Projection writes the rung and note under the derivation above; watermark and per-dimension precedence hold against human edits; the exclusion-list experiment runs inside (project Political, let Altify recalculate, re-read — Is Key Player must move and nothing else); coverage counts from the participant junction; replay reconstructs rung and note exactly.
+
+---
+
+*End v0.1. Section 1 ruled; section 2 is the one open ruling. Folds into charter design at its next bump.*

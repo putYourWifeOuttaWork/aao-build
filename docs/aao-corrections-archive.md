@@ -1,6 +1,292 @@
+# ARCHIVED · fully absorbed into the five living documents at the 2 August 2026 consolidation. Kept as the audit trail of the correction chain. Nothing here is authoritative over anything.
+
 # AAO Corrections and Change Record
 
 > **The version lives on the stamp line below and nowhere else.** The H1 carried a version through v2.4 and went stale, which is the same defect the glossary carried through three versions, Architecture through one and Data Flow through two. Removing it is the only fix that cannot rot.
+
+**v3.2 · 2 August 2026 · The scope session. The account/opportunity boundary is designed end to end, tested live on Black & Veatch, and ruled. One Process charter over a merged corpus. Stage scoping ruled read-wide, write-gated. In progress carries UNVERIFIED. Four new project documents hold the detail; this record holds the rulings and points at them.**
+
+**Changed in v3.2.** A full working session with Matthew, every ruling tested against production where production could answer. **Detail lives in four documents filed today** — `aao-scope-resolver` (v0.4 by stamp), `aao-ontology-account-captures` (v0.2), and the two projection-surface reads, `spm-om` and `rm-im` — this record does not restate them.
+
+### The Process charter · RULED · one charter, module-segmented configuration
+
+**One Process charter over one merged corpus of assessment questions and sales-process qualifiers.** The charter never sees a module: its handed unit is the Evidence Contract, and a qualifier contract and an assessment contract are the same shape — proven, not argued, because extraction 1.1.0 ran the mini-rubric's six propositions with no module identity and never noticed. Graceful absence covers the unlicensed org (no configured processes → no qualifier contracts → never asked), and the capability matrix stays in the projection layer where the licensing ruling already confines it. **Configuration is segmented by module regardless: four surfaces — relationship map, insight map, sales process, assessment — each its own custom settings, none ever an open prompt template.** The charter is the unit of injection; the module is the unit of configuration; they meet at the contract. **One new rule: graceful refusal** — a read-permission failure on an unlicensed module's tables is treated exactly as absence, no propositions and a configuration note, never an error.
+
+**SPM licensing recorded:** Opportunity Manager includes relationship map, insight map and assessment; Sales Process Manager is a separately licensed add-on, locked in-package for non-licensees. The design is indifferent by construction, and unlocking modules later changes discovery and projection scope with zero charter changes.
+
+### Stage scoping · RULED · read wide, write gated
+
+**Reading is never stage-gated.** Every pass listens against the deal's whole rubric, including questions standing Yes, because a Yes can be undone by a tune change and no model ever chooses which answered questions to keep watching — attention selection by inference is an integrity hole. **Writing is stage-gated:** projection touches only qualifiers at or behind the open stage, ordinary writes only where the answer is not Yes; a standing Yes moves only through demotion (machine-written) or contention (human-written). **The watermark seam dissolves under claims-first:** evidence for a future-stage qualifier is claimed the day it is heard; when the stage opens, projection catches up from our own answer rows in one deterministic sweep, no transcript re-read. The open stage is a field read: the Altify Opportunity stamps process, stage, and a dirty formula.
+
+### The qualifier projection surface · read whole, and one ruling
+
+From the SPM/OM projection read (filed): **`ALTF__Qualifier_Answer__c` is the target** — required Altify Opportunity lookup, optional lookup to the global qualifier (not the placement), composite key for idempotent upsert, Comment at 32,768 characters so the citation budget problem does not exist on this surface. The status vocabulary is org-global: **No, In progress, Yes — there is no Unknown slot. RULED: In progress carries UNVERIFIED**, because both mean the same fact — something was said, the work has begun, no longer nothing and not yet established. Consequence: null stays never-asked, In progress is asked-and-open with the citation in Comment, so the qualifier surface preserves asked-versus-never-asked more legibly than the assessment surface does. Human-written In progress rows (648 in production) are human-authored and never demoted.
+
+**Per-question answer labels exist on the assessment side only** — `ALTF__Yes_Label__c` / `ALTF__No_Label__c`, forty characters, per question, no Unknown label, nothing per-question on SPM. **They are authored rubric text and discovery reads them into the evidence contract** as qualifying-evidence guidance; the slot-is-API-value law is unchanged.
+
+### The account/opportunity boundary · opened, fed, and ruled
+
+**The two maps are one schema with two fill conventions**, read from 40,350 rows: Buyer Role is opportunity-only in practice (40.1% vs 1.6%), Decision Orientation account-only (25.7% vs 3.1%), Support/Political/Coverage on both, all five insight types on both in near-identical mix. **The reopen of People and Problems is one section each — a map-scope parameter injecting that scope's question set** — because the vendor authored the account rubric already and the label enumeration recovered it.
+
+**The account ontology is captured whole** (filed): Decision Orientation's five values from the wizard; the five account lane definitions with the causal chain authored into them in prose; the account admission tests, where **decision maker becomes key player and personal goals become the executive's business goals** — that substitution is the whole AM/OM axis; Obstacle and Solution tests identical across maps, consistent with the labels. **The scoped-out ruling on Decision Orientation is qualified:** humans-only survives at deal level; at account level the definitions become our authored ontology, Buyer Role's shape, `Inferred_Pending` until ratified. **Owed to the seed: the account-side label records** (AM Support four, AM Political three, the AM insight-test nine) **plus Decision Orientation's five values.**
+
+**The scope stamp law · RULED, generalizing the opportunity stamp.** Every machine-written row carries exactly one scope, deal or account, taken from the evidence's own resolved scope, never inferred across. Deal evidence never writes account maps; account evidence gains its legal home. Consequences owed to the field tables: Source's opportunity lookup goes nullable under a scope family law (account always required), and account streams get their own engagement category, which the neutral-rate ruling anticipated.
+
+### The scope resolver · designed, tested live, ruled · detail in its own document
+
+ECI's related-record stamp is inference and unstable — the same recurring meeting stamped to the account twice and an opportunity three times in five weeks; a CSM's account call filed under a $55k deal whose transcript never mentions it — and 75% of customers have no ECI. **The resolver:** the two-key lock (owner-role via a setup-time-ratified role map, and the content read against our authored sided ontology — both always run, neither resolves alone, agreement resolves); traversal as interpreter's evidence (the account-map check deterministic, ownership suggestive only under CPQ/SAP); the which-opportunity match against the closed candidate set of the account's open opportunities, **weighted by curated rows never bare membership** — Altify cloned all 44 account rows onto the B&V deal map at creation and only nine were ever touched; speakers as tiebreak; flag at one in a hundred. **Tested live on the B&V call: dual scope, account-primary with expansion seeding, which-opportunity resolved correctly by agreement of both reads.** **Dual-write ruled:** both homes named, ECI's failure was singularity, not the pick. **Net-new participants on a dual-scope call are added to BOTH maps** — coverage is a claim, presence establishes it, and it is scope-symmetric — with every dimension beyond coverage establishment-gated per scope. Open by design: whether scope ever resolves per claim.
+
+### The harness sequence · Matthew's, and it holds after everything above
+
+**People harness first, opportunity-level, RM-only shaped** — a quarter of customers run relationship map only, so RM working is approximately a v1. Then People + Problems + Politics at opportunity level (~half of customers), then account-level RM/IM, then the comprehensive OM/SPM harness, which is deliberately on the back burner. **The People harness waits on exactly two rulings, owed to Matthew as options: the rung derivation from the nine Support propositions (the tree's mapping table has never been authored and cannot be read from the org — the wizard logic is UI code), and the citation budget on the 1,024-character shared map note (open term 8 since v1.6).** The watermark exclusion experiment runs inside the harness, not before it.
+
+### Charter-ledger correction, so nobody inherits the slip
+
+**Politics is open, not closed** — People closed except the persona emission, Problems closed, Politics confirmed no-vendor-ontology but unopened. **The Process charter has a ruling and no section**; today's session is its content, and the section is writing, not deciding.
+
+### Named open, new this session
+
+**Licensing seat-gaming, Matthew's catch:** if pipeline scope follows the licensed opportunity owner, assigning every opportunity to one licensed owner runs the org on one seat. The scoping read (owner-licensed vs caller-licensed) needs its own ruling before pilot pricing. **Dual-scope discovery residue:** per-claim scope. **The D360 ingestion ruling owed:** match rules for foreign-transcript participant resolution, exact-email only, slow lane only.
+
+### Incident, disclosed
+
+During the read-only production walk, one click meant for a card's help icon landed on the confirmation glyph — they are the same pixel on an unconfirmed card — and confirmed an insight card under Matthew's login; reverted to Unconfirmed within two minutes, both touches in the audit trail. Logged in the captures document. The mechanism is itself evidence: one stray click manufactures a Confirmed card with a named confirmer who never read it.
+
+---
+
+**v3.1 · 2 August 2026 · The corporate reconciliation. All six corporate documents read whole. Criterion Text is reversed, LAW #1 breaks two things in the set, and the sourcing ruling closes the glossary's own open term.**
+
+**Changed in v3.1.** The six current corporate documents were opened by exact path and read end to end: Architecture v3.0, Glossary v2.1, Object Model v2.1, Data Flow v2.4, Computable Share v1.6, Theory v1.4. **Note the filename hazard immediately: the glossary file is named `aao-glossary-v2_0.md` and is stamped v2.1.** Read the stamp.
+
+**Who this is for.** Whoever carries these results into the corporate documents at each one's next bump. This record supersedes them where they disagree. **Every item below names which document changes and what the new sentence has to say.**
+
+**The build journal was read before this was written**, 49 sessions of it, and the reconciliation is section 7. **It changed two things in this record and found a defect in the journal itself.** No build-state number appears here that the journal does not carry.
+
+---
+
+## 1 · The assessment proposition is BOTH fields · RULED · and it reverses a correction three documents carry
+
+**Matthew's ruling: `ALTF__Criterion_Text__c` and `ALTF__Long_Question__c` are equally important, and together they usually make more sense than either alone. The proposition is the pair.**
+
+**This reverses a correction that is stated as a correction in three places.** Architecture v3.0: *"The proposition text is `ALTF__Long_Question__c`, not `ALTF__Criterion_Text__c`. Correction. Criterion Text is described in the schema as a title."* Architecture v2.9, generalised: *"the sentence is the proposition and the display name is never read."* Glossary vocabulary mapping: *"Criterion Text — **A title, never the proposition.** A short phrase capturing the essence."* And the glossary's own v1.5 changelog: *"every earlier version of this table was wrong."*
+
+**This is the fourth position that mapping has held**, which is itself the finding. It read Criterion Text as the proposition before v1.5, Long Question from v1.5, carried both rows until v1.6 removed one, and is now the pair.
+
+### Why it went wrong, read from the field describe rather than argued
+
+**The field documents itself two ways and the record read one of them.**
+
+Its **description** reads: *"Title text for this assessment question - generally a short phrase capturing the essence of the question, such as 'Compelling Event' or 'Access to Funds'."* That is the sentence Architecture quotes.
+
+Its **inline help** — the text an admin actually sees while configuring the rubric — reads: *"This is the text of the criterion, i.e. 'Is there a compelling event?'"*
+
+**So Altify tells the schema reader it is a title and tells the admin it is the question.** A design that reads only the description inherits one org's filling convention as a law. That is the standing hazard arriving through field metadata rather than through data, and it is a new face of it worth recording: **read a field's inline help as well as its description, because they are written for different readers and can disagree.**
+
+### The asymmetry that makes the old ruling unsafe rather than merely incomplete
+
+**`ALTF__Criterion_Text__c` is required. `ALTF__Long_Question__c` is not.** Read from the org, 2 August.
+
+So the corporate record keyed the proposition on the **optional** half of the pair and demoted the half that always exists. In an org whose admin followed the inline help, Long Question is empty and **there is no proposition text at all** — the corpus reads as a set of questions with no sentences, and nothing detects it.
+
+### The rule, stated so it is buildable
+
+**The proposition is Criterion Text plus Long Question where Long Question is populated, and Criterion Text alone where it is not.** Criterion Text is required so it is always present; the pair degrades to a singleton in one direction only and never in the other. **Both halves are stored byte-exact and neither is ever paraphrased into the other.**
+
+### What has to change, per document
+
+**Glossary.** The vocabulary-mapping row *A title, never the proposition* is wrong and marked wrong in place. Both rows become one entry: the assessment proposition is the pair. **Do not delete the history** — this mapping has now been wrong in four different ways and the row should say so, because a reader who has seen two of the four needs to know which one is live.
+
+**Architecture.** The correction paragraph is itself corrected in place. **The generalised sentence from v2.9 — *the sentence is the proposition and the display name is never read* — must not survive as written**, because it is the sentence that will be applied by analogy to the next field pair somebody meets.
+
+**Object Model.** Neither field name appears anywhere in it, so nothing to correct and one thing to add: **proposition identity is composed from both fields**, which is a key-composition statement and belongs there beside Answer's key.
+
+**Field Tables.** `AAO_Proposition_Short__c` currently reads *Display. Never read as the proposition.* **That is now the load-bearing field being documented as decoration.** Its reader column gains the charter and the hash.
+
+**Computable Share.** No route assignment moves. **The proposition-short column of every question in its table is a title today and should be re-read as the pair**, because at least one route judgment was made against a sentence that was half the question.
+
+### The change detector is broken by this and it is the sharpest consequence
+
+Architecture describes the rubric snapshot's hash as covering *"the source field name, the scoping rows, and active question content"*, and lists the snapshot's payload as *"text, heading, scores, applicable plan types and the resolution route."* **Singular, undifferentiated *text*. No document in the set says which field is hashed.**
+
+**If the hash covers Long Question only, an admin editing the required field changes what the question means and no contract supersedes.** The claim then answers a question that no longer exists, which is the exact residual the question-text fingerprint on Claim was added to catch — except the fingerprint would also miss it, because it is taken over the same text.
+
+**Ruled here: the content hash covers both fields, and the fingerprint on Claim is taken over the same composition.** Whether the hash also covers guidance is a separate question and is **not settled** — see the open list.
+
+> **Recorded as an inconsistency in Architecture, found while reading for this.** The document states two different hashes at two different grains and reconciles neither: one keyed *org Id × question record Id × content hash* (per question), and one covering *source field name plus scoping rows plus active question content* hashed together (per org, whole config). Both are called the change detector. **They are two mechanisms and the set should say so, or an implementer builds whichever one they read first.**
+
+---
+
+## 2 · What LAW #1 breaks in the corporate set
+
+**LAW #1, ruled in v3.0: nothing may depend on an ALTF package version, and the system runs with Altify absent.** Read against the corporate set, it breaks two things. One is a documentation gap and one is a live v3.0 ruling.
+
+### 2.1 · The version-independence sentence was wrong as written, and Matthew's correction replaces it · RULED
+
+Architecture states: *"no Altify API name appears anywhere in our code or metadata, reads or writes. Field names are looked up at run time."*
+
+**Ruled wrong by Matthew, 2 August, and the reason is practical rather than doctrinal: it is not possible to query properly without naming what you query.** The applicable-set chain, the persona target, the licence read — all of them name ALTF API names because SOQL requires it, and no resolution layer exists or should. An earlier draft of this section proposed building one; **that proposal is withdrawn.**
+
+**What LAW #1 actually requires is three things, each already law elsewhere in the set, and the wrong sentence was a conflation of them:**
+
+1. **No metadata is ever added to any ALTF object** — no field, no trigger, no logic. That is what would make our package version-dependent, and it is the absolute rule.
+2. **No dependency on a package version** — no minimum, no version key, no behaviour that differs by release.
+3. **Graceful absence** — an ALTF object or field that is not there produces no propositions and no error, which is what makes reading by name safe in an org where the name resolves to nothing.
+
+**Reading a stable API name is not a version dependency.** The ALTF API names have been stable for five years, and when this package reaches engineering, field and object API names will be aligned for coordinated updating across packages — which is the correct place for that coupling to be managed, not in a runtime indirection layer.
+
+**Architecture's sentence is marked wrong at its next bump and replaced with the three rules above.**
+
+**One design thought recorded with it, Matthew's, connecting to an open item that already exists.** A customer adding a custom field to an ALTF object that a charter must read — or either package needing a change the other has not shipped — points at a **per-charter schema injection surface**: configuration that tells a charter what to read beyond what it ships knowing. Object Model already carries this as the open **per-org charter overlay** (*"injectable natural-language sections for orgs whose ontology drifts from what charters read; rule-data family, sibling of Evidence Contract"*), and the ontology override built in session 49 is its first shipped instance. **The overlay item should be widened from natural-language sections to schema too, at Object Model's next bump. Open, not designed.**
+
+### 2.2 · The licensed-seller filter returns empty with Altify absent · a v3.0 ruling, live
+
+Architecture v3.0 rules licensed-sellers-only as **one of three global filters on the whole system**, and settles the read as `UserPackageLicense` joined to `PackageLicense` on `NamespacePrefix = 'ALTF'`. It defends the read as *"platform objects, so an upgrade cannot break the read."*
+
+**That is version resilience and it is not absence resilience, and the document never addresses absence.** In an org with no Altify installed there is no `PackageLicense` row for that namespace, the licensed-seller set is empty, and **every opportunity is filtered out of the pipeline.** Under LAW #1 as ruled, the system currently processes nothing in exactly the orgs LAW #1 exists to serve.
+
+**The pattern for fixing it already exists in the set and was simply never applied here.** Data Flow draws the Altify Opportunity as a gate rather than an assumption: loop one runs against a bare opportunity with no Altify record at all, loop two abstains and flags. **The seller filter needs the same treatment — a gate with a defined behaviour when the read returns nothing, rather than a filter that silently returns nothing.**
+
+**What that behaviour should be is a decision and is left open**, because it is a scope question rather than a mechanism question: with no Altify licence to scope on, either every opportunity is in scope, or scope comes from a filter we own, or the system declines to run until an admin defines one. **Options and costs are owed to Matthew as a separate item; nothing else waits on it.**
+
+### 2.3 · What LAW #1 does NOT break, recorded so nobody re-opens it
+
+**Record-sourced propositions are untouched.** Assessment questions and sales-process qualifiers are records in the customer's own org, read at runtime by SOQL. Nothing about them keys on a package version. The glossary's *a customer on a 2014 version or a rewritten rubric works without configuration* stands exactly as written for this half of the corpus.
+
+**Graceful absence already covers the schema-sourced dimensions.** A dimension absent from the org produces no propositions, never an error. That is feature detection and it is what LAW #1 asks for.
+
+**The parent split is already absence-safe.** Loop one commits to the standard Opportunity and needs no Altify record; only loop two requires one and it abstains honestly.
+
+---
+
+## 3 · What the sourcing ruling closes, and the sentence it marks wrong
+
+**The v3.0 ontology ruling closes two items the glossary explicitly holds open**, and they must be closed in the glossary rather than left to be discovered as stale.
+
+**Open term 14, verbatim:** *"How discovery obtains the guided-question text. The questions are unreachable from Apex... Two options are written up in the corrections record with a recommendation. **Until it is ruled, no document in this set states a sourcing mechanism.**"* **Ruled. Neither option won; the ontology ships as our own seed reference data, assumed universal, overridable per org by configuration.**
+
+**The Guided Question entry**, which carries the same *not ruled* sentence inside a term definition. It gains the mechanism.
+
+### The sentence that must be marked wrong, and the exact narrowing
+
+Rubric Discovery is built on this, and it appears in the glossary and again in Data Flow's stage notes:
+
+> *"The package ships no questions, no field names, no picklist values, and no help text."*
+
+And in the glossary's definition of Proposition: *"Its text is never authored by us and never ships in the package."*
+
+**This is now false for schema-sourced propositions and remains exactly true for record-sourced ones.** The narrowing is precise and should be written as a narrowing rather than a reversal:
+
+**The package ships no *record-sourced* questions — no assessment criterion text, no qualifier text, no field names, no picklist values, no help text. It ships the schema-sourced ontology as seed reference data, overridable per org, because that text is unreachable from the runtime that needs it.**
+
+**Why the narrowing is honest rather than convenient.** The reason Rubric Discovery exists is that a customer who rewrote their methodology must still work, and their methodology is the record-sourced half — the questions they authored, in their records, readable. Altify's packaged wizard text was never that. **Discovery keeps every guarantee it was built to make.**
+
+**And the detection objection dissolves rather than being accepted.** Every rejected sourcing option was faulted for being unable to know its text was wrong, and that fault existed only because each one claimed to be reading the customer's questions. **The seed design claims nothing it cannot back:** we ship a default, show it to the admin in sentences, and they confirm or revise.
+
+### Already consistent, no change needed
+
+**Computable Share v1.6 routed the dimension ontologies before the sourcing was ruled and the routes survive it unchanged:** Coverage P, Support E, Political Status E, Buyer Role authored by us landing `Inferred_Pending`. **A route is a property of what a proposition needs, not of where its text came from**, which is why nothing moved. Recorded because it is a useful confirmation that the seam was in the right place.
+
+---
+
+## 4 · The qualifier side, stated precisely — smaller than feared and different in shape
+
+**Correcting a claim made in conversation on 2 August and never in a document: it is not true that the Process charter has never read a real sales-process qualifier.** All 44 mandatory stage-qualifier placements were read from production on 28 July, they collapse to **19 distinct sentences**, every one is routed in Computable Share, and they carry a three-way readability split plus two named patterns (compound sentences, and roughly half being first-person about our own actions, which sends them to the note door rather than the transcript door). **The content is read. The graph is not.**
+
+**The object graph exists in exactly one sentence, in Data Flow's cold-start stage notes:** *"Stage is not a field on a qualifier. It lives on a junction: `Sales_Process` to `Sales_Process_Stage` to `Sales_Process_Stage_Qualifier` to `Sales_Process_Qualifier`. Reading the full rubric means walking that chain and ignoring stage. Reading the live set means adding the stage filter. Same data, two reads."*
+
+**That is a placement statement sitting in the wrong document.** Architecture is authoritative for the inventory and where things live, and it does not carry the chain at all. **It should, at Architecture's next bump**, with Data Flow keeping the two-reads distinction that is genuinely a flow statement.
+
+### What is still absent across all six documents
+
+**`ALTF__Qualifier_Answer__c` appears in no corporate document at any version.** Data Flow says a verdict lands on *"the assessment answer or the qualifier status, both parented to the Altify Opportunity"* and names neither object. **`ALTF__Assessment_Answer__c` is likewise never named as an API name.** So the two projection targets of loop two are described only in prose.
+
+**Our Answer's qualifier subject has no concrete target.** Object Model gives the natural key as *opportunity + qualifier* and stops. **`Qualifier_Status` is a declared Claim Basis cited type pointing at nothing**, which is consistent with it having no object behind it in any document.
+
+**Never read, and named as never read:** `ALTF__Template_Qualifier__c` and `ALTF__Template_Qualifier_Details__c`. **A template layer above the qualifier means qualifier text may originate from a template a customer instantiated rather than being authored on their process** — a provenance chain no document mentions, and the same shape as a shipped seed, which makes it directly relevant to the sourcing ruling.
+
+**Never mentioned anywhere:** `ALTF__Stage__c` (distinct from `ALTF__Sales_Process_Stage__c`) and `ALTF__Qualifier_Quicklink__c`.
+
+**Object Model is behind Architecture on one qualifier item and should not be read for it.** It calls `ALTF__Sales_Process_Mapping__c` *"now load-bearing… this object's name suggests it may hold that link"* — which is inference about our own schema, forbidden by standing rule. **Architecture corrected this at v2.4: it was read on 28 July, eleven rows, plan-type strings to sales processes, and it does not hold the qualifier-to-condition link.** The fallback — a setup-time mapping charter — is the live path.
+
+---
+
+## 5 · Document-integrity defects, found by reading the set whole
+
+Recorded because each one misleads a reader who is doing everything right.
+
+**The glossary's retrieval warning is stale and self-defeating.** It reads *"Every heading in this file is stamped `gloss v2.0`"* while **eight headings carry `gloss v2.1`**. A reader applying the file's own stated test to validate a retrieved chunk **rejects every v2.1 section, which is all four of its v2.1 corrections.** This is the retrieval hazard the warning exists to prevent, firing on the warning itself. **Fix at the next bump and make the warning name no version at all.**
+
+**Object Model counts memory tables twice and disagrees with itself.** Section 7 says seven; section 8 still says six. A v2.0 remnant not swept.
+
+**Object Model calls the decision criterion both a fifth Claim subject and a fourth subject shape**, in the section title and the body.
+
+**Architecture preserves a known defect deliberately and correctly** — the v1.8 changelog entry reading `arch v2.5`, which it cannot have said at v1.8, because an earlier bump replaced a string file-wide and overwrote its own history. **Named here only so nobody "fixes" it: it is evidence of a real failure mode and it is doing its job.**
+
+**The corporate namespace has a structural problem the claude namespace does not.** Every bump writes a new file, so retired versions accumulate in project knowledge competing for relevance. **This is why retrieval served a stale glossary rather than merely being unlucky.** Two halves to the fix: delete retired corporate versions, which lose nothing because each live document carries the full changelog beneath it; and move corporate onto frozen paths at each document's next bump, as the claude namespace already does. **Matthew's, and it is a deletion, so it is not taken unilaterally.**
+
+---
+
+## 6 · Bump instructions, per document
+
+**Glossary** — the largest. Criterion Text mapping reversed and its four-way history stated. Rubric Discovery and Proposition narrowed to record-sourced. Guided Question gains the sourcing mechanism. Open term 14 closed. Retrieval warning de-versioned. **Open term 13, the model-role naming decision, is still Matthew's and still open.**
+
+**Architecture** — Criterion Text correction corrected, and the generalised *the sentence is the proposition* sentence withdrawn. The *no Altify API name anywhere* sentence marked wrong and replaced with the three real rules (no metadata on ALTF objects, no version dependency, graceful absence). The licensed-seller filter given absence behaviour. The qualifier object chain added to the inventory. The two hashes reconciled or declared as two.
+
+**Object Model** — proposition identity composed from both fields. The Sales Process Mapping sentence struck against Architecture's read. The six-versus-seven and fourth-versus-fifth inconsistencies swept. **The qualifier subject given a concrete target once the answer object is read.**
+
+**Data Flow** — the package-ships-no-questions sentence narrowed. The qualifier chain kept as a two-reads statement with placement moving to Architecture. Cold seed already correct per dimension.
+
+**Computable Share** — proposition text re-read as the pair; no route moves. Its method-versus-this-org boundary is the best-stated version of the standing hazard in the whole set and should be left exactly as it is.
+
+**Theory** — nothing to correct. Its v1.4 addition, that Altify's schema stores the answer and discards the reasoning, is strengthened rather than weakened by the Criterion Text finding: **the methodology authored two fields of question and the record kept one.** Same shape, fourth instance.
+
+---
+
+## 7 · The build journal, read · what it confirms, and the defect at the top of it
+
+**Forty-nine sessions read.** The journal is doing its job: every org read is quoted verbatim, every assumption sits on the assumed list, and the owed list carries forward. Two things in it change this record and one is a defect in the journal itself.
+
+### 7.1 · LAW #1 is built and checkable, not merely ruled
+
+Session 49 built it. **`AAO_People_Question__mdt`, two fields — `AAO_Shipped_Text__c` DeveloperControlled and `AAO_Org_Override__c` SubscriberControlled, null until set — thirty-five records loaded byte-exact**, and the reader repointed. The byte-exactness tests passed unchanged against the new source, which is the check that mattered: they assert the hyphen and the spellings and never knew the source moved.
+
+**And LAW #1 now has a test rather than a sentence:** the read returns nineteen guided questions with `Limits.getCallouts()` unchanged, and **the same query returns the ontology in an org that never had Altify installed.** That is the law made checkable, and it is the strongest single argument against every sourcing option that lost.
+
+**Two platform facts established by deploying candidates rather than by reasoning, and they belong in the field tables.** `FieldManageability` accepts `DeveloperControlled`, `SubscriberControlled` and `Locked`, and rejects `PackageProtected`, `Upgradeable` and `SubscriberEditable`. The type-level enum is a different one, `SetupObjectVisibility`, accepting `Public`, `Protected` and `PackageProtected`. **`PackageProtected` is valid on the type and invalid on a field** — the kind of asymmetry that reads as obvious once seen and would have been wrong if assumed.
+
+**One item is unverifiable in this org and is named rather than assumed:** what a package upgrade does to a subscriber's edit, per manageability. There is no packaging org, no packaged version and no upgrade to observe. **It joins module licensing on the list of things this org structurally cannot answer** — and the two-field shape was chosen so the answer is never needed, because the reader prefers the override only where it is populated and null is not a value. **A design that leaned on manageability semantics would have rested on an untested claim, which is the capability law's own prohibition.**
+
+### 7.2 · The journal's Current state block is thirty-seven sessions stale · DEFECT
+
+**The block stops at session 12.** It reports *128 AAO tests, 128 passing* and, above that, *99 AAO tests, 99 passing*; the org has been at **171 tests, 171 passing** since session 48, verified by running them rather than carried forward. It describes discovery landing in session 12 as the newest thing and says nothing of the ontology, the People and Problems charters, the missing-relation flag, the licence read, the label enumeration or LAW #1.
+
+**The journal's own rule is that Current state is the one part ever rewritten.** It has not been. And it is the first thing the brief tells a cold agent to read, so **the stalest text in the repo sits at the top of the document whose purpose is to prevent staleness.**
+
+**This is the same defect as the end lines the corporate documents fixed by de-versioning, and the same defect as the glossary's retrieval warning** — a summary that must be maintained by hand, in a file whose every other line is append-only, will rot. **Recorded as a finding rather than a rebuke: the append-only discipline worked perfectly and the one mutable block failed, which is an argument about mutable summaries rather than about anyone's diligence.**
+
+### 7.3 · Two conventions for filenames, and they are opposite
+
+**The project holds frozen paths; `docs/` holds stamp-named files.** Session 49 records the collision plainly: the sync arrived as `aao-corrections-v2_0.md` carrying v3.0, and **filing by filename would have regressed corrections from v2.9 to v2.0** and reinstated two documents already held. CODE files by stamp and deletes the stale name.
+
+**Both conventions are coherent and neither is wrong.** The project needs frozen paths because a cross-reference must stay openable. `docs/` has no cross-references to break and gains from the filename matching the stamp. **What is wrong is that no document said there were two**, so the build brief's repo-layout block was written against the project's convention and does not describe the folder it claims to describe. Corrected at the build brief's next bump, together with `MANIFEST.md`, which sits in `docs/` and not at the repo root as that block says.
+
+**Consequence for the handoff, adopted now:** files in the context zip carry their stamp name, so CODE files them directly and deletes nothing.
+
+### 7.4 · A date drift worth one line
+
+**Journal sessions run to 2026-08-04 while every corporate and working document is stamped 2 August 2026**, and both record the same days. Nothing depends on it today, and any chronological reconstruction across the two sets will be wrong by two days until one is corrected.
+
+---
+
+## 8 · Owed before this is finished
+
+**Three reads that would close open items cheaply:** `ALTF__Qualifier_Answer__c` and `ALTF__Assessment_Answer__c` described; the template qualifier pair read; and `ALTF__Help__c` on assessment criteria read, which the glossary has carried as open term 9 since v1.4 and calls *the first draft of every evidence contract*.
+
+**One decision owed to Matthew, options and costs, not opened here:** what the seller scope filter becomes in an org with no Altify licence to read.
+
+**One rewrite owed to CODE:** the Current state block, from the org rather than from the sessions below it.
+
+---
 
 **v3.0 · 2 August 2026 · LAW #1, and the end of the label sourcing question. The ontology becomes ours, seeded and injectable, and stops being a read of anybody's package.**
 

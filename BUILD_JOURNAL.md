@@ -61,6 +61,56 @@ on purpose, and `ingestTwo` fires only once `status()` stops printing a `PENDING
 own, which holds every module and every label. Module licensing and custom-metadata upgrade
 behaviour are both unverifiable here and are named as such rather than assumed.
 
+### Handoff — for a cold pickup in a new environment
+
+Written 4 August 2026 (session 51) so this directory can move to another machine, another
+agent, or another person and work continues without this conversation.
+
+**What this is.** The build repo for Altify Always On: a Salesforce evidence-ledger system in
+sandbox `altify--aossb2`, built solo by Matthew Weisberg with AI tooling ahead of a QBR the
+week of 11 August. `force-app/` is the deployed source of truth; `docs/` is the design corpus
+(read-reference — CODE never authors it, only syncs and reports); this journal is the build
+record and the only narrative CODE writes.
+
+**Read in this order.** 1) `docs/aao-board.md` — the orientation document: current state, the
+locked-law list nobody relitigates, the open ledger with owners, next steps. 2) This block.
+3) `docs/aao-charters.md`, the section for whatever is being built (§P7 holds the harness
+briefs). Numbers always come from this journal, never from the documents; substance always
+comes from the documents' stamped bodies, never from filenames. **Read the stamp inside every
+file; filenames carry no version.**
+
+**Org access, what a new machine needs.** The CLI alias is `aossb2` for
+`matt.weisberg@altify.com.aossb2`; a fresh environment authenticates with
+`sf org login web --alias aossb2 --instance-url https://test.salesforce.com` (needs Matthew at
+the browser). `sourceApiVersion` is 66.0 against an org on 67. Standing absolutes: production
+is read-only unconditionally; the `altify-pbo` org is never read; no metadata, triggers or
+logic on any `ALTF__` or native object — data rows on managed objects are allowed, fields on
+them are not; Opportunity and Account are never written; LAW #1 — no dependency on any ALTF
+package version, ever. **The Anthropic API key exists only inside the org** (Setup → the
+`AAO_Anthropic` External Credential's principal password slot). It has never entered this
+repo, any chat, or any file, and must not. Model calls work in any environment once the org
+is authenticated, because the key never left the org.
+
+**Verify the build before trusting it.** Run the full-suite command above; expect **174 of
+174**. `AAO_Demo.status()` from anonymous Apex shows the three demo deals; the rehearsal
+commands beside it drive them. One pre-existing sandbox test (not ours) fails on a customer
+validation rule.
+
+**Journal discipline, binding on whoever continues.** Append-only; entries carry Did /
+Decided-and-why / Read-from-the-org-verbatim / Assumed-not-verified / Owed; this Current
+state block is the only text ever rewritten; every commit includes its journal entry; wrong
+text is marked wrong, never deleted. Refusals get recorded with the platform's exact words —
+the verbatim blocks are how this build catches its own assumptions.
+
+**In flight at handoff.** Next build per the Board: the People harness (opportunity-level,
+RM-only shape), whose brief — including the rung-derivation and citation-budget rulings —
+now lives in `docs/aao-charters.md` §P7. Open and owed: the account reading-set composition
+(how an account pass mixes shared `AM_OM_` questions with the AM-specific ones — deliberately
+unguarded until ruled); Politics (opens after the People harness); the scope resolver
+(design-frozen, not build-ready); Wave 2 shadow objects. Structurally unverifiable in this
+org, parked, never assumed: module-licence detection, and package-upgrade behaviour of
+subscriber-edited custom metadata.
+
 ---
 
 ## Current state
@@ -4458,3 +4508,56 @@ the journal's rules say must never go stale no longer is.
 **Owed.** Unchanged, and now waiting on the two People-harness rulings — the rung derivation
 and the citation budget — which the design side says are coming in the People harness brief.
 The account reading-set composition joins the list, surfaced above.
+
+---
+
+## 2026-08-04 · session 51 · the restructure: five living documents, and the handoff written
+
+**Did.** Synced `aao-bundle/` into `docs/` as a restructure rather than a drop. Rewrote
+`MANIFEST.md` to the new set. Added a Handoff section to Current state so this directory can
+move to a new environment cold. **Nothing built, nothing deployed; the working tree outside
+docs/ and the journal is untouched.**
+
+### The new shape
+
+**Five living documents, unversioned filenames, version on the stamp line inside:** Board
+(v1.0 — the orientation, replacing the seed), Glossary (v2.2), Architecture (v3.1, carrying
+Theory and Computable Share), Model & Flow (v1.0, absorbing the field tables), Charters
+(v2.0 — charter design v1.8 + scope resolver v0.4 + account captures v0.2 + **the People
+harness brief v0.2** merged, with the Process section newly written). Satellites sit outside
+the audit chain; `aao-corrections-archive.md` (stamped v3.2) is filed as the audit trail.
+
+**Deleted as superseded:** both corrections files (v3.0, v3.2 → archive), charter-design
+v1.8, scope-resolver v0.4, ontology-captures v0.2, field-tables v0.13, both
+projection-surface reads (→ the five), seed v5.0 (→ Board), and the versioned copies of
+rebuttals, proof register, plan-to-QBR and demo-runsheet (→ their living-name replacements).
+
+### Three verifications worth recording
+
+**The demo-runsheet conflict dissolved on inspection.** The instruction said keep my v1.3
+over the bundle's v1.2 — but the bundle's copy is **stamped v1.3 and byte-identical to
+mine**, proof-register likewise. So the living-name copies are in and nothing was lost;
+the premise was stale, not the instruction wrong. Checked with `cmp`, not assumed.
+
+**`people-harness-brief` was named for deletion and has never existed in `docs/`.** It was
+owed to me as a file and evidently went straight into Charters as v0.2 instead — the
+Charters changelog says so. Nothing to delete; the two rulings it was carrying (rung
+derivation, citation budget) are confirmed present: **recency owns the rung** when sides
+conflict, and **quotes live on Answer rows only, the map note is an overwritable
+current-state composite.** Both now sit in the Board's locked list.
+
+**Six legacy files kept deliberately:** code-build-brief v1.1, corp-seed v1.0,
+flags-and-guidance v1.1, and the three HTML visuals. Not in the deletion list, no bundle
+replacement, so they stay — deleting unnamed files is how the corrections-v1.0 dangling
+pointers happened. MANIFEST marks them legacy pending explicit retirement.
+
+### Reported for the Board's next bump, not corrected by me
+
+The Board (stamped 2 Aug) trails session 50 (4 Aug) on four facts its own rules say to take
+from this journal anyway: tests are **174**, not 171; the ontology seed is **56 records
+across both scopes**, not 35 opportunity-side; and two of its open CODE items — the
+account-side seed records and the Current state rewrite — are **done** (session 50). The
+board wins on open-versus-closed, so its ledger should close those two at the next rewrite.
+
+**Owed.** Unchanged: the People harness build (brief now in Charters §P7), then per the
+Board's sequence. The account reading-set composition stays open and deliberately unguarded.

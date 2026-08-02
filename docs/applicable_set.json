@@ -1,0 +1,238 @@
+{
+  "_provenance": {
+    "read_from": "Altify production org 00DHn000006jYatMAE",
+    "read_on": "2026-07-29",
+    "mode": "read-only",
+    "opportunity_id": "006Hn00001S6HLfIAN",
+    "altify_opportunity_id": "a0yHn00000DhP1zIAF",
+    "video_call_id": "6qrV4000000LAFhIAO",
+    "sales_process": "New Business (Direct)",
+    "sales_process_id": "a1BHn000007K2Q0MAK",
+    "current_stage": "Stage 2",
+    "current_stage_id": "a1AHn000007QfWxMAK",
+    "resolution_note": "17 active assessment questions returned for this opportunity's plan type. 4 mandatory qualifiers at play = Stage 1 mandatory (Why Act) + Stage 2 mandatory (Customer Insights, Decision Criteria, Decision Team). Total 21 propositions.",
+    "route_classes_from": "Computable Share v1.0",
+    "existing_human_answers": "17 answer records exist; 15 carry a Yes/No/Unknown verdict. TC_10 and TC_16 have answer rows with no verdict value."
+  },
+  "propositions": [
+    {
+      "id": "TC_1",
+      "kind": "assessment",
+      "route": "C",
+      "solicit": false,
+      "speaker": "Buyer",
+      "text": "Is this initiative currently a priority for the customer?",
+      "short": "Customer Initiative",
+      "existing_human_answer": "Yes"
+    },
+    {
+      "id": "TC_2",
+      "kind": "assessment",
+      "route": "C",
+      "solicit": false,
+      "speaker": "Buyer",
+      "text": "Does our Insight Map accurately represent what the customer needs to achieve from their initiative?",
+      "short": "Customer Business",
+      "existing_human_answer": "Yes"
+    },
+    {
+      "id": "TC_4",
+      "kind": "assessment",
+      "route": "E",
+      "solicit": false,
+      "speaker": "Buyer",
+      "text": "Are the funds needed for this initiative currently allocated?",
+      "short": "Access to Funds",
+      "existing_human_answer": "Unknown"
+    },
+    {
+      "id": "TC_5",
+      "kind": "assessment",
+      "route": "E",
+      "solicit": false,
+      "speaker": "Buyer",
+      "text": "Is there a specific date by which the customer must implement their initiative in order to avoid consequence(s) or receive the anticipated payback?",
+      "short": "Compelling Event",
+      "existing_human_answer": "No"
+    },
+    {
+      "id": "TC_6",
+      "kind": "assessment",
+      "route": "P",
+      "solicit": false,
+      "speaker": null,
+      "text": "Has the customer defined the formal decision criteria they will use to evaluate alternatives?",
+      "short": "Formal Decision Criteria",
+      "existing_human_answer": "Unknown"
+    },
+    {
+      "id": "TC_7",
+      "kind": "assessment",
+      "route": "C",
+      "solicit": false,
+      "speaker": null,
+      "text": "Does the solution address the key players' most important decision criteria?",
+      "short": "Solution Fit",
+      "existing_human_answer": "Unknown"
+    },
+    {
+      "id": "AC_1",
+      "kind": "assessment",
+      "route": "E",
+      "solicit": false,
+      "speaker": "JUDGMENT OPEN: partner directly, or buyer relaying",
+      "text": "Does the customer's partner support our solution?",
+      "short": "Partner Engagement",
+      "existing_human_answer": "Yes"
+    },
+    {
+      "id": "TC_9",
+      "kind": "assessment",
+      "route": "C",
+      "solicit": false,
+      "speaker": "Buyer",
+      "text": "Do we have a competitive advantage based on the customer's previous favorable experience with us or our solution in a similar project?",
+      "short": "Previous Experience",
+      "existing_human_answer": "No"
+    },
+    {
+      "id": "TC_10",
+      "kind": "assessment",
+      "route": "E",
+      "solicit": false,
+      "speaker": "Buyer, key player",
+      "text": "Has a key player confirmed that our solution delivers business value in a way that uniquely differentiates us from the competition?",
+      "short": "Unique Business Value",
+      "existing_human_answer": null
+    },
+    {
+      "id": "TC_11",
+      "kind": "assessment",
+      "route": "P",
+      "solicit": false,
+      "speaker": null,
+      "text": "Is a key player who wants us to win currently supporting us and/or advocating on our behalf?",
+      "short": "Inside Support",
+      "existing_human_answer": "Yes"
+    },
+    {
+      "id": "TC_12",
+      "kind": "assessment",
+      "route": "C",
+      "solicit": false,
+      "speaker": null,
+      "text": "Can someone from our team regularly access an executive-level key player(s)?",
+      "short": "Executive Access",
+      "existing_human_answer": "Yes"
+    },
+    {
+      "id": "TC_14",
+      "kind": "assessment",
+      "route": "C",
+      "solicit": false,
+      "speaker": null,
+      "text": "Are there intangible, subjective factors we can leverage to influence the key players' decision?",
+      "short": "Informal Decision Criteria",
+      "existing_human_answer": "Unknown"
+    },
+    {
+      "id": "TC_15",
+      "kind": "assessment",
+      "route": "C",
+      "solicit": false,
+      "speaker": "Buyer",
+      "text": "Is a key player in the inner circle willing and able to influence the outcome in our favor?",
+      "short": "Power and Influence",
+      "existing_human_answer": "Yes"
+    },
+    {
+      "id": "TC_16",
+      "kind": "assessment",
+      "route": "C",
+      "solicit": false,
+      "speaker": "Seller",
+      "text": "Can we mitigate any known risk(s) to deliver a successful implementation of our solution?",
+      "short": "Customer Success",
+      "existing_human_answer": null
+    },
+    {
+      "id": "TC_13",
+      "kind": "assessment",
+      "route": "E",
+      "solicit": true,
+      "speaker": "Seller",
+      "text": "Is our company able to align, or adapt, to the customer's business culture?",
+      "short": "Cultural Compatibility",
+      "existing_human_answer": "Yes"
+    },
+    {
+      "id": "TC_18",
+      "kind": "assessment",
+      "route": "E",
+      "solicit": true,
+      "speaker": "Seller",
+      "text": "Does the revenue from this opportunity meet the requirements of our business?",
+      "short": "Revenue (Short Term and Future)",
+      "existing_human_answer": "Yes"
+    },
+    {
+      "id": "TC_20",
+      "kind": "assessment",
+      "route": "E",
+      "solicit": true,
+      "speaker": "Seller / leadership",
+      "text": "Will winning this opportunity provide our company strategic growth through increased brand recognition, market share, and/or future revenue?",
+      "short": "Strategic Growth",
+      "existing_human_answer": "Yes"
+    },
+    {
+      "id": "Why Act",
+      "kind": "qualifier",
+      "stage": "Stage 1",
+      "mandatory": true,
+      "route": "P",
+      "solicit": false,
+      "speaker": null,
+      "text": "Why Act: We have conducted discovery and understand of the decision maker's goal(s) and pressure(s) driving the initiative.",
+      "short": "Why Act",
+      "existing_human_answer": "Yes"
+    },
+    {
+      "id": "Customer Insights",
+      "kind": "qualifier",
+      "stage": "Stage 2",
+      "mandatory": true,
+      "route": "C",
+      "solicit": false,
+      "speaker": "Buyer",
+      "text": "Customer Insights: We have reviewed and validated our insight map, including metrics where possible, with each of the customer's key players.",
+      "short": "Insights Validated",
+      "existing_human_answer": "Yes",
+      "note": "qty modifier: quantified over the map's key players"
+    },
+    {
+      "id": "Decision Criteria",
+      "kind": "qualifier",
+      "stage": "Stage 2",
+      "mandatory": true,
+      "route": "P",
+      "solicit": false,
+      "speaker": null,
+      "text": "Decision Criteria: The customer has defined the criteria they will use to make their decision.",
+      "short": "Decision Criteria",
+      "existing_human_answer": "In progress"
+    },
+    {
+      "id": "Decision Team",
+      "kind": "qualifier",
+      "stage": "Stage 2",
+      "mandatory": true,
+      "route": "P",
+      "solicit": false,
+      "speaker": null,
+      "text": "Decision Team: We have identified the Approvers, Decision Makers, Evaluators and Users involved in the customer's buying decision.",
+      "short": "Buying Committee",
+      "existing_human_answer": "Yes"
+    }
+  ]
+}

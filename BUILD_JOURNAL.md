@@ -4561,3 +4561,10 @@ board wins on open-versus-closed, so its ledger should close those two at the ne
 
 **Owed.** Unchanged: the People harness build (brief now in Charters §P7), then per the
 Board's sequence. The account reading-set composition stays open and deliberately unguarded.
+
+**Addendum, same session.** The bundle folder itself was inside the repo, so the restructure
+commit tracked it — leaving two live copies of every document, the exact condition the
+one-live-copy rule exists to prevent. `aao-bundle/` is removed in a follow-up commit now that
+its contents are confirmed committed under `docs/`; the folder was the transfer packet, and
+the packet's job is done once it lands. Verified before deleting: all five living documents
+plus satellites present in `docs/` in the restructure commit.

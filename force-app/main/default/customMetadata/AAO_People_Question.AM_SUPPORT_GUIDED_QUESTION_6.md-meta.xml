@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <label>AM_SUPPORT_GUIDED_QUESTION_6</label>
+    <protected>false</protected>
+    <values><field>AAO_Question_Key__c</field><value xsi:type="xsd:string">AM_SUPPORT_GUIDED_QUESTION_6</value></values>
+    <values><field>AAO_Shipped_Text__c</field><value xsi:type="xsd:string">Has this person told you they prefer something else; i.e. an alternate provider or alternate use of capital?</value></values>
+    <values><field>AAO_Org_Override__c</field><value xsi:nil="true"/></values>
+    <values><field>AAO_Sequence__c</field><value xsi:type="xsd:double">39</value></values>
+    <values><field>AAO_Provenance__c</field><value xsi:type="xsd:string">Label</value></values>
+</CustomMetadata>

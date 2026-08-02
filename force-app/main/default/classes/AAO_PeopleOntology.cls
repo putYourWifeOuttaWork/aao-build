@@ -53,14 +53,61 @@ public class AAO_PeopleOntology {
      * short read is caught. Without this the class would happily author whatever it found,
      * which is what happened last time.
      */
-    public static final Map<String, List<Integer>> EXPECTED = new Map<String, List<Integer>>{
-        'AM_OM_SUPPORT_GUIDED_QUESTION_' => new List<Integer>{ 1, 2, 4, 5, 6, 7, 11, 14, 16 },
-        'AM_OM_POLITICAL_STATUS_GUIDED_QUESTION_' => new List<Integer>{ 3, 4, 6, 7 },
-        'OM_POLITICAL_STATUS_GUIDED_QUESTION_' => new List<Integer>{ 1, 2, 9 },
-        'AM_OM_COVERAGE_GUIDED_QUESTION_' => new List<Integer>{ 1, 2, 3 }
-    };
+    public static final String SCOPE_OM = 'OM';
+    public static final String SCOPE_AM = 'AM';
 
-    /** Which dimension a label belongs to. The family prefix decides; nothing is inferred. */
+    /**
+     * THE EXPECTED FAMILIES, now partitioned by map scope. Ruled v3.2: "a map-scope
+     * parameter injecting that scope's question set." The text is always read from the org;
+     * the SHAPE is asserted so a short read is caught, per scope, and the two scopes never
+     * bleed — an account pass cannot silently accept the opportunity set as filler, which is
+     * the family-guard failure one level up.
+     *
+     * OM is unchanged from the original enumeration. AM carries only the AM-SPECIFIC families
+     * seeded this session — Support 1/2/4/6, Political 1/2/9 — and Decision Orientation as a
+     * named family below. HOW THE ACCOUNT SET COMPOSES THE SHARED `AM_OM_` LABELS with these
+     * AM-specific ones is a People-reopen decision that is not yet ruled and is deliberately
+     * NOT encoded here: guarding a composition nobody has authored would be the exact guess
+     * this guard exists to refuse.
+     */
+    public static final Map<String, Map<String, List<Integer>>> NUMBERED =
+        new Map<String, Map<String, List<Integer>>>{
+            SCOPE_OM => new Map<String, List<Integer>>{
+                'AM_OM_SUPPORT_GUIDED_QUESTION_' => new List<Integer>{ 1, 2, 4, 5, 6, 7, 11, 14, 16 },
+                'AM_OM_POLITICAL_STATUS_GUIDED_QUESTION_' => new List<Integer>{ 3, 4, 6, 7 },
+                'OM_POLITICAL_STATUS_GUIDED_QUESTION_' => new List<Integer>{ 1, 2, 9 },
+                'AM_OM_COVERAGE_GUIDED_QUESTION_' => new List<Integer>{ 1, 2, 3 }
+            },
+            SCOPE_AM => new Map<String, List<Integer>>{
+                'AM_SUPPORT_GUIDED_QUESTION_' => new List<Integer>{ 1, 2, 4, 6 },
+                'AM_POLITICAL_STATUS_GUIDED_QUESTION_' => new List<Integer>{ 1, 2, 9 }
+            }
+        };
+
+    /**
+     * NAMED families, whose members are authored values rather than numbered questions.
+     * Decision Orientation is Buyer-Role-shaped: no vendor question set, UI-captured
+     * definitions, `Inferred_Pending` until ratified. It is guarded the same way — a missing
+     * value is a short family — but its members are keys, not integers.
+     */
+    public static final Map<String, Map<String, List<String>>> NAMED =
+        new Map<String, Map<String, List<String>>>{
+            SCOPE_OM => new Map<String, List<String>>(),
+            SCOPE_AM => new Map<String, List<String>>{
+                'DECISION_ORIENTATION_' => new List<String>{
+                    'DECISION_ORIENTATION_FINANCIAL',
+                    'DECISION_ORIENTATION_TECHNICAL',
+                    'DECISION_ORIENTATION_RELATIONSHIP',
+                    'DECISION_ORIENTATION_BUSINESS',
+                    'DECISION_ORIENTATION_UNKNOWN'
+                }
+            }
+        };
+
+    /** The original name, kept pointing at the opportunity scope so nothing external breaks. */
+    public static final Map<String, List<Integer>> EXPECTED = NUMBERED.get(SCOPE_OM);
+
+        /** Which dimension a label belongs to. The family prefix decides; nothing is inferred. */
     public static String dimension(String label) {
         if (label.contains('SUPPORT_GUIDED_QUESTION')) {
             return 'Support';
@@ -70,6 +117,9 @@ public class AAO_PeopleOntology {
         }
         if (label.contains('COVERAGE_GUIDED_QUESTION')) {
             return 'Coverage';
+        }
+        if (label.startsWith('DECISION_ORIENTATION_')) {
+            return 'Decision_Orientation';
         }
         return null;
     }
@@ -174,6 +224,10 @@ public class AAO_PeopleOntology {
      * flag, no migration, no branch anywhere else in the system.
      */
     public static Map<String, String> read() {
+        return read(SCOPE_OM);
+    }
+
+    public static Map<String, String> read(String scope) {
         Map<String, String> byKey = new Map<String, String>();
         for (AAO_People_Question__mdt q : [
             SELECT AAO_Question_Key__c, AAO_Shipped_Text__c, AAO_Org_Override__c
@@ -186,7 +240,7 @@ public class AAO_PeopleOntology {
                     : q.AAO_Shipped_Text__c
             );
         }
-        return assemble(byKey);
+        return assemble(byKey, scope);
     }
 
     /**
@@ -219,12 +273,11 @@ public class AAO_PeopleOntology {
      * text, overlay already applied by whoever read it.
      */
     public static Map<String, String> assemble(Map<String, String> labels) {
-        Set<String> wanted = new Set<String>();
-        for (String prefix : EXPECTED.keySet()) {
-            for (Integer n : EXPECTED.get(prefix)) {
-                wanted.add(prefix + n);
-            }
-        }
+        return assemble(labels, SCOPE_OM);
+    }
+
+    public static Map<String, String> assemble(Map<String, String> labels, String scope) {
+        Set<String> wanted = wantedFor(scope);
         Map<String, String> kept = new Map<String, String>();
         for (String name : wanted) {
             if (labels != null && labels.containsKey(name)) {
@@ -232,8 +285,28 @@ public class AAO_PeopleOntology {
                 kept.put(name, labels.get(name));
             }
         }
-        verify(wanted, kept);
+        verify(scope, kept);
         return kept;
+    }
+
+    /** Every full key a scope expects, numbered families plus named ones. */
+    private static Set<String> wantedFor(String scope) {
+        Set<String> wanted = new Set<String>();
+        Map<String, List<Integer>> nums = NUMBERED.get(scope);
+        if (nums != null) {
+            for (String prefix : nums.keySet()) {
+                for (Integer n : nums.get(prefix)) {
+                    wanted.add(prefix + n);
+                }
+            }
+        }
+        Map<String, List<String>> named = NAMED.get(scope);
+        if (named != null) {
+            for (String family : named.keySet()) {
+                wanted.addAll(named.get(family));
+            }
+        }
+        return wanted;
     }
 
     /**
@@ -245,26 +318,48 @@ public class AAO_PeopleOntology {
      * means the labels are not in this org, and something-but-not-everything means the
      * package differs from what was enumerated. Those are different conversations.
      */
-    private static void verify(Set<String> wanted, Map<String, String> found) {
+    private static void verify(String scope, Map<String, String> found) {
         if (found.isEmpty()) {
             throw new OntologyException(
-                'No ALTF guided-question labels in this org at all. Either the package is ' +
-                'not installed or the label names have changed; both are loud failures and ' +
-                'neither is an empty ontology.'
+                'No ' +
+                scope +
+                '-scope people-ontology seeds resolved. Either the seed is not deployed or ' +
+                'the keys have changed; both are loud failures and neither is an empty ' +
+                'ontology.'
             );
         }
         List<String> shortFamilies = new List<String>();
-        for (String prefix : EXPECTED.keySet()) {
-            List<String> missing = new List<String>();
-            for (Integer n : EXPECTED.get(prefix)) {
-                if (!found.containsKey(prefix + n) || String.isBlank(found.get(prefix + n))) {
-                    missing.add(String.valueOf(n));
+
+        Map<String, List<Integer>> nums = NUMBERED.get(scope);
+        if (nums != null) {
+            for (String prefix : nums.keySet()) {
+                List<String> missing = new List<String>();
+                for (Integer n : nums.get(prefix)) {
+                    if (!found.containsKey(prefix + n) || String.isBlank(found.get(prefix + n))) {
+                        missing.add(String.valueOf(n));
+                    }
+                }
+                if (!missing.isEmpty()) {
+                    shortFamilies.add(prefix + ' missing ' + String.join(missing, ', '));
                 }
             }
-            if (!missing.isEmpty()) {
-                shortFamilies.add(prefix + ' missing ' + String.join(missing, ', '));
+        }
+
+        Map<String, List<String>> named = NAMED.get(scope);
+        if (named != null) {
+            for (String family : named.keySet()) {
+                List<String> missing = new List<String>();
+                for (String k : named.get(family)) {
+                    if (!found.containsKey(k) || String.isBlank(found.get(k))) {
+                        missing.add(k);
+                    }
+                }
+                if (!missing.isEmpty()) {
+                    shortFamilies.add(family + ' missing ' + String.join(missing, ', '));
+                }
             }
         }
+
         if (!shortFamilies.isEmpty()) {
             throw new OntologyException(
                 'ONTOLOGY FAMILY SHORT. ' +

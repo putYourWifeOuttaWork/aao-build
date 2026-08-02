@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <label>GOAL_HELP_TEXT_AM_3</label>
+    <protected>false</protected>
+    <values><field>AAO_Question_Key__c</field><value xsi:type="xsd:string">GOAL_HELP_TEXT_AM_3</value></values>
+    <values><field>AAO_Shipped_Text__c</field><value xsi:type="xsd:string">Does the result need to be achieved within a specific time frame?</value></values>
+    <values><field>AAO_Org_Override__c</field><value xsi:nil="true"/></values>
+    <values><field>AAO_Sequence__c</field><value xsi:type="xsd:double">45</value></values>
+    <values><field>AAO_Provenance__c</field><value xsi:type="xsd:string">Label</value></values>
+</CustomMetadata>

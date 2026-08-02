@@ -149,6 +149,79 @@ private class AAO_PeopleOntologyTest {
         );
     }
 
+    /**
+     * THE ACCOUNT SCOPE, added v3.2. The seed now carries both maps; the scope parameter is
+     * what keeps them apart. AM returns its own Support and Political families plus Decision
+     * Orientation, and nothing from the opportunity set.
+     */
+    @IsTest
+    static void theAccountScopeCarriesItsOwnFamiliesAndDecisionOrientation() {
+        Test.startTest();
+        Map<String, String> am = AAO_PeopleOntology.read(AAO_PeopleOntology.SCOPE_AM);
+        Test.stopTest();
+
+        System.assertEquals(
+            12,
+            am.size(),
+            'AM Support four, AM Political three, Decision Orientation five.'
+        );
+        System.assert(
+            am.get('AM_SUPPORT_GUIDED_QUESTION_1').contains('specific provider'),
+            'The account map says provider where the opportunity map says solution. Byte-' +
+            'exact, not translated. Got: ' + am.get('AM_SUPPORT_GUIDED_QUESTION_1')
+        );
+        System.assert(
+            am.get('DECISION_ORIENTATION_FINANCIAL').contains('price, cost and economics'),
+            'Decision Orientation ships from the UI capture. Got: ' +
+            am.get('DECISION_ORIENTATION_FINANCIAL')
+        );
+        System.assert(
+            !am.containsKey('AM_OM_SUPPORT_GUIDED_QUESTION_1'),
+            'And the opportunity set does not bleed into the account read.'
+        );
+    }
+
+    /** The opportunity read is unchanged by the account seed: still nineteen, still no bleed. */
+    @IsTest
+    static void theOpportunityScopeDoesNotSeeTheAccountSeed() {
+        Test.startTest();
+        Map<String, String> om = AAO_PeopleOntology.read();
+        Test.stopTest();
+        System.assertEquals(19, om.size(), 'Nineteen, exactly as before the account seed.');
+        System.assert(
+            !om.containsKey('AM_SUPPORT_GUIDED_QUESTION_1') &&
+            !om.containsKey('DECISION_ORIENTATION_FINANCIAL'),
+            'No account family leaks into the opportunity scope.'
+        );
+    }
+
+    /** The guard refuses a short account read, and names a missing Decision Orientation value. */
+    @IsTest
+    static void aShortAccountFamilyRefusesAndNamesTheMissingValue() {
+        Map<String, String> partial = AAO_PeopleOntology.read(AAO_PeopleOntology.SCOPE_AM);
+        partial.remove('DECISION_ORIENTATION_BUSINESS');
+        partial.remove('AM_POLITICAL_STATUS_GUIDED_QUESTION_9');
+
+        Test.startTest();
+        String err;
+        try {
+            AAO_PeopleOntology.assemble(partial, AAO_PeopleOntology.SCOPE_AM);
+        } catch (AAO_PeopleOntology.OntologyException e) {
+            err = e.getMessage();
+        }
+        Test.stopTest();
+
+        System.assert(err != null && err.contains('FAMILY SHORT'), 'Got: ' + err);
+        System.assert(
+            err.contains('DECISION_ORIENTATION_BUSINESS'),
+            'A named family names the missing value, not a number. Got: ' + err
+        );
+        System.assert(
+            err.contains('AM_POLITICAL_STATUS_GUIDED_QUESTION_ missing 9'),
+            'And a numbered family still lists the integer. Got: ' + err
+        );
+    }
+
     /** Coverage is P because its questions are about us; Support and Political are E. */
     @IsTest
     static void coverageRoutesToStateAndTheOthersToEvidence() {

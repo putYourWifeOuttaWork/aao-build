@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <label>DECISION_ORIENTATION_UNKNOWN</label>
+    <protected>false</protected>
+    <values><field>AAO_Question_Key__c</field><value xsi:type="xsd:string">DECISION_ORIENTATION_UNKNOWN</value></values>
+    <values><field>AAO_Shipped_Text__c</field><value xsi:type="xsd:string">Decision orientation is unknown.</value></values>
+    <values><field>AAO_Org_Override__c</field><value xsi:nil="true"/></values>
+    <values><field>AAO_Sequence__c</field><value xsi:type="xsd:double">56</value></values>
+    <values><field>AAO_Provenance__c</field><value xsi:type="xsd:string">UI_Capture</value></values>
+</CustomMetadata>

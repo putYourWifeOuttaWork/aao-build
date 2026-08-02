@@ -1,15 +1,65 @@
 # Build journal
 
-Append-only. The only part ever rewritten is `## Current state`. Everything below it is
-chronological and never edited, including entries that turned out to be wrong — those get
-a later entry saying so, never a deletion.
+Append-only. The only part ever rewritten is `## Current state
 
-Every working session appends one entry, even a session that achieved nothing. A session
-that failed and recorded why is worth more than a session that succeeded silently.
+**Deployed to `altify--aossb2`, green, and clickable.** Org verified by query:
+`00DWD00000DV7iT2AT`, Name `Altify`, `IsSandbox true`. Written from the org on 4 August, not
+from the sessions below it — the block had gone thirty-seven sessions stale, which is the one
+staleness the journal's own rules forbid.
 
-Anything read from the org is quoted, never summarised. Anything assumed goes in the
-assumed list rather than being stated as fact anywhere else, because an assumption
-recorded as a finding is how a wrong belief becomes load-bearing.
+**Eight custom objects, two custom metadata types, eight triggers, forty Apex classes, and
+174 tests, 174 passing.** The objects: Source, Candidate, Claim, Claim Basis, Answer,
+Evidence Contract, Flag, Participant. The types: Model Config (the model and charter pin) and
+People Question (the ontology seed). Every object carries its trigger law; the metadata types
+carry none because nothing machine-written ever touches them.
+
+**The model path is live and has run on real transcripts.** The sentence this block carried
+for thirty-seven sessions — *everything rests on proposals authored by hand* — is now false
+and is retired. Extraction charter `AAO_Extract_Evidence` 1.1.0 and the blind reader
+`AAO_Blind_Reader` 1.0.0 both run through `AAO_Extract` against the Anthropic API, and Gate 1
+round two scored OUTCOMES 12/12 against staged ground truth with zero hallucinated spans.
+The model name and both charter versions are pinned in the one `Default` Model Config record
+(`claude-opus-5`), never hardcoded, and stamped on every row a run writes.
+
+**What the pipeline does, all deployed and tested:** evidence arrives by an after-insert
+event and is adjudicated asynchronously; spans are byte-verified against the frozen artifact;
+the blind reader decides coverage independently; the speaker rule downgrades a seller's own
+words; claims accumulate and replay rebuilds every answer in evidence-occurred order; the
+evidence-family law (47/48) lets a claim rest on state instead of an artifact; the P route
+answers from map rows and the Solution route from line items, both citing what they read and
+freezing it; day-one red stands every gating proposition from deal creation; the
+missing-relation and cardinality flags are general and live; the participant junction records
+who was on each source so Coverage is a query.
+
+**The People ontology is ours, seeded, and scope-aware — but no People charter is built.**
+`AAO_People_Question__mdt` holds 56 seed records: the opportunity-map guided questions and
+insight tests (v3.0), and as of v3.2 the account-map families and Decision Orientation.
+`AAO_PeopleOntology.read(scope)` assembles them byte-exact behind a family guard that refuses
+a short read per scope. **This is the ontology layer only.** The People projection writer
+waits on two rulings (the rung derivation and the citation budget); Problems and Politics are
+unopened; projection into Altify's own objects is a later phase and nothing touches them yet.
+
+**The rehearsal is durable and is the demo spine.** `AAO Demo - Tungsten Rehearsal` carries
+two claims and one answer written in separate transactions; a second deal carries the
+seller-said-it downgrade; `AAO Demo - Live` starts empty with its gating reds standing. Tabs,
+related lists and compact layouts are in place and `AAO_Admin` is assigned to Matt.
+
+**Run the full suite:**
+
+```bash
+sf apex run test --target-org aossb2 --tests AAO_AccumulationTest AAO_TriggerLawTest AAO_LiveIngestTest AAO_DemoTest AAO_EvidenceLayerTest AAO_PipelineViewControllerTest AAO_AnswerKeyTest AAO_ScopeKeyTest AAO_ExtractTest AAO_DiscoveryTest AAO_FlagsTest AAO_MapRouteTest AAO_EvidenceFamilyTest AAO_ParticipantsTest AAO_MissingRelationTest AAO_SolutionRouteTest AAO_CardinalityTest AAO_PeopleOntologyTest --result-format human --wait 40
+```
+
+**The rehearsal and the live deal, from anonymous Apex** — passes are separate transactions
+on purpose, and `ingestTwo` fires only once `status()` stops printing a `PENDING:` line:
+
+`AAO_Demo.passOne()` · `AAO_Demo.passTwo()` · `AAO_Demo.passNegative()` · `AAO_Demo.status()`
+· `AAO_Demo.purge()` — and `AAO_Live.ingestOne()` · `AAO_Live.ingestTwo()` ·
+`AAO_Live.status()` · `AAO_Live.reset()`.
+
+**The standing hazard, unchanged and load-bearing:** the only org we can query is Altify's
+own, which holds every module and every label. Module licensing and custom-metadata upgrade
+behaviour are both unverifiable here and are named as such rather than assumed.
 
 ---
 
@@ -4332,3 +4382,79 @@ chosen for the convenience of a query. Thirty-five rows cost nothing.
 **Politics untouched**, per the instruction.
 
 **Owed.** The upgrade-behaviour verification, whenever a packaging org exists.
+
+---
+
+## 2026-08-04 · session 50 · context 21: the account ontology seeded, the guard scoped, Current state rewritten
+
+**Did.** Synced five files. Extended the People ontology seed with the account-map families,
+made the family guard scope-aware, rewrote the stale Current state block. **174 tests, 174
+passing** (was 171). No other build: the scope resolver and the People projection writer stay
+unbuilt, Politics untouched.
+
+**The drop's filenames were stale, the stamps current.** `corrections v2_0` was v3.2 by
+stamp, `code-build-brief v1_0` was v1.1, `demo-runsheet v1_2` was v1.3 — wait, those were the
+previous drop; **this drop's five files carry matching stamps** (corrections v3.2, scope
+resolver v0.4, account captures v0.2, two projection reads), all new, nothing to delete.
+Verified stamps before filing regardless, because the last drop taught that lesson.
+
+### The seed · 21 records, counted from the journal and read byte-exact from the org
+
+The instruction said count from my own journal, not the block. Session 42 (line 3831) records
+**AM Support 1/2/4/6, AM Political 1/2/9**, and (line 3869) the insight tests as `_AM_1..3` per
+type with **Obstacle carrying no AM variant** — so Goal, Pressure, Initiative only. That is
+**16 label-sourced**, matching the instruction's parenthetical exactly.
+
+**Byte-exact text came from the org, not from memory**, the same authoring-time Tooling read
+sessions 42/43 used — a one-time capture into our own seed, not a runtime dependency, so LAW
+#1 holds. All 16 found, overlay empty. The AM/OM axis is visible in the bytes: AM Support says
+**provider** and **company** where OM says **solution**; `AM_POLITICAL_1` is *"Does this person
+define the company's goals?"* against the OM *"…goals and objectives, or do they merely have a
+good understanding of them?"* — different propositions, not translations, kept apart.
+
+**Decision Orientation's five values are UI-captured, and marked as such.** They have no label
+behind them — the modal is definitions only, Buyer-Role-shaped — so the text is transcribed
+from `aao-ontology-account-captures-v0_2` and cannot be re-queried. That distinction is
+load-bearing, so it is recorded on the record: a new `AAO_Provenance__c` picklist, `Label` or
+`UI_Capture`, DeveloperControlled. **Marking it stops a later pass from "verifying" a
+UI-captured string against a label table that never held it** and declaring a phantom
+mismatch. Null reads as `Label` for the 35 pre-field records, the `orTranscript` pattern
+exactly — no history invented, no 35-file churn, only the genuinely-different rows carry a
+value.
+
+### The guard · scope-partitioned, and why that was the honest way to extend it
+
+The instruction was *the family guard extends to the AM families and still refuses a short
+read.* The wrong way was a flat merge: it would have made one `read()` demand both maps'
+questions at once, broken the OM-only test, and — worse — let an account pass silently accept
+the opportunity set as filler, which is the exact *short-read-looks-complete* failure the
+guard exists to prevent, one level up.
+
+So `NUMBERED` and `NAMED` are now keyed by scope. `read(scope)` / `assemble(labels, scope)`
+guard per scope; the no-arg forms stay `OM` so every existing test passes untouched. **This is
+the "map-scope parameter" the corrections doc already calls for, and it is the ontology layer,
+not the projection writer** — no contract-building for AM, no scope resolver code, nothing the
+"build nothing else" line forbids.
+
+**What I deliberately did NOT encode:** how the account reading set composes the shared
+`AM_OM_` labels with the AM-specific ones. Session 42 shows Support has four AM-specific
+positions and five shared; which shared labels an account pass reads is a People-reopen
+decision that is not ruled, and guarding a composition nobody authored would be the guess the
+guard exists to refuse. The AM guard covers exactly what was seeded and named — AM Support
+1/2/4/6, AM Political 1/2/9, Decision Orientation's five — and no more.
+
+**The AM insight tests are seeded and unguarded**, mirroring the OM insight tests: both are
+Problems-charter data, guarded when Problems is built, not by the People guard.
+
+### Current state, rewritten from the org · owed since v3.1 §7.2
+
+It had said 128 tests, seven objects, and *everything rests on proposals authored by hand* —
+all pre-session-17, and the last of those is now simply false: the model path runs on real
+transcripts and Gate 1 round two scored 12/12. Rewritten from live queries: eight objects,
+two metadata types, 174 tests, the model pin read from the `Default` record, and an explicit
+line that the People ontology is the seed layer only with the charter unbuilt. The one block
+the journal's rules say must never go stale no longer is.
+
+**Owed.** Unchanged, and now waiting on the two People-harness rulings — the rung derivation
+and the citation budget — which the design side says are coming in the People harness brief.
+The account reading-set composition joins the list, surfaced above.

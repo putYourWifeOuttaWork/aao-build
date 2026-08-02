@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <label>INITIATIVE_HELP_TEXT_AM_3</label>
+    <protected>false</protected>
+    <values><field>AAO_Question_Key__c</field><value xsi:type="xsd:string">INITIATIVE_HELP_TEXT_AM_3</value></values>
+    <values><field>AAO_Shipped_Text__c</field><value xsi:type="xsd:string">Will success of the initiative have an impact on the executive's goals?</value></values>
+    <values><field>AAO_Org_Override__c</field><value xsi:nil="true"/></values>
+    <values><field>AAO_Sequence__c</field><value xsi:type="xsd:double">51</value></values>
+    <values><field>AAO_Provenance__c</field><value xsi:type="xsd:string">Label</value></values>
+</CustomMetadata>

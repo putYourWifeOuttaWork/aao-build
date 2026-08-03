@@ -59,6 +59,20 @@ public class AAO_Extract {
          * fit the 120-second ceiling. The B&V run timed out at exactly 120.4 s with it.
          */
         public Integer inventoryMaxOutputTokens;
+        /**
+         * Stage 1's own effort, separate from the shared one, and separate for the same
+         * reason the output bound is: on this stage effort is not a quality dial.
+         *
+         * `max_tokens` bounds thinking and content TOGETHER. Measurement 74 ran stage 1 at
+         * the shared `high` and the read spent 7,500 of 7,500 output tokens on thinking and
+         * emitted ZERO content — not a truncated inventory, no inventory. Three sessions had
+         * read that wall as "the artifact yields more evidence than one call can carry" and
+         * the number that says otherwise was on the wire the whole time.
+         *
+         * Blank falls back to the shared value, so the legacy path is untouched by this
+         * field existing.
+         */
+        public String inventoryEffort;
         public String inventoryCharter;
         public String inventoryCharterVersion;
         public String bindModel;
@@ -125,7 +139,9 @@ public class AAO_Extract {
         StageSpec s = new StageSpec();
         s.stage = 'stage1_read';
         s.model = String.isBlank(cfg.inventoryModel) ? cfg.modelName : cfg.inventoryModel;
-        s.effort = cfg.effort;
+        // Stage 1's own effort when set. See Config.inventoryEffort: the shared value is
+        // what produced a read that spent its whole output budget thinking.
+        s.effort = String.isBlank(cfg.inventoryEffort) ? cfg.effort : cfg.inventoryEffort;
         s.maxTokens = cfg.inventoryMaxOutputTokens == null
             ? cfg.maxOutputTokens
             : cfg.inventoryMaxOutputTokens;
@@ -263,6 +279,7 @@ public class AAO_Extract {
                 AAO_Active__c,
                 AAO_Inventory_Model__c,
                 AAO_Inventory_Max_Output_Tokens__c,
+                AAO_Inventory_Effort__c,
                 AAO_Inventory_Charter__c,
                 AAO_Inventory_Charter_Version__c,
                 AAO_Bind_Model__c,
@@ -305,6 +322,7 @@ public class AAO_Extract {
         c.inventoryMaxOutputTokens = r.AAO_Inventory_Max_Output_Tokens__c == null
             ? null
             : Integer.valueOf(r.AAO_Inventory_Max_Output_Tokens__c);
+        c.inventoryEffort = r.AAO_Inventory_Effort__c;
         c.inventoryCharter = r.AAO_Inventory_Charter__c;
         c.inventoryCharterVersion = r.AAO_Inventory_Charter_Version__c;
         c.bindModel = r.AAO_Bind_Model__c;

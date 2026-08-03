@@ -6693,3 +6693,182 @@ six slots, because Apex refuses more than one `executeBatch` per test method.
 one number decides whether this is an effort problem or a structural one. Then B&V. Then Emerson,
 which needs a transcript before anything else. Then the run report with receipts, which this entry
 is the honest partial form of.
+
+---
+
+## 2026-08-03 · session 74 · the thinking tokens answered it, and the answer moved the defect twice
+
+**Did.** Decomposed stage 1's output and found the three-session premise was false. Swept effort,
+found no setting that both fits the ceiling and reads reliably, and **stopped dialling.** Rewrote
+the stage 1 charter, measured that the rewrite did not work, and stopped again. Packaged and
+seeded the Emerson transcript. **Ran Extract-Bind-Verify end to end for the first time**, reached
+stage 4, and found that no span on either artifact can ever project. Fixed that, and proved the
+fix without a model call. **No baseline exists and nothing here is one.**
+
+### Measurement 1 · the number that was on the wire the whole time
+
+`AAO_Extract.Usage.thinkingTokens` was deployed and unexercised at the end of session 73. First
+live read:
+
+```
+stage1_read  85,637 ms  in=18,696  out=7,500  thinking=7,500  cacheCreate=3,629  stop=max_tokens
+```
+
+**Thinking was 100% of output. The read emitted no content at all.** Not a truncated inventory:
+no inventory. Three sessions read that wall as "the artifact yields more evidence than one
+bounded call can carry" and it was never a statement about the inventory. The config comment
+that predicted "extract-once on an 18,700-token artifact does not fit one bounded Apex callout"
+is **marked wrong in place** and kept.
+
+### Measurement 2 · the effort sweep, and there is no setting that works
+
+`AAO_Inventory_Effort__c` added so stage 1 stops sharing `AAO_Effort__c` with the legacy path.
+
+| effort | wall ms | out | thinking | items | stop |
+|---|---|---|---|---|---|
+| high | 85,637 | 7,500 | 7,500 (100%) | 0 | `max_tokens` |
+| medium | 82,128 | 7,500 | 5,171 (69%) | — | `max_tokens` |
+| low | 12,503 | 702 | 0 | 8 | `end_turn` |
+
+**The inventory is ~700 to 1,900 output tokens.** The writing was never expensive; the reading
+is. `medium` cannot fit the ceiling on this artifact — 7,500 tokens already cost 82 s and
+completing it needs ~100 to 110 s against 120 — and there is no level between `low` and `medium`.
+
+### Measurement 3 · `low` fits and is not reliable, and the charter rewrite did not fix it
+
+Five identical runs, cache warm after the first. Charter 1.0.0: **8, 0, 0, 0, 20** items. Three
+of five returned a well-formed, complete, EMPTY inventory in 53 to 86 output tokens.
+
+It is not honest emptiness. The declared set is 48 contracts, 16 families about **three people
+who are the three external speakers on the call** — Ashley Stroud (173 first-name hits), Adam
+Meloan (140), Robbin Jones (56). The artifact is saturated with exactly the people being asked
+about.
+
+Charter **1.1.0** added the coverage rule: 1.0.0 carried nine prohibitions and not one
+instruction to be exhaustive, which a model scoping work to the minimum satisfies by returning
+nothing, and §P7.3 is find-then-bind-then-verify so the finding stage was doing the filtering the
+verifier exists to do. Five runs at 1.1.0: **0, 2, 0, 0, 14.** Four more on the NF1 source: **0,
+0, 0, 0.**
+
+**It did not work, and the fix is left in place and reported as not working.** Across 14 runs,
+4 were non-empty. The defect has now survived six fixes (three bound raises, subject-vocabulary
+narrowing, the evidence budget, the effort change, the coverage rule) and the local-fix hazard
+says that makes it the shape. **Design's to rule. I am not rewriting the prompt again.**
+
+### The first end-to-end run, and what it found at stage 4
+
+Stage 1 drew 16 items and the pass reached `done`. Stages 2, 3 and 4 had never been touched by a
+live call before this.
+
+```
+stage1_read#1   items=16  45,524 ms  in=18,696  out=2,828 (thinking=1,294)  cacheRead=3,995
+stage2_bind#1   items=24  60,728 ms  in=4,476   out=5,974 (thinking=4,690)   claude-sonnet-5
+stage2_bind#2   items=18  53,486 ms  in=3,713   out=5,054 (thinking=3,970)   claude-sonnet-5
+stage3_verify#1 items=10   5,925 ms  in=1,550   out=474   (thinking=0)       claude-haiku-4-5
+TOTAL calls=4  165,663 ms  in=28,435  out=14,330
+```
+
+- **The measured bind group size is wrong.** Session 73 predicted ~29 s for 24 items; it took
+  **60.7 s**, better than half the ceiling gone on one call. The prediction is falsified by the
+  run exactly as its own comment said it would be. Not re-tuned yet.
+- **The blind reader earned its place: 6 of 10 rejected, 60%.** Over-reading is the expected
+  failure mode and the instrument caught it on its first live outing.
+- Spans dropped not found: **0**. Byte verification passed on every span.
+- `model_missed` **0**, and it is a lower bound by construction.
+
+### THE FINDING · no span on either artifact can ever project
+
+48 Candidates written, **0 Answers**. Every one of the 13 non-abstention candidates carries
+`AAO_Outcome__c = Span_Failed`: 3 TRUE and 10 UNVERIFIED, plus 28 `nobody_said` and 7
+`model_declined` abstentions.
+
+`AAO_NormalForm.turns()` segments an Attributed artifact by splitting on newline and taking the
+text before the first **TAB** as the speaker key; a line with no tab contributes no turn, and its
+own comment calls that "a defect in the normaliser, not something to guess at".
+`AAO_NormalForm.compose()` states the shape: `speakerKey + '\t' + utterance`, one turn per line.
+
+Both artifacts were packaged in the ECI viewer's block layout instead:
+
+```
+bv/biweekly-2026-06-24        len=46,551  TABS=0  TURNS_FOUND=0
+emerson/aspentech-2026-07-29  len=21,320  TABS=0  TURNS_FOUND=0
+```
+
+**Zero turns parse, so `containing()` returns null for every range and `AAO_SpanVerifier` fails
+every span on contiguity AFTER the byte compare has already passed.** This is independent of
+stage 1's instability and independent of effort: the B&V pass could never have projected, in any
+session, at any setting. The Candidate layer has been written all along and the projection gate
+has never once been passable on this artifact.
+
+**Proved deterministically, no callout**, by taking real spans from the run above and putting
+them through the same verifier against both artifacts:
+
+| artifact | turns | byte compare | contiguity |
+|---|---|---|---|
+| `bv/biweekly-2026-06-24` | 0 | true ×3 | **FAIL (null) ×3** |
+| `bv/biweekly-2026-06-24-nf1` | 489 | true ×3 | **PASS ×3**, speakers resolve correctly |
+
+### Built and seeded
+
+- `AAO_Inventory_Effort__c`, with the measurement in the field description.
+- `AAO_InventoryCharter` **1.1.0**, the coverage rule, reported above as not having worked.
+- **Emerson transcript packaged**, `normalize.py`, machine-piped rather than hand-transcribed
+  because the Emerson fixture manifest names hand transcription as where slippage enters. 221
+  turns, three speakers matching `videocall.json` exactly, 220 viewer-chrome lines and **7 ECI
+  signal tags** removed to a sidecar. The tags are Einstein's inference, not speech; leaving them
+  in would let a reader quote a machine's label as a human's sentence **and pass byte
+  verification doing it**, which is a fabrication route rather than an over-read. All ASR noise
+  kept verbatim (`Koopa`, `CUPA`, `Anne Fatima`, `Fat, am I gonna sign it` for Pat, `the signs
+  SOW`). `Setup.` at 16:11 kept as speech and flagged.
+- Sources: **SRC-00000032** (block layout, superseded), **SRC-00000033** Emerson NF1 (221 turns),
+  **SRC-00000034** B&V NF1 (489 turns). SRC-32 stands because `AAO_Artifact_SHA256__c` is
+  `FROZEN` and Sources leave by retirement, never deletion — three laws, each right, and the
+  handler's own comment already settled an identical case: *"No immutability exception exists or
+  will. The recorded history stays."*
+- **A second fingerprint measurement:** LongTextArea strips a trailing newline, so a delivered
+  file and its stored text carry two different SHA-256s, both correct about different things, and
+  **spans verify against the stored one**. Recorded in the Emerson manifest rather than hidden.
+
+### Not done, and why
+
+**EMERSON DID NOT RUN.** The artifact exists, is well-formed and is seeded. **There are 48
+`AAO_Evidence_Contract__c` rows in the org and all 48 point at the three B&V contacts. Zero exist
+for any Emerson person**, so `AAO_ApplicableSet.resolve` returns empty and stage 1 throws before
+any callout. Contract generation is mechanical (`AAO_PeopleContracts`, one per question per
+person, from our own ontology); the free input is **which people**, which is the unbuilt
+resolver's decision and is hand-scaffolded. Applying the B&V precedent mechanically (external
+speakers with Contacts) yields **one person**: Couture. Vargas, the most active buyer-side voice
+on the call, **has no Contact at all**, and everyone the adjudication is about — Neeraja, Fatima
+(two candidates), Corey (weak), Jacob (none) — is mentioned-but-absent, which the board lists as
+unruled and colliding with the person-row boundary law. **Design's, and it changes what the run
+tests.**
+
+**No baseline.** The one completed pass ran against an artifact that could not project, and
+stage 1 is not reliable enough for a repeatable run regardless.
+
+### Named for design
+
+1. **The stage 1 read is unstable at the only effort that fits the ceiling**, and six fixes have
+   not moved it. Six of fourteen measured runs produced anything at all. This is the shape.
+2. **The normal form and the packaged artifacts disagree**, and the disagreement silently
+   disabled projection for every run before this one. NF1 conversion is done for both; the frozen
+   originals stand as history.
+3. **The bind group size is falsified** — 60.7 s measured against ~29 s predicted, on a 120 s
+   ceiling. Needs re-measuring before any run is trusted for latency.
+4. **A 60% verification rejection rate** on the binder's first live outing. The instrument works;
+   whether the binder is that over-eager or the verifier that strict is one adjudication away.
+5. **`findings=1` is still unexplained** and this session cannot speak to it, but `0, 0, 0, 8,
+   20` is the same instability wearing different clothes and they should be considered together.
+
+### Standing
+
+Production never read. Nothing on native or ALTF objects. `AAO_Ingest.AUTO` held false around
+every seed so the legacy pipeline never wrote under the old charter.
+
+**Tests re-run after the 1.1.0 charter edit and the `AAO_Extract` change: 239 org-wide, one
+failure, and it is the same pre-existing `ConvertToOpportunityTest.testgetOppCreationDetails`
+`AE_Summary__c` validation failure session 73 recorded — untouched by this session and nothing to
+do with AAO.** `AAO_EBVTest` and `AAO_ExtractTest` are 37/37. The coverage rule and the new
+effort field broke nothing, which is worth saying plainly and is also not evidence that either
+of them works: the tests assert the charter's structure, and what 1.1.0 failed to change was the
+model's behaviour.

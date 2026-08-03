@@ -1,0 +1,226 @@
+# Utterance timestamps, kept beside the artifact because NF1 has no room for them.
+# The speaker key is everything before the first tab and must match the roster key,
+# so a stamp inside the line would resolve to nobody.
+# stamp	speaker	utteranceStart	utteranceLength
+
+00:03	Wendy Higley	13	20
+00:05	Vargas, Jefferson [EMR/CSS/AT/MEDI]	70	221
+00:21	Vargas, Jefferson [EMR/CSS/AT/MEDI]	328	5
+00:22	Vargas, Jefferson [EMR/CSS/AT/MEDI]	370	178
+00:29	Wendy Higley	562	4
+00:36	Wendy Higley	580	4
+00:37	Vargas, Jefferson [EMR/CSS/AT/MEDI]	621	79
+00:44	Vargas, Jefferson [EMR/CSS/AT/MEDI]	737	37
+00:46	Wendy Higley	788	15
+00:48	Vargas, Jefferson [EMR/CSS/AT/MEDI]	840	253
+01:06	Wendy Higley	1107	4
+01:07	Vargas, Jefferson [EMR/CSS/AT/MEDI]	1148	62
+01:14	Vargas, Jefferson [EMR/CSS/AT/MEDI]	1247	306
+01:18	Wendy Higley	1567	5
+01:32	Wendy Higley	1586	2
+01:34	Vargas, Jefferson [EMR/CSS/AT/MEDI]	1625	258
+01:55	Vargas, Jefferson [EMR/CSS/AT/MEDI]	1920	89
+02:01	Vargas, Jefferson [EMR/CSS/AT/MEDI]	2046	147
+02:11	Wendy Higley	2207	98
+02:24	Wendy Higley	2319	17
+02:28	Wendy Higley	2350	52
+02:33	Wendy Higley	2416	29
+02:37	Wendy Higley	2459	21
+02:40	Wendy Higley	2494	5
+02:45	Wendy Higley	2513	62
+02:49	Wendy Higley	2589	47
+02:52	Vargas, Jefferson [EMR/CSS/AT/MEDI]	2673	321
+02:55	Wendy Higley	3008	4
+03:02	Wendy Higley	3026	3
+03:08	Wendy Higley	3043	4
+03:13	Vargas, Jefferson [EMR/CSS/AT/MEDI]	3084	356
+03:13	Wendy Higley	3454	5
+03:31	Wendy Higley	3473	4
+03:34	Vargas, Jefferson [EMR/CSS/AT/MEDI]	3514	51
+03:35	Wendy Higley	3579	110
+03:41	Vargas, Jefferson [EMR/CSS/AT/MEDI]	3726	4
+03:46	Wendy Higley	3744	25
+03:49	Wendy Higley	3783	24
+03:51	Vargas, Jefferson [EMR/CSS/AT/MEDI]	3844	9
+03:52	Wendy Higley	3867	4
+03:54	Wendy Higley	3885	89
+03:58	Vargas, Jefferson [EMR/CSS/AT/MEDI]	4011	27
+04:01	Vargas, Jefferson [EMR/CSS/AT/MEDI]	4075	92
+04:07	Wendy Higley	4181	229
+04:11	Vargas, Jefferson [EMR/CSS/AT/MEDI]	4447	20
+04:17	Vargas, Jefferson [EMR/CSS/AT/MEDI]	4504	4
+04:22	Wendy Higley	4522	20
+04:28	Wendy Higley	4556	35
+04:30	Vargas, Jefferson [EMR/CSS/AT/MEDI]	4628	338
+04:35	Wendy Higley	4980	4
+04:41	Wendy Higley	4998	5
+04:43	Wendy Higley	5017	5
+04:51	Wendy Higley	5036	5
+04:51	Vargas, Jefferson [EMR/CSS/AT/MEDI]	5078	31
+04:56	Vargas, Jefferson [EMR/CSS/AT/MEDI]	5146	16
+04:58	Wendy Higley	5176	5
+04:59	Vargas, Jefferson [EMR/CSS/AT/MEDI]	5218	242
+05:07	Wendy Higley	5474	4
+05:14	Wendy Higley	5492	18
+05:16	Vargas, Jefferson [EMR/CSS/AT/MEDI]	5547	5
+05:16	Wendy Higley	5566	116
+05:21	Vargas, Jefferson [EMR/CSS/AT/MEDI]	5719	5
+05:23	Vargas, Jefferson [EMR/CSS/AT/MEDI]	5761	322
+05:25	Wendy Higley	6097	2
+05:42	Wendy Higley	6113	393
+06:03	Wendy Higley	6520	324
+06:25	Wendy Higley	6858	22
+06:27	Vargas, Jefferson [EMR/CSS/AT/MEDI]	6917	269
+06:27	Wendy Higley	7200	34
+06:42	Wendy Higley	7248	2
+06:46	Vargas, Jefferson [EMR/CSS/AT/MEDI]	7287	90
+06:53	Wendy Higley	7391	13
+06:56	Wendy Higley	7418	138
+07:08	Wendy Higley	7570	5
+07:09	Wendy Higley	7589	23
+07:13	Wendy Higley	7626	16
+07:21	Wendy Higley	7656	61
+07:26	Wendy Higley	7731	112
+07:31	Vargas, Jefferson [EMR/CSS/AT/MEDI]	7880	5
+07:33	Wendy Higley	7899	28
+07:36	Wendy Higley	7941	33
+07:41	Wendy Higley	7988	10
+07:43	Wendy Higley	8012	36
+07:46	Vargas, Jefferson [EMR/CSS/AT/MEDI]	8085	49
+07:53	Wendy Higley	8148	40
+07:59	Wendy Higley	8202	41
+08:03	Wendy Higley	8257	12
+08:05	Wendy Higley	8283	7
+08:08	Couture, Ryan [EMR/CSS/AT/BED]	8322	49
+08:10	Wendy Higley	8385	75
+08:15	Wendy Higley	8474	54
+08:18	Couture, Ryan [EMR/CSS/AT/BED]	8560	4
+08:20	Wendy Higley	8578	256
+08:23	Couture, Ryan [EMR/CSS/AT/BED]	8866	4
+08:40	Wendy Higley	8884	46
+08:45	Vargas, Jefferson [EMR/CSS/AT/MEDI]	8967	292
+08:46	Wendy Higley	9273	5
+09:05	Vargas, Jefferson [EMR/CSS/AT/MEDI]	9315	262
+09:25	Vargas, Jefferson [EMR/CSS/AT/MEDI]	9614	76
+09:39	Couture, Ryan [EMR/CSS/AT/BED]	9722	16
+09:42	Vargas, Jefferson [EMR/CSS/AT/MEDI]	9775	273
+09:48	Couture, Ryan [EMR/CSS/AT/BED]	10080	4
+10:01	Vargas, Jefferson [EMR/CSS/AT/MEDI]	10121	166
+10:12	Wendy Higley	10301	4
+10:12	Couture, Ryan [EMR/CSS/AT/BED]	10337	6
+10:15	Couture, Ryan [EMR/CSS/AT/BED]	10375	55
+10:20	Couture, Ryan [EMR/CSS/AT/BED]	10462	141
+10:34	Vargas, Jefferson [EMR/CSS/AT/MEDI]	10640	77
+10:37	Couture, Ryan [EMR/CSS/AT/BED]	10749	32
+10:39	Vargas, Jefferson [EMR/CSS/AT/MEDI]	10818	165
+10:43	Wendy Higley	10997	4
+10:43	Couture, Ryan [EMR/CSS/AT/BED]	11033	6
+10:46	Couture, Ryan [EMR/CSS/AT/BED]	11071	37
+10:50	Couture, Ryan [EMR/CSS/AT/BED]	11140	5
+10:51	Wendy Higley	11159	166
+11:06	Wendy Higley	11339	39
+11:09	Wendy Higley	11392	55
+11:14	Vargas, Jefferson [EMR/CSS/AT/MEDI]	11484	216
+11:27	Wendy Higley	11714	93
+11:33	Wendy Higley	11821	326
+11:54	Wendy Higley	12161	37
+11:58	Vargas, Jefferson [EMR/CSS/AT/MEDI]	12235	5
+11:59	Couture, Ryan [EMR/CSS/AT/BED]	12272	4
+12:00	Wendy Higley	12290	65
+12:07	Vargas, Jefferson [EMR/CSS/AT/MEDI]	12392	5
+12:09	Vargas, Jefferson [EMR/CSS/AT/MEDI]	12434	67
+12:13	Wendy Higley	12515	45
+12:17	Wendy Higley	12574	98
+12:19	Vargas, Jefferson [EMR/CSS/AT/MEDI]	12709	5
+12:21	Couture, Ryan [EMR/CSS/AT/BED]	12746	5
+12:24	Wendy Higley	12765	5
+12:24	Couture, Ryan [EMR/CSS/AT/BED]	12802	57
+12:26	Wendy Higley	12873	306
+12:47	Wendy Higley	13193	62
+12:56	Vargas, Jefferson [EMR/CSS/AT/MEDI]	13292	5
+12:57	Wendy Higley	13311	139
+13:06	Wendy Higley	13464	12
+13:07	Vargas, Jefferson [EMR/CSS/AT/MEDI]	13513	167
+13:13	Wendy Higley	13694	4
+13:16	Wendy Higley	13712	3
+13:19	Couture, Ryan [EMR/CSS/AT/BED]	13747	5
+13:20	Wendy Higley	13766	5
+13:25	Wendy Higley	13785	84
+13:29	Couture, Ryan [EMR/CSS/AT/BED]	13901	65
+13:34	Couture, Ryan [EMR/CSS/AT/BED]	13998	79
+13:38	Vargas, Jefferson [EMR/CSS/AT/MEDI]	14114	5
+13:40	Couture, Ryan [EMR/CSS/AT/BED]	14151	6
+13:40	Wendy Higley	14171	57
+13:43	Vargas, Jefferson [EMR/CSS/AT/MEDI]	14265	10
+13:44	Wendy Higley	14289	5
+13:45	Vargas, Jefferson [EMR/CSS/AT/MEDI]	14331	4
+13:47	Wendy Higley	14349	64
+13:51	Wendy Higley	14427	63
+13:56	Vargas, Jefferson [EMR/CSS/AT/MEDI]	14527	24
+13:56	Couture, Ryan [EMR/CSS/AT/BED]	14583	208
+13:59	Wendy Higley	14805	2
+14:00	Wendy Higley	14821	9
+14:09	Wendy Higley	14844	127
+14:13	Vargas, Jefferson [EMR/CSS/AT/MEDI]	15008	5
+14:16	Couture, Ryan [EMR/CSS/AT/BED]	15045	135
+14:22	Wendy Higley	15194	4
+14:24	Vargas, Jefferson [EMR/CSS/AT/MEDI]	15235	2
+14:24	Wendy Higley	15251	38
+14:27	Vargas, Jefferson [EMR/CSS/AT/MEDI]	15326	90
+14:32	Wendy Higley	15430	5
+14:33	Couture, Ryan [EMR/CSS/AT/BED]	15467	58
+14:40	Couture, Ryan [EMR/CSS/AT/BED]	15557	14
+14:40	Wendy Higley	15585	56
+14:43	Couture, Ryan [EMR/CSS/AT/BED]	15673	30
+14:45	Vargas, Jefferson [EMR/CSS/AT/MEDI]	15740	3
+14:46	Wendy Higley	15757	2
+14:48	Couture, Ryan [EMR/CSS/AT/BED]	15791	29
+14:50	Wendy Higley	15834	4
+14:50	Vargas, Jefferson [EMR/CSS/AT/MEDI]	15875	8
+14:51	Wendy Higley	15897	48
+14:53	Couture, Ryan [EMR/CSS/AT/BED]	15977	234
+14:53	Vargas, Jefferson [EMR/CSS/AT/MEDI]	16248	5
+14:59	Wendy Higley	16267	5
+15:00	Vargas, Jefferson [EMR/CSS/AT/MEDI]	16309	5
+15:03	Wendy Higley	16328	8
+15:10	Vargas, Jefferson [EMR/CSS/AT/MEDI]	16373	5
+15:10	Wendy Higley	16392	5
+15:12	Couture, Ryan [EMR/CSS/AT/BED]	16429	66
+15:15	Vargas, Jefferson [EMR/CSS/AT/MEDI]	16532	261
+15:29	Couture, Ryan [EMR/CSS/AT/BED]	16825	4
+15:29	Wendy Higley	16843	271
+15:48	Wendy Higley	17128	354
+15:56	Vargas, Jefferson [EMR/CSS/AT/MEDI]	17519	5
+16:02	Vargas, Jefferson [EMR/CSS/AT/MEDI]	17561	12
+16:11	Wendy Higley	17587	6
+16:11	Vargas, Jefferson [EMR/CSS/AT/MEDI]	17630	77
+16:16	Wendy Higley	17721	16
+16:16	Couture, Ryan [EMR/CSS/AT/BED]	17769	8
+16:18	Vargas, Jefferson [EMR/CSS/AT/MEDI]	17814	5
+16:19	Couture, Ryan [EMR/CSS/AT/BED]	17851	57
+16:19	Wendy Higley	17922	10
+16:20	Vargas, Jefferson [EMR/CSS/AT/MEDI]	17969	5
+16:21	Wendy Higley	17988	3
+16:22	Wendy Higley	18005	40
+16:24	Couture, Ryan [EMR/CSS/AT/BED]	18077	3
+16:25	Couture, Ryan [EMR/CSS/AT/BED]	18112	120
+16:31	Vargas, Jefferson [EMR/CSS/AT/MEDI]	18269	5
+16:32	Wendy Higley	18288	113
+16:38	Couture, Ryan [EMR/CSS/AT/BED]	18433	31
+16:40	Wendy Higley	18478	152
+16:42	Vargas, Jefferson [EMR/CSS/AT/MEDI]	18667	5
+16:46	Couture, Ryan [EMR/CSS/AT/BED]	18704	297
+16:48	Wendy Higley	19015	5
+16:51	Wendy Higley	19034	13
+17:03	Wendy Higley	19061	64
+17:07	Couture, Ryan [EMR/CSS/AT/BED]	19157	4
+17:08	Couture, Ryan [EMR/CSS/AT/BED]	19193	4
+17:09	Wendy Higley	19211	168
+17:10	Couture, Ryan [EMR/CSS/AT/BED]	19411	8
+17:11	Vargas, Jefferson [EMR/CSS/AT/MEDI]	19456	4
+17:18	Vargas, Jefferson [EMR/CSS/AT/MEDI]	19497	53
+17:21	Wendy Higley	19564	19
+17:22	Couture, Ryan [EMR/CSS/AT/BED]	19615	5
+17:24	Couture, Ryan [EMR/CSS/AT/BED]	19652	23
+17:24	Wendy Higley	19689	29
+17:24	Vargas, Jefferson [EMR/CSS/AT/MEDI]	19755	19

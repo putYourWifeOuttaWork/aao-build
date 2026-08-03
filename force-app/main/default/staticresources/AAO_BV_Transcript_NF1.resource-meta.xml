@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StaticResource xmlns="http://soap.sforce.com/2006/04/metadata">
+    <cacheControl>Private</cacheControl>
+    <contentType>text/plain</contentType>
+    <description>B and V bi-weekly transcript converted to canonical NF1 (speaker TAB utterance, one turn per line). The original block-layout artifact has no tabs, so turns() found zero turns and every span failed contiguity. Carrier for one Source insert.</description>
+</StaticResource>

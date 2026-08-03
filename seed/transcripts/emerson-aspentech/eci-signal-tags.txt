@@ -1,0 +1,10 @@
+# ECI signal tags stripped from the artifact, kept as history, never as speech.
+# stamp	speaker	tag
+
+05:16	Wendy Higley	Procurement Process Engaged (2)
+06:03	Wendy Higley	Procurement Process Engaged (2)
+09:42	Vargas, Jefferson [EMR/CSS/AT/MEDI]	Pricing
+10:51	Wendy Higley	Procurement Process Engaged
+11:33	Wendy Higley	Procurement Process Engaged
+15:29	Wendy Higley	Procurement Process Engaged
+16:11	Vargas, Jefferson [EMR/CSS/AT/MEDI]	Next Step

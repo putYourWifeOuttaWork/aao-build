@@ -132,17 +132,49 @@
           timeouts on 3 August. If 7,500 truncates too, the finding is that extract-once on an
           18,700-token artifact does not fit one bounded Apex callout, and that is design's to
           rule on, not mine to dial around.
+
+          THE PARAGRAPH ABOVE IS WRONG AND IS KEPT BECAUSE IT IS WRONG. 7,500 did truncate,
+          and the conclusion drawn from it does not follow. Session 74 measured the same call
+          with thinking tokens broken out for the first time: 85,637 ms, 18,696 in / 7,500 out,
+          of which THINKING WAS 7,500. All of it. The read produced no content at all, so
+          nothing whatever is known about how large the inventory would have been, and
+          "extract-once does not fit one bounded callout" was never a finding this measurement
+          could support. The bound was never the constraint. The EFFORT was, and it lives in
+          AAO_Inventory_Effort__c below. 7,500 stays until a run that actually emits content
+          says what the real size is.
         -->
         <field>AAO_Inventory_Max_Output_Tokens__c</field>
         <value xsi:type="xsd:double">7500</value>
+    </values>
+    <values>
+        <!--
+          MEASURED, session 74, and the measurement is the whole reason this field exists.
+
+          max_tokens bounds thinking and content TOGETHER. At the shared `high` this stage
+          spent 7,500 of 7,500 output tokens deliberating and emitted zero content — a
+          truncation with nothing behind it. Three sessions read that wall as evidence about
+          the size of the inventory; it was never evidence about anything but the effort.
+
+          Set from the sweep and not from taste. Blank would fall back to AAO_Effort__c,
+          which is the value that produced the failure, so it is not left blank.
+        -->
+        <field>AAO_Inventory_Effort__c</field>
+        <value xsi:type="xsd:string">low</value>
     </values>
     <values>
         <field>AAO_Inventory_Charter__c</field>
         <value xsi:type="xsd:string">AAO_Inventory_Read</value>
     </values>
     <values>
+        <!--
+          1.1.0, session 74. The version moved because the instructions moved, which is the
+          law this field exists to serve. 1.0.0 asked the finding stage to filter in a pass
+          built as find, bind, verify; five identical runs returned 8, 0, 0, 0 and 20 items
+          and three of them were well-formed EMPTY inventories. 1.1.0 adds the coverage rule.
+          Items produced at 1.0.0 were produced by a charter that did not say that.
+        -->
         <field>AAO_Inventory_Charter_Version__c</field>
-        <value xsi:type="xsd:string">1.0.0</value>
+        <value xsi:type="xsd:string">1.1.0</value>
     </values>
     <values>
         <field>AAO_Bind_Model__c</field>

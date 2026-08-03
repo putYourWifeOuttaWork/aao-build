@@ -30,6 +30,26 @@
  *    written by Apex after binding at zero model cost, so this charter reports only what it
  *    found. **The consequence is named and owned in §P7.3:** an unextracted statement becomes
  *    a `model_missed` abstention rather than a directly probed answer.
+ *
+ * CHARTER 1.1.0, session 74: THE COVERAGE RULE, and it is a correction of my own text.
+ *
+ * 1.0.0 carried nine prohibitions and not one instruction to be exhaustive. Read literally
+ * by a model scoping its work to what was asked, every rule in it is satisfied by returning
+ * nothing. Five runs of the identical call on the B&V artifact produced 8, 0, 0, 0 and 20
+ * items; three of the five returned a well-formed EMPTY inventory in 53 to 86 output tokens
+ * against an artifact that the 20-item run proves is full of bindable statements.
+ *
+ * The defect is structural rather than local: §P7.3 is find, then bind, then verify, and
+ * 1.0.0 asked the finding stage to filter. The verifier's rejection count is the designed
+ * instrument for over-reading and it can only reject what stage 1 reported, so a conservative
+ * stage 1 moves the pass toward the ONE failure mode the pass cannot observe. 1.1.0 says
+ * coverage is stage 1's job and filtering is not, names the asymmetry between the two
+ * mistakes, and refuses the empty inventory as a casual answer. Precision is expected to
+ * fall; that is what the rejection count is for and it is reported per run.
+ *
+ * **This raises the model_missed question rather than settling it, and the numbers above are
+ * a measurement of instability, not of the true inventory size. Nothing here establishes
+ * what a correct read of this artifact contains.**
  */
 public class AAO_InventoryCharter {
     public class CharterException extends Exception {
@@ -308,6 +328,25 @@ public class AAO_InventoryCharter {
                 '',
                 'RULES.',
                 '',
+                'COVERAGE IS YOUR JOB. FILTERING IS NOT. Report every statement that could ' +
+                'bear on a family, including ones you are unsure about and ones you think are ' +
+                'weak. You are not the bar and there is no credit here for being selective. ' +
+                'Every rule below is about HOW to report a statement, not about whether it ' +
+                'deserves reporting.',
+                '',
+                'The two mistakes are not equal and you should not treat them as if they are. ' +
+                'An item that should not have survived is caught: binding drops it, or the ' +
+                'independent reader rejects it, and either way it is counted and reported. A ' +
+                'statement you leave out is caught by nothing. Binding sees only what you ' +
+                'list and the reader can only reject what binding proposed, so an omission ' +
+                'leaves no trace and becomes silence that looks like an answer. Err toward ' +
+                'reporting.',
+                '',
+                'AN EMPTY INVENTORY IS A STRONG CLAIM, so do not make it casually. It says ' +
+                'this transcript contains nothing that bears on any of the families about any ' +
+                'of the people listed. On a sales call involving those people that is rarely ' +
+                'true. If you are about to return no items, read again.',
+                '',
                 'QUOTE VERBATIM. A span must be a character-for-character substring of the ' +
                 'transcript as given to you. Do not tidy, join, trim, correct or paraphrase. ' +
                 'Do not stitch two turns together. A span that does not match exactly is ' +
@@ -349,7 +388,9 @@ public class AAO_InventoryCharter {
                 '',
                 'REPORT NOTHING ABOUT SILENCE. A family nobody spoke to produces no item. ' +
                 'You are not asked to account for the families you did not find and you must ' +
-                'not write entries saying you did not find them.',
+                'not write entries saying you did not find them. This rule is about the ' +
+                'entries you must not write. It is not permission to report less, and it does ' +
+                'not narrow the coverage rule above.',
                 '',
                 'You are not shown, and must not guess at, any current state for this deal. ' +
                 'What was concluded before is none of your business and agreeing with it is ' +

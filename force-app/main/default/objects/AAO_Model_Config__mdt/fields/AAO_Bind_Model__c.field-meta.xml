@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Bind_Model__c</fullName>
+    <label>BindModel</label>
+    <description>Charters v2.4 P7.3 stage 2, binding. Must differ from AAO_Verify_Model__c: binding and verification on separate models is ruled, and AAO_Extract.requireSeparateModels throws before the callout rather than reporting a worthless rejection count afterwards.</description>
+    <inlineHelpText>Charters v2.4 P7.3 stage 2, binding. Must differ from AAO_Verify_Model__c: binding and verification on separate models is ruled, and AAO_Extract.requireSeparateModels throws before the callout rather than reporting a worthless rejection count afterwards.</inlineHelpText>
+    <type>Text</type>
+    <length>80</length>
+    <required>false</required>
+    <unique>false</unique>
+</CustomField>

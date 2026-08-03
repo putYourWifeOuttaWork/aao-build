@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Inventory_Charter_Version__c</fullName>
+    <label>InventoryCharterVersion</label>
+    <description>Version of the stage 1 charter. Moves whenever the instructions move, which is the whole point of versioning a charter.</description>
+    <inlineHelpText>Version of the stage 1 charter. Moves whenever the instructions move, which is the whole point of versioning a charter.</inlineHelpText>
+    <type>Text</type>
+    <length>20</length>
+    <required>false</required>
+    <unique>false</unique>
+</CustomField>

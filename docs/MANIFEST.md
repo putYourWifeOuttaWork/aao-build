@@ -17,7 +17,7 @@ state, the locked-law list, the open ledger with owners, and next steps. It repl
 | `aao-glossary.md` | Vocabulary — every term, defined once |
 | `aao-architecture.md` | The inventory: where things live, every ruling, placement. Carries Theory and Computable Share as stamped sections |
 | `aao-model-and-flow.md` | Entities, keys, field tables, and what happens to one piece of evidence |
-| `aao-charters.md` | The AI: People (§P1), Problems (§P2), Politics (§P3, open), Process (§P4), scope resolver (§P5), account ontology (§P6), harness briefs (§P7) |
+| `aao-charters.md` | The AI: People (§P1), Problems (§P2), Politics (§P3, open), Process (§P4), scope resolver (§P5), account ontology (§P6), harness briefs (§P7), **the pass shape (§P7.3, Extract-Bind-Verify)** |
 
 When the Board and a companion disagree, the companion's stamped body wins on substance;
 the Board wins only on what is open versus closed.
@@ -35,6 +35,12 @@ the Board wins only on what is open versus closed.
 | `aao-gate1-results.md` · `gate1-transcript2-record.md` · `gate1_harness.py` · `applicable_set.json` | Gate 1 conduct, fixtures and harness |
 
 **Build-state numbers come from `../BUILD_JOURNAL.md`, never from any document here.**
+
+## Superseded, marked in place and kept as the audit trail
+
+| File | Superseded by |
+|---|---|
+| `aao-P7.3-extract-bind-verify.md` | **Charters v2.4 §P7.3.** Filed standalone at commit `cbaed19` when the redesign had no home in a stamped document; folded into Charters at v2.4, and marked SUPERSEDED at its head on 3 August rather than deleted. One live copy per truth: the pass shape is read from `aao-charters.md` §P7.3. |
 
 ## Legacy — outside the new structure, kept pending explicit retirement
 

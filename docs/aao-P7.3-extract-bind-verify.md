@@ -1,6 +1,12 @@
 # §P7.3 · The Extract-Bind-Verify pass · v0.1 draft · 3 August 2026
 
-**Status: drafted in session, to fold into Charters at its next bump as the successor to the per-person pass shape. Until folded, this file is the authoritative statement of the redesign and travels in the zip.**
+> # SUPERSEDED · 3 August 2026
+>
+> **This file is SUPERSEDED by Charters v2.4 §P7.3, which is the authoritative pass shape. One live copy per truth: read `docs/aao-charters.md` §P7.3 and not this file.** It is kept, not deleted, because wrong or retired text is marked wrong and never removed — and because it is the record of what was filed at commit `cbaed19` before the fold. Nothing below this line may be cited as current. Where this text and Charters v2.4 §P7.3 differ, Charters wins on substance without argument.
+>
+> Marked at the direction of the CODE inbox re-stamped 3 August and Board v1.3 §1.
+
+**Status: SUPERSEDED by Charters v2.4 §P7.3 (folded). Originally: drafted in session, to fold into Charters at its next bump as the successor to the per-person pass shape. Until folded, this file is the authoritative statement of the redesign and travels in the zip.**
 
 ## The ruling that opens this section
 

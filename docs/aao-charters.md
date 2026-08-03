@@ -2,6 +2,8 @@
 
 > **The version lives on the stamp line below and nowhere else.**
 
+**v2.4 · 3 August 2026 · The redesign fold. The pass shape is REDESIGNED: §P7.3 (Extract-Bind-Verify) is absorbed as the successor to every prior pass shape — one strong-model read per Source producing an inventory of potential claims, deterministic-plus-small-call binding that promotes Candidates to Claims, and a separate smaller-model blind reader verifying coextension before any Claim writes. The per-person split (built and measured 3 August, never chartered) and §P7.2's one-call pass are both retired by Matthew's ruling: one full transcript read per person cannot survive enterprise volume, and the B&V baseline on that shape is abandoned, not deferred. Rulings folded: coverage is computed, never extracted (CODE verified the build always skipped that family); the evidence budget is ~90 tokens per finding, justified by coextension, never by display; binding and verification stay separate models, verification on a significantly smaller model gated by one adjudicated comparison; `model_missed` becomes a reported per-run rate, not bookkeeping. The resolver's v0.3 participant-determinism claim is qualified in place from the Emerson pull. For posterity: the direct Anthropic Named Credential is a dev-org stand-in (flex credits cannot run in the dev org); the architecture's model path is and has always been the Einstein Trust Layer / Models API, and short synchronous calls are the design target this pass shape is built for.**
+
 **v2.3 · 3 August 2026 · The build-day fold. §P7.2 gains its ratifications block: the writer's query-then-branch upsert shape with the two-rows flag, the create leg mandatory because contact-role sync is a customer configuration that can be off, the TRUE-strong / FALSE-weak guard on two-sided questions with UNVERIFIED placing nobody, People resolving per roster (map rows union Source participants), and the applicable set declared rather than global. The resolver section gains the membership-never-routes ruling. All ruled 2 and 3 August, built and proved at 204 tests by CODE the same day.**
 
 **v2.2 · 2 August 2026 · The probe correction. §P7.2's exclusion-list assertion marked WRONG in place and restated as measured by CODE's step 0 probe: the key-player fields are formulas, there is no recalculation, and the passing assertion is per-dimension stamp isolation. The probe's positive findings recorded: API-written map rows accepted as real, native per-dimension Last_Modified stamps as the watermark substrate.**
@@ -798,7 +800,7 @@ Its significance is that guidance can reach it: when a red or a flag concerns a 
 
 **The overlap read weights curated rows, never bare membership · RULED from the clone finding.** Altify seeded the stamped deal's map by cloning all 44 account-map rows at creation; only nine were ever curated. Bare membership overlap is therefore inheritance, not signal. The discriminating read is rows a human touched — curated attributes, non-default values.
 
-**The B&V test result, recorded:** scope read on 61% of the transcript returned account-primary with expansion seeding (Adam Meloan's *"maybe that is one of our first business cases"*), which is the dual trigger per the ontology's own caveat. Which-opportunity resolved to Community Licenses-150 by agreement of curated-overlap (3 of 3 participants curated there; 1 of 3 on the demo deal; 0 of 3 on both renewals) and content match (community licenses and MCP use-case talk; zero renewal language). Participant-to-contact proved deterministic in ECI orgs: `VideoCallParticipant.RelatedPersonId` was populated with real Contact ids on every external row.
+**The B&V test result, recorded:** scope read on 61% of the transcript returned account-primary with expansion seeding (Adam Meloan's *"maybe that is one of our first business cases"*), which is the dual trigger per the ontology's own caveat. Which-opportunity resolved to Community Licenses-150 by agreement of curated-overlap (3 of 3 participants curated there; 1 of 3 on the demo deal; 0 of 3 on both renewals) and content match (community licenses and MCP use-case talk; zero renewal language). Participant-to-contact proved deterministic in ECI orgs: `VideoCallParticipant.RelatedPersonId` was populated with real Contact ids on every external row. **[v2.4 · WRONG as a generalization, measured on the Emerson 29 July call: both external participant rows carry `RelatedPersonId = null` — one speaker has no Contact at all, the other's Contact has no email. The email-match mechanism is deterministic; its coverage is not. The identity ladder, not this field, is the guarantee.]**
 
 **v0.2 · 2 August 2026 · Matthew's corrections land: the account-map check replaces the account-plan check, ownership traversal is demoted to a suggestive read, the which-opportunity match gains its method and stays OPEN pending the live test, and dual-scope gains the two-sided summary.**
 
@@ -1167,6 +1169,8 @@ Seeder verification list, each item recorded in the journal:
 
 ### Step 2 · The run · the real pipeline, front door in
 
+**[v2.4 · The pass execution described below — one model call over the whole declared set — is SUPERSEDED by §P7.3, as is the per-person split that briefly replaced it. Ingest, dedup, roster, adjudication, the invoker and everything downstream of Claim stand. Read §P7.3 for the pass.]**
+
 The real B&V transcript (the Casey call) injected as a Source through ingest: dedup, roster, adjudication, exactly as any evidence arrives. **People charter only; every other charter's contracts sit unhanded.** Claims accumulate, answers derive, answers queue projection per the architecture. Then the one phase concession: a **temporary projection invoker**, trigger or class, `AAO_TEMP_` in its name, marked temporary in the journal, condemned in advance, that drains the queue into actual upserts on Altify's objects. The batch layer is the real architecture (batched projection, real-time async reserved for seller input via UI or headless) and is neither built nor prejudiced here; this harness tests **what projection writes, not how it is scheduled**.
 
 ### Step 3 · Grading · mechanical assertions, then Matthew's adjudication
@@ -1196,5 +1200,58 @@ The real B&V transcript (the Casey call) injected as a Source through ingest: de
 **The applicable set is declared, never global (ruled 3 August, built same day).** The org-wide contracts read is marked wrong in place in the repo and survives only for inventory and the pipeline view; it must never feed a model. Evidence Contract carries `AAO_Charter_Designation__c`; a pass declares its charter set and resolution runs per charter: assessment resolves per deal through the configuration chain Architecture rules; **People resolves per roster, map rows union Source participants**, both halves earning their place because map-only would make the create leg unreachable. Process is charter-filtered but not yet deal-filtered, labelled a half-measure in the method; persisting the per-deal rubric binding as a queryable fact is owed before any Process pass and is folded into the ingest-time reconciler item on the Board.
 
 **Contracts are frozen identity under a live read, per Matthew's order-of-operations ruling.** The chain at ingest: resolve scope first through the two-key lock, then per resolved deal read the live rubric per declared charter, reconcile against contracts by content hash, mint and supersede at that moment where the rubric changed, and hand each charter exactly the resolved current set. The hand-seeded 48 of this harness are scaffolding standing in for the reconciler, legitimate for this run because the roster is known and the ontology is stable; the reconciler is Board-owed before any charter beyond People runs.
+
+## §P7.3 · The Extract-Bind-Verify pass · v0.1 draft · 3 August 2026
+
+**Status: FOLDED at charters v2.4. This section is the authoritative pass shape. The standalone spec file and CODE's `docs/` copy are superseded by this text.**
+
+## The ruling that opens this section
+
+**The per-person pass shape is dead, ruled by Matthew, 3 August 2026.** One full transcript read per person cannot survive enterprise volume: seventeen people is seventeen reads of the same 18,700 tokens, and the measured call (16 propositions, 87,805 ms, 18,696 input / 7,339 output) showed input dominated by the artifact and output dominated by prose, both paid N times. The B&V baseline on that shape is **abandoned, not deferred** — a baseline of an untenable structure measures nothing worth keeping. Session 62 and the 3 August single-person measurement stand as history and cost data only. The harness seed's nothing-redesigned-mid-run rule is superseded by this ruling; the run it protected no longer exists.
+
+## The pass, four stages
+
+**Stage 1 · The read.** One call per Source. Strong model. Input: the whole normalized transcript, artifact-first. Output: an **inventory of potential claims** — for each charter-relevant statement: speaker, subject person, line anchor, minimal verbatim span, and the proposition families it plausibly touches. **No verdicts. No per-sentence quizzing.** The read is guided by the declared applicable set's proposition families, which is where the declared-set law binds first: the families in the prompt are exactly the declared charters' families, never the whole cabinet.
+
+**Stage 2 · Binding.** Each inventory item is matched to its contracts: deterministically where the mapping is mechanical (person resolution via the identity ladder, family-to-contract fan-out), by a **small call** where judgment is needed. A binding call carries the span, the specific proposition, and nothing else — no transcript. Verdict: establishes / does not establish / insufficient. Binding is what promotes a Candidate to a Claim.
+
+**Stage 3 · Verification.** The blind reader, **separate model, never the binder** (ruled 3 August: separate for now). Sees only the claim and its quoted evidence. Catches over-reading — the measured failure mode from Gate 1 — by coextension: subject, scope, quantity. **Runs on a significantly smaller model than stage 1** (ruled 3 August), because the judgment is low-inference: does this span carry this claim. **Quality gate attached to that ruling:** before the small model is trusted, one adjudicated comparison run against the strong model on the same claim set; if the small model passes over-reads the strong model catches, size up one notch and re-compare. The blind reader is not overhead; it is the second stage of the machine and, under the computable-first direction for Process and Assessment (T5, open), the feeder for downstream charters.
+
+**Stage 4 · Unchanged.** Claims accumulate to Answers; projection writes; watermarks hold; the writer's query-then-branch stands; Option C notes, citation law, quotes on Answer rows only — all untouched. Nothing downstream of Claim moves.
+
+## How this maps onto the three layers
+
+The inventory **is** the Candidate layer doing the job its name implied: Candidate proposes, Claim records, Answer is what is true now. Binding is the promotion step. The complete ledger holds by construction: after binding, **Apex writes the abstention rows** for every proposition-person pair the inventory never touched — `nobody_said` where the read saw the person and no relevant statement, `model_missed` reserved for statements later shown to exist. Zero model cost for silence.
+
+## The epistemics sentence, in the charter on purpose
+
+An unextracted statement becomes a `model_missed` abstention rather than a directly probed answer. Extract-once trusts one family-guided pass for completeness; the residual is real and bounded, not zero. This is chosen, stated, and owned — the alternative (probing every proposition individually) is the shape this section retires.
+
+## Rulings folding with this section, all Matthew's, 3 August
+
+1. **Coverage is computed, never extracted.** Presence per occasion, occasion = scope + artifact hash per the movement law, counted deterministically per scope. Optional decay is config, parked, not designed. The coverage proposition family is deleted from every read.
+2. **The evidence budget is ~90 tokens per finding, not ~30.** The span must stay coextensive — shortest span that still carries subject, scope, and quantity — and needs room to breathe. Quotes on Answer rows remain full-fidelity from the stored transcript; the budget governs model output, never stored evidence.
+3. **Separate models for binding and verification.** Independence is the point: the checker never sees the binder's conclusion. Small model for verification per the ruling above, gated by the comparison run.
+4. **For posterity: the direct Anthropic Named Credential is a dev-org stand-in** (flex credits cannot run in the dev org). The architecture's model path is and has always been the Einstein Trust Layer / Models API. Short synchronous calls are therefore the design target, and this pass shape is built for them: one bounded heavy read, then sub-second small calls.
+
+## What is unverified, named
+
+- Stage 1 read latency and output size at inventory grade (the read writes more than verdicts but no longer writes essays about silence) — first measurement.
+- Small-model verification quality — the adjudicated comparison run.
+- Net cost per Source versus the retired shape — estimate is order-of-magnitude better; the harness measures it.
+- Call-two-onward cache behavior is mostly mooted (one read per Source), but stage 1 across Sources sharing a prompt prefix may still cache; report `cacheRead` anyway.
+
+---
+
+### Additions at the fold, v2.4
+
+**`model_missed` is a reported per-run rate** (CODE's flag, accepted): under extract-once it is the honest measure of what the single read did not catch, and the harness reports it beside findings and abstentions rather than burying it.
+
+**Coverage ruling verified against the build:** `AAO_PeopleContracts` has always skipped the coverage family (comment: *Coverage is a P route and is not extracted from words*); the 48 seeded contracts are Support and Political only. The ruling costs nothing to satisfy.
+
+**The local-fix hazard, from CODE's own record:** three correct fixes to the inside of a wrong structure, each right about the thing it examined, none surfacing the real objection — and `findings=1` was the structure's visible edge, named as a separate question and then set aside. A correct local fix is evidence the local question was asked, never evidence the structure is right; when the same defect survives three fixes, the defect is the shape.
+
+
+---
 
 *End §P7.2 v1.0. Owed back from CODE: the step 0 probe result, the seeder verification lines, and the mechanical assertion results, all to BUILD_JOURNAL.*

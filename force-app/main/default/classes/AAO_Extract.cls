@@ -45,9 +45,198 @@ public class AAO_Extract {
         public Integer timeoutMs;
         public Boolean active;
 
+        // ---- Extract-Bind-Verify, Charters v2.4 §P7.3. THREE STAGES, THREE MODELS, and the
+        // separation is ruled rather than convenient: the binder and the verifier must be
+        // different models because independence is the entire point of a second reader.
+        // Group sizes live here rather than in Apex because they came from measurement and
+        // will move when the next measurement says so — a constant in Apex would make a
+        // measured number look like a design decision.
+        public String inventoryModel;
+        /**
+         * Stage 1's own output bound, separate from the shared one because it is the only
+         * stage where max_tokens is a TIME budget rather than a size one. The shared value is
+         * 16,000, which at the measured generation rate is ~190 seconds and therefore cannot
+         * fit the 120-second ceiling. The B&V run timed out at exactly 120.4 s with it.
+         */
+        public Integer inventoryMaxOutputTokens;
+        public String inventoryCharter;
+        public String inventoryCharterVersion;
+        public String bindModel;
+        public String bindCharter;
+        public String bindCharterVersion;
+        public Integer bindGroupSize;
+        public String verifyModel;
+        public String verifyCharter;
+        public String verifyCharterVersion;
+        public Integer verifyGroupSize;
+
         public String endpoint() {
             return 'callout:' + namedCredential + endpointPath;
         }
+    }
+
+    /**
+     * One stage's model settings, resolved from config, so the callout body does not have to
+     * know which stage it is serving.
+     *
+     * `effort` is blank for the small stages on purpose. It is a real request parameter and a
+     * real cost: the binder and the verifier are answering a low-inference question about two
+     * pieces of text, and buying thinking tokens for that is paying for deliberation nobody
+     * asked for. Stage 1 keeps it.
+     */
+    public class StageSpec {
+        public String stage;
+        public String model;
+        public String effort;
+        public Integer maxTokens;
+        public String charter;
+        public String charterVersion;
+        /** Whether the first content block carries a cache breakpoint. */
+        public Boolean cachePrefix = false;
+    }
+
+    /** What one stage call produced, with everything the journal needs to name it. */
+    public class StageResult {
+        public String stage;
+        public String rawText;
+        public Usage usage = new Usage();
+        public String modelRequested;
+        public String modelReported;
+        public String stopReason;
+        public String charter;
+        public String charterVersion;
+        public Long elapsedMs;
+        public Integer promptChars;
+
+        public override String toString() {
+            return stage +
+                ' model=' + modelReported +
+                ' charter=' + charter + '@' + charterVersion +
+                ' ms=' + elapsedMs +
+                ' ' + usage +
+                ' promptChars=' + promptChars +
+                ' stop=' + stopReason;
+        }
+    }
+
+    public static StageSpec inventorySpec() {
+        Config cfg = config();
+        requireActive(cfg);
+        StageSpec s = new StageSpec();
+        s.stage = 'stage1_read';
+        s.model = String.isBlank(cfg.inventoryModel) ? cfg.modelName : cfg.inventoryModel;
+        s.effort = cfg.effort;
+        s.maxTokens = cfg.inventoryMaxOutputTokens == null
+            ? cfg.maxOutputTokens
+            : cfg.inventoryMaxOutputTokens;
+        s.charter = cfg.inventoryCharter;
+        s.charterVersion = cfg.inventoryCharterVersion;
+        s.cachePrefix = true;
+        return s;
+    }
+
+    public static StageSpec bindSpec() {
+        Config cfg = config();
+        requireActive(cfg);
+        StageSpec s = new StageSpec();
+        s.stage = 'stage2_bind';
+        s.model = cfg.bindModel;
+        s.maxTokens = cfg.maxOutputTokens;
+        s.charter = cfg.bindCharter;
+        s.charterVersion = cfg.bindCharterVersion;
+        return s;
+    }
+
+    public static StageSpec verifySpec() {
+        Config cfg = config();
+        requireActive(cfg);
+        StageSpec s = new StageSpec();
+        s.stage = 'stage3_verify';
+        s.model = cfg.verifyModel;
+        s.maxTokens = cfg.maxOutputTokens;
+        s.charter = cfg.verifyCharter;
+        s.charterVersion = cfg.verifyCharterVersion;
+        return s;
+    }
+
+    /**
+     * The separation, enforced in code rather than trusted to a config record.
+     *
+     * A verifier that is the same model as the binder is not a second reader, it is the same
+     * reader asked twice, and every rejection count it produces is worthless. This throws
+     * before the callout rather than reporting a suspicious number afterwards.
+     */
+    public static void requireSeparateModels() {
+        Config cfg = config();
+        if (String.isBlank(cfg.bindModel) || String.isBlank(cfg.verifyModel)) {
+            throw new ExtractException(
+                'Both AAO_Bind_Model__c and AAO_Verify_Model__c must be set. §P7.3 rules ' +
+                'binding and verification onto separate models and there is no default.'
+            );
+        }
+        if (cfg.bindModel == cfg.verifyModel) {
+            throw new ExtractException(
+                'The bind model and the verify model are both ' + cfg.bindModel + '. ' +
+                'Verification on the same model as binding is the same reader asked twice, ' +
+                'and its rejection count would measure nothing. Ruled separate, 3 August.'
+            );
+        }
+    }
+
+    private static void requireActive(Config cfg) {
+        if (cfg.active != true) {
+            throw new ExtractException(
+                'AAO_Model_Config__mdt.Default is not Active. Model calls are switched off.'
+            );
+        }
+    }
+
+    /**
+     * One stage call. Shared by all three so they cannot drift apart in how they read usage,
+     * handle a refusal, or find the text block.
+     */
+    public static StageResult callStage(
+        StageSpec spec,
+        String systemText,
+        List<String> userBlocks,
+        Map<String, Object> outputSchema
+    ) {
+        if (String.isBlank(spec.model)) {
+            throw new ExtractException(
+                'Stage ' + spec.stage + ' has no model configured. There is no fallback: a ' +
+                'measurement that cannot name the model that produced it is not a measurement.'
+            );
+        }
+        List<Object> blocks = new List<Object>();
+        for (Integer i = 0; i < userBlocks.size(); i++) {
+            Map<String, Object> b = new Map<String, Object>{
+                'type' => 'text',
+                'text' => userBlocks[i]
+            };
+            if (i == 0 && spec.cachePrefix == true) {
+                b.put('cache_control', new Map<String, Object>{ 'type' => 'ephemeral' });
+            }
+            blocks.add(b);
+        }
+
+        Call c = send(config(), spec, systemText, blocks, outputSchema);
+
+        StageResult r = new StageResult();
+        r.stage = spec.stage;
+        r.rawText = c.text;
+        r.usage = c.usage;
+        r.modelRequested = spec.model;
+        r.modelReported = c.modelReported;
+        r.stopReason = c.stopReason;
+        r.charter = spec.charter;
+        r.charterVersion = spec.charterVersion;
+        r.elapsedMs = c.elapsedMs;
+        Integer chars = systemText == null ? 0 : systemText.length();
+        for (String b : userBlocks) {
+            chars += b == null ? 0 : b.length();
+        }
+        r.promptChars = chars;
+        return r;
     }
 
     @TestVisible
@@ -71,7 +260,19 @@ public class AAO_Extract {
                 AAO_Effort__c,
                 AAO_Max_Output_Tokens__c,
                 AAO_Timeout_Ms__c,
-                AAO_Active__c
+                AAO_Active__c,
+                AAO_Inventory_Model__c,
+                AAO_Inventory_Max_Output_Tokens__c,
+                AAO_Inventory_Charter__c,
+                AAO_Inventory_Charter_Version__c,
+                AAO_Bind_Model__c,
+                AAO_Bind_Charter__c,
+                AAO_Bind_Charter_Version__c,
+                AAO_Bind_Group_Size__c,
+                AAO_Verify_Model__c,
+                AAO_Verify_Charter__c,
+                AAO_Verify_Charter_Version__c,
+                AAO_Verify_Group_Size__c
             FROM AAO_Model_Config__mdt
             WHERE DeveloperName = 'Default'
             LIMIT 1
@@ -100,6 +301,24 @@ public class AAO_Extract {
         c.maxOutputTokens = Integer.valueOf(r.AAO_Max_Output_Tokens__c);
         c.timeoutMs = Integer.valueOf(r.AAO_Timeout_Ms__c);
         c.active = r.AAO_Active__c;
+        c.inventoryModel = r.AAO_Inventory_Model__c;
+        c.inventoryMaxOutputTokens = r.AAO_Inventory_Max_Output_Tokens__c == null
+            ? null
+            : Integer.valueOf(r.AAO_Inventory_Max_Output_Tokens__c);
+        c.inventoryCharter = r.AAO_Inventory_Charter__c;
+        c.inventoryCharterVersion = r.AAO_Inventory_Charter_Version__c;
+        c.bindModel = r.AAO_Bind_Model__c;
+        c.bindCharter = r.AAO_Bind_Charter__c;
+        c.bindCharterVersion = r.AAO_Bind_Charter_Version__c;
+        c.bindGroupSize = r.AAO_Bind_Group_Size__c == null
+            ? null
+            : Integer.valueOf(r.AAO_Bind_Group_Size__c);
+        c.verifyModel = r.AAO_Verify_Model__c;
+        c.verifyCharter = r.AAO_Verify_Charter__c;
+        c.verifyCharterVersion = r.AAO_Verify_Charter_Version__c;
+        c.verifyGroupSize = r.AAO_Verify_Group_Size__c == null
+            ? null
+            : Integer.valueOf(r.AAO_Verify_Group_Size__c);
         return c;
     }
 
@@ -110,6 +329,19 @@ public class AAO_Extract {
         public Integer outputTokens = 0;
         public Integer cacheReadTokens = 0;
         public Integer cacheCreationTokens = 0;
+        /**
+         * THINKING TOKENS, BROKEN OUT, and the absence of this line is why three sessions of
+         * measurement cannot answer a question they should have been able to.
+         *
+         * `output_tokens` INCLUDES thinking, and thinking counts against `max_tokens`. So an
+         * inventory read that truncates at 7,500 output tokens may have produced a small
+         * inventory behind a large deliberation, or a large inventory with no deliberation, and
+         * measurement 71's 7,339 output tokens has the same ambiguity in it. Those are
+         * completely different findings with completely different fixes — lower the effort, or
+         * accept that the artifact yields more evidence than one bounded call can carry — and
+         * the number that separates them was on the wire the whole time and never read.
+         */
+        public Integer thinkingTokens = 0;
 
         public Integer billableInput() {
             return inputTokens + cacheCreationTokens;
@@ -123,7 +355,9 @@ public class AAO_Extract {
                 ' cacheRead=' +
                 cacheReadTokens +
                 ' cacheWrite=' +
-                cacheCreationTokens;
+                cacheCreationTokens +
+                ' thinking=' +
+                thinkingTokens;
         }
     }
 
@@ -358,27 +592,53 @@ public class AAO_Extract {
         String text;
     }
 
-    /** One request, one response, shared by both charters so they cannot drift apart. */
+    /**
+     * The pre-§P7.3 entry. Kept so the retired one-call pass and its tests still run exactly
+     * as they did: they are history and cost data, and history that stops compiling stops
+     * being checkable.
+     */
     private static Call send(
         Config cfg,
         String systemText,
         List<Object> userBlocks,
         Map<String, Object> outputSchema
     ) {
+        StageSpec legacy = new StageSpec();
+        legacy.stage = 'legacy';
+        legacy.model = cfg.modelName;
+        legacy.effort = cfg.effort;
+        legacy.maxTokens = cfg.maxOutputTokens;
+        return send(cfg, legacy, systemText, userBlocks, outputSchema);
+    }
+
+    /** One request, one response, shared by every charter so they cannot drift apart. */
+    private static Call send(
+        Config cfg,
+        StageSpec spec,
+        String systemText,
+        List<Object> userBlocks,
+        Map<String, Object> outputSchema
+    ) {
+        Map<String, Object> outputConfig = new Map<String, Object>{
+            'format' => new Map<String, Object>{
+                'type' => 'json_schema',
+                'schema' => outputSchema
+            }
+        };
+        // Omitted rather than sent empty. An `effort` key with a null behind it is not the
+        // same request as no key at all, and the small stages are measured without one.
+        if (String.isNotBlank(spec.effort)) {
+            outputConfig.put('effort', spec.effort);
+        }
+
         Map<String, Object> body = new Map<String, Object>{
-            'model' => cfg.modelName,
-            'max_tokens' => cfg.maxOutputTokens,
+            'model' => spec.model,
+            'max_tokens' => spec.maxTokens,
             'system' => systemText,
             'messages' => new List<Object>{
                 new Map<String, Object>{ 'role' => 'user', 'content' => userBlocks }
             },
-            'output_config' => new Map<String, Object>{
-                'effort' => cfg.effort,
-                'format' => new Map<String, Object>{
-                    'type' => 'json_schema',
-                    'schema' => outputSchema
-                }
-            }
+            'output_config' => outputConfig
         };
 
         HttpRequest req = new HttpRequest();
@@ -452,6 +712,10 @@ public class AAO_Extract {
         u.outputTokens = intOf(raw.get('output_tokens'));
         u.cacheReadTokens = intOf(raw.get('cache_read_input_tokens'));
         u.cacheCreationTokens = intOf(raw.get('cache_creation_input_tokens'));
+        Object details = raw.get('output_tokens_details');
+        if (details instanceof Map<String, Object>) {
+            u.thinkingTokens = intOf(((Map<String, Object>) details).get('thinking_tokens'));
+        }
     }
 
     private static Integer intOf(Object o) {

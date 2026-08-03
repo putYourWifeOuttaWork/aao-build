@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Bind_Group_Size__c</fullName>
+    <label>BindGroupSize</label>
+    <description>How many bind items ride in one callout. MEASURED, never assumed: ruling 6 of the 3 August inbox. Time one small call, then choose. Lives in config rather than Apex because the next measurement will move it and a constant in Apex would make a measured number look like a design decision.</description>
+    <inlineHelpText>How many bind items ride in one callout. MEASURED, never assumed: ruling 6 of the 3 August inbox. Time one small call, then choose. Lives in config rather than Apex because the next measurement will move it and a constant in Apex would make a measured number look like a design decision.</inlineHelpText>
+    <type>Number</type>
+    <precision>4</precision>
+    <scale>0</scale>
+    <required>false</required>
+    <unique>false</unique>
+</CustomField>

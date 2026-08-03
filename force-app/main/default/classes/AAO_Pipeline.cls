@@ -98,6 +98,13 @@ public class AAO_Pipeline {
         public Integer nobodySaid = 0;
         public Integer modelDeclined = 0;
         /**
+         * §P7.3's revival of a retired value, ruled 3 August. `model_missed` was retired on
+         * 31 July as ambiguous between model_declined and nobody_said; the redesign gives it
+         * a narrow meaning that is neither — a proposition the read produced a statement for
+         * and the pass then lost. Its RATE is a reported per-run number, not bookkeeping.
+         */
+        public Integer modelMissed = 0;
+        /**
          * Propositions the reader never reported. A charter-quality signal, counted apart
          * from the abstentions because folding it in would make the abstention rate
          * measure schema compliance rather than the silence of evidence.
@@ -134,6 +141,8 @@ public class AAO_Pipeline {
                 nobodySaid +
                 ' model_declined=' +
                 modelDeclined +
+                ' model_missed=' +
+                modelMissed +
                 ') notReturned=' +
                 notReturned +
                 ' spansDropped=' +
@@ -313,6 +322,36 @@ public class AAO_Pipeline {
             proposals = fromFixture(staged, src);
         }
 
+        return commitProposals(
+            src,
+            contracts,
+            proposals,
+            abstentionByContract,
+            internalDomains,
+            o
+        );
+    }
+
+    /**
+     * THE TAIL, EXTRACTED SO §P7.3 CAN REUSE IT RATHER THAN AGREE WITH IT.
+     *
+     * Stage 4 of the Extract-Bind-Verify pass is chartered as unchanged: claims accumulate to
+     * answers, the writer's query-then-branch stands, the complete ledger is written by Apex.
+     * "Unchanged" is only true if it is the same code, so this is a move rather than a copy —
+     * `runForSource` calls it and `AAO_EBV.stage4` calls it, and neither has a writer of its
+     * own to drift.
+     *
+     * Everything in here is DML. Nothing in here may call out, and nothing that calls out may
+     * run after it in the same transaction.
+     */
+    public static Outcome commitProposals(
+        AAO_Source__c src,
+        Map<String, AAO_Evidence_Contract__c> contracts,
+        List<Proposal> proposals,
+        Map<Id, String> abstentionByContract,
+        Set<String> internalDomains,
+        Outcome o
+    ) {
         Boolean mark = src.AAO_Synthetic__c == true;
         Boolean priorMark = AAO_Synthetic.MARK;
         AAO_Synthetic.MARK = mark;
@@ -350,6 +389,14 @@ public class AAO_Pipeline {
                     o.notReturned++;
                 } else if (a.AAO_Abstention_Reason__c == 'model_declined') {
                     o.modelDeclined++;
+                    o.abstentions++;
+                } else if (a.AAO_Abstention_Reason__c == 'model_missed') {
+                    // Counted apart from nobody_said, and inside the abstention total. The
+                    // two are different facts: nobody_said is silence in the evidence,
+                    // model_missed is a statement the pass demonstrably saw and then lost.
+                    // Folding them would make the abstention rate unable to tell the
+                    // charter's completeness from the transcript's.
+                    o.modelMissed++;
                     o.abstentions++;
                 } else {
                     o.nobodySaid++;

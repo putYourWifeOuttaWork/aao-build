@@ -2,6 +2,8 @@
 
 > **The version lives on the stamp line below and nowhere else.**
 
+**v2.4 · 3 August 2026 · Terms from the redesign, defined here and nowhere else, appended as the final section: Extract-Bind-Verify pass, Inventory, Binding, Verification stage, Evidence budget, Computed coverage, `model_missed` rate.**
+
 **v2.3 · 3 August 2026 · Matthew Weisberg · Five terms added from the build days, defined here and nowhere else: charter designation, declared applicable set, ceiling derivation, membership never routes, contract reconciliation. Definitions appended as the final section.**
 
 **v2.2 · 2 August 2026 · Matthew Weisberg**
@@ -1245,3 +1247,21 @@ Salesforce platform terms:
 **Membership never routes.** The resolver law that a person's presence on any number of maps contributes nothing to routing. Resolution is per Source to at most one deal and one account, plus affirmatively named content stretches; ambiguity abstains and nothing writes.
 
 **Contract reconciliation.** The ingest-time step, owed and not yet built, that reads the live rubric per declared charter per resolved deal, matches against existing contracts by content hash, and mints or supersedes contract versions where the rubric changed. Contracts stay frozen identity; the reconciler is what keeps them current without breaking the receipt chain.
+
+---
+
+## Terms added at v2.4 · 3 August 2026
+
+**Extract-Bind-Verify pass.** The pass shape (Charters §P7.3): one strong-model read per Source emitting an inventory; binding promoting Candidates to Claims; separate smaller-model verification by coextension before any Claim writes. Successor to every per-proposition and per-person pass shape, all retired.
+
+**Inventory.** Stage 1's output: every charter-relevant statement in a Source — speaker, subject, line anchor, minimal verbatim span, plausible proposition families. Potential claims, no verdicts. The inventory is the Candidate layer's content.
+
+**Binding.** The promotion step from Candidate to Claim: deterministic fan-out from families to the subject's contracts in the declared set, plus a small transcript-free call per pair needing judgment — establishes, does not establish, insufficient.
+
+**Verification stage.** The blind reader as a load-bearing stage, not a check: a separate, significantly smaller model seeing only claim and quoted evidence, judging coextension (subject, scope, quantity). A verification fail writes the Candidate with its reason and no Claim. Gated once by an adjudicated comparison against the strong model before the small model is trusted.
+
+**Evidence budget.** ~90 output tokens per finding. Justified by coextension — the shortest span that still carries subject, scope, and quantity needs room — never by display. Stored quotes on Answer rows remain full-fidelity from stored text regardless.
+
+**Computed coverage.** Coverage is presence per occasion per scope, occasion = scope + artifact hash, counted deterministically; optional decay is parked config. Never extracted from words; the coverage proposition family does not exist in any read.
+
+**`model_missed` rate.** The per-run reported rate of statements the single read did not catch, measured at adjudication. Under extract-once this is a chosen, bounded residual — reported beside findings and abstentions, never buried.

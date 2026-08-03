@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Verify_Model__c</fullName>
+    <label>VerifyModel</label>
+    <description>Charters v2.4 P7.3 stage 3, the blind reader. The smallest model available through the current credential, established by probe from the calling runtime and recorded in BUILD_JOURNAL. Gated, not trusted: one adjudicated comparison against the strong model is owed before its rejections are believed.</description>
+    <inlineHelpText>Charters v2.4 P7.3 stage 3, the blind reader. The smallest model available through the current credential, established by probe from the calling runtime and recorded in BUILD_JOURNAL. Gated, not trusted: one adjudicated comparison against the strong model is owed before its rejections are believed.</inlineHelpText>
+    <type>Text</type>
+    <length>80</length>
+    <required>false</required>
+    <unique>false</unique>
+</CustomField>

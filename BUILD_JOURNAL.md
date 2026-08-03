@@ -6524,3 +6524,172 @@ telemetry: elapsed, tokens, `cacheRead`/`cacheCreate`, and the counts.
 **Then B&V end to end as the new baseline, then Emerson, then the run report.** Fixtures, ingest,
 SHA-at-insert, dedup, roster, declared set, writer, invoker, command center and byte-verification
 all survive untouched.
+
+---
+
+## 2026-08-03 · session 73 · §P7.3 built end to end; stage 1 does not fit the callout bound, three times measured
+
+**Did.** Synced the six documents. Marked the standalone P7.3 spec superseded. **Built all four
+stages of Extract-Bind-Verify and the temporary invoker, 16 new tests, 218 AAO tests green.**
+Probed the model roster from Apex and measured the group sizes rather than choosing them.
+**Ran B&V three times and it did not complete.** Stage 1 is the wall and the wall is measured.
+
+### Documents synced
+
+All six incoming files were newer by stamp and were overwritten: Board v1.3, Charters v2.4,
+Architecture v3.3, Model & Flow v1.2, Glossary v2.4, CODE inbox re-stamped last. Read by path,
+stamp read inside each.
+
+`docs/aao-P7.3-extract-bind-verify.md` carries a SUPERSEDED block at its head naming Charters
+v2.4 §P7.3 as the live copy. Kept, not deleted. `docs/MANIFEST.md` gained a superseded table and
+its Charters row now names §P7.3.
+
+### Probe 1 · the model path, from the calling runtime
+
+**`claude-haiku-4-5-20251001` IS the smallest model this credential reaches.** Not assumed:
+
+```
+claude-haiku-4-5-20251001    200   4,983 ms    402 in /   136 out    2 items
+claude-3-5-haiku-20241022    404   207 ms      not_found_error
+```
+
+A prior-generation Haiku is not available, so "smallest available" and "smallest current" are the
+same model here and there was no judgment call to make. **Stage 3 runs on it.** Structured output
+works without `output_config.effort`, so the small stages send no effort key at all.
+
+### Probe 2 · group sizes, measured, ruling 6
+
+Twelve realistic items per call, cold, from Apex:
+
+| stage | model | items | ms | in | out |
+|---|---|---|---|---|---|
+| 2 bind | claude-sonnet-5 | 12 | 13,610 | 1,252 | 1,188 (562 thinking) |
+| 3 verify | claude-haiku-4-5 | 12 | 6,444 | 927 | 428 |
+| 3 verify | claude-haiku-4-5 | 2 | 4,983 | 402 | 136 |
+
+The haiku pair gives ~146 ms per item on ~4,690 ms of fixed overhead: these calls are
+generation-bound, not item-bound. Sonnet is ~1,140 ms per item. **Group sizes set so predicted
+elapsed is under half the ceiling: bind 24 (~29 s), verify 60 (~13 s).** Both live in config with
+the measurement in the record's own comment, and `AAO_EBV` REFUSES to run a stage whose group
+size is unset rather than defaulting — a constant in Apex would launder a guess.
+
+### Built
+
+`AAO_InventoryCharter` (stage 1), `AAO_BindCharter` (stage 2), `AAO_VerifyCharter` (stage 3),
+`AAO_EBV` (the state machine and the report), `AAO_EBV_TEMP_Batch` (the invoker, condemned in its
+own name), `AAO_EBVTest` (16 tests). Eleven config fields plus a twelfth added mid-session.
+
+**Stage 4 is not a reimplementation.** `AAO_Pipeline`'s tail was EXTRACTED into
+`commitProposals` and both `runForSource` and `AAO_EBV.stage4` call it. "Unchanged" is only true
+if it is the same code.
+
+**The read is guided by 16 FAMILIES, never by 48 per-person codes**, and a test asserts no
+per-person code reaches the read through either entry. That is what makes the prompt independent
+of roster size: three people is sixteen families and seventeen people is still sixteen.
+
+**Separation is enforced, not requested.** `requireSeparateModels` throws before the callout if
+the bind and verify models match, because the same reader asked twice produces a worthless
+rejection count.
+
+### Measured · the B&V run, three attempts, all recorded
+
+Cleared the voided session-62 ledger first: 48 rows, every one `Not_Returned` /
+`not_returned` / `AAO_Extract_Evidence@1.1.0`, zero claims on the Source. Deleted, counts
+verified before and after. **Design note: the open question "can a void pass be marked void in
+the org" is exactly this situation, and marking would have been better than deleting. There was
+nothing to mark with.**
+
+| run | stage 1 max_tokens | callout ms | in | out | cacheCreate | stop |
+|---|---|---|---|---|---|---|
+| 1 | 16,000 (shared) | **120,183 — CEILING** | — | — | — | `Read timed out` |
+| 2 | 6,000 | 78,567 | 18,696 | 6,000 | 3,431 | **`max_tokens`** |
+| 3 | 7,500 | 86,659 | 18,696 | 7,500 | 3,629 | **`max_tokens`** |
+
+**Run 1 was my defect, twice over, and both are fixed.**
+
+1. **`max_tokens` 16,000 on stage 1 could never have fitted.** At the generation rate measurement
+   71 already showed (~84 tok/s), 16,000 tokens is ~190 seconds against a 120-second ceiling. The
+   journal owed "a hard `max_tokens`" since session 72 and I shipped the shared 16,000 instead.
+   Stage 1 now has its own bound, derived from the rate.
+2. **The subject vocabulary was the whole 44-person roster.** The B&V deal has 44 map rows and
+   contracts for three people, so the read was handed 41 handles that could not bind to anything:
+   every item about one of them would have been generated, paid for, counted, and then dropped at
+   `no_contract`. **The declared-set law was obeyed on the family axis and broken on the person
+   axis in the same prompt.** The subject set is now derived from the families themselves.
+
+**Runs 2 and 3 are the finding, and it is not a defect.** With both fixes in and the ruled
+~90-token evidence budget added to the stage 1 prompt — where it had been MISSING, another
+omission of mine; the bind charter had a word budget and the stage that actually produces spans
+had the word "minimal" and no number — **the read still wants more than 7,500 output tokens on an
+18,696-token artifact.** It truncates rather than times out, which is the better failure but is
+still no pass.
+
+**I stopped raising the number.** The config comment written before run 3 said 7,500 was the last
+raise available and why: ~9,180 tokens is the arithmetic wall at the naive rate, and nothing above
+~8,000 leaves margin for the variance that produced three timeouts on 3 August. Dialling past a
+bound I set from measurement would be the local-fix hazard with my own name on it.
+
+### The blind spot that makes the finding ambiguous, and it was mine
+
+**`output_tokens` INCLUDES thinking tokens, and thinking counts against `max_tokens`.** My
+telemetry never broke them out. So "the read wants more than 7,500 output tokens" has two readings
+that I cannot currently separate:
+
+- a large inventory, honestly produced, that one bounded call cannot carry; or
+- a small inventory behind a large deliberation at `effort=high`.
+
+These have opposite fixes. **Measurement 71's 7,339 output tokens carries the same ambiguity**,
+which means a number three sessions have reasoned from has never been decomposed. The sonnet
+bind probe reported `thinking_tokens: 562` of 1,188 — 47% — so this is not a hypothetical.
+
+`AAO_Extract.Usage` now reads `output_tokens_details.thinking_tokens` and every telemetry line
+carries it. **Deployed and unexercised against a live call: the next stage 1 measurement is the
+first one that can answer the question.** Named rather than implied.
+
+### Not done, and why
+
+**EMERSON DID NOT RUN, AND IT IS BLOCKED ON AN ARTIFACT NOBODY HAS.** The fixture is seeded — 2
+Accounts, 168 Contacts, 2 Opportunities, contact roles — and there is **no Source and no
+transcript text.** `seed/emerson-fixture/videocall.json` carries VideoCall metadata, 3
+participants and 2 recording rows and no speech. Manifest item 5 stands unchanged: the canonical
+transcript is a blob behind the ECI media endpoint, not SOQL-readable, and neither branch (a)
+retrieval nor branch (b) paste has landed. The zip carried five documents and the inbox. **I did
+not manufacture a transcript to run against, and there is no other way to run Emerson.**
+
+**The B&V baseline does not exist either.** Three runs, no pass, no claims, no rows. The board's
+"B&V on the new shape is the baseline" is still owed and stage 1 is the only thing standing in the
+way — stages 2, 3 and 4 have never been reached by a live call.
+
+### Named for design, not diagnosed alone
+
+1. **`findings=1` rides in unexplained, as instructed, and this shape cannot yet speak to it.**
+   The pass never reached binding, so there is no finding count to compare. It is neither
+   confirmed nor cleared by anything here.
+2. **FALSE is unreachable from the chartered bind vocabulary.** §P7.3 names three verdicts and I
+   implemented three. `does_not_establish` maps to UNVERIFIED, which is right for a missing
+   confirmation and wrong for a positive denial — they land on the same value. **The
+   TRUE-strong / FALSE-weak guard on two-sided questions therefore has no FALSE input in this
+   shape.** Not patched: adding a fourth verdict would be redesigning the pass mid-build.
+3. **`model_missed` is un-retired by ruling and the run-time number is a LOWER BOUND.** It was
+   retired 31 July as ambiguous between two judgments about evidence; §P7.3 gives it a third
+   meaning that is neither — a statement the read produced and the pass then lost. Apex can only
+   see the misses in its own record, so **adjudication can move rows INTO the class and never
+   out**, and the report says so on the line that carries the rate. The field description records
+   the un-retirement with the old objection kept and marked.
+4. **The stage 1 output bound is a structural question, not a dial.** If the inventory on an
+   18,700-token artifact genuinely exceeds what one bounded callout can generate, then
+   extract-once needs either a lower effort, a tighter item budget, or an artifact axis — and the
+   last of those is the part-splitting I was told was the wrong axis. Design's to rule.
+
+### Standing
+
+204 tests became **218, all green** (237 org-wide, one pre-existing failure in
+`ConvertToOpportunityTest` on an `AE_Summary__c` validation rule, untouched by this session and
+nothing to do with AAO). Production never read. Nothing on native or ALTF objects. The invoker's
+end-to-end behaviour past slot one is **unverified from the calling runtime** — no test can drive
+six slots, because Apex refuses more than one `executeBatch` per test method.
+
+**Owed, in order.** Decompose the stage 1 output with the thinking-token line now in place; that
+one number decides whether this is an effort problem or a structural one. Then B&V. Then Emerson,
+which needs a transcript before anything else. Then the run report with receipts, which this entry
+is the honest partial form of.

@@ -19,6 +19,26 @@
   exactly what made the 31 July pass-one result impossible to diagnose after the fact.
   Ruled: backfill nothing, the enum starts clean, old rows keep what they were written with.
 
+  UN-RETIRED BY RULING, 3 August, Charters v2.4 §P7.3. The text above is not wrong and is
+  kept: model_missed WAS ambiguous, and the ambiguity was between two values that both
+  described the reader's judgment about evidence. §P7.3 gives it a third meaning that is
+  neither, which is why it can come back rather than because the old objection lapsed:
+
+    model_missed    the read produced a statement bearing on this proposition and the pass
+                    then LOST it -- the span failed byte verification, or the binder was sent
+                    the item and returned no answer for it. Not a judgment about evidence at
+                    all, and not a fact about schema compliance either. It is the residual
+                    that extract-once chooses to carry, named in the charter on purpose, and
+                    its RATE is a reported per-run number.
+
+  WHAT THE RUN-TIME NUMBER IS AND IS NOT. §P7.3 reserves the class for "statements later shown
+  to exist", and later means at adjudication: a nobody_said row can become a model_missed row
+  when a human finds the statement the read never reported. Apex cannot know that. So what a
+  run writes is a LOWER BOUND -- only the misses the pass can see in its own record -- and
+  adjudication can move rows into this class and never out of it. The report says so in the
+  line that carries the rate, because a rate whose denominator and direction are not stated is
+  not a receipt.
+
   CLOSED, session 10. That gap is gone. AAO_Outcome__c gained Not_Returned by ratification,
   so a not_returned row no longer carries Outcome = Abstained and counting abstentions by
   outcome no longer overcounts. The previous note here explained how to avoid a trap; the

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Inventory_Charter__c</fullName>
+    <label>InventoryCharter</label>
+    <description>The stage 1 charter name, stamped on every Candidate the read produces. A different charter from AAO_Extract_Evidence: the read no longer proposes verdicts, so rows from the two must never share a version string.</description>
+    <inlineHelpText>The stage 1 charter name, stamped on every Candidate the read produces. A different charter from AAO_Extract_Evidence: the read no longer proposes verdicts, so rows from the two must never share a version string.</inlineHelpText>
+    <type>Text</type>
+    <length>80</length>
+    <required>false</required>
+    <unique>false</unique>
+</CustomField>

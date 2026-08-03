@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Inventory_Model__c</fullName>
+    <label>InventoryModel</label>
+    <description>Charters v2.4 P7.3 stage 1, the read. The strong model that produces the inventory of potential claims. Written by a human in this record. Read by AAO_Extract.inventorySpec. Blank falls back to AAO_Model_Name__c so the retired one-call path keeps its own model.</description>
+    <inlineHelpText>Charters v2.4 P7.3 stage 1, the read. The strong model that produces the inventory of potential claims. Written by a human in this record. Read by AAO_Extract.inventorySpec. Blank falls back to AAO_Model_Name__c so the retired one-call path keeps its own model.</inlineHelpText>
+    <type>Text</type>
+    <length>80</length>
+    <required>false</required>
+    <unique>false</unique>
+</CustomField>

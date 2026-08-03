@@ -2,7 +2,7 @@
 
 > **The version lives on the stamp line below and nowhere else. Read this document first in every session and update it last.**
 
-**v1.2 · 3 August 2026 · The build-day rewrite, end of the People harness construction session. The harness is built through step 2 of §P7.2 and proved at 204 tests; steps 3 onward (ingest, pass, invoker, assertions) are the live work. The command center LWC ships on both Opportunity and Account pages. Fixture and transcript are loaded and verified in the sandbox. Four rulings closed and folded (writer shape, two-sided guard, declared applicable set, membership never routes); the ingest-time reconciler becomes the umbrella open item. Four new hazards recorded. Companion stamps after this fold: Charters v2.3, Architecture v3.2, Model & Flow v1.1, Glossary v2.3.**
+**v1.3 · 3 August 2026 · The redesign rewrite, end of the second build-day session. The per-person pass shape is retired by Matthew's ruling and §P7.3 (Extract-Bind-Verify) is the pass: one read per Source to an inventory, binding promotes Candidates to Claims, separate small-model verification before any Claim writes. The B&V baseline on the old shape is abandoned, not deferred; the new baseline is B&V on §P7.3. The Emerson fixture is seeded and final. The 120-second cumulative-per-transaction callout ceiling is law-grade and unraiseable; the Trust Layer is recorded for posterity as the model path that always was, the direct Named Credential a dev-org stand-in. Companion stamps after this fold: Charters v2.4, Architecture v3.3, Model & Flow v1.2, Glossary v2.4.**
 
 **What this is.** The one document a session opens first: current state, the law list, the open items with owners, and the next steps. When this document and a companion disagree, the companion's stamped body wins on substance and this board is corrected; the board wins only on what is open versus closed.
 
@@ -14,103 +14,121 @@
 |---|---|
 | **Board** (`aao-board.md`) | State, open/locked ledger, sequence, seeds |
 | **Glossary** (`aao-glossary.md`) | Vocabulary. Every term, defined once |
-| **Architecture** (`aao-architecture.md`) | The inventory: where things live, every ruling, placement. Theory and Computable Share as stamped sections. Both applicable-set laws |
+| **Architecture** (`aao-architecture.md`) | The inventory: where things live, every ruling, placement. The platform-ceiling and model-path laws at the v3.3 head |
 | **Model & Flow** (`aao-model-and-flow.md`) | Entities, keys, field tables, and what happens to one piece of evidence. Field Tables win on fields |
-| **Charters** (`aao-charters.md`) | The AI: every charter, the scope resolver, the account ontology, the harness briefs §P7.2 and §P7.2.1 |
+| **Charters** (`aao-charters.md`) | The AI: every charter, the scope resolver, the account ontology, the harness briefs, **§P7.3 the pass** |
 
-**Paths are per environment:** project root on the design side, `docs/` in CODE's repo. Open by exact path, never search. Read the stamp inside, never the filename. Chunks without stamps are untrusted. One live copy per document, full changelog inside. **When a zip is amended mid-carry, the CODE inbox is re-stamped last, same as this board**, because two documents in one zip disagreeing cost a real detour on 2 August.
+**Paths are per environment:** project root on the design side, `docs/` in CODE's repo. Open by exact path, never search. Read the stamp inside, never the filename. One live copy per document. **When a zip is amended mid-carry, the CODE inbox is re-stamped last, same as this board.** CODE's `docs/aao-P7.3-extract-bind-verify.md` standalone is superseded by Charters v2.4 §P7.3 and should be marked so in the repo.
 
-**Satellites, outside the audit chain:** competitive rebuttals, proof register, plan to QBR, demo run sheet, sandbox build sheet, Gate 1 fixtures, corrections archive, `applicable_set.json`. Numbers come from CODE's BUILD_JOURNAL, never from here. **Demo run sheet: v1.3 in CODE's docs, v1.2 in the project; never regress; carry v1.3 back at a clean moment.**
+**Satellites, outside the audit chain:** competitive rebuttals, proof register, plan to QBR, demo run sheet, sandbox build sheet, Gate 1 fixtures, corrections archive, `applicable_set.json`, the Emerson extract (v3 zip). Numbers come from CODE's BUILD_JOURNAL, never from here. Demo run sheet: v1.3 in CODE's docs, v1.2 in the project; never regress.
 
-## 2 · Current state · 3 August 2026
+## 2 · Current state · 3 August 2026, second session
 
-**Org:** sandbox `altify--aossb2`. Production read-only unconditionally; `altify-pbo` never read. **Build, per BUILD_JOURNAL verified against the working tree: 204 tests, 204 passing.** In the org: the B&V fixture (3 accounts, 46 contacts, 6 opportunities, 125 contact roles, counts read back, ID map tracked), the Casey transcript verified by SHA-256 (occurred clock 24 June 2026 07:01, roster of four, given deal B&V Community Licenses-150), 125 map skeleton rows built by Altify's contact-role sync, 48 People contracts stamped and roster-resolvable, the writer `AAO_Project` proved at 18 tests including the create leg, the command center LWC live on Opportunity and Account pages with links, lineage, real projection panel, all six flag types, both clocks labelled, Held rendered dead.
+**Org:** sandbox `altify--aossb2`. Production read-only unconditionally; `altify-pbo` never read.
 
-**Measured this session and now law-grade facts:** Altify creates nothing on API-inserted Opportunities across all 82 ALTF objects; it builds map skeletons on OpportunityContactRole insert, and that sync is a customer configuration that can be off; `Is_Key_Player`, `Squares`, `Color`, `ConcatenatedFields` are formulas, so the passing assertion is per-dimension stamp isolation, not exclusion; the package maintains per-dimension `_Last_Modified` stamps on API writes natively, which is the watermark substrate.
+**Build, per BUILD_JOURNAL:** extractor corrected (`contracts()` → `inventory()`, model path takes the declared set as argument, no rubric read); SHA-256 structural at insert, omission impossible by construction; artifact-first prompt ordering in, deliberately inverted with both comments kept; per-person split built, measured, and retired the same day (commits `8e3b10b`, `7f43488`, spec filed at `cbaed19`); 55 tests green on touched classes, suite last read 204/204 before the split work.
 
-**Charter ledger:** People closed except persona emission. Problems closed. Politics open, next after the People harness. Process ruled; its per-deal binding persistence owed. Scope resolver ruled and design-frozen; the sided vocabulary CLOSED at Charters v2.1; membership-never-routes added at v2.3.
+**Fixtures, final:** B&V (unchanged, Source loaded, session-62 fingerprint gap recorded as history) and **Emerson** — 2 Accounts (Emerson Electric Co. + Aspen Technology as second native parent), 168 Contacts (114/54, Filipe once, all 54 per Matthew's override), 2 Opportunities (given deal `006WD00000TJmJZYA1` Closed Won $275,555; Renewal Stage 2 open), 16 contact roles, `Tylor / St. Clair` corrected by read-back. The 2019 closed-lost is dropped for good under the seed-window law.
 
-**Harness state: steps 0, 1, 2 done. Steps 3+ (Source ingest, model pass, `AAO_TEMP_` invoker, mechanical assertions) are the next CODE work. Then Matthew adjudicates against the recording.**
+**Law-grade measurements this session:** the 120-second cumulative callout ceiling (per transaction, sync = async, unraiseable, shared across certified namespaces; Batch resets per execute; callout wait ≠ CPU) — three timeouts at the ceiling proved it; **output is near-constant against proposition count** (16 props → 7,339 out; 53 → 7,532 out; identical 18,696 in) and the artifact dominates input, which is what killed the per-person shape; prompt caching is live through the Named Credential (13,799 cached tokens read; `cacheCreate 5,500` on the cold call); ECI misfires in **both directions**, now evidenced twice (B&V: account call stamped to a deal; Emerson: late-stage deal call stamped to the account); LongTextArea strips a trailing newline; the transcript record's duration is the call's, never its own; `RelatedPersonId` coverage is not deterministic (both Emerson external rows null); the identity ladder's CRM rung is account-scoped and therefore blind to cross-account duplicates of one real-world company.
+
+**Voided history, never baselines:** session 62 (defective extractor, 53 asked against 48 declared) and the per-person shape's measurement. `findings=1` three times running is a named charter question, unexplained, riding into the new shape as something adjudication must watch.
+
+**Charter ledger:** People closed except persona emission; the pass is §P7.3. Problems closed. Politics open, after the resolver. Process ruled, per-deal binding persistence owed. Resolver ruled and design-frozen, v0.3 participant claim qualified in place.
 
 ## 3 · Locked · not open to relitigating
 
-- **LAW #1.** No ALTF package-version dependency, ever. Feature detection, never version checks. Ontology ships as our seed metadata, org-overridable.
-- **No metadata, triggers, or logic on any ALTF or native object.** Reading stable ALTF API names is permitted; data rows on managed objects are the product's output surface. **Opportunity and Account never written by the product runtime; Contact toggleable; the fixture seeder is scaffolding, distinguished in §P7.2.**
-- **Production read-only unconditionally.** Evidence over inference, including about our own schema; a capability claim is unverified until tried from the calling runtime.
-- **The scope stamp law** and **the scope resolver** (two-key lock; traversal interprets; curated over membership; dual-write when both scopes resolve; flag target one in a hundred). **Membership never routes (new, v2.3):** at most one deal and one account per Source; affirmatively named stretches route per content; ambiguity abstains, nothing writes.
-- **The two layers law:** the sided vocabulary routes and never gates a write; establishment writes and never routes. Seed vocabulary is a floor, org-extensible as additive natural language.
-- **The declared applicable set (new):** a pass names its charters; contracts carry their designation; resolution runs per charter (assessment per deal, People per roster); nothing unresolved reaches a model. Contracts are frozen identity under a live read; reconciliation happens at ingest, not by redeploy.
-- **Rung derivations:** Support ladder with recency arbitration and opposite-polarity contention flags; **Political ceiling** (one establishment suffices everywhere, lesser properties never downgrade, exit only when words flip a two-sided question, Q9 places nobody, no contention flags, silent re-derivation). **TRUE-strong / FALSE-weak with the affirmative-weak-side guard; UNVERIFIED places nobody. Unset writes null, never `Unknown`.**
-- **Flag volume is a budget**, spent only on what changes seller behavior.
-- **The writer:** query-then-branch on the pair, never platform upsert; populate only moved dimensions; create with rest-null where absent; two rows for one pair is a flag, never a pick; create leg is mandatory product behavior.
-- **Citations:** quotes on Answer rows only; Option C note, overwritten freely, evidence untouched. **Held is live for nothing.** Day-one red; no dismiss on assessment reds (the three-class dismissal design is open, below).
-- **Corrections into documents, never chat. Wrong text marked wrong, never deleted. One structural decision at a time; Matthew's calls stay open until he rules. Agentforce is not part of this build.**
+- **LAW #1.** No ALTF package-version dependency, ever. Feature detection, never version checks.
+- **No metadata, triggers, or logic on any ALTF or native object.** Opportunity and Account never written by the product runtime; Contact toggleable; seeders are scaffolding.
+- **Production read-only unconditionally. Evidence over inference. A capability claim is unverified until tried from the calling runtime.**
+- **The pass is Extract-Bind-Verify (§P7.3).** Per-proposition-per-person and whole-set-one-call shapes are retired. Binding and verification are **separate models**; verification runs on a significantly smaller model, gated once by an adjudicated comparison.
+- **Coverage is computed, never extracted.** Presence per occasion (scope + artifact hash), deterministic; decay is parked config.
+- **The evidence budget is ~90 output tokens per finding**, justified by coextension; stored quotes stay full-fidelity on Answer rows.
+- **The model path is the Einstein Trust Layer / Models API — always was.** The direct Anthropic Named Credential is a dev-org stand-in (flex credits unavailable in dev). Short synchronous calls are the design target. Provider batch endpoints bypass the Trust Layer and are **parked, never sold**. BYOLLM = Model Builder behind the same gateway.
+- **The callout ceiling law** (Architecture v3.3 head): one bounded callout per transaction; the wait never lives in Apex.
+- **Resolver-next, hard:** the resolver build is the immediate next build after People closes — before Politics, before anything. Without it no Source can route and there is no product.
+- **Seed window:** open plus recently closed deals only. **Extract format ships FirstName/LastName as read.**
+- **Similar names are not duplicates.** Two different strings are two people until something says otherwise; only exact-name matches raise the duplicate question (tiebreak OPEN, below).
+- **The scope stamp law, the resolver two-key lock, membership never routes, the two layers law, the declared applicable set, rung derivations, TRUE-strong/FALSE-weak with UNVERIFIED placing nobody, null never `Unknown`, flag volume as budget, the writer's query-then-branch, citations on Answer rows only, Held live for nothing, day-one red, no dismiss on assessment reds** — all as at v1.2.
+- **Rulings travel to CODE as one explicit line at the top of a post** — never a bracket, never bundled behind one word.
+- **Corrections into documents, never chat. Wrong text marked wrong, never deleted. One structural decision at a time. Agentforce is not part of this build.**
 
 ## 4 · Open · with owners
 
-**Matthew:** watch the 24 June recording with a notepad before CODE's run report; adjudicate the output. Seller scope and seat-gaming, plus which opportunity types get processed. Model-role naming. Corporate-namespace deletions. PII split: ratified.
+**Matthew:**
+- **Dictate the blind watch notes from the 29 July video to design BEFORE reading any run report** — the video is watched, the notes exist only in his head, and their value as an answer key collapses the moment CODE's output is seen. First act of the next session.
+- **The exact-name duplicate tiebreak:** most-recent-activity always, versus tiebreak-only-where-provably-one-human with shadow-plus-flag where provably two. Open, one ruling.
+- Seller scope and seat-gaming; which opportunity types get processed; model-role naming; corporate-namespace deletions.
 
 **Design (this side):**
-- **The ingest-time reconciler, umbrella item, owed before any charter beyond People runs:** resolve IDs, read live rubric per declared charter per deal, reconcile contract versions by content hash, then run; includes persisting the per-deal rubric binding as a queryable fact (the Process half-measure).
-- **Politics charter, next focus after the run.**
-- **People persona emission**, owed before People is called fully closed.
-- **The three dismissal classes** (guidance dismissible; contention acknowledgeable, timestamped, tracked against outcome; assessment reds evidence-cleared only), architecture owed its own session.
-- **Account-grain enablement:** the nullable-Opportunity schema ruling on the five row objects plus the ScopeKey composer, bound to the account-level harness. The 16 shared AM_OM questions read by the opportunity pass only. The per-org charter overlay. Surface entity. Wave 2 sketches. D360 match rule. Two-sided summary schema.
-- **The Toby deck:** thirty-ish slides on the evidentiary chain and its decision gates, derived from the stamped documents, owed before the QBR week of 10 August. Lands in plan-to-QBR.
+- The small-model verification gate: adjudicated comparison against the strong model, then the sizing ruling.
+- The ingest-time reconciler, umbrella item, owed before any charter beyond People runs.
+- The cross-account identity blindness (ladder's CRM rung is account-scoped) — design-owed, not improvised.
+- **Experiments queue:** T1.5 terse-charter trim beyond the schema (only if stage measurements demand it); T3 lighter People ontology (`findings=1` may be phrasing); T4 small-model routing for binding; T5 computable-first Process/Assessment fed by verified claims. T2 triage is absorbed by extract-once.
+- Email ingestion: v1 is transcripts and notes; **defer-don't-delete leaning recorded, unruled.** Mentioned-but-absent tightening: unruled, collides with the person-row boundary law. Persona cost / yellow-flag idea: parked to persona emission.
+- Closed-deal projection (evidence occurred while open, deal now won) — open question, run proceeds and records.
+- Whether a void pass can be marked void in the org (the command center renders session 62 as pending forever).
+- Replay-dedupe as a later feature (safe merge execution with receipts, never detection; two unverified: claim rows surviving native merge reparenting; delete-vs-supply-evidence). Later.
+- Resolver proposition list, accumulating for its build session: owner role, content summary, curated overlap, occurred-time org state, content maturity, parent/subsidiary topology (Emerson/AspenTech pair, ParentId null).
+- People persona emission; the three dismissal classes; account-grain enablement bundle; **the Toby deck** before the QBR week of 10 August.
 
-**CODE:** §P7.2 steps 3+ (ingest, pass, invoker, mechanical assertions), then the run report with receipts. Adjudication record folded back afterward. Shadow objects (Wave 2). MANIFEST repoint.
+**CODE:** build §P7.3 per the brief (stage 1 extractor; binding; verification on the smallest available model, journaled; Apex abstention writer; one callout per transaction, group sizes measured not assumed); per-stage telemetry including the `model_missed` rate and verification-rejection count; **B&V on the new shape is the baseline**, then Emerson, then the run report with receipts. Mark the standalone P7.3 spec in `docs/` superseded by Charters v2.4. Shadow objects (Wave 2). MANIFEST repoint.
 
-**Parked, structurally unanswerable here:** module-licence detection; package-upgrade behavior of subscriber edits.
+**Parked, structurally unanswerable here:** module-licence detection; package-upgrade behavior of subscriber edits; provider batch endpoints (trust-mode incompatible today).
 
 ## 5 · Next steps, in order
 
-1. CODE: steps 3+, run the Casey transcript, run report to Matthew with the command center live.
-2. Matthew: adjudicate against the recording; disagreement notes to design.
-3. Design: fold the adjudication record into the People charter as post-run findings; then the Toby deck outline.
-4. Politics charter opens. Then People + Problems + Politics harness; account-level harness after.
+1. Matthew: blind watch notes to design (before any report is read).
+2. CODE: build §P7.3, measure per stage, B&V baseline, Emerson run, report with receipts.
+3. Matthew: adjudicate Emerson output against the 29 July recording; disagreement notes to design.
+4. Design: fold the adjudication record into the People charter; the small-model gate; then the Toby deck outline.
+5. Resolver build. Then Politics.
 
 ## 6 · Standing hazards
 
-The only queryable orgs are Altify's own; ~80% of installs have no methodology history, no call capture, no package. Retrieval returns chunks from retired versions: open by path, demand stamps. ECI's related-record stamp is inference; never trust derived platform classifications. Sweep wider than the question. Vocabulary: our answer row, never bare answer; verified, never scored; receipts, never confidence; Agentforce-ready, never Agentforce-dependent. No em dashes in written output.
+The only queryable orgs are Altify's own; ~80% of installs have no methodology history, no call capture, no package. Retrieval returns chunks from retired versions: open by path, demand stamps. ECI's related-record stamp is inference, misfiring in both directions, one input never the answer. Sweep wider than the question. Vocabulary: our answer row, never bare answer; verified, never scored; receipts, never confidence; Agentforce-ready, never Agentforce-dependent. No em dashes in written output. `CreatedBy` cannot separate CODE from Matthew; attribute by what a row points at. FLS is a second fact beside deploy success. Lightning caches hard; no check without a hard refresh. Contact-role sync is a configuration.
 
-**New this session, all measured:** In a shared org, `CreatedBy` cannot separate CODE from Matthew, who work as the same user; **attribute by what a row points at, never by who created it.** A field deploy reporting success proves Apex visibility only; **FLS is a second, separate fact**, and its absence reads exactly like a failed deploy reporting success. Lightning caches component bundles hard; **a check without a hard refresh proves nothing.** Contact-role sync builds map skeletons and **is a configuration**; never assume the skeleton exists at a customer.
+**New this session:** **The local-fix hazard** — a correct local fix is evidence the local question was asked, never evidence the structure is right; when the same defect survives three fixes, the defect is the shape (`findings=1` was the visible edge, three times). **The decision-slot hazard** — two rulings were lost in one day to brackets and bundled words in traveling documents; rulings go as one explicit line. **A run that succeeds only on a cache hit is not a run that works.** A count that passes can pass by coincidence — verify what the check counts, not that it matched.
 
 ## 7 · The session seed
 
 ```
-Seed - AAO single-purpose session. Focus: the People harness run and
-Matthew's adjudication. Cowork session attached to the Altify Agency
-project.
+Seed - AAO single-purpose session. Focus: capture Matthew's blind watch
+notes, then receive CODE's §P7.3 build measurements and the B&V/Emerson
+run reports, and support adjudication. Cowork session attached to the
+Altify Agency project.
 
 Open by exact path, never search: aao-board.md first, then Charters
-§P7.2 and §P7.2.1; other documents only as the Board points. Read the
-stamp inside, never the filename. Numbers come from CODE's
-BUILD_JOURNAL.md.
+§P7.3; other documents only as the Board points. Read the stamp inside,
+never the filename. Numbers come from CODE's BUILD_JOURNAL.
 
-State on pickup: harness built through step 2, 204 tests green,
-fixture and transcript loaded and verified, command center live on
-both pages. CODE is building or has built steps 3+ (ingest, pass,
-AAO_TEMP_ invoker, mechanical assertions). This session receives
-CODE's run report, supports Matthew's adjudication against the 24
-June recording, and folds the adjudication record into the People
-charter as post-run findings. Expected failure mode, from Gate 1:
-over-reading, never fabrication. If the run surfaces defects, they
-are CODE's to fix and this side's to record; nothing is redesigned
-mid-run.
+FIRST ACT, before any run report is opened: take Matthew's dictated
+notes from the 29 July Emerson video (who holds authority, who gates,
+who spoke about whom, sentiment on camera versus on the page) and
+freeze them as the pre-run key beside §P7.3. Their value collapses the
+moment output is seen.
 
-Rules: one structural decision at a time, options with costs,
-Matthew's calls left open. Evidence over inference. A capability
-claim is unverified until tried from the calling runtime. Nothing
-outside People is opened or ruled on; the Toby deck outline may be
-drafted only after the adjudication record is folded.
+State on pickup: §P7.3 is the pass (Charters v2.4); Emerson fixture
+seeded and final; B&V baseline on the new shape is CODE's next
+deliverable; the 120-second ceiling and Trust-Layer-always laws are at
+Architecture v3.3's head. Expected failure mode: over-reading, never
+fabrication; watch the model_missed rate and the verification-rejection
+count. findings=1 remains an unexplained named question.
 
-At session end, when Matthew confirms it is over: fold every ruling
-and finding into the five documents, bump stamps, mark wrong text
-wrong, rewrite the Board, refresh aao-context.zip with a re-stamped
-CODE inbox, and write the next seed naming one focus. Nothing may
-reference a retired version.
+Rules: one structural decision at a time, options with costs, Matthew's
+calls left open; rulings to CODE as one explicit line. Evidence over
+inference; a capability claim is unverified until tried from the
+calling runtime. Nothing outside People opens except the resolver
+proposition list may accumulate. The Toby deck outline may be drafted
+only after the adjudication record is folded.
+
+At session end, when Matthew confirms it is over: fold every ruling and
+finding into the five documents, bump stamps, mark wrong text wrong,
+rewrite the Board, refresh the zip with a re-stamped CODE inbox, and
+write the next seed naming one focus. Nothing may reference a retired
+version.
 ```
 
 ---
 
-*End v1.2. This document is rewritten at every session end; everything below its stamp is current or it is a defect.*
+*End v1.3. This document is rewritten at every session end; everything below its stamp is current or it is a defect.*

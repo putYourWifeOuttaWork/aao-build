@@ -6358,3 +6358,80 @@ result, which is worse than an unreported plan.
 **Owed.** That measurement first, before any further shape work. The shape ruling stands as ruled
 until evidence moves it, and this entry is the evidence starting to move it. B&V and Emerson
 fixtures are loaded and unchanged; nothing has been asked of any model that wrote a row.
+
+---
+
+## 2026-08-03 · session 71 · measurement 1: the split fits per transaction, and output does not scale
+
+**Did.** Corrected my own wrong line and took measurement 1. **One cold single-person call fits:
+87,805 ms.** But the token numbers falsify the arithmetic that predicted it, and the correction
+matters more than the pass.
+
+### My wrong line, marked wrong
+
+**"Off the synchronous path buys nothing alone: the 120-second ceiling is per callout, not per
+transaction" — WRONG.** The ceiling is **cumulative per transaction**: Apex Governor Limits,
+maximum cumulative timeout for all callouts in a transaction, 120 seconds, synchronous and
+asynchronous alike. **Three sequential calls inside one `runForSource` shared one budget**, so the
+per-person split could never have helped from inside a single transaction. I asserted the wrong
+reading twice and built on it once. **The split was sound and the transaction boundary killed it**,
+which is the opposite of the conclusion I drew in session 70.
+
+### Measurement 1 · one cold single-person call, isolated in its own transaction
+
+```
+subject 003WD00001PmxYSYAZ   propositions 16
+elapsedMs   87,805
+inputTokens 18,696   outputTokens 7,339
+cacheRead   0        cacheCreate 5,500
+findings    1        stop=end_turn
+```
+
+**It fits under 120 seconds with about 32 seconds of headroom.** One callout per transaction is
+necessary and, for a sixteen-proposition call, sufficient. Three of these in one transaction is
+263 seconds against a 120-second budget, which accounts for all three timeouts exactly.
+
+### The finding the measurement produced, which nobody predicted
+
+**Output did not scale down with propositions.**
+
+| | propositions | inputTokens | outputTokens | ms |
+|---|---|---|---|---|
+| Session 62 | **53** | 18,696 | 7,532 | 94,860 (warm) |
+| Measurement 1 | **16** | **18,696** | **7,339** | 87,805 (cold) |
+
+**A third of the propositions produced 97% of the output and an identical input count.** The
+estimate of 30 to 35 seconds per person assumed output was roughly proportional to propositions;
+it is very nearly constant. **The method of that estimate was right and its premise is falsified by
+measurement** — which is the only way a premise should fall.
+
+Two consequences. **The per-person split buys the transaction boundary, not a cheaper call**: each
+call costs about what the whole pass used to, so N people cost N times a full pass rather than one
+pass divided N ways. Emerson's roster near seventeen becomes roughly seventeen transactions of
+~88 seconds. And the identical `inputTokens` across a 37-proposition difference is odd enough to
+name: **the proposition tail is a rounding error against the artifact in the prompt**, which is
+consistent with the artifact dominating input while generation dominates time.
+
+**`findings=1` again, now from sixteen propositions about one person.** That is the third run to
+return a single finding, and it is now clearly independent of proposition count and of the
+mixed-charter defect. **It is a quality question about the charter and it has never been the same
+question as the timeout.** Nothing here diagnoses it.
+
+### Artifact-first ordering · still predicted, and now genuinely testable
+
+`cacheRead=0` with **`cacheCreate=5,500`**: the cold call **wrote** a cache entry rather than
+reading one, which is exactly what a first call should do. **A prefix hit on call two remains
+predicted and unverified**, and it is now testable for the first time, because a cache entry
+demonstrably exists. If call two reads near zero, the ordering falls.
+
+### Owed
+
+**Measurement 2, not taken: chained-Queueable stack depth in `aossb2`.** Cap is 5 in Developer
+Edition and Trial orgs; whether it binds a Developer sandbox of an Enterprise org is unverified.
+B&V's three clear it either way; **Emerson's ~17 would not if it binds at 5**, so it is measured
+before the chain is built out, not during Emerson. Batch with scope size 1 has no depth question,
+which is why Batch is the shipping shape.
+
+Then the temporary Queueable chain — **`AAO_TEMP_`-grade, condemned in advance, marked temporary in
+code and here, to be replaced by the ruled batch layer and never allowed to become architecture** —
+then the B&V baseline with per-call `cacheRead`, then Emerson.

@@ -6435,3 +6435,92 @@ which is why Batch is the shipping shape.
 Then the temporary Queueable chain — **`AAO_TEMP_`-grade, condemned in advance, marked temporary in
 code and here, to be replaced by the ruled batch layer and never allowed to become architecture** —
 then the B&V baseline with per-call `cacheRead`, then Emerson.
+
+---
+
+## 2026-08-03 · session 72 · the per-person shape is RETIRED; Extract-Bind-Verify filed as §P7.3
+
+**Did.** Filed `docs/aao-P7.3-extract-bind-verify.md` as the authoritative statement of the
+redesign until it folds into Charters. **Recorded the retirement of the per-person pass shape,
+which is my own work being superseded by ruling.** Nothing built: the four-stage rebuild is the
+next session's whole job and is not something to begin on a spent context.
+
+### The ruling, and why it is obviously right
+
+**The per-person pass shape is dead, Matthew's ruling.** Measurement 71 is the argument: one call,
+16 propositions, **18,696 input and 7,339 output**, and session 62's 53-proposition call was
+**18,696 input and 7,532 output.** Input is dominated by the artifact and output by prose, and the
+per-person shape pays **both, N times, for the same transcript.** Seventeen people is seventeen
+reads of the same 18,700 tokens. **The shape does not fail at the ceiling; it fails at enterprise
+volume, and the ceiling was only how it announced itself.**
+
+**The B&V baseline on that shape is abandoned, not deferred.** A baseline of an untenable structure
+measures nothing worth keeping. Session 62 and measurement 71 stand as **history and cost data
+only** — neither is a quality number for the charter or the model.
+
+**The nothing-redesigned-mid-run rule is superseded** by this ruling, because the run it protected
+no longer exists. Worth stating so a later reader does not read the redesign as the rule being
+broken.
+
+### What I got wrong, and what the sequence of errors actually was
+
+Three readings in three sessions, each replacing the last:
+
+1. **Session 58-60:** proposition count is the binding constraint. Wrong.
+2. **Session 70:** the artifact read cold is the dominant cost, and part-splitting is the axis.
+   Half wrong — the artifact dominates *input* but generation dominates *time*.
+3. **Session 71, corrected by Matthew:** the ceiling is cumulative per transaction, which I had
+   asserted the opposite of. **The split was sound and the transaction boundary killed it.**
+
+And now the ruling that makes all three moot: **the shape was wrong at a level none of my three
+diagnoses reached.** Every one of them was a latency question. **The real objection is cost per
+Source at volume**, which no amount of transaction plumbing addresses. I optimised the inside of a
+structure instead of asking whether the structure was right, three times, and each fix was
+correct about the thing it looked at.
+
+**`findings=1`, three times, was the visible edge of it.** I named it a charter quality question
+separate from the timeout, which was right, and then kept working on the timeout.
+
+### The new shape, four stages, as filed
+
+**Stage 1 · the read.** One call per Source, strong model, artifact-first, declared families in the
+tail. Output is an **inventory of potential claims** — speaker, subject handle, line anchor,
+minimal verbatim span, plausible families. **No verdicts, no per-sentence quizzing.**
+**Stage 2 · binding.** Deterministic fan-out where mechanical; a small call carrying **span plus
+proposition and no transcript** where judgment is needed. Binding promotes Candidate to Claim.
+**Stage 3 · verification.** Blind reader, **separate and smaller model**, sees claim and span only,
+never the binder's verdict, gated by an adjudicated comparison run before the small model is
+trusted. **Its rejection count is the over-read catch rate** — the number that decides whether the
+blind reader earns its place.
+**Stage 4 · unchanged.** Everything downstream of Claim stands: accumulation, `AAO_Project`,
+watermarks, Option C notes, quotes on Answer rows only.
+
+**The inventory is the Candidate layer doing what its name always implied**, which is why this
+redesign costs no schema: Candidate proposes, Claim records, Answer is what is true now. Abstention
+rows are written **by Apex after binding**, at zero model cost for silence.
+
+### One ruling already satisfied, and one thing to watch
+
+**Coverage is computed, never extracted** — already true. `AAO_PeopleContracts` skips the Coverage
+family with the comment *Coverage is a P route and is not extracted from words*, so the family has
+never entered a read. The 48 seeded contracts are Support and Political only.
+
+**Watch on the epistemics sentence, recorded because it is now load-bearing:** an unextracted
+statement becomes a `model_missed` abstention rather than a probed answer. **Extract-once trusts
+one family-guided pass for completeness and the residual is real, bounded and chosen.** That is a
+weaker completeness claim than probing every proposition, and it is the right trade — but it means
+`model_missed` is no longer a rare bookkeeping case and its rate is a number the harness should
+report rather than bury.
+
+### Owed · the next session's whole job
+
+Build in the filed order: stage 1 extractor with a hard `max_tokens` and JSON-only output; binding
+with the **~90-token evidence budget** (coextensive span, room to breathe, and the budget governs
+model output while stored quotes stay full-fidelity); verification on the smallest model available
+through the current credential, journalling which; the Apex abstention writer. **One callout per
+transaction stands**; stage 2 and 3 group sizes come from measuring one, never from hope. Per-stage
+telemetry: elapsed, tokens, `cacheRead`/`cacheCreate`, and the counts.
+
+**Then B&V end to end as the new baseline, then Emerson, then the run report.** Fixtures, ingest,
+SHA-at-insert, dedup, roster, declared set, writer, invoker, command center and byte-verification
+all survive untouched.

@@ -6872,3 +6872,119 @@ do with AAO.** `AAO_EBVTest` and `AAO_ExtractTest` are 37/37. The coverage rule 
 effort field broke nothing, which is worth saying plainly and is also not evidence that either
 of them works: the tests assert the charter's structure, and what 1.1.0 failed to change was the
 model's behaviour.
+
+---
+
+## 2026-08-03 · session 74 · THE PROJECTION PROOF · NOT A BASELINE
+
+**Read this heading as a fence.** Matthew ruled that a projection proof is not a baseline and
+that he wanted one anyway. This is that, and nothing in it is a measurement of anything. The
+stage 1 instability recorded above **stays open and unfixed**; this run does not close it, does
+not reduce it, and must never be cited as evidence about it. What it establishes is one thing
+only: **that the chain from artifact to relationship map is connected and, when stage 1 draws,
+carries evidence the whole way.**
+
+### The draw
+
+Ran B&V on the NF1 Source (`SRC-00000034`) until stage 1 returned items. **Attempt 5.** Attempts
+1 to 4 each returned a well-formed empty inventory and completed in about six seconds.
+
+```
+attempt=1  job=707WD0000A5GvVSYQ0  nonAbstentionCandidates=0
+attempt=2  job=707WD0000A5GqpSYQS  nonAbstentionCandidates=0
+attempt=3  job=707WD0000A5GshzYQC  nonAbstentionCandidates=0
+attempt=4  job=707WD0000A5GrVPYQ0  nonAbstentionCandidates=0
+attempt=5  job=707WD0000A5GuwEYQS  nonAbstentionCandidates=6   <- the draw
+```
+
+**Four empties then a draw is the instability doing exactly what it does.** It is not a hit rate.
+
+### The pass · `stage done`, 5 calls, 237.2 s
+
+```
+stage1_read#1   items=25  45,095 ms  in=16,740  out=2,690 (thinking=0)      cacheRead=3,995
+stage2_bind#1   items=24  69,155 ms  in=4,644   out=6,786 (thinking=5,565)  claude-sonnet-5
+stage2_bind#2   items=24  71,797 ms  in=4,651   out=7,364 (thinking=6,003)  claude-sonnet-5
+stage2_bind#3   items=15  42,922 ms  in=3,324   out=3,816 (thinking=2,979)  claude-sonnet-5
+stage3_verify#1 items=16   8,275 ms  in=2,058   out=780   (thinking=0)      claude-haiku-4-5
+TOTAL calls=5  237,244 ms  in=31,417  out=21,436
+```
+
+| | |
+|---|---|
+| inventory items | 25 |
+| spans dropped, not found | **0** |
+| bindings attempted | 63 |
+| established by binder | 16 |
+| **verification rejections** | **9 of 16 (56.3%)** |
+| claims established | 6 |
+| abstentions | 31 (nobody_said 23, model_declined 8, **model_missed 0**, a lower bound) |
+
+**The bind group size is falsified harder than before.** 69.2 s and 71.8 s against a ~29 s
+prediction, on a 120-second ceiling. One slow call away from a timeout. Owed a re-measurement
+before any run is trusted for latency; not re-tuned here because that would be a measurement and
+this is a proof.
+
+### Candidate to Answer to map · it connects
+
+**6 Answers written**, all TRUE, all Live, all `MACHINE`, all `covered:["e1"] missing:[]`, all
+from candidates the blind reader marked **Upheld**. Before this run the deal carried **0**
+Answers and **44 map rows with 0 populated**, so everything below is unambiguously this run.
+
+`AAO_Project.run` → **0 created, 1 populated, 0 blocked, 2 unchanged.**
+
+| person | code | question | quote |
+|---|---|---|---|
+| **Adam Meloan** | PO9 | aware of the politics | *"is Steve, Steve's having a lot of these kind of like leader meetings, isn't he?"* / *"I'd say Chris, Steve, and Patrick start there and then they can kind of bring the right people in"* |
+| **Adam Meloan** | **PS7** | **collects and provides information to people of power** | *"That needs to go to Scott and Matt and Brian. Like that's Matt, that was a very specific ask from Matt last week. So I just want to make sure we keep that moving."* |
+| **Adam Meloan** | S1 | preference for a specific solution | *"what I'm trying to do is just eliminate clicks"* |
+| Ashley Stroud | PO9 | aware of the politics | *"I know Steve, it's very important to Steve that we advance this…"* / *"Steve and Patrick, and then I think Elizabeth might have some input here…"* |
+| Ashley Stroud | S1 | preference for a specific solution | *"I think we can do both… we have to do a tier one scorecard, but we also can use MCP to accelerate inputs."* |
+| Robbin Jones | S1 | preference for a specific solution | *"use your components that you guys to Altify design components that you have for like all your other buttons so that it can be consistent"* |
+
+**The one map value that landed:**
+
+```
+Adam Meloan   ALTF__Political__c = Outside Political Structure
+              ALTF__Note__c      = Political: Outside Political Structure — Adam Meloan, 24 June 2026
+              ALTF__Political_Last_Modified__c = 2026-08-03 23:27:03
+```
+
+**One of 44 rows carries a value. Ashley and Robbin are `unchanged`, and that is correct rather
+than a failure.** `POL_BROKER` is PS7, which is what places Adam Outside Political Structure; PO9
+"places nobody and is not consulted"; S1 "opens the reading and places nobody". Ashley holds PO9
+and S1 only, Robbin S1 only, so neither has anything that places them. The derivation did what
+the charter's table says.
+
+**The map note carries no quote by design** — `citation()` composes speaker plus date, and the
+class says it "degrades to naming the value alone rather than truncating a quote, because a
+clipped quote is at the edge of the paraphrase law." The quotes live on the Answer rows, one read
+away, and are tabled above.
+
+### TWO NEW DEFECTS, named rather than worked around
+
+**D1 · A span the blind reader refused survives onto the standing Answer as a citation.**
+`PO9#Ashley Stroud` carries two spans, both element `e1`. The blind reader **refused the first**:
+
+> *blind reader refused: quantity: Span mentions Steve's preferences and MCP opportunity, but does not assert awareness of organisational politics.*
+
+`e1` is covered by the surviving span, so the TRUE verdict is right. **But the Answer's span set
+is the union and still cites the refused quote.** The refusal is recorded in the interpretation
+and prunes nothing. A customer reading why an answer stands would be shown a quote this system's
+own verifier judged insufficient, which is the one thing the blind reader exists to prevent.
+Verdict correct, citations polluted. **Not patched.**
+
+**D2 · `AAO_Project.citation()` reads `spans[0]` unconditionally.** The note's attribution is
+taken from the first span in the list with no regard to whether that span survived verification.
+Harmless on this run because both of Ashley's spans are hers and she was not projected anyway,
+but the person credited on a customer-visible note can be drawn from a refused span. **Not
+patched.** D1 and D2 compound: D1 leaves refused spans in the set, D2 reads position 0 out of it.
+
+### What this proves and what it does not
+
+Proves: NF1 fixed the span gate; Candidate → Answer → `ALTF__Contact_Map_Details__c` is
+connected; the blind reader rejects at scale (56.3%) and the survivors project; the derivation
+tables place people the way the charters say.
+
+Does not prove, and must not be read as: any rate, any coverage number, any latency budget, or
+anything at all about stage 1. **There is still no baseline.**

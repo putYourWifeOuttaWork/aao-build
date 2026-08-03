@@ -173,7 +173,14 @@ public class AAO_Extract {
      * org holds, and a charter that can create a question it then answers is not measuring
      * anything. It is also what keeps this callout-safe: creating them would be DML.
      */
-    public static Result run(Id sourceId) {
+    /**
+     * **The declared applicable set is an argument, never a read.** This method used to call
+     * `AAO_Rubric.contracts()` itself, so a pass that resolved forty-eight People contracts
+     * asked the model about fifty-three — the declared set governed what was written and not
+     * what was asked. The set now arrives from `AAO_ApplicableSet` through the pipeline, and
+     * the read it used to make no longer exists under that name.
+     */
+    public static Result run(Id sourceId, List<AAO_Evidence_Contract__c> declared) {
         Config cfg = config();
         if (cfg.active != true) {
             throw new ExtractException(
@@ -198,12 +205,15 @@ public class AAO_Extract {
             );
         }
 
-        // Scoped to one rubric. An unscoped read here sends every generation of every
-        // proposition to the charter at once, and it reads as thoroughness.
-        List<AAO_Evidence_Contract__c> contracts = AAO_Rubric.contracts();
+        // Whatever resolved, and nothing else. An unscoped read here sends every generation of
+        // every proposition to the charter at once, and it reads as thoroughness.
+        List<AAO_Evidence_Contract__c> contracts = declared == null
+            ? new List<AAO_Evidence_Contract__c>()
+            : declared;
         if (contracts.isEmpty()) {
             throw new ExtractException(
-                'No evidence contracts in the org. There is nothing to ask about.'
+                'Nothing resolved for the declared charter set, so there is nothing to ask ' +
+                'about. This is not the same as an org with no contracts in it.'
             );
         }
 

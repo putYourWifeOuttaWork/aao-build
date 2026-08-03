@@ -2,6 +2,8 @@
 
 > **The version lives on the stamp line below and nowhere else.**
 
+**v3.2 · 3 August 2026 · One addition: our applicable set, declared and reconciled, as a companion to the Altify applicable-set section. A pass's contract set is declared per charter and resolved per charter's own rule, never global; contracts are frozen identity maintained by a run-time reconciler at ingest. Ruled by Matthew 3 August, first half built by CODE the same day at 204 tests. The section sits directly after the Altify applicable-set section it mirrors.**
+
 **v3.1 · 2 August 2026 · Formed in the consolidation: Architecture v3.0 with Theory v1.4 and Computable Share v1.6 absorbed as stamped sections at the end. The 2 August rulings are carried at this head and marked against the body where they supersede it.**
 
 > **Authoritative for:** the inventory — where things live, what code drives each step, every ruling — plus the argument (Theory section) and the per-org corpus analysis (Computable Share section). **Defers to:** Glossary for vocabulary, Model & Flow for fields, Charters for the AI.
@@ -737,6 +739,12 @@ Guidance about a person could previously only diagnose: thin coverage, low suppo
 *Read from production and confirmed by experiment in a second org, 28 July 2026.*
 
 **Three configuration reads resolve the applicable set for any deal, deterministically, with no model.** `ALTF__Opportunity_Manager_Settings__c.ALTF__Opportunity_Plan_Type__c` names the Opportunity field that carries plan type — an org choice: production names `Type`, the demo org names a custom category field. The deal's value in that field matches an `ALTF__Opportunity_Plan_Type_List__c` row by `Name`. That row's `ALTF__AssessmentQuestionIds__c` — comma-separated codes matching `ALTF__Assessment_Question__c.Name` — is the applicable set. This is a configuration read, not setup-time inference: nothing is proposed and nothing needs ratifying.
+
+### Our applicable set · declared, resolved per charter, reconciled at ingest · arch v3.2
+
+**A pass's applicable set is declared, never global.** Every Evidence Contract carries a charter designation; a pass names the charters it runs and nothing else resolves. Resolution runs per charter because the scoping rule differs by kind: assessment contracts resolve per deal through the three-read configuration chain above; People contracts resolve per roster, map rows union Source participants, because a person-contract is applicable only where its subject is on the given deal's surface. Nothing is handed to a model that did not resolve, which is what makes a pass's completeness numbers mean what they say.
+
+**Contracts are frozen identity under a live read.** The order of operations at ingest, ruled by Matthew: resolve scope first (the two-key lock, at most one deal and one account per Source), then per resolved deal read the live rubric per declared charter, reconcile against existing contracts by content hash, mint a new contract version and supersede the old at that moment where the rubric changed, then run. Contract creation is a run-time reconciliation that usually finds nothing to do; an admin adding a question mid-cycle is picked up by the next pass on every affected deal with no redeploy. The frozen row must exist under the live read because claims point at contracts and the Question Fingerprint law makes a changed question a detectable event rather than a silent inheritance of answers it never earned. **Built 3 August: the designation field, the declared resolve, roster resolution for People. Owed: the ingest-time reconciler itself, and persisting the per-deal rubric binding as a queryable fact, both Board items due before any charter beyond People runs.**
 
 **Resolution semantics, observed and mirrored.** A matched row with a populated list restricts to exactly those questions. An empty list, a null value, and a value matching no row all resolve to **every active question** — filter semantics with an unrestricted default, established by census in production and by direct experiment in the demo org. **We mirror this cell for cell**, because a verdict must land on the set the seller's screen shows, or flags reference questions the seller cannot see.
 

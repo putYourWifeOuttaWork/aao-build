@@ -37,6 +37,22 @@ public class AAO_SourceTriggerHandler {
             // Single writer. A caller-supplied key is not trusted, because a key composed
             // anywhere but here is a second composer.
             s.AAO_Scope_Key__c = AAO_ScopeKey.compose(s);
+
+            // SHA determinism, RULED: the normalized-text fingerprint is computed by this code
+            // path from the received bytes, unconditionally, and is never a step any caller
+            // performs. A caller-supplied value is overwritten rather than trusted, for the same
+            // reason the scope key is.
+            //
+            // This closes a real gap by construction. The B&V Casey Source was inserted without
+            // one, the field is immutable by law, and the three laws that then refused to let it
+            // be corrected were each right: immutable field, dedup on bytes, Sources leave by
+            // retirement. **No immutability exception exists or will.** The recorded history
+            // stays; the condition cannot recur, because omitting the value is no longer
+            // something a caller is able to do.
+            s.AAO_SHA256__c = AAO_NormalForm.sha256(s.AAO_Normalized_Text__c);
+            if (String.isBlank(s.AAO_Normalizer_Version__c)) {
+                s.AAO_Normalizer_Version__c = AAO_NormalForm.VERSION;
+            }
         }
     }
 

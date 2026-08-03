@@ -5,6 +5,11 @@
     <label>AAO Admin</label>
     <fieldPermissions>
         <editable>true</editable>
+        <field>AAO_Evidence_Contract__c.AAO_Charter_Designation__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>AAO_Flag__c.AAO_Bounded_Path__c</field>
         <readable>true</readable>
     </fieldPermissions>

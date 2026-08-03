@@ -3,7 +3,7 @@
     <apiVersion>66.0</apiVersion>
     <isExposed>true</isExposed>
     <masterLabel>AAO Pipeline (internal)</masterLabel>
-    <description>Read-only internal view of the AAO evidence pipeline for one opportunity. Shows candidates, which never appear on a seller surface.</description>
+    <description>Read-only internal command center for the AAO evidence pipeline on one opportunity or one account. Shows candidates, which never appear on a seller surface.</description>
     <targets>
         <target>lightning__RecordPage</target>
     </targets>
@@ -11,6 +11,7 @@
         <targetConfig targets="lightning__RecordPage">
             <objects>
                 <object>Opportunity</object>
+                <object>Account</object>
             </objects>
         </targetConfig>
     </targetConfigs>

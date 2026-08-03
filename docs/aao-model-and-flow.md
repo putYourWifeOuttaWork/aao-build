@@ -2,6 +2,8 @@
 
 > **The version lives on the stamp line below and nowhere else.**
 
+**v1.1 · 3 August 2026 · Recorded from the build, field-table consolidation owed at the next Field Tables pass: Evidence Contract gains `AAO_Charter_Designation__c` (restricted picklist; written by the contract seeder and the coming reconciler; read by the applicable-set resolver and by no charter ever; 48 rows stamped People, 12 legacy rows null and deliberately admitted by the Process resolve). Projection write semantics recorded as law: Unset leaves the target picklist null and never writes `Unknown`, because `Unknown` is a claim and null is the absence of one. The writer class `AAO_Project` exists at 18 tests; its shape is Charters §P7.2.1's.**
+
 **v1.0 · 2 August 2026 · Formed in the consolidation: Object Model v2.1, Data Flow v2.4 and the Field Tables v0.13 merged into one document. Each part keeps its stamped headings; entities and keys read from the Object Model part, the evidence path from the Data Flow part, field-level truth from the Field Tables part, and the Field Tables win where they disagree because they are built law.**
 
 > **Authoritative for:** entities, keys, merges, fields, and what happens to one piece of evidence. **Defers to:** Glossary for vocabulary, Architecture for placement and rulings.

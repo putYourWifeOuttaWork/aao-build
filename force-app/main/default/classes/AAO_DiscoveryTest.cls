@@ -280,7 +280,7 @@ private class AAO_DiscoveryTest {
 
         // The product set: unmarked, active, non-superseded. Discovery writes unmarked
         // rows, so this is exactly what it produced.
-        List<AAO_Evidence_Contract__c> live = AAO_Rubric.contracts();
+        List<AAO_Evidence_Contract__c> live = AAO_Rubric.inventory();
         System.assertEquals(1, live.size(), 'One generation, not two.');
         System.assertEquals('Second wording.', live[0].AAO_Proposition_Text__c);
     }

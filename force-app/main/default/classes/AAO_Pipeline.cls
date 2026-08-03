@@ -152,10 +152,30 @@ public class AAO_Pipeline {
         return runForSource(sourceId, internalDomains, FROM_FIXTURE);
     }
 
+    /**
+     * Every existing caller of this form is an assessment or qualifier pass, so the declared
+     * set is Process. Stated as a default rather than left implicit: **there is no global
+     * applicable set any more**, and a pass that declared nothing would be the old law wearing
+     * a new signature.
+     */
     public static Outcome runForSource(
         Id sourceId,
         Set<String> internalDomains,
         String proposalSource
+    ) {
+        return runForSource(
+            sourceId,
+            internalDomains,
+            proposalSource,
+            new Set<String>{ AAO_ApplicableSet.PROCESS }
+        );
+    }
+
+    public static Outcome runForSource(
+        Id sourceId,
+        Set<String> internalDomains,
+        String proposalSource,
+        Set<String> charters
     ) {
         AAO_Source__c src = [
             SELECT
@@ -200,10 +220,14 @@ public class AAO_Pipeline {
             // Apex forbids a callout after DML in the same transaction, so if a single
             // row were written above this line the model call would fail at runtime with
             // an error that reads like a platform problem rather than an ordering one.
-            contracts = liveContracts();
+            // DECLARED, never global. Resolution is per charter and differently per
+            // charter; a charter that resolved nothing is reported rather than silently
+            // absent, so the pass's own completeness numbers mean what they say.
+            AAO_ApplicableSet.Resolved resolved = AAO_ApplicableSet.resolve(charters, src);
+            contracts = resolved.contracts;
             if (contracts.isEmpty()) {
                 o.status = 'no_staged_proposal';
-                o.note = 'No evidence contracts exist in this org, so there is nothing to ask.';
+                o.note = 'Nothing resolved for the declared charter set. ' + resolved;
                 return o;
             }
 
@@ -224,7 +248,7 @@ public class AAO_Pipeline {
                 return o;
             }
 
-            AAO_Extract.Result ex = AAO_Extract.run(src.Id);
+            AAO_Extract.Result ex = AAO_Extract.run(src.Id, resolved.contracts.values());
             o.extraction = ex;
             o.charter = ex.charter;
             o.charterVersion = ex.charterVersion;
@@ -527,8 +551,14 @@ public class AAO_Pipeline {
      * settled which set the law selects. The product's set is the org's current questions,
      * and the seeded fixture is not one of them.
      */
-    public static Map<String, AAO_Evidence_Contract__c> liveContracts() {
-        return AAO_Rubric.byCode();
+    /**
+     * **INVENTORY ONLY. Never an applicable set and never a model path.** Gate 1's harness
+     * reports how many contracts exist in the org, which is a true statement about the cabinet
+     * and not a statement about any pass. A pass resolves through
+     * `AAO_ApplicableSet.resolve(charters, source)`.
+     */
+    public static Map<String, AAO_Evidence_Contract__c> inventoryForHarness() {
+        return AAO_Rubric.inventoryByCode();
     }
 
     // ====================================================================== internals
@@ -549,13 +579,22 @@ public class AAO_Pipeline {
             );
         }
 
+        // A per-person contract carries its person in its code, because the extraction
+        // charter keys a finding by proposition code alone and has no subject field of its
+        // own. Everything downstream was already per-person ready: Commit carries
+        // AAO_Subject_Contact__c to the Claim and the Answer, Accumulate copies it, Replay
+        // reconstructs it, and AnswerKey composes identity on it. This was the only place in
+        // the chain that never set it.
+        Id personId = AAO_PeopleContracts.contactOf(p.contractCode);
+
         AAO_Candidate__c cand = new AAO_Candidate__c(
             AAO_Evidence_Contract__c = ec.Id,
             AAO_Source__c = src.Id,
             AAO_Basis__c = AAO_EvidenceFamily.TRANSCRIPT,
             AAO_Opportunity__c = src.AAO_Opportunity__c,
             AAO_Account__c = src.AAO_Account__c,
-            AAO_Subject_Type__c = p.subjectType,
+            AAO_Subject_Type__c = personId != null ? 'Contact' : p.subjectType,
+            AAO_Subject_Contact__c = personId,
             AAO_Proposed_Verdict__c = p.proposedVerdict,
             AAO_Spans__c = AAO_Model.serializeSpans(p.spans),
             AAO_Element_Coverage__c = AAO_Model.serializeCoverage(
@@ -621,7 +660,12 @@ public class AAO_Pipeline {
                     AAO_Basis__c = AAO_EvidenceFamily.TRANSCRIPT,
                     AAO_Opportunity__c = src.AAO_Opportunity__c,
                     AAO_Account__c = src.AAO_Account__c,
-                    AAO_Subject_Type__c = 'Opportunity',
+                    // The complete ledger stays complete per person: an abstention on a
+                    // per-person proposition is about that person, not about the deal.
+                    AAO_Subject_Type__c = AAO_PeopleContracts.contactOfContract(ec) != null
+                        ? 'Contact'
+                        : 'Opportunity',
+                    AAO_Subject_Contact__c = AAO_PeopleContracts.contactOfContract(ec),
                     AAO_Stage__c = 'Adjudicated',
                     // A proposition the reader never answered is not an abstained row.
                     // Ratified 31 July: the outcome says which of the two happened, so the

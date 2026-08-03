@@ -52,7 +52,7 @@ public class AAO_Flags {
         // product's questions are the unmarked ones, and a demo or test entry says so at
         // the call site rather than being guessed at here.
         List<AAO_Evidence_Contract__c> gating = new List<AAO_Evidence_Contract__c>();
-        for (AAO_Evidence_Contract__c ec : AAO_Rubric.contracts(synthetic)) {
+        for (AAO_Evidence_Contract__c ec : AAO_Rubric.inventory(synthetic)) {
             if (ec.AAO_Gating__c == true) {
                 gating.add(ec);
             }

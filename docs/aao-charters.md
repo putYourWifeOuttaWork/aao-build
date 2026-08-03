@@ -2,6 +2,12 @@
 
 > **The version lives on the stamp line below and nowhere else.**
 
+**v2.3 · 3 August 2026 · The build-day fold. §P7.2 gains its ratifications block: the writer's query-then-branch upsert shape with the two-rows flag, the create leg mandatory because contact-role sync is a customer configuration that can be off, the TRUE-strong / FALSE-weak guard on two-sided questions with UNVERIFIED placing nobody, People resolving per roster (map rows union Source participants), and the applicable set declared rather than global. The resolver section gains the membership-never-routes ruling. All ruled 2 and 3 August, built and proved at 204 tests by CODE the same day.**
+
+**v2.2 · 2 August 2026 · The probe correction. §P7.2's exclusion-list assertion marked WRONG in place and restated as measured by CODE's step 0 probe: the key-player fields are formulas, there is no recalculation, and the passing assertion is per-dimension stamp isolation. The probe's positive findings recorded: API-written map rows accepted as real, native per-dimension Last_Modified stamps as the watermark substrate.**
+
+**v2.1 · 2 August 2026 · The People session. Political Status derivation RULED: placement is a ceiling over accumulating establishments, never a contest; one establishment suffices everywhere, easy in and easy out; a lesser property never downgrades; Q9 places nobody; no contention flags on Political Status, silent re-derivation on displacement. The scope vocabulary RULED and CLOSED: two layers law (vocabulary routes, establishment writes), renewals entry struck, eight entries added, org-extensible as additive natural language. The CODE brief for the People projection harness written as §P7.2: real B&V fixture from prod reads, native parents only, real transcript through the front door, temporary invoker, post-hoc adjudication by Matthew as the judgment.**
+
 **v2.0 · 2 August 2026 · Formed in the consolidation: charter design v1.8, the scope resolver v0.4, the account ontology captures v0.2, and the People harness brief v0.2 merged into one document, plus the Process charter section written at last. Each absorbed part keeps its own stamped headings below; where parts state the same rule, the later stamp wins.**
 
 > **Authoritative for:** the AI — every charter, the shared output envelope, the recovered and authored ontologies, the scope resolver, and the harness briefs. **Defers to:** Glossary for vocabulary, Architecture for placement, Model & Flow for entities and fields.
@@ -820,7 +826,7 @@ Internal owner, mapped role → resolved. Sales-oriented → deal side, and Loca
 
 A summary-level read of subject, agenda and transcript answering one authored question: **is this call about account matters or opportunity matters.** It runs second because its answer prunes everything after it: **an account verdict ends the resolver** — no traversal, no ownership check, nothing else to know.
 
-The sided vocabulary it reads against is **ours to author, shipped as seed metadata exactly like the People ontology** (two fields, org override, LAW #1 shape). Draft below, owed correction.
+The sided vocabulary it reads against is **ours to author, shipped as seed metadata exactly like the People ontology** (two fields, org override, LAW #1 shape). ~~Draft below, owed correction.~~ **Corrected and RULED 2 August; the ontology section below is closed, v2.1.**
 
 This is inference and it is admitted deliberately: what a call is about is nearly always sayable from what was said, the classification **routes and never establishes**, nothing it produces is cited, and its failure mode falls through rather than deciding.
 
@@ -873,15 +879,25 @@ For **already-mapped** people the v0.1 mechanics stand: the binary rubrics run o
 
 ---
 
-## The account/opportunity content ontology · DRAFT v0 · owed Matthew's correction
+## The account/opportunity content ontology · RULED and CLOSED · charters v2.1 · corrected by Matthew 2 August
 
-Authored by us, shipped as seed, org-overridable. Sided vocabulary, not keywords — the read is what the conversation is about, and the lists below are the meaning of each side, not strings to grep.
+Authored by us, shipped as seed, org-overridable. Sided vocabulary, not keywords: the read is what the conversation is about, and the lists below are the meaning of each side, not strings to grep.
 
-**Opportunity-side:** the decision process and decision criteria · a compelling event and its date · budget, funding, approval to spend · evaluation, proof, demos in an evaluation context · proposal, pricing, quote, negotiation · competition and alternatives · contract, legal, procurement, signature · timeline to a decision · who must say yes to a purchase · **renewal conversations** (renewals are opportunities in the methodology — two renewal processes exist) · ROI justification before a purchase.
+**The two layers law · RULED, and it governs this whole section.** The vocabulary serves **routing only**: is this content about an opportunity at all, and if so which one. That is the entire read side. What gets **written** is decided downstream by establishment, exactly as built everywhere else: words a person said, byte-verified, moving whichever dimension those words support, on whichever map the person occupies. Sentiment down, buyer role changed, coverage up, citation and note; all of the above or one of them, as the words themselves warrant. **The vocabulary never gates a write; establishment never routes.** The v0 draft had these lists doing quiet double duty as write-eligibility, and that reading is dead.
 
-**Account-side:** adoption and utilization of an owned product · onboarding, training, enablement · business reviews and QBRs · support, escalations, service delivery · managed-services execution · value realization from what is owned · roadmap and relationship cadence · account team orchestration across many deals.
+**The applicability corollary, ruled through the renewals question and then generalized.** Account-shaped talk that bears directly on an open opportunity's success or failure routes to that opportunity as well: the outage that threatens the expansion is deal content wherever it was said, and "no concerns about the renewal" is establishment evidence on the renewal deal, quotable, coverage-counting. Binary, per content, no middle. The dual trigger and the two-sided summary already carry the mechanism.
 
-**Authored caveats, in the ontology itself:** late-stage onboarding discussion inside a still-open deal reads account-shaped and is not · expansion seeding ("we could also use this for…") on an account call is the dual-scope trigger, not a scope flip · a seller demoing on an account call does not make it a deal call (the organizer test already said so).
+**Opportunity-side:** the decision process and decision criteria · a compelling event and its date · budget, funding, approval to spend · evaluation, proof, demos in an evaluation context · proposal, pricing, quote, negotiation · competition and alternatives · contract, legal, procurement, signature · timeline to a decision · who must say yes to a purchase · ~~**renewal conversations** (renewals are opportunities in the methodology — two renewal processes exist)~~ **STRUCK in v2.1, Matthew's ruling: renewals are not a vocabulary item. An opportunity is an opportunity whatever the org calls it; the lists describe opportunity-shaped talk generically, and renewal-specific terminology fails in every org that names things differently. The two-renewal-processes fact stays true and stays irrelevant to routing** · ROI justification before a purchase · feasibility study · RFP / RFQ · technical approval and security analyses in the context of a purchase · close plan or mutual action plan.
+
+**Account-side:** adoption and utilization of an owned product · onboarding, training, enablement · business reviews and QBRs · support, escalations, service delivery · managed-services execution · value realization from what is owned · roadmap and relationship cadence · account team orchestration across many deals · consumption · trailing ROI · success and service programs · center of excellence · continuation planning · product- or program-related health performance.
+
+**Authored caveats, in the ontology itself:** late-stage onboarding discussion inside a still-open deal reads account-shaped and is not · expansion seeding ("we could also use this for…") on an account call is the dual-scope trigger, not a scope flip · a seller demoing on an account call does not make it a deal call (the organizer test already said so) · account-shaped talk bearing directly on an open opportunity's outcome routes to that opportunity as well, per the applicability corollary above.
+
+**The seed list is a floor, never the ceiling · RULED.** Every org can add entries to either side, as many as needed, in its own industry's language: a pharma org's MSL engagement, a fed org's ATO process. The two-field seed-metadata shape already carries this, LAW #1 pattern, our records as seed and org records extending. Extension is **additive natural language**: an admin writes a new sided meaning as a sentence, no code, no prompt surgery. Recorded as compatible with the per-org charter overlay (the Board's named open item for injectable caveat-style prose) and deliberately not settling it: list entries are ruled extensible today, prose injection stays the overlay's own design session.
+
+### Membership never routes · RULED by Matthew · charters v2.3
+
+The seven-John-Smiths hazard, ruled shut. A person appearing on any number of maps is membership, a fact about rosters, and it contributes nothing to routing. A Source resolves through the two-key lock only, and the default and maximum resolution is **one deal and one account per Source**. Dual scope means deal plus account, never deal plus deal. The only sanctioned multi-deal case is affirmatively named content: a stretch of conversation that names another deal in words routes that stretch to that deal, one scope stamp per stretch, affirmative evidence required, never inference from proximity or shared rosters. Where the resolver cannot decide, it abstains: the candidate ledger holds the abstention with its reason, a flag may raise it to a human, and nothing writes. The failure direction is silence, never spray. Resolution opens a door; establishment is still the only thing that walks through it, and a claim's four keys make every write name its one opportunity and one account structurally.
 
 ---
 
@@ -1061,7 +1077,22 @@ During the walk, a click intended for a card's help icon landed on the small cir
 | **Non-Supporter** | Any of Q6 / Q11 / Q14 TRUE — prefers an alternative, vocal for competition |
 | **Enemy** | Q7 ∨ Q16 TRUE — mentoring the competition, or evidence they believe your success hurts them. Positively established, never the far end of a scale |
 
-Q1, the preference gate, opens the reading and places nobody. Political Status derives the same way from its seven once its table is authored; same session, second table, owed.
+Q1, the preference gate, opens the reading and places nobody. ~~Political Status derives the same way from its seven once its table is authored; same session, second table, owed.~~ **SUPERSEDED in v2.1: the table is ruled below, and it does not derive the same way. Political Status is a ceiling, not a ladder.**
+
+### Political Status derivation · RULED by Matthew · charters v2.1
+
+**Placement is a ceiling over standing establishments, never a contest between them.** A person accumulates properties: they can hold authority and broker information and deliver projects all at once. A lesser property arriving upgrades or does nothing; it never downgrades. The map value is simply the highest placement the standing establishments support. This deliberately breaks Support's two-to-enter asymmetry, and the reason is recorded: almost nobody fills this wizard by hand, evidence is sparse, and one real sentence should be allowed to place. Easy in, easy out.
+
+| Value | Condition |
+|---|---|
+| **Inner Circle** | Any strong-side authority establishment standing: defines the goals (Q1 strong), approves and sponsors (Q2 strong), controls the outcomes (Q4 strong). One alone suffices |
+| **Political Structure** | No strong-side authority standing, but any one of: executes after approval (Q2 weak), is called on to make it happen (Q4 weak), sought out for advice (Q3), track record of delivery (Q6). One alone suffices |
+| **Outside Political Structure** | Only information brokering standing (Q7): connected to power without holding it |
+| **Unset** | Nothing established. A state of not knowing, never a computed floor. Nobody is placed outside the structure by absence of evidence |
+
+**Exit happens only inside a two-sided question.** The strong and weak sides of Q1, Q2 and Q4 cannot both stand; the newer establishment displaces the older within that question, on the evidence-occurred clock. That displacement is the only downgrade path: the words themselves flip, a lesser property arriving never does it. **Q9, political awareness, places nobody.** Everyone worth mapping watches the politics; the savviness that matters shows up as brokering, which Q7 already catches. Q9 stays in the ontology as an askable question with establishments recorded like any other; the derivation ignores it. Not sure remains first-class abstention. The proposal enums for Q1, Q2 and Q4 are runtime-closed from the wizard's own two-sided semantic options.
+
+**No contention flags on Political Status · RULED.** Displacement within a two-sided question re-derives the value silently. The establishments, the quotes and the derived value are all tracked; the evidence trail stays complete; nothing alarms. If flagging ever ships for this dimension it is configurable and default off. The wider principle, Matthew's, recorded for every future dimension: **flag volume is a budget, spent only on what changes seller behavior.** Political placement shifting is information, not an alarm. This is a stated difference from Support, where the displaced side raises the opposite-polarity contention flag; that mechanism was built for a ladder where sides oppose, and under the ceiling model between-value tension is not a conflict at all.
 
 **When both sides stand at once · RULED by Matthew: recency owns the rung.** The side with the most recent establishment on the **evidence-occurred clock** governs the map value. Neither side dominates by polarity, and nothing averages — Neutral is never the resolution of a conflict.
 
@@ -1107,4 +1138,63 @@ Projection writes the rung and note under the derivation above; watermark and pe
 
 ---
 
-*End v0.1. Section 1 ruled; section 2 is the one open ruling. Folds into charter design at its next bump.*
+*End v0.1. Section 1 ruled; section 2 is the one open ruling. Folds into charter design at its next bump.* **[v2.1 note: section 2's ruling closed in v2.0, Option C; section 3 is extended, not replaced, by §P7.2 below.]**
+
+---
+
+## §P7.2 · CODE brief · The People projection harness · v1.0 · charters v2.1 · ready to build
+
+**What this proves.** The first end-to-end run of the whole machine on one real dimension: evidence arrives through the front door, the People charter establishes with quoted words, claims accumulate to answers, answers queue projection, and projection writes real values, notes and citations onto Altify's own map rows in `altify--aossb2`. Every later charter inherits this spine. The exercise is projection into Altify; nothing else.
+
+**Rulings this harness builds against, all closed:** tree owns the rung (Support); Political Status ceiling derivation per v2.1, no contention flags on that dimension, silent re-derivation; recency arbitration on the evidence-occurred clock (Support only); Option C note, most recent establishment per dimension, plain date-and-speaker citation, never a record ID on a human surface; quotes on Answer rows only, nothing duplicates them; watermark and per-dimension precedence, a human edit beats the machine forever; live contention leg only, the historical leg is written into the charter and skipped as graceful absence, no D360.
+
+### Step 0 · The probe · runs before anything else builds
+
+One API-written `ALTF__Contact_Map_Details__c` row in the sandbox. Observe what the package does: does Altify's automation treat it as real, does recalculation fire, does Is Key Player behave. **This is a product truth, not a fixture workaround**: the product writes map rows by API by design, so the answer governs the product, and the capability law says it is unverified until tried from the runtime that makes the call. Result to BUILD_JOURNAL before step 1 starts.
+
+### Step 1 · The seeder · real shapes from production reads
+
+Pull Black & Veatch from production, read-only as always: the Account, its Contacts, **all open Opportunities, and at least one closed-won Opportunity** so the traversal shape (owns-something) exists. Push to the sandbox as **native parents only. No map rows are seeded; building the map surface is the product's own job and watching it do so is the test.**
+
+Seeder verification list, each item recorded in the journal:
+1. **Owners remapped deliberately.** Prod OwnerId and CreatedById point at prod users. Map owners to sandbox users by intent, because the resolver's Test 1 reads the owner-organizer's role; seed the ownership pattern the resolver should eventually see.
+2. **One-record probe before bulk.** Insert one Opportunity first and read what the ALTF package created on it (qualifier scaffolding, assessment shells, whatever fires). What Altify does on API-inserted opportunities is unverified until tried.
+3. **Counts verified after, not insert success.** Validation rules, required fields and duplicate matching can half-succeed a bulk push, and a non-empty result missing rows looks exactly like success.
+4. **Stage and record-type fidelity.** Open opportunities keep real stages, the closed-won stays closed-won; verify the specific picklist values survived.
+5. **Real emails accepted deliberately.** Participant overlap and identity matching key on email, so real emails are the value of real data. Real B&V PII in a dev org where model calls run is accepted as a recorded decision, one line in the sandbox build sheet. Transcripts attach real words only per step 2; no authored words ever attach to real people.
+6. **The never-written law, distinguished not breached.** Opportunity and Account never written is the **product's runtime** law. The seeder is scaffolding, writing native parents once, at fixture time, in a sandbox. Stated here so no future reader sees the seeder and thinks the law bent.
+7. **Multi-opportunity fixture is future-proofing, non-asserted.** The extra open opportunities serve the later scope-resolver harness (the which-opportunity match). Today's harness asserts nothing about routing between them; People is opportunity-level with the deal given.
+
+### Step 2 · The run · the real pipeline, front door in
+
+The real B&V transcript (the Casey call) injected as a Source through ingest: dedup, roster, adjudication, exactly as any evidence arrives. **People charter only; every other charter's contracts sit unhanded.** Claims accumulate, answers derive, answers queue projection per the architecture. Then the one phase concession: a **temporary projection invoker**, trigger or class, `AAO_TEMP_` in its name, marked temporary in the journal, condemned in advance, that drains the queue into actual upserts on Altify's objects. The batch layer is the real architecture (batched projection, real-time async reserved for seller input via UI or headless) and is neither built nor prejudiced here; this harness tests **what projection writes, not how it is scheduled**.
+
+### Step 3 · Grading · mechanical assertions, then Matthew's adjudication
+
+**No pre-run answer key exists, and the brief is honest about it.** The transcript is real; Matthew watches the call and reads the output afterward, and his read is the key. So the harness asserts mechanics, and produces an adjudicable surface.
+
+**Asserted mechanically, pass or fail:**
+- Pipeline completes end to end; projection writes land on `ALTF__Contact_Map_Details__c`
+- Every projected value traces to its claim; every claim carries its span; byte-verification holds against the frozen artifact
+- The Option C note is correctly formed: most recent establishment per dimension, plain date and speaker, no record IDs, overwritten freely, evidence untouched
+- Quotes live on Answer rows only; no object duplicates quote text
+- Watermark holds; a human edit beats the machine and stays beaten
+- ~~**The exclusion-list experiment:** project Political, let Altify recalculate, re-read; Is Key Player must move and nothing else~~ **WRONG, measured by CODE's step 0 probe, 2 August: `ALTF__Is_Key_Player__c`, `Squares`, `Color` and `ConcatenatedFields` are formula fields, evaluated at query time; there is no recalculation step and no exclusion list could prevent co-movement (writing Political moved Is Key Player and Squares together, as pure functions must). Restated as measured, ratified:** writing one dimension moves that dimension's own `_Last_Modified` stamp and no other; the formula fields move as pure functions of the same-row picklists; no stored field we did not write changes; no automation fires. **Probe also established: the package accepts API-written map rows, populates `ALTF__AltifyId__c` by its own trigger, leaves our writes alone, and maintains per-dimension `_Last_Modified` stamps natively, so the watermark and per-dimension precedence have a real substrate we do not build.**
+- Political values derive under the ceiling model; displacement re-derives silently, no flag
+- Replay rebuilds the identical map surface from claims
+
+**Produced for adjudication:** the projected map rows with notes, and the receipts behind every value, reachable from the record. Matthew adjudicates post-run: right, wrong, where, cited properly, notes properly written. **Expected failure mode, from Gate 1: over-reading, real quotes stretched past scope, never fabrication.** His disagreement notes are a named deliverable, the adjudication record, folded back into the People charter as post-run findings.
+
+**On Matthew's side, in parallel with the seeder:** a subscriber-org related list on the Contact Map Details UI showing our claims for that person on that map (admin guidance pattern, never package metadata). If the filter needs a formula field or a differently exposed key on the claim's person lookup, that is a one-line ask back through the zip; discover it this week, not during adjudication.
+
+### §P7.2.1 · Ratifications and corrections from the build days, 2 and 3 August · charters v2.3
+
+**The writer's shape, ruled and built (`AAO_Project`, 18 tests).** Query-then-branch on the (contact, opportunity) pair, never platform upsert, there being no external ID on the target. Row exists: populate only the dimensions establishment moved, honest under the native per-dimension `_Last_Modified` stamps the step 0 probe found. Row absent: create it, established dimensions populated, the rest null. Two rows for one pair: a Cardinality flag, writes nothing, never picks. **Correction to the session 57 conclusion, Matthew's:** the map skeletons come from contact-role synchronization, which is a customer configuration that can be off, so populate is the normal path only where sync is on and **the create leg is mandatory product behaviour, not an edge.** This run exercises populate only, every speaker holding a contact role; the create leg is covered by unit test and untested by the run, which are different statements and both recorded.
+
+**The two-sided guard, ratified.** TRUE establishes the strong side, FALSE establishes the weak side, and FALSE places someone on the weak side only when words affirmatively support it; absence of strong-side evidence is UNVERIFIED, and UNVERIFIED places nobody. Coextension does the work the runtime-closed enums were designed for; the enums remain a later refinement, not a blocker. Unset leaves the target picklist null and never writes `Unknown`, because `Unknown` is a claim and null is the absence of one.
+
+**The applicable set is declared, never global (ruled 3 August, built same day).** The org-wide contracts read is marked wrong in place in the repo and survives only for inventory and the pipeline view; it must never feed a model. Evidence Contract carries `AAO_Charter_Designation__c`; a pass declares its charter set and resolution runs per charter: assessment resolves per deal through the configuration chain Architecture rules; **People resolves per roster, map rows union Source participants**, both halves earning their place because map-only would make the create leg unreachable. Process is charter-filtered but not yet deal-filtered, labelled a half-measure in the method; persisting the per-deal rubric binding as a queryable fact is owed before any Process pass and is folded into the ingest-time reconciler item on the Board.
+
+**Contracts are frozen identity under a live read, per Matthew's order-of-operations ruling.** The chain at ingest: resolve scope first through the two-key lock, then per resolved deal read the live rubric per declared charter, reconcile against contracts by content hash, mint and supersede at that moment where the rubric changed, and hand each charter exactly the resolved current set. The hand-seeded 48 of this harness are scaffolding standing in for the reconciler, legitimate for this run because the roster is known and the ontology is stable; the reconciler is Board-owed before any charter beyond People runs.
+
+*End §P7.2 v1.0. Owed back from CODE: the step 0 probe result, the seeder verification lines, and the mechanical assertion results, all to BUILD_JOURNAL.*

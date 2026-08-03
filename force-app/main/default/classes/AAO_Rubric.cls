@@ -29,14 +29,22 @@
  */
 public class AAO_Rubric {
     /**
-     * Every contract in the applicable set, with every field any reader needs. One query
-     * rather than one per caller, so a new reader cannot quietly reintroduce an unscoped
-     * one.
+     * ~~Every contract in the applicable set~~ **WRONG LAW as of the applicable-set ruling,
+     * 2 August. This read is org-wide: no deal scope, no charter scope, no roster scope.** It
+     * was right when there was one rubric and discovery was proving a rubric could be built at
+     * all, and it is wrong now that People contracts exist per person and per charter. A pass
+     * resolved from here would be handed every charter's contracts and every other deal's
+     * people. **`AAO_ApplicableSet.resolve(charters, source)` is the law for a pass.** This
+     * method survives for callers that genuinely want the whole cabinet — inventory, the
+     * pipeline view, discovery's own audits — and must never be used to feed a model.
+     *
+     * One query rather than one per caller, so a new reader cannot quietly reintroduce an
+     * unscoped one.
      *
      * `synthetic` is not a filter on a detail. It is which of two populations the caller
      * belongs to, and the caller is the only thing that knows.
      */
-    public static List<AAO_Evidence_Contract__c> contracts(Boolean synthetic) {
+    public static List<AAO_Evidence_Contract__c> inventory(Boolean synthetic) {
         Boolean wantSynthetic = synthetic == true;
         return [
             SELECT
@@ -63,20 +71,27 @@ public class AAO_Rubric {
         ];
     }
 
-    /** The product set. Active, not superseded, not synthetic. */
-    public static List<AAO_Evidence_Contract__c> contracts() {
-        return contracts(false);
+    /**
+     * The product set. Active, not superseded, not synthetic.
+     *
+     * **Renamed from `contracts()` deliberately, so a model-path caller cannot compile against
+     * it.** The old name read like the applicable set and was used as one; `AAO_Extract` called
+     * it and asked the model about fifty-three propositions on a pass that had declared forty-
+     * eight. A rename is the only restriction the compiler enforces.
+     */
+    public static List<AAO_Evidence_Contract__c> inventory() {
+        return inventory(false);
     }
 
-    public static Map<String, AAO_Evidence_Contract__c> byCode(Boolean synthetic) {
+    public static Map<String, AAO_Evidence_Contract__c> inventoryByCode(Boolean synthetic) {
         Map<String, AAO_Evidence_Contract__c> out = new Map<String, AAO_Evidence_Contract__c>();
-        for (AAO_Evidence_Contract__c ec : contracts(synthetic)) {
+        for (AAO_Evidence_Contract__c ec : inventory(synthetic)) {
             out.put(ec.AAO_Proposition_Code__c, ec);
         }
         return out;
     }
 
-    public static Map<String, AAO_Evidence_Contract__c> byCode() {
-        return byCode(false);
+    public static Map<String, AAO_Evidence_Contract__c> inventoryByCode() {
+        return inventoryByCode(false);
     }
 }

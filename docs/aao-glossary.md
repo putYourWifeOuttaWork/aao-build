@@ -2,6 +2,8 @@
 
 > **The version lives on the stamp line below and nowhere else.**
 
+**v2.3 · 3 August 2026 · Matthew Weisberg · Five terms added from the build days, defined here and nowhere else: charter designation, declared applicable set, ceiling derivation, membership never routes, contract reconciliation. Definitions appended as the final section.**
+
 **v2.2 · 2 August 2026 · Matthew Weisberg**
 *Formerly the AltifyOS Glossary — title migrated under the ruling that file titles move at each document's next natural bump.*
 
@@ -1229,3 +1231,17 @@ Salesforce platform terms:
 ---
 
 *End of glossary. Sections A through M are settled and rest on a read org rather than a reasoned one. Section N is the agenda. Field-level detail for the closed objects lives in the AAO Field Tables. The version lives on the stamp line at the top and nowhere else.*
+
+---
+
+## Terms added 3 August 2026 · glossary v2.3
+
+**Charter designation.** The field on Evidence Contract naming which charter owns the question. Written by the contract seeder and the coming reconciler, read by the applicable-set resolver, never read by any charter. A contract with no designation is legacy and resolves only under Process, deliberately.
+
+**Declared applicable set.** The contract set a pass actually hands the model: declared per charter at the pass, resolved per charter's own rule (assessment per deal via the configuration chain, People per roster), never the org-global population. The org-global read survives for inventory and display only.
+
+**Ceiling derivation.** The Political Status derivation model: placement is a ceiling over accumulating establishments, never a contest between them. Properties accumulate and never subtract; the map value is the highest placement standing establishments support; exit happens only when words flip a two-sided question. Contrast with Support's ladder, where recency arbitrates opposing sides.
+
+**Membership never routes.** The resolver law that a person's presence on any number of maps contributes nothing to routing. Resolution is per Source to at most one deal and one account, plus affirmatively named content stretches; ambiguity abstains and nothing writes.
+
+**Contract reconciliation.** The ingest-time step, owed and not yet built, that reads the live rubric per declared charter per resolved deal, matches against existing contracts by content hash, and mints or supersedes contract versions where the rubric changed. Contracts stay frozen identity; the reconciler is what keeps them current without breaking the receipt chain.

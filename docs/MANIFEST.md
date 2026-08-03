@@ -1,6 +1,6 @@
 # docs/ MANIFEST
 
-**Restructured 4 August 2026 (journal session 51).** The versioned drop-files are retired.
+**Restructured 2 August 2026 (journal session 51).** The versioned drop-files are retired.
 Five living documents carry the design; everything else is a satellite or legacy. **Filenames
 are unversioned — the version lives on the stamp line inside each file. Read the stamp, never
 the filename.** One live copy per document; superseded copies are deleted, and the full

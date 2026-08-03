@@ -224,7 +224,7 @@ public class AAO_SolutionRoute {
         Boolean synthetic
     ) {
         Outcome o = new Outcome();
-        AAO_Evidence_Contract__c ec = AAO_Rubric.byCode(synthetic).get(contractCode);
+        AAO_Evidence_Contract__c ec = AAO_Rubric.inventoryByCode(synthetic).get(contractCode);
         if (ec == null) {
             throw new SolutionRouteException(
                 'No contract "' +

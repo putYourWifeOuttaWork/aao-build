@@ -128,7 +128,7 @@ private class AAO_CardinalityTest {
     @IsTest
     static void theLiveExtractionPassIsWellInsideItsBound() {
         setUp();
-        Integer contracts = AAO_Rubric.contracts(true).size();
+        Integer contracts = AAO_Rubric.inventory(true).size();
 
         Test.startTest();
         AAO_Cardinality.Verdict v = AAO_Cardinality.check(contracts);

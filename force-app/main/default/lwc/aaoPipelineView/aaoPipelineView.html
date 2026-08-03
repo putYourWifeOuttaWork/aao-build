@@ -4,15 +4,12 @@
             <header class="slds-media slds-media_center slds-has-flexi-truncate">
                 <div class="slds-media__figure">
                     <span class="slds-icon_container slds-icon-standard-entity">
-                        <lightning-icon
-                            icon-name="standard:record_lookup"
-                            size="small"
-                        ></lightning-icon>
+                        <lightning-icon icon-name="standard:record_lookup" size="small"></lightning-icon>
                     </span>
                 </div>
                 <div class="slds-media__body">
                     <h2 class="slds-card__header-title">
-                        <span class="slds-text-heading_small">AAO Pipeline (internal)</span>
+                        <span class="slds-text-heading_small">{headerTitle}</span>
                     </h2>
                     <p class="slds-text-body_small slds-text-color_weak">
                         Read-only. Shows candidates, which never appear on a seller surface.
@@ -25,28 +22,68 @@
                         {cadence} · {snapshot.generatedAt}
                     </span>
                 </template>
-                <lightning-button
-                    label="Refresh"
-                    onclick={handleRefresh}
-                    variant="neutral"
-                ></lightning-button>
+                <lightning-button label="Refresh" onclick={handleRefresh} variant="neutral"></lightning-button>
             </div>
         </div>
 
         <div class="slds-card__body slds-card__body_inner">
-            <!-- The order below is the order evidence moves through the system. -->
-            <p
-                class="aao-flow slds-text-title_caps slds-text-color_weak slds-m-bottom_small"
-            >
+            <!-- ============================================ J · RUN BANNER -->
+            <template if:true={hasSnapshot}>
+                <div class={bannerClass}>
+                    <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                        <div class="slds-grid slds-grid_vertical-align-center">
+                            <template if:true={snapshot.banner.active}>
+                                <div class="slds-spinner slds-spinner_xx-small slds-spinner_inline slds-m-right_x-small" role="status">
+                                    <span class="slds-assistive-text">Adjudication pending</span>
+                                    <div class="slds-spinner__dot-a"></div>
+                                    <div class="slds-spinner__dot-b"></div>
+                                </div>
+                            </template>
+                            <span class="slds-badge slds-m-right_x-small">{snapshot.banner.stage}</span>
+                            <template if:true={snapshot.banner.hassourceIdUrl}>
+                                <a href={snapshot.banner.sourceIdUrl} target="_blank" rel="noopener"
+                                   class="slds-text-body_regular">{snapshot.banner.sourceRef}</a>
+                            </template>
+                            <template if:false={snapshot.banner.hassourceIdUrl}>
+                                <span class="slds-text-body_regular">{snapshot.banner.sourceRef}</span>
+                            </template>
+                        </div>
+                        <span class="slds-text-body_small slds-text-color_weak">
+                            last refreshed {snapshot.banner.lastRefreshed}
+                        </span>
+                    </div>
+                    <p class="slds-text-body_small slds-text-color_weak slds-m-top_xx-small">
+                        {snapshot.banner.sentence}
+                    </p>
+                </div>
+            </template>
+
+            <p class="aao-flow slds-text-title_caps slds-text-color_weak slds-m-bottom_small">
                 Sources → Candidates → Claims → Answers → Flags → Projection
             </p>
 
+            <template if:true={isAccount}>
+                <div class="slds-box slds-box_xx-small slds-theme_shade slds-m-bottom_small">
+                    <p class="slds-text-body_small">{snapshot.scopeNote}</p>
+                    <template if:true={snapshot.deals.length}>
+                        <p class="slds-text-body_small slds-m-top_xx-small">
+                            Deals on this account:
+                            <template for:each={snapshot.deals} for:item="d">
+                                <span key={d.id} class="slds-m-right_x-small">
+                                    <template if:true={d.hasUrl}>
+                                        <a href={d.url} target="_blank" rel="noopener">{d.name}</a>
+                                    </template>
+                                    <template if:false={d.hasUrl}>{d.name}</template>
+                                </span>
+                            </template>
+                        </p>
+                    </template>
+                </div>
+            </template>
+
             <template if:true={loading}>
                 <div class="slds-is-relative slds-p-vertical_medium">
-                    <lightning-spinner
-                        alternative-text="Reading the pipeline"
-                        size="small"
-                    ></lightning-spinner>
+                    <lightning-spinner alternative-text="Reading the pipeline" size="small"></lightning-spinner>
                 </div>
             </template>
 
@@ -59,203 +96,346 @@
 
             <template if:true={showEmpty}>
                 <div class="slds-box slds-box_small slds-theme_shade">
-                    <p class="slds-text-body_regular">
-                        Nothing has arrived on this opportunity yet. No sources, no
-                        candidates, no claims, no answers. That is a true statement about the
-                        deal, not a loading state.
-                    </p>
+                    <p class="slds-text-body_regular">{snapshot.emptyText}</p>
                 </div>
             </template>
 
             <template if:true={showBody}>
                 <div class="slds-grid slds-wrap slds-gutters">
-                    <!-- 1 · SOURCES -->
+                    <!-- ======================================== 1 · SOURCES -->
                     <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-3 slds-p-bottom_small">
                         <div class="slds-box slds-box_x-small aao-panel">
-                            <h3 class="slds-text-title_caps slds-m-bottom_x-small">
-                                1 · Sources
-                            </h3>
+                            <div class="slds-grid slds-grid_align-spread">
+                                <h3 class="slds-text-title_caps">1 · Sources</h3>
+                                <span class="slds-text-body_small slds-text-color_weak">{snapshot.sourcePage.line}</span>
+                            </div>
                             <template for:each={snapshot.sources} for:item="src">
-                                <div
-                                    key={src.id}
-                                    class="slds-border_bottom slds-p-vertical_xx-small"
-                                >
+                                <div key={src.id} class="slds-border_bottom slds-p-vertical_xx-small">
                                     <div class="slds-grid slds-grid_align-spread">
-                                        <span class="slds-text-body_small slds-truncate"
-                                            >{src.sourceRef}</span
-                                        >
+                                        <span class="slds-text-body_small slds-truncate">
+                                            <template if:true={src.hasUrl}>
+                                                <a href={src.url} target="_blank" rel="noopener">{src.sourceRef}</a>
+                                            </template>
+                                            <template if:false={src.hasUrl}>{src.sourceRef}</template>
+                                        </span>
                                         <span class="slds-grid slds-grid_vertical-align-center">
                                             <template if:true={src.pending}>
-                                                <div
-                                                    class="slds-spinner slds-spinner_xx-small slds-spinner_inline slds-m-right_x-small"
-                                                    role="status"
-                                                >
-                                                    <span class="slds-assistive-text"
-                                                        >Adjudication pending</span
-                                                    >
+                                                <div class="slds-spinner slds-spinner_xx-small slds-spinner_inline slds-m-right_x-small" role="status">
+                                                    <span class="slds-assistive-text">Adjudication pending</span>
                                                     <div class="slds-spinner__dot-a"></div>
                                                     <div class="slds-spinner__dot-b"></div>
                                                 </div>
-                                                <span class="slds-badge slds-theme_warning"
-                                                    >PENDING</span
-                                                >
+                                                <span class="slds-badge slds-theme_warning">PENDING</span>
                                             </template>
                                             <template if:false={src.pending}>
                                                 <span class="slds-badge">Adjudicated</span>
                                             </template>
                                         </span>
                                     </div>
-                                    <p
-                                        class="slds-text-body_small slds-text-color_weak"
-                                    >
-                                        {src.origin} · {src.diarization} · {src.occurred}
-                                    </p>
-                                </div>
-                            </template>
-                            <template if:false={snapshot.sources.length}>
-                                <p class="slds-text-body_small slds-text-color_weak">
-                                    No evidence has arrived.
-                                </p>
-                            </template>
-                        </div>
-                    </div>
-
-                    <!-- 2 · CANDIDATES -->
-                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-3 slds-p-bottom_small">
-                        <div class="slds-box slds-box_x-small aao-panel">
-                            <h3 class="slds-text-title_caps slds-m-bottom_x-small">
-                                2 · Candidates
-                            </h3>
-                            <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_xx-small">
-                                Latest pass · {snapshot.candidates.latestPassLabel}
-                            </p>
-                            <template for:each={snapshot.candidates.latest} for:item="oc">
-                                <div
-                                    key={oc.outcome}
-                                    class="slds-grid slds-grid_align-spread slds-text-body_small"
-                                >
-                                    <span>{oc.outcome}</span>
-                                    <span class="slds-text-title_bold">{oc.count}</span>
-                                </div>
-                            </template>
-                            <div
-                                class="slds-grid slds-grid_align-spread slds-border_top slds-m-top_xx-small slds-p-top_xx-small slds-text-body_small"
-                            >
-                                <span>this pass</span>
-                                <span class="slds-text-title_bold"
-                                    >{snapshot.candidates.latestTotal}</span
-                                >
-                            </div>
-                            <div
-                                class="slds-grid slds-grid_align-spread slds-text-body_small slds-text-color_weak"
-                            >
-                                <span>all passes</span>
-                                <span>{snapshot.candidates.grandTotal}</span>
-                            </div>
-                            <p class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">
-                                Every proposition considered writes a row, including the ones
-                                nothing was said about.
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- 3 · CLAIMS -->
-                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-3 slds-p-bottom_small">
-                        <div class="slds-box slds-box_x-small aao-panel">
-                            <h3 class="slds-text-title_caps slds-m-bottom_x-small">
-                                3 · Claims
-                            </h3>
-                            <template for:each={snapshot.claims} for:item="c">
-                                <div
-                                    key={c.id}
-                                    class="slds-border_bottom slds-p-vertical_xx-small"
-                                >
-                                    <div class="slds-text-body_small">
-                                        <span class="slds-text-color_weak">{c.before}</span>
-                                        <span class="slds-p-horizontal_xx-small">→</span>
-                                        <span class={c.theme}>{c.after}</span>
-                                        <span class="slds-text-color_weak slds-p-left_x-small"
-                                            >{c.outcome}</span
-                                        >
-                                    </div>
                                     <p class="slds-text-body_small slds-text-color_weak">
-                                        {c.occurred}
+                                        {src.origin} · {src.diarization} · occurred {src.occurred}
                                     </p>
-                                    <template if:true={c.snippet}>
-                                        <p class="aao-snippet slds-text-body_small">
-                                            “{c.snippet}”
+                                    <template if:true={snapshot.showScope}>
+                                        <p class="slds-text-body_small slds-text-color_weak">
+                                            scope {src.scope}
+                                            <template if:true={src.hasdealIdUrl}>
+                                                · <a href={src.dealIdUrl} target="_blank" rel="noopener">deal</a>
+                                            </template>
                                         </p>
                                     </template>
                                 </div>
                             </template>
-                            <template if:false={snapshot.claims.length}>
-                                <p class="slds-text-body_small slds-text-color_weak">
-                                    Nothing has been established yet.
-                                </p>
+                            <template if:false={snapshot.sources.length}>
+                                <p class="slds-text-body_small slds-text-color_weak">No evidence has arrived.</p>
                             </template>
-                            <p class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">
-                                Ordered by when the evidence happened, not by when we
-                                processed it. Never edited.
-                            </p>
                         </div>
                     </div>
 
-                    <!-- 4 · ANSWERS -->
+                    <!-- ===================================== 2 · CANDIDATES -->
                     <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-3 slds-p-bottom_small">
                         <div class="slds-box slds-box_x-small aao-panel">
-                            <h3 class="slds-text-title_caps slds-m-bottom_x-small">
-                                4 · Answers
-                            </h3>
-                            <template for:each={snapshot.answers} for:item="a">
-                                <div
-                                    key={a.id}
-                                    class="slds-border_bottom slds-p-vertical_xx-small"
-                                >
-                                    <div class="slds-grid slds-grid_align-spread">
-                                        <span class="slds-text-body_small slds-truncate"
-                                            >{a.code} · {a.proposition}</span
-                                        >
-                                        <span class={a.theme}>{a.verdict}</span>
-                                    </div>
-                                    <p class="slds-text-body_small slds-text-color_weak">
-                                        covered {a.covered} · missing {a.missing}
-                                    </p>
-                                    <p class="slds-text-body_small slds-text-color_weak">
-                                        established by {a.establishedBy} · {a.publicationState}
-                                    </p>
+                            <h3 class="slds-text-title_caps slds-m-bottom_x-small">2 · Candidates</h3>
+                            <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_xx-small">
+                                Latest pass ·
+                                <template if:true={snapshot.candidates.haslatestPassIdUrl}>
+                                    <a href={snapshot.candidates.latestPassIdUrl} target="_blank" rel="noopener">{snapshot.candidates.latestPassLabel}</a>
+                                </template>
+                                <template if:false={snapshot.candidates.haslatestPassIdUrl}>{snapshot.candidates.latestPassLabel}</template>
+                            </p>
+                            <template for:each={snapshot.candidates.latest} for:item="oc">
+                                <div key={oc.outcome} class="slds-grid slds-grid_align-spread slds-text-body_small">
+                                    <span>{oc.outcome}</span>
+                                    <span class="slds-text-title_bold">{oc.count}</span>
                                 </div>
                             </template>
-                            <template if:false={snapshot.answers.length}>
-                                <p class="slds-text-body_small slds-text-color_weak">
-                                    Nothing stands yet.
-                                </p>
-                            </template>
-                        </div>
-                    </div>
-
-                    <!-- 5 · FLAGS -->
-                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-3 slds-p-bottom_small">
-                        <div class="slds-box slds-box_x-small aao-panel">
-                            <h3 class="slds-text-title_caps slds-m-bottom_x-small">
-                                5 · Flags
-                            </h3>
-                            <p class="slds-text-heading_medium">{snapshot.flags.count}</p>
-                            <p class="slds-text-body_small slds-text-color_weak">
-                                {snapshot.flags.sentence}
+                            <div class="slds-grid slds-grid_align-spread slds-border_top slds-m-top_xx-small slds-p-top_xx-small slds-text-body_small">
+                                <span>this pass</span>
+                                <span class="slds-text-title_bold">{snapshot.candidates.latestTotal}</span>
+                            </div>
+                            <div class="slds-grid slds-grid_align-spread slds-text-body_small slds-text-color_weak">
+                                <span>all passes</span>
+                                <span>{snapshot.candidates.grandTotal}</span>
+                            </div>
+                            <p class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">
+                                Every proposition considered writes a row, including the ones nothing was said about.
                             </p>
                         </div>
                     </div>
 
-                    <!-- 6 · PROJECTION, off -->
+                    <!-- ========================================= 5 · FLAGS -->
                     <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-3 slds-p-bottom_small">
-                        <div class="slds-box slds-box_x-small aao-panel aao-off">
+                        <div class="slds-box slds-box_x-small aao-panel">
+                            <div class="slds-grid slds-grid_align-spread">
+                                <h3 class="slds-text-title_caps">5 · Flags</h3>
+                                <span class="slds-text-body_small slds-text-color_weak">{snapshot.flags.page.line}</span>
+                            </div>
+                            <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_xx-small">
+                                {snapshot.flags.standingCount} standing · {snapshot.flags.clearedCount} cleared
+                            </p>
+                            <template for:each={snapshot.flags.rows} for:item="f">
+                                <div key={f.id} class="slds-border_bottom slds-p-vertical_xx-small">
+                                    <div class="slds-grid slds-grid_align-spread">
+                                        <span class={f.typeTheme}>{f.type}</span>
+                                        <span class={f.stateTheme}>{f.state}</span>
+                                    </div>
+                                    <p class="slds-text-body_small">
+                                        <template if:true={f.hasUrl}>
+                                            <a href={f.url} target="_blank" rel="noopener">{f.name}</a>
+                                        </template>
+                                        <template if:false={f.hasUrl}>{f.name}</template>
+                                        <template if:true={f.subjectName}>
+                                            ·
+                                            <template if:true={f.hassubjectIdUrl}>
+                                                <a href={f.subjectIdUrl} target="_blank" rel="noopener">{f.subjectName}</a>
+                                            </template>
+                                            <template if:false={f.hassubjectIdUrl}>{f.subjectName}</template>
+                                        </template>
+                                    </p>
+                                    <p class="slds-text-body_small slds-text-color_weak">raised {f.created}</p>
+                                </div>
+                            </template>
+                            <template if:false={snapshot.flags.rows.length}>
+                                <p class="slds-text-body_small slds-text-color_weak">{snapshot.flags.sentence}</p>
+                            </template>
+                            <template if:true={snapshot.flags.hasAny}>
+                                <p class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">{snapshot.flags.sentence}</p>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- ======================================== 3 · CLAIMS -->
+                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2 slds-p-bottom_small">
+                        <div class="slds-box slds-box_x-small aao-panel">
+                            <div class="slds-grid slds-grid_align-spread">
+                                <h3 class="slds-text-title_caps">3 · Claims</h3>
+                                <span class="slds-text-body_small slds-text-color_weak">{snapshot.claimPage.line}</span>
+                            </div>
+                            <template for:each={snapshot.claims} for:item="c">
+                                <div key={c.id} class="slds-border_bottom slds-p-vertical_xx-small">
+                                    <div class="slds-text-body_small">
+                                        <template if:true={c.hasUrl}>
+                                            <a href={c.url} target="_blank" rel="noopener">{c.name}</a>
+                                        </template>
+                                        <template if:false={c.hasUrl}>{c.name}</template>
+                                        <span class="slds-p-left_x-small slds-text-color_weak">{c.before}</span>
+                                        <span class="slds-p-horizontal_xx-small">→</span>
+                                        <span class={c.theme}>{c.after}</span>
+                                        <span class="slds-text-color_weak slds-p-left_x-small">{c.outcome}</span>
+                                    </div>
+                                    <p class="slds-text-body_small slds-text-color_weak">
+                                        occurred {c.occurred} · recorded {c.recorded}
+                                    </p>
+                                    <p class="slds-text-body_small slds-text-color_weak">
+                                        source
+                                        <template if:true={c.hassourceIdUrl}>
+                                            <a href={c.sourceIdUrl} target="_blank" rel="noopener">{c.sourceRef}</a>
+                                        </template>
+                                        <template if:false={c.hassourceIdUrl}>{c.sourceRef}</template>
+                                        <template if:true={snapshot.showScope}> · scope {c.scope}</template>
+                                    </p>
+                                    <template if:true={c.snippet}>
+                                        <p class="aao-snippet slds-text-body_small">“{c.snippet}”</p>
+                                    </template>
+
+                                    <!-- ---- B · depth-one lineage -->
+                                    <template if:true={c.hasLineage}>
+                                        <button class="slds-button slds-button_reset aao-toggle slds-text-body_small"
+                                                data-id={c.id} onclick={handleToggle}>{c.toggleLabel}</button>
+                                        <template if:true={c.expanded}>
+                                            <div class="aao-lineage slds-p-around_xx-small slds-m-top_xx-small">
+                                                <template if:true={c.candidateId}>
+                                                    <p class="slds-text-body_small">
+                                                        <span class="slds-text-color_weak">from candidate</span>
+                                                        <template if:true={c.hascandidateIdUrl}>
+                                                            <a href={c.candidateIdUrl} target="_blank" rel="noopener">{c.candidateLabel}</a>
+                                                        </template>
+                                                        <template if:false={c.hascandidateIdUrl}>{c.candidateLabel}</template>
+                                                    </p>
+                                                </template>
+                                                <template if:true={c.answerId}>
+                                                    <p class="slds-text-body_small">
+                                                        <span class="slds-text-color_weak">moved answer</span>
+                                                        <template if:true={c.hasanswerIdUrl}>
+                                                            <a href={c.answerIdUrl} target="_blank" rel="noopener">{c.answerLabel}</a>
+                                                        </template>
+                                                        <template if:false={c.hasanswerIdUrl}>{c.answerLabel}</template>
+                                                    </p>
+                                                </template>
+                                                <template for:each={c.bases} for:item="b">
+                                                    <p key={b.id} class="slds-text-body_small">
+                                                        <span class="slds-badge">{b.citedType}</span>
+                                                        <template if:true={b.hascitedIdUrl}>
+                                                            <a href={b.citedIdUrl} target="_blank" rel="noopener">{b.citedLabel}</a>
+                                                        </template>
+                                                        <template if:false={b.hascitedIdUrl}>{b.citedLabel}</template>
+                                                        <template if:true={b.coversElement}>
+                                                            <span class="slds-text-color_weak"> · covers {b.coversElement}</span>
+                                                        </template>
+                                                        <template if:true={b.deleted}>
+                                                            <span class="slds-badge slds-theme_error">cited row deleted</span>
+                                                        </template>
+                                                    </p>
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </template>
+                                </div>
+                            </template>
+                            <template if:false={snapshot.claims.length}>
+                                <p class="slds-text-body_small slds-text-color_weak">Nothing has been established yet.</p>
+                            </template>
+                            <p class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">
+                                Ordered by when the evidence happened, not by when we processed it. Never edited.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- ============================ 4 · ANSWERS, BY PERSON -->
+                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2 slds-p-bottom_small">
+                        <div class="slds-box slds-box_x-small aao-panel">
+                            <div class="slds-grid slds-grid_align-spread">
+                                <h3 class="slds-text-title_caps">4 · Answers, by person</h3>
+                                <span class="slds-text-body_small slds-text-color_weak">{snapshot.answerPage.line}</span>
+                            </div>
+                            <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_xx-small">
+                                {snapshot.publicationLine}
+                            </p>
+                            <template for:each={snapshot.people} for:item="g">
+                                <div key={g.personName} class="slds-m-bottom_x-small">
+                                    <p class="aao-person slds-text-title_bold slds-p-top_xx-small">
+                                        <template if:true={g.hascontactIdUrl}>
+                                            <a href={g.contactIdUrl} target="_blank" rel="noopener">{g.personName}</a>
+                                        </template>
+                                        <template if:false={g.hascontactIdUrl}>{g.personName}</template>
+                                    </p>
+                                    <template if:true={g.subtitle}>
+                                        <p class="slds-text-body_small slds-text-color_weak">{g.subtitle}</p>
+                                    </template>
+                                    <template for:each={g.answers} for:item="a">
+                                        <div key={a.id} class={a.rowClass}>
+                                            <div class="slds-border_bottom slds-p-vertical_xx-small">
+                                                <div class="slds-grid slds-grid_align-spread">
+                                                    <span class="slds-text-body_small slds-truncate">
+                                                        <template if:true={a.hasUrl}>
+                                                            <a href={a.url} target="_blank" rel="noopener">{a.code}</a>
+                                                        </template>
+                                                        <template if:false={a.hasUrl}>{a.code}</template>
+                                                        · {a.proposition}
+                                                    </span>
+                                                    <span class="slds-grid slds-grid_vertical-align-center">
+                                                        <template if:true={a.held}>
+                                                            <span class="slds-badge slds-m-right_xx-small">HELD</span>
+                                                        </template>
+                                                        <span class={a.theme}>{a.verdict}</span>
+                                                    </span>
+                                                </div>
+                                                <template if:true={a.dimension}>
+                                                    <p class="slds-text-body_small">
+                                                        <span class="slds-text-color_weak">dimension</span> {a.dimension}
+                                                        <template if:true={a.rung}>
+                                                            · <span class="slds-text-color_weak">rung</span>
+                                                            <span class="slds-badge slds-theme_success">{a.rung}</span>
+                                                        </template>
+                                                    </p>
+                                                </template>
+                                                <p class="slds-text-body_small slds-text-color_weak">
+                                                    covered {a.covered} · missing {a.missing}
+                                                </p>
+                                                <p class="slds-text-body_small slds-text-color_weak">
+                                                    established by {a.establishedBy} · {a.publicationState}
+                                                    <template if:true={a.projected}> · projected {a.projectedAt}</template>
+                                                </p>
+                                                <template if:true={a.hasLineage}>
+                                                    <button class="slds-button slds-button_reset aao-toggle slds-text-body_small"
+                                                            data-id={a.id} onclick={handleToggle}>{a.toggleLabel}</button>
+                                                    <template if:true={a.expanded}>
+                                                        <div class="aao-lineage slds-p-around_xx-small slds-m-top_xx-small">
+                                                            <template for:each={a.claims} for:item="ac">
+                                                                <p key={ac.id} class="slds-text-body_small">
+                                                                    <template if:true={ac.hasUrl}>
+                                                                        <a href={ac.url} target="_blank" rel="noopener">{ac.name}</a>
+                                                                    </template>
+                                                                    <template if:false={ac.hasUrl}>{ac.name}</template>
+                                                                    <span class="slds-text-color_weak"> {ac.before} → </span>
+                                                                    <span class={ac.theme}>{ac.after}</span>
+                                                                    <span class="slds-text-color_weak"> · {ac.occurred}</span>
+                                                                </p>
+                                                            </template>
+                                                        </div>
+                                                    </template>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                            <template if:false={snapshot.people.length}>
+                                <p class="slds-text-body_small slds-text-color_weak">Nothing stands yet.</p>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- ==================================== 6 · PROJECTION -->
+                    <div class="slds-col slds-size_1-of-1 slds-p-bottom_small">
+                        <div class={projectionPanelClass}>
                             <div class="slds-grid slds-grid_align-spread">
                                 <h3 class="slds-text-title_caps">6 · Projection</h3>
                                 <span class="slds-badge">{snapshot.projection.label}</span>
                             </div>
-                            <p class="slds-text-body_small slds-m-top_x-small">
-                                {snapshot.projection.sentence}
-                            </p>
+                            <p class="slds-text-body_small slds-m-top_x-small">{snapshot.projection.sentence}</p>
+                            <template for:each={snapshot.projection.rows} for:item="p">
+                                <div key={p.answerId} class="slds-border_bottom slds-p-vertical_xx-small">
+                                    <div class="slds-grid slds-grid_align-spread">
+                                        <span class="slds-text-body_small">
+                                            <template if:true={p.hassubjectIdUrl}>
+                                                <a href={p.subjectIdUrl} target="_blank" rel="noopener">{p.subjectName}</a>
+                                            </template>
+                                            <template if:false={p.hassubjectIdUrl}>{p.subjectName}</template>
+                                            <template if:true={p.dimension}>
+                                                <span class="slds-text-color_weak"> · {p.dimension}</span>
+                                            </template>
+                                        </span>
+                                        <span class="slds-badge slds-theme_success">{p.value}</span>
+                                    </div>
+                                    <p class="slds-text-body_small slds-text-color_weak">
+                                        written {p.modstamp} · from
+                                        <template if:true={p.hasanswerIdUrl}>
+                                            <a href={p.answerIdUrl} target="_blank" rel="noopener">{p.answerName}</a>
+                                        </template>
+                                        <template if:false={p.hasanswerIdUrl}>{p.answerName}</template>
+                                        <template if:true={p.mapRowId}>
+                                            · onto
+                                            <template if:true={p.hasmapRowIdUrl}>
+                                                <a href={p.mapRowIdUrl} target="_blank" rel="noopener">{p.mapRowLabel}</a>
+                                            </template>
+                                            <template if:false={p.hasmapRowIdUrl}>{p.mapRowLabel}</template>
+                                        </template>
+                                        <template if:false={p.mapRowId}>
+                                            · <span class="slds-text-color_error">no map row resolves for this person on this deal</span>
+                                        </template>
+                                    </p>
+                                </div>
+                            </template>
                         </div>
                     </div>
                 </div>

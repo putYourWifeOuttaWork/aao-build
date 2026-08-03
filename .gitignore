@@ -42,6 +42,33 @@ $RECYCLE.BIN/
 # Local environment variables
 .env
 
+# B&V fixture payload - real customer PII pulled read-only from Altify production.
+# Charters P7.2 step 1 item 5 accepts real PII *in the sandbox org*; it does not rule on
+# committing it to this repository, which is a separate and permanent exposure (the handoff
+# section contemplates this directory moving to another machine). Untracked pending Matthew's
+# ruling. The MANIFEST beside them carries no contact details and IS tracked.
+seed/bv-fixture/*.json
+# ...except the id map, which is integrity not payload: Salesforce ids only, no names,
+# emails or contact details. Ratified tracked by Matthew, session 57.
+!seed/bv-fixture/idmap-prod-to-sandbox.json
+
+# Emerson fixture payload - real customer PII pulled read-only from Altify production, same
+# class of exposure as the B&V fixture and untracked under the same ratified split. The
+# MANIFEST beside it carries names but no contact details and IS tracked.
+seed/emerson-fixture/*.json
+seed/emerson-fixture/*.jsonl
+# ...except the id map, on the same ratified split as B&V's: integrity, not payload. Salesforce
+# ids only, no names, emails or contact details.
+!seed/emerson-fixture/idmap-prod-to-sandbox.json
+
+# B&V bi-weekly transcript - a real recorded customer conversation, same class of exposure and
+# untracked on the same ruling. NOTE the tension, which is why this one is not merely a copy of
+# the decision above: this file is the FROZEN ARTIFACT that spans byte-verify against, so while
+# it stays untracked a clean checkout cannot reproduce a replay without it being supplied again.
+# The .sha256 and the MANIFEST beside it ARE tracked, so a fresh checkout can still prove that a
+# supplied copy is the exact artifact the claims were verified against.
+seed/transcripts/bv-biweekly/*.txt
+
 # Python Salesforce Functions
 **/__pycache__/
 **/.venv/

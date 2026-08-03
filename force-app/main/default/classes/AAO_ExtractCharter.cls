@@ -260,7 +260,24 @@ public class AAO_ExtractCharter {
         List<AAO_Evidence_Contract__c> contracts,
         Map<String, AAO_Model.Speaker> roster
     ) {
-        return rubricBlock(contracts) + '\n\n' + artifactBlock(src, roster);
+        // ARTIFACT FIRST, propositions second. Part of the per-person pass shape, ruled.
+        //
+        // This INVERTS the ordering below, and the comment on `rubricBlock` explaining why the
+        // rubric led is not wrong — it was right for the access pattern it was written for: one
+        // stable rubric read against many artifacts, where the rubric is the invariant.
+        //
+        // A per-person pass has the opposite pattern. One artifact is read N times, once per
+        // person, and only the proposition tail changes. With the rubric leading, each of N
+        // calls pays full price for 46 KB of transcript and every call is back at the
+        // 120-second ceiling. With the artifact leading, the transcript sits in the cacheable
+        // prefix and calls two and three read it instead of sending it.
+        //
+        // **The prefix hit on calls two and three is PREDICTED, not verified.** That caching
+        // works at all through this path is measured: session 62 read 13,799 cached tokens from
+        // Apex via the Named Credential. That this ordering earns a hit per person is not.
+        // `cacheRead` per call goes in the run report, and near-zero on the later calls
+        // falsifies the prediction and the shape gets revisited on evidence.
+        return artifactBlock(src, roster) + '\n\n' + rubricBlock(contracts);
     }
 
     /**

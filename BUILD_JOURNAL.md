@@ -1,14 +1,20 @@
 # Build journal
 
-Append-only. The only part ever rewritten is `## Current state
+Append-only. The only part ever rewritten is `## Current state`, the one block immediately
+below. Everything under the session headings is permanent: wrong text is marked wrong, never
+deleted.
+
+---
+
+## Current state
 
 **Deployed to `altify--aossb2`, green, and clickable.** Org verified by query:
-`00DWD00000DV7iT2AT`, Name `Altify`, `IsSandbox true`. Written from the org on 4 August, not
+`00DWD00000DV7iT2AT`, Name `Altify`, `IsSandbox true`. Written from the org on 2 August, not
 from the sessions below it — the block had gone thirty-seven sessions stale, which is the one
 staleness the journal's own rules forbid.
 
 **Eight custom objects, two custom metadata types, eight triggers, forty Apex classes, and
-174 tests, 174 passing.** The objects: Source, Candidate, Claim, Claim Basis, Answer,
+186 tests, 186 passing.** The objects: Source, Candidate, Claim, Claim Basis, Answer,
 Evidence Contract, Flag, Participant. The types: Model Config (the model and charter pin) and
 People Question (the ontology seed). Every object carries its trigger law; the metadata types
 carry none because nothing machine-written ever touches them.
@@ -39,6 +45,16 @@ a short read per scope. **This is the ontology layer only.** The People projecti
 waits on two rulings (the rung derivation and the citation budget); Problems and Politics are
 unopened; projection into Altify's own objects is a later phase and nothing touches them yet.
 
+*Session 52, on the two sentences above.* **"Waits on two rulings" is spent and is corrected
+here:** both closed, the citation budget at Charters §P7 v0.2 (Option C) and the Support rung
+with it, and the Political Status derivation at Charters v2.1 under the ceiling model. The
+writer waits on nothing but the build. **"Projection into Altify's own objects is a later
+phase and nothing touches them yet" still stands as written and is deliberately NOT marked
+superseded yet**, per the queue: it gets marked when the People harness lands, not before. It
+was never a prohibition. The law forbids fields, metadata, triggers and logic on `ALTF__` and
+native objects, while data rows on managed objects are the product's output surface, now
+stated outright in Board v1.1 §3.
+
 **The rehearsal is durable and is the demo spine.** `AAO Demo - Tungsten Rehearsal` carries
 two claims and one answer written in separate transactions; a second deal carries the
 seller-said-it downgrade; `AAO Demo - Live` starts empty with its gating reds standing. Tabs,
@@ -61,9 +77,46 @@ on purpose, and `ingestTwo` fires only once `status()` stops printing a `PENDING
 own, which holds every module and every label. Module licensing and custom-metadata upgrade
 behaviour are both unverifiable here and are named as such rather than assumed.
 
+### Carried forward from the duplicate block this replaces
+
+Session 50 rewrote Current state but inserted the new text above the heading instead of
+replacing what sat under it, so two Current state blocks stood side by side until session 52.
+These facts lived only in the older one and are kept:
+
+**The `AAO Pipeline` tab is live on the active Opportunity record page**, verified rendering
+with real data, with the Altify panels and the Related tab intact. **Rollback is deploying
+`ed71d06`'s copy of `Opportunity_Record_Page`.**
+
+**Gate 1 round two runs on `AAO Gate1 - Model Round Two`**, which is isolated from the three
+demo deals: `AAO_Gate1.reset()` · `AAO_Gate1.pass('T1SRC')` · `AAO_Gate1.pass('T2SRC')` ·
+`AAO_Gate1.compare()`. The passes are separate commands because Apex forbids a callout after
+DML in one transaction, the same reason the rehearsal's passes are separate. **Rows written
+before session 7's defect was fixed are still in the org on that deal, deliberately, because
+the proof register cites them.**
+
+**Discovery has its own exit test:** `AAO_Discovery.exitTest()` passes end to end against
+Evidence Contracts assembled by reading Altify's own rubric tables, with
+`AAO_Question_Record_Id__c` carrying a real `ALTF__Assessment_Question__c` id. **Session 12's
+entry contains the discovery spec**, every ALTF field name and behaviour read from the org
+verbatim, including the two things Altify does not carry at all (speaker requirement and
+route), which is why the per-org charter overlay is measured rather than predicted.
+
+**Required reading before describing or quoting this build to anyone: sessions 4, 8, 9, 10
+and 12.** Session 4 holds the stage inventory, the precise list of what executes against what
+is authored in the fixture, and it is less flattering than the demo looks. Sessions 8 through
+10 hold the blind reader's real behaviour and the two grades. The one sentence from that era
+that is now simply false, *everything demonstrated so far rests on proposals authored by
+hand*, was retired in session 50 and must not be quoted forward.
+
+**Authored and model-written rows stay separable in the data**, because the charter version is
+stamped on every row: fixture rows carry the version that authored them and model rows carry
+the version on the Model Config record. The last reading recorded here put the three demo
+deals at `0.1.0` (session 17 era) and that has not been re-queried since; treat the principle
+as law and the value as owed a fresh read.
+
 ### Handoff — for a cold pickup in a new environment
 
-Written 4 August 2026 (session 51) so this directory can move to another machine, another
+Written 2 August 2026 (session 51) so this directory can move to another machine, another
 agent, or another person and work continues without this conversation.
 
 **What this is.** The build repo for Altify Always On: a Salesforce evidence-ledger system in
@@ -91,8 +144,8 @@ package version, ever. **The Anthropic API key exists only inside the org** (Set
 repo, any chat, or any file, and must not. Model calls work in any environment once the org
 is authenticated, because the key never left the org.
 
-**Verify the build before trusting it.** Run the full-suite command above; expect **174 of
-174**. `AAO_Demo.status()` from anonymous Apex shows the three demo deals; the rehearsal
+**Verify the build before trusting it.** Run the full-suite command above; expect **186 of
+186**. `AAO_Demo.status()` from anonymous Apex shows the three demo deals; the rehearsal
 commands beside it drive them. One pre-existing sandbox test (not ours) fails on a customer
 validation rule.
 
@@ -113,7 +166,24 @@ subscriber-edited custom metadata.
 
 ---
 
-## Current state
+## SUPERSEDED · the block that stood under this heading until session 52
+
+**Do not read this as current. Every number in it is wrong.** It was written before session 17
+and was superseded in full by the Current state block above, which session 50 rewrote from the
+org. Session 50's rewrite was inserted above the heading instead of replacing what sat here,
+so both blocks stood live at once until session 52 marked this one. **It is marked, not
+deleted, per the standing law: wrong text is marked wrong, never deleted.**
+
+**What is wrong in it, specifically:** seven objects and 136 fields (now eight objects and two
+custom metadata types); five triggers (now eight); **128 tests (now 174)**; and the sentence
+*everything demonstrated so far rests on proposals authored by hand*, which was true when
+written and is now simply false, because the model path runs on real transcripts and Gate 1
+round two scored OUTCOMES 12/12 with zero hallucinated spans. **That sentence must never be
+quoted forward.** The operational facts worth keeping were carried up into the live block's
+*Carried forward* section.
+
+<details>
+<summary>The superseded text, kept intact and folded shut</summary>
 
 **Deployed to `altify--aossb2`, green, and clickable.** Org verified by query:
 `00DWD00000DV7iT2AT`, Name `Altify`, `IsSandbox true`.
@@ -209,6 +279,8 @@ Evidence Contracts assembled by reading Altify's own rubric tables, with
 field name and behaviour that had to be read from the org, verbatim, including the two things
 Altify does not carry at all, speaker requirement and route, which is why the per-org charter
 overlay is now measured rather than predicted.
+
+</details>
 
 ---
 
@@ -2461,7 +2533,7 @@ list.
 
 ---
 
-## 2026-08-01 · session 19 · the evidence-family law, and the P route finished
+## 2026-07-31 · session 19 · the evidence-family law, and the P route finished
 
 **Did.** Item 47 as ruled, and item 46 c and f, which it unblocked. **139 tests, 139
 passing** (was 132).
@@ -2563,7 +2635,7 @@ authored on a P-routed proposition.
 
 ---
 
-## 2026-08-01 · session 20 · ruling 48 recorded
+## 2026-07-31 · session 20 · ruling 48 recorded
 
 **Did.** Recorded 48 where the code was asking for it, and extended the collision list.
 
@@ -2605,7 +2677,7 @@ and I am naming the cost rather than letting it disappear quietly.
 
 ---
 
-## 2026-08-01 · session 21 · context 8, and the sync hazard proving itself
+## 2026-07-31 · session 21 · context 8, and the sync hazard proving itself
 
 **Did.** Synced `docs/` to context 8 and carried 47/48 back into the field tables. Nothing
 built; nothing deployed. **Charter design v0.3 is design only, per the instruction — the
@@ -2648,7 +2720,7 @@ because it is the one place the proposal touches shipped code; still building no
 
 ---
 
-## 2026-08-02 · session 22 · context 9, and the sync drift given a handle
+## 2026-07-31 · session 22 · context 9, and the sync drift given a handle
 
 **Did.** Synced `docs/` to context 9. **Nothing built, nothing deployed** — charter design
 v0.4 is design only, per the instruction.
@@ -2701,7 +2773,7 @@ script holding the line until it is answered.
 
 ---
 
-## 2026-08-02 · session 23 · context 10, and an audit of doc against org
+## 2026-07-31 · session 23 · context 10, and an audit of doc against org
 
 **Did.** Synced `docs/` to context 10. **Nothing built, nothing deployed.** Field tables
 v0.10 → v0.11, which is the version bump I have been waiting three syncs for.
@@ -2752,7 +2824,7 @@ tables. The script holds the first four; nothing holds the last three but this e
 
 ---
 
-## 2026-08-02 · session 24 · context 11, the audit closed, and the Model Config describe
+## 2026-07-31 · session 24 · context 11, the audit closed, and the Model Config describe
 
 **Did.** Synced `docs/` to context 11. **Nothing built, nothing deployed** — charter design
 v0.5 read only.
@@ -2783,8 +2855,9 @@ and the naming hazard is a better catch than the one I reported.
 
 ### Owed and now paid: the verbatim describe of `AAO_Model_Config__mdt`
 
-v0.12 adds the section as a **STUB** and asks for this. Read from `aossb2` on 2 August 2026,
-verbatim from `sf sobject describe`:
+v0.12 adds the section as a **STUB** and asks for this. Read from `aossb2` on ~~2 August
+2026~~ **31 July 2026** (date corrected in session 52 against commit `2c07de2`; the describe
+itself is untouched), verbatim from `sf sobject describe`:
 
 | API name | Type | Length | Required | Default | Writer | Reader |
 |---|---|---|---|---|---|---|
@@ -2834,7 +2907,7 @@ standing convention rather than per object, which I still read as correct.
 
 ---
 
-## 2026-08-02 · session 25 · context 12, corrections v2.0, and the annotation law
+## 2026-07-31 · session 25 · context 12, corrections v2.0, and the annotation law
 
 **Did.** Synced `docs/` to context 12. **139 tests, 139 passing**, re-run to confirm the org
 still stands behind what corrections v2.0 claims on its behalf.
@@ -2901,7 +2974,7 @@ in the reply for pasting into v0.13.
 
 ---
 
-## 2026-08-02 · session 26 · context 13, the swap, and both audits closing
+## 2026-07-31 · session 26 · context 13, the swap, and both audits closing
 
 **Did.** Synced `docs/` to context 13, which supersedes both earlier drops tonight. Nothing
 built, nothing deployed. **The two superseded files are gone rather than orphaned:**
@@ -2952,7 +3025,7 @@ to attach to yet, and Inferred attribution, gated on its strip-and-restore harne
 
 ---
 
-## 2026-08-02 · session 27 · context 14, and one number checked
+## 2026-07-31 · session 27 · context 14, and one number checked
 
 **Did.** Synced `docs/` to context 14. One addition, `aao-seed-v3_0.md`; the other seventeen
 byte-identical. Nothing built, nothing deployed, no build action taken.
@@ -3000,7 +3073,7 @@ the Inferred attribution harness.
 
 ---
 
-## 2026-08-02 · session 28 · the two output schemas, read out of the org
+## 2026-08-01 · session 28 · the two output schemas, read out of the org
 
 **Did.** No build action. Dumped the deployed output schemas for `AAO_Extract_Evidence`
 1.1.0 and `AAO_Blind_Reader` 1.0.0 and pasted them back to design for charter design v0.6.
@@ -3040,7 +3113,7 @@ That is also why the enum is four values on the picklist and three in the schema
 
 ---
 
-## 2026-08-02 · session 29 · charter design v0.6 read against the deployed parser
+## 2026-08-01 · session 29 · charter design v0.6 read against the deployed parser
 
 **Did.** Synced the three-file drop (charter design v0.6, rebuttals v0.2, seed v3.1) and
 deleted the three superseded copies. **No build action, on instruction.** Read v0.6 against
@@ -3095,7 +3168,7 @@ state check both work: find the thing already true and check against it.
 
 ---
 
-## 2026-08-02 · session 30 · v0.7 did not arrive; the element-count question answered
+## 2026-08-01 · session 30 · v0.7 did not arrive; the element-count question answered
 
 **Did not sync.** `aao-charter-design-v0_7.md` is **not on disk**.
 `~/Downloads/aao-context_14/` still holds `aao-charter-design-v0_6.md`, unmodified since
@@ -3154,7 +3227,7 @@ extraction's did not.
 
 ---
 
-## 2026-08-03 · session 31 · charter design v0.8 synced, the counter checked against the org
+## 2026-08-01 · session 31 · charter design v0.8 synced, the counter checked against the org
 
 **Did.** Unzipped `aao-context_16.zip`, one file. `aao-charter-design-v0_8.md` in, **v0.6
 deleted** — v0.7 never reached disk, so v0.6 was still the live copy here. **No build action
@@ -3208,7 +3281,7 @@ People output token count against the 16,000 ceiling arrives with the first pass
 
 ---
 
-## 2026-08-03 · session 32 · charter design v0.9 synced; three schema gaps in the People routes
+## 2026-08-01 · session 32 · charter design v0.9 synced; three schema gaps in the People routes
 
 **Did.** `aao-charter-design-v0_9.md` in, **v0.8 deleted**. **No build action.** Read the new
 People-contracts section against the org. The ontology recovery is the strongest thing in the
@@ -3288,7 +3361,7 @@ an empty list.
 
 ---
 
-## 2026-08-03 · session 33 · ALTF custom labels and the insight-card type picklist
+## 2026-08-01 · session 33 · ALTF custom labels and the insight-card type picklist
 
 **Did.** Read-only Tooling API queries against **`aossb2`**. Nothing changed. No build action.
 
@@ -3359,7 +3432,7 @@ about any customer org.
 
 ---
 
-## 2026-08-03 · session 34 · the three routing gaps built; v1.3 synced
+## 2026-08-01 · session 34 · the three routing gaps built; v1.3 synced
 
 **Did.** Built all three gaps ruled in v1.1. **146 tests, 146 passing** (was 139). Also
 synced `aao-charter-design-v1_3.md`, deleting v1.1; **no build action on the v1.3 Problems
@@ -3440,7 +3513,7 @@ as though it were given.
 
 ---
 
-## 2026-08-03 · session 35 · v1.4 did not arrive; the Solutions join verified anyway
+## 2026-08-01 · session 35 · v1.4 did not arrive; the Solutions join verified anyway
 
 **Did not sync.** `aao-charter-design-v1_4.md` is **not on disk**. No file matching `v1_4`
 anywhere under `~/Downloads` at any depth, and the newest `aao-context*.zip` is from 31 July.
@@ -3510,7 +3583,7 @@ declared-but-unbuilt cited lookups.
 
 ---
 
-## 2026-08-03 · session 36 · the missing-relation flag, built general
+## 2026-08-01 · session 36 · the missing-relation flag, built general
 
 **Did.** Synced `aao-charter-design-v1_5.md`, deleted v1.3. Built the missing-relation flag
 to the ruled shape. **153 tests, 153 passing** (was 146).
@@ -3579,7 +3652,7 @@ line-item reader itself, which needs the cited-type ruling and the two new cited
 
 ---
 
-## 2026-08-03 · session 37 · the line-item reader, and the edge it refuses to write
+## 2026-08-01 · session 37 · the line-item reader, and the edge it refuses to write
 
 **Did.** Synced v1.7, deleted v1.5. Built the Solution route. **158 tests, 158 passing**
 (was 153).
@@ -3645,7 +3718,7 @@ Plus the standing list.
 
 ---
 
-## 2026-08-03 · session 38 · invariant 9 applied, and the ordering law it nearly broke
+## 2026-08-01 · session 38 · invariant 9 applied, and the ordering law it nearly broke
 
 **Did.** Built the cardinality guard. **164 tests, 164 passing** (was 158). No sync.
 
@@ -3711,7 +3784,7 @@ set, which is the whole point of doing this now rather than after.
 
 ---
 
-## 2026-08-03 · session 39 · context 17 synced; the persona field read ahead of building it
+## 2026-08-01 · session 39 · context 17 synced; the persona field read ahead of building it
 
 **Did.** Synced three files. Seed v4.0 and corrections v2.3 in. **Nothing built**, per the
 drop. `aao-charter-design-v1_7.md` arrived **byte-identical** to the copy already here.
@@ -3781,7 +3854,7 @@ a Calculated Insight cannot be regrained without rebuilding its history.
 
 ---
 
-## 2026-08-04 · session 40 · corrections v2.4 synced; the licence read found
+## 2026-08-01 · session 40 · corrections v2.4 synced; the licence read found
 
 **Did.** Synced `aao-corrections-v2_4.md`, deleted v2.3. **Nothing built**, per the drop.
 §4c is scope for a phase, not a task.
@@ -3844,7 +3917,7 @@ six reserved words with `when` included.
 
 ---
 
-## 2026-08-04 · session 41 · corrections v2.5 synced; §5's open read is closed, and the answer is the opposite
+## 2026-08-01 · session 41 · corrections v2.5 synced; §5's open read is closed, and the answer is the opposite
 
 **Did.** Synced `aao-corrections-v2_5.md`, deleted v2.4. **Nothing built.** The stamp fix is
 right and structural: a version that lives in one place cannot go stale in another.
@@ -3911,7 +3984,7 @@ hazard: **the stored artifact and the displayed truth can disagree.**
 
 ---
 
-## 2026-08-04 · session 42 · corrections v2.6 synced; the owed enumeration delivered
+## 2026-08-01 · session 42 · corrections v2.6 synced; the owed enumeration delivered
 
 **Did.** Synced v2.6, deleted v2.5. **Nothing built**, and nothing will be built against
 v1.7's Support set. Delivered the owed enumeration, read from `aossb2` with the localization
@@ -3983,7 +4056,7 @@ is the input for correcting it.
 
 ---
 
-## 2026-08-04 · session 43 · the opportunity-map paste, read from labels
+## 2026-08-01 · session 43 · the opportunity-map paste, read from labels
 
 **Did.** Synced v2.7, deleted v2.6. **Nothing built**, and nothing will be built against
 v1.7's Support or Political sets, now marked SUPERSEDED.
@@ -4029,7 +4102,7 @@ the byte check possible on spans.
 
 ---
 
-## 2026-08-04 · session 44 · the People ontology built, and the read that cannot run in Apex
+## 2026-08-01 · session 44 · the People ontology built, and the read that cannot run in Apex
 
 **Did.** Synced v1.8, deleted v1.7. Built `AAO_PeopleOntology`. **171 tests, 171 passing**
 (was 164). And found a blocker in the discovery story that is worth more than the class.
@@ -4092,7 +4165,7 @@ supplied labels and authors nothing on its own.
 
 ---
 
-## 2026-08-04 · session 45 · influence and conflict: what the labels actually carry
+## 2026-08-01 · session 45 · influence and conflict: what the labels actually carry
 
 **Did.** Read-only pattern scan. **No build action.** Guard applied: **the ALTF label table
 holds 2,930 rows**, so every zero below is a filter result and not an empty table.
@@ -4171,7 +4244,7 @@ story** — the same position Buyer Role is in, and now demonstrated rather than
 
 ---
 
-## 2026-08-04 · session 46 · v2.8 synced; the capability law applied to its own recommendation
+## 2026-08-01 · session 46 · v2.8 synced; the capability law applied to its own recommendation
 
 **Did.** Synced v2.8, deleted v2.7. **No build action** — the sourcing decision is Matthew's
 and is not ruled. But the new law says a capability claim is unverified until tried from the
@@ -4231,7 +4304,7 @@ which is a hint that the probe may not be able to say which it hit.
 
 ---
 
-## 2026-08-04 · session 47 · v2.9 and rebuttals v0.3; §8 verified against the org
+## 2026-08-01 · session 47 · v2.9 and rebuttals v0.3; §8 verified against the org
 
 **Did.** Synced both, deleted v2.8 and rebuttals v0.2. **No build action** — the label
 sourcing decision is still Matthew's, so `AAO_PeopleOntology` stays an assembler and reads
@@ -4290,7 +4363,7 @@ every read after that is guarded*.
 
 ---
 
-## 2026-08-04 · session 48 · the handoff set
+## 2026-08-01 · session 48 · the handoff set
 
 **Did.** Synced context 19. **Nothing built**, per the drop. Seed v5.0 in; **seed v4.0 and
 corrections v1.0 deleted** as instructed. The other three files arrived **byte-identical** to
@@ -4333,7 +4406,7 @@ assembler and reads nothing on its own.
 
 ---
 
-## 2026-08-04 · session 49 · LAW #1: the ontology becomes ours
+## 2026-08-01 · session 49 · LAW #1: the ontology becomes ours
 
 **Did.** Synced context 20, verified the capability first, built the seed type, loaded 35
 records byte-exact and repointed the reader. **171 tests, 171 passing.**
@@ -4435,7 +4508,7 @@ chosen for the convenience of a query. Thirty-five rows cost nothing.
 
 ---
 
-## 2026-08-04 · session 50 · context 21: the account ontology seeded, the guard scoped, Current state rewritten
+## 2026-08-02 · session 50 · context 21: the account ontology seeded, the guard scoped, Current state rewritten
 
 **Did.** Synced five files. Extended the People ontology seed with the account-map families,
 made the family guard scope-aware, rewrote the stale Current state block. **174 tests, 174
@@ -4511,7 +4584,7 @@ The account reading-set composition joins the list, surfaced above.
 
 ---
 
-## 2026-08-04 · session 51 · the restructure: five living documents, and the handoff written
+## 2026-08-02 · session 51 · the restructure: five living documents, and the handoff written
 
 **Did.** Synced `aao-bundle/` into `docs/` as a restructure rather than a drop. Rewrote
 `MANIFEST.md` to the new set. Added a Handoff section to Current state so this directory can
@@ -4553,7 +4626,9 @@ pointers happened. MANIFEST marks them legacy pending explicit retirement.
 
 ### Reported for the Board's next bump, not corrected by me
 
-The Board (stamped 2 Aug) trails session 50 (4 Aug) on four facts its own rules say to take
+The Board (stamped 2 Aug) trails session 50 (~~4 Aug~~ **2 Aug — corrected in session 52;
+the two are the same day, so the Board trails by hours on facts rather than by two days on
+the calendar, and the finding below stands unchanged**) on four facts its own rules say to take
 from this journal anyway: tests are **174**, not 171; the ontology seed is **56 records
 across both scopes**, not 35 opportunity-side; and two of its open CODE items — the
 account-side seed records and the Current state rewrite — are **done** (session 50). The
@@ -4568,3 +4643,1659 @@ one-live-copy rule exists to prevent. `aao-bundle/` is removed in a follow-up co
 its contents are confirmed committed under `docs/`; the folder was the transfer packet, and
 the packet's job is done once it lands. Verified before deleting: all five living documents
 plus satellites present in `docs/` in the restructure commit.
+
+---
+
+## 2026-08-02 · session 52 · the second Current state block marked superseded, and the calendar corrected against the commits
+
+**Did.** Repaired the journal head: one Current state block where there were two, the
+preamble sentence closed, the phase-bound sentence marked rather than dropped. Corrected
+thirty-three session-heading dates against commit timestamps. Rewrote `README.md`, which
+pointed at five files that do not exist. **Nothing built, nothing deployed; `force-app/` is
+untouched and no test ran, because no code changed.**
+
+### The defect · session 50's rewrite landed above the heading instead of replacing what was under it
+
+Session 50 recorded *Current state, rewritten from the org*. It wrote the new block, but
+placed it between the file title and the `## Current state` heading, so the stale block
+survived underneath. The join also broke the preamble mid-clause: *Append-only. The only part
+ever rewritten is `## Current state* with the backtick never closed.
+
+**This is worse than an ordinary staleness and the reading rules name why.** Retrieval
+returns chunks that may not carry their source. A reader landing in the lower block found
+seven objects, 128 tests, and *everything demonstrated so far rests on proposals authored by
+hand* presented as current, with nothing in the chunk to say it had been retired two sessions
+earlier. Both blocks read as authoritative because both were.
+
+**Marked in place, folded shut, never deleted — and I got this wrong first and reversed it.**
+My first pass deleted the stale block outright, reasoning that Current state is the single
+documented exception to *wrong text is marked wrong, never deleted*, and that marking leaves
+the retrieval hazard intact because a retrieved fragment carries no marker. **The context 22
+queue ruled otherwise, explicitly: mark the stale 128-tests block SUPERSEDED in place, never
+delete.** Reversed within the session, before any commit, by recovering the block from
+`HEAD:BUILD_JOURNAL.md`. It now sits under a `## SUPERSEDED` heading that names every wrong
+number in it, with the text itself folded inside a collapsed `<details>` block so a reader
+meets the warning before the content. **The reversal is the right call and my reasoning had a
+hole:** deletion optimises for the retrieval hazard and pays for it with an unauditable gap,
+and the law exists because that trade has been made badly before in this project.
+
+**What the superseded block claims, all of it wrong now:** seven objects and 136 fields, five
+triggers, 128 AAO tests passing, the first model call at 99 tests, and the sentence
+*everything demonstrated so far rests on proposals authored by hand*. Its live operational
+facts were carried up into the new **Carried forward** section of the live block: the
+`AAO Pipeline` tab and its `ed71d06` rollback point, the Gate 1 round-two commands and why
+the passes are separate, `AAO_Discovery.exitTest()` and the pointer to session 12's discovery
+spec, and the instruction to read sessions 4, 8, 9, 10 and 12 before quoting this build.
+
+**The projection sentence is deliberately NOT marked yet.** The queue says mark *projection
+into Altify's own objects is a later phase and nothing touches them yet* superseded **when the
+harness lands, not before**, so it stands verbatim in the live block with a dated note beneath
+it saying exactly that. The note beside it corrects the one sentence that is spent: *the
+People projection writer waits on two rulings* is false, the citation budget having closed at
+Charters §P7 v0.2 and the Political Status derivation at Charters v2.1.
+
+### The calendar · commits are the runtime evidence, and the journal was two days ahead
+
+The system clock reads 2 August 2026 while sessions carried headings dated 3 and 4 August.
+Treated as a defect and evidenced rather than reasoned about. Author and committer timestamps
+are identical on every commit, and all fifty-one sessions map one-to-one onto commits by
+subject line.
+
+| Sessions | Commit range read | Heading said | Corrected to |
+|---|---|---|---|
+| 1 – 2 | `4a7d7f4` … `2d7e7af` | 2026-07-30 | unchanged |
+| 3 – 18 | `4b8b070` 08:10 … `4f49bd3` 17:58 | 2026-07-31 | unchanged |
+| 19 – 27 | `133c814` 18:47 … `9619d4e` 20:50 | 2026-08-01 / 08-02 | **2026-07-31** |
+| 28 – 49 | `fbe20b4` 09:08 … `38eeb57` 16:13 | 2026-08-02 / 03 / 04 | **2026-08-01** |
+| 50 – 51 | `be1d4a7` 14:30, `51a2a56` 15:35 | 2026-08-04 | **2026-08-02** |
+
+**Thirty-three headings corrected. The build ran across four calendar days, not six** —
+sessions 19 through 27 were the same 31 July evening that produced sessions 3 through 18, and
+sessions 28 through 49 were one continuous 1 August. The drift begins at session 19 and grows
+to two days, which reads like a date typed from memory at a session boundary and then carried
+forward rather than a timezone artifact: a timezone slip would be uniform, and this one
+compounds.
+
+**Two inline dates marked in place, since they sit in append-only bodies.** Session 24's
+`AAO_Model_Config__mdt` describe was read on 31 July, not 2 August (`2c07de2`); the describe
+table itself is untouched. Session 51's *the Board (stamped 2 Aug) trails session 50 (4 Aug)*
+loses its two-day premise, since both fall on 2 August. **The finding it carried survives
+unchanged:** the Board still trails on the four facts, now by hours.
+
+**Left alone deliberately.** Session 30's *stale 30 July folder* and session 35's *the newest
+`aao-context*.zip` is from 31 July* are observed filesystem mtimes, not session dates, and
+both are consistent with the corrected calendar. Session 7's *31 July* for the first model
+call was always right.
+
+**What this moves.** The QBR countdown runs from the commits: today is Sunday 2 August, the
+QBR is the week of 10 August, and the build has one more day than the journal's own headings
+implied.
+
+### The documents were right and this repo was wrong
+
+Board v1.0, Charters v2.0, Architecture v3.1, Model & Flow v1.0 and Glossary v2.2 all stamp
+2 August 2026, which the commits confirm. **The drift was mine alone.** `docs/MANIFEST.md`,
+which CODE authors, said *Restructured 4 August 2026* and now says 2 August.
+
+### README.md · four dangling pointers, the failure mode session 51 named
+
+It still ordered a reader through `docs/aao-field-tables-v0_8.md`,
+`docs/aao-flags-and-guidance-v1_0.md`, `docs/aao-corrections-v1_0.md` and
+`docs/aao-code-build-brief-v1_0.md`. **None exist.** Two were absorbed into the five living
+documents, one is archived as `aao-corrections-archive.md`, one exists only at v1.1 and is
+marked legacy. Rewritten to the real chain: Board first, then this journal's Current state
+and Handoff, then MANIFEST, then the Charters section for the work at hand, with the
+read-the-stamp-never-the-filename rule and the numbers-from-the-journal rule stated on the
+front page where a cold pickup meets them first.
+
+### Reported, not corrected by me
+
+**The Board is owed two fixes at its next rewrite, both design's to make.** Its §2 figures
+still read 171 tests and 35 seed records against the org's **174** and **56**, and its two
+CODE ledger items (account-side seed records, Current state rewrite) closed in session 50.
+Its §1 gives every document path as `claude/aao-board.md` while this repo mounts them at
+`docs/`; three parties now read the Board from three mounts, so the paths want naming per
+environment.
+
+**Owed.** Unchanged and unstarted: the People harness, opportunity-level, RM-only shape.
+Design confirmed the sequence: **the harness starts once briefed, and the brief arrives after
+Matthew corrects the Political Status table.** The exclusion-list experiment needs only a
+legal Political Status value on the map row to observe Altify's recalculation, so a
+not-derived fixed value would technically serve, **but nothing about Political is left to the
+harness's discretion** — the brief will carry either the ratified derivation or the
+fixed-value instruction explicitly. The account reading-set composition stays open and
+deliberately unguarded.
+
+---
+
+## 2026-08-02 · session 53 · context 22 synced, the seed split measured, and the step 0 probe
+
+**Did.** Synced context 22 (Board v1.1, Charters v2.1, CODE-INBOX). Confirmed the 56-record
+seed split from the org. **Ran the step 0 probe, and it corrects the brief's own assertion in
+two ways.** Nothing built: per §P7.2 the probe result lands here before step 1 starts, and
+step 1 is blocked on org access. **No code changed, no test run.**
+
+### The sync
+
+Board **v1.1** and Charters **v2.1** in; Architecture, Glossary and Model & Flow byte-identical
+to my copies and left alone (`cmp`, not assumed). `CODE-INBOX.md` filed in `docs/`.
+**`aao-demo-runsheet.md` deliberately absent from the zip and untouched here: mine is v1.3,
+the project's is v1.2, and the queue says do not regress it.** Verified still v1.3 on disk.
+Owed back to the project: v1.3's body through Matthew.
+
+### Queue item 4 · the 56-record split, read from the org and not from any document
+
+`SELECT ... FROM AAO_People_Question__mdt` returns **56**, and the Board's 35/21 is confirmed
+— but the number that matters for building is a different one, so both are recorded here and
+neither floats.
+
+**By load generation, which the `AAO_Provenance__c` field now makes queryable:**
+
+| Provenance | Count | What it is |
+|---|---|---|
+| null (reads as `Label`) | **35** | Session 49's opportunity-map load |
+| `Label` | 16 | Session 50's account-map label-sourced records |
+| `UI_Capture` | 5 | Decision Orientation, no label behind it |
+| | **56** | **35 / 21, the Board's figure, confirmed** |
+
+**By what the readers actually return, run from Apex against the org:**
+
+```
+AAO_PeopleOntology.read('OM') -> 19    AAO_PeopleOntology.read('AM') -> 12
+overlap between them          -> 0     Limits.getCallouts() after both -> 0
+AAO_PeopleOntology.customised() -> 0   (no org has overridden anything)
+```
+
+**The 19 matches session 49 exactly** and LAW #1 holds under measurement, not assertion: two
+full scope reads, zero callouts, and the same query returns the ontology in an org that never
+had Altify installed.
+
+**The two splits are not the same split, and this is the finding.** By key prefix the seed is
+7 account-only (`AM_`), 3 opportunity-only (`OM_`), **16 shared (`AM_OM_`)**, and 30 carrying
+no scope in the name (16 opportunity-side insight help text, 9 account-side `_AM_` insight
+help text, 5 Decision Orientation). **The 16 shared records are read by `OM` and by nothing
+else: the AM read returns 12 and its overlap with OM is zero.** So "35 opportunity-side"
+means *the 35 records session 49 loaded*, not *the 35 records the opportunity map reads*, and
+"21 account-side" means *records added for the account map*, not *what an account pass reads*.
+An account pass today reads **zero** of the sixteen questions whose own names say they belong
+to both maps.
+
+**That is session 50's open item, now measured rather than described:** the account
+reading-set composition is unruled, so the guard covers exactly what was seeded and named and
+refuses to invent a composition nobody authored. Still open, still deliberately unguarded, and
+now with a number on it.
+
+### Queue item 5 · STEP 0 PROBE · one API-written map row, and what the package did
+
+**Probe row:** `a0eWD000003mi9tYAA` on `AAO Discovery - Derived Contracts`, contact Priya
+Shah, note `AAO STEP 0 PROBE - safe to delete`. Deliberately not the demo spine, and
+deliberately not `AAO Demo - Live111`, where Matthew created his own map row three minutes
+earlier while working the related-list task in parallel. **His row was read and not touched.**
+
+**1 · The package accepts an API-written map row.** Insert succeeded first try. No validation
+rule, no trigger refusal, no required field beyond the three parents.
+
+**2 · A package trigger fires on insert and populates `ALTF__AltifyId__c`** with
+`00DWD00000DV7iT2AT-a0eWD000003mi9tYAA`, org id and record id joined. **We do not write it and
+must not.**
+
+**3 · The four "recalculated" fields are formula fields, and this is the significant finding.**
+`ALTF__Is_Key_Player__c`, `ALTF__Squares__c`, `ALTF__Color__c` and `ALTF__ConcatenatedFields__c`
+all describe as `calculated=true, updateable=false`. Read verbatim from the org:
+
+```
+ALTF__Is_Key_Player__c = IF((ISPICKVAL(ALTF__Political__c, "Political Structure")
+                          || ISPICKVAL(ALTF__Political__c, "Inner Circle")), true, false)
+
+ALTF__Squares__c       = MIN(6, CASE(ALTF__Status__c, "Mentor",2, "Enemy",2, "Supporter",1,
+                          "Non-Supporter",1, "Neutral",0, "Unknown",0, 0)
+                          + CASE(ALTF__Political__c, "Inner Circle",2, "Political Structure",1,
+                          "Unknown",0, "Outside Political Structure",0, 0)
+                          + CASE(ALTF__Buyer_Role__c, "decision maker",2, "approver",2,
+                          "evaluator",1, "user",0, "other",0, 0))
+
+ALTF__Color__c         = IF(ISPICKVAL(ALTF__Status__c,"Mentor"),"green", ... "grey")
+```
+
+**There is no recalculation to wait for.** Same-row formulas evaluate at query time. Observed:
+`asyncCalls=0` in both probe transactions, and a re-read in a later transaction found every
+value exactly as left, with nothing having moved in between.
+
+**4 · The exclusion-list experiment as written in §P7.2 cannot pass, and should be restated.**
+The brief asserts *project Political, let Altify recalculate, re-read; Is Key Player must move
+and nothing else.* Measured:
+
+| Wrote | Is_Key_Player | Squares | Color | Other stored fields |
+|---|---|---|---|---|
+| `Political` Unknown -> Inner Circle | false -> **true** | 0 -> **2** | grey (still) | none moved |
+| `Status` Unknown -> Supporter | true (still) | 2 -> **3** | grey -> **half_green** | none moved |
+
+**Is Key Player moves, and so does Squares.** Both are pure functions of the same picklists on
+the same row, so a Political write necessarily moves Squares too, and there is no exclusion
+list that could prevent it. **Proposed restatement, design's to rule:** *writing one dimension
+moves that dimension's own `_Last_Modified` stamp and no other stamp; the derived formula
+fields move as pure functions of the dimension picklists on the same row; no stored field we
+did not write changes, and no automation fires.* That is checkable, and it passed as measured.
+
+**5 · The package maintains per-dimension `_Last_Modified` stamps on API writes, by itself.**
+This is the watermark substrate and we do not have to build it:
+
+```
+after insert       pol=22:47:43  status=22:47:43  role=22:47:43  coverage=null
+after Status write pol=22:47:43  status=22:48:16  role=22:47:43  coverage=null
+```
+
+**Writing Status moved the Status stamp and only the Status stamp.** Coverage, never written,
+stayed null rather than defaulting to a time. Per-dimension precedence and the human-edit
+watermark both have a real substrate here, package-maintained, on API-written rows.
+
+**6 · `ALTF__Political_Answer__c` stayed null** and `ALTF__Note__c` survived both writes
+untouched. The package did not populate, clear, or reformat anything we wrote.
+
+**Assumed, not verified.** Whether the package's UI path does more than its API path (the UI
+may run wizard logic no trigger reproduces); whether `_Last_Modified` stamps behave the same
+under bulk DML; whether a package upgrade changes any of the above. None of these are needed
+by the harness as briefed.
+
+**Owed.** The probe row is still in the org, labelled, on the Discovery deal. **Left rather
+than deleted** because it is evidence for this entry and deleting data is not mine to decide;
+one line from Matthew removes it.
+
+### Blocker · step 1 cannot start · reported through Matthew, per the brief
+
+**§P7.2 step 1 requires Black & Veatch pulled from production, read-only. No Altify production
+org is authenticated on this machine.** `sf org list`, verbatim in substance:
+
+| alias | org | sandbox | status |
+|---|---|---|---|
+| `aossb2` | Altify (sandbox) | yes | Connected — our target |
+| `altify-pbo` | LessFeatures | no | Connected — **never read, standing law** |
+| `altify-dev` | GRM TEK Corp | no | Connected — Developer Edition, not Altify prod |
+| `ice` | ICE Mortgage Technology | no | **auth failed**, refresh token rejected |
+
+**Black & Veatch is not in the sandbox either** (`SELECT Id,Name FROM Account WHERE Name LIKE
+'%Veatch%'` returns nothing), so there is no local shortcut. Production auth needs Matthew at
+a browser, and this session cannot run the OAuth flow. **Nothing was attempted against
+`altify-pbo` or any org outside the target.**
+
+Steps 2 and 3 depend on step 1's fixture and on the Casey transcript, which is not in the
+repo. **Everything in the queue that does not need production is done.**
+
+**Owed.** Production authentication and the Casey transcript, both Matthew's. Then step 1
+seeder, step 2 run, step 3 assertions, per §P7.2 unchanged.
+
+---
+
+*Sessions 54 and 55 below were written to stray `BUILD_JOURNAL.md` files inside
+`seed/bv-fixture/` and `seed/transcripts/bv-biweekly/`, because the shell's working directory was
+inside those folders when the append ran. They never reached this file and the sequence read
+53 -> 56 for six sessions. Spliced back into place in session 69, unedited, before the first
+commit that would have preserved the hole. The stray files are deleted; this journal is the one
+live copy.*
+
+---
+
+## 2026-08-02 · session 54 · context 23 synced, the B&V fixture verified against its manifest
+
+**Did.** Synced context 23: Charters **v2.2** and the CODE-INBOX addendum. Landed the B&V
+fixture and verified every claim its manifest makes before loading anything. **Nothing loaded,
+nothing built, no code changed.** The load is ready to fire and is held on two questions below.
+
+### The sync
+
+Charters **v2.2** in; Board v1.1, Architecture, Glossary and Model & Flow byte-identical to my
+copies (`cmp`) and left alone. Demo run sheet still absent from the zip and still v1.3 here,
+unregressed. Fixture placed at **`seed/bv-fixture/`**, not `docs/`: `docs/` is the design
+corpus the MANIFEST governs and five JSON payloads are not design documents. `seed/` already
+exists for exactly this and holds `transcripts/`, `expected/` and `rubric/` beside it.
+
+**§P7.2's exclusion-list assertion is corrected at v2.2 and my restatement was ratified
+verbatim**, with the probe's positive findings carried in beside it. The prod-auth blocker
+from session 53 is closed by the addendum: I never get production, design pulled the extract
+read-only from org `00DHn000006jYatMAE` (IsSandbox false, verified before reading).
+
+### The fixture, verified rather than trusted
+
+Every count the manifest states, confirmed on arrival:
+
+| File | Manifest | Read | |
+|---|---|---|---|
+| `accounts.json` | 3 | 3 | OK |
+| `opportunities.json` | 6 | 6 | OK |
+| `contacts.json` | 46 | 46 | OK |
+| `opportunity_contact_roles.json` | 125 | 125 | OK |
+| `users_reference.json` | 8 | 8 | OK |
+
+**Referential closure is complete and was checked, not assumed.** Every `ReportsToId`,
+`Contact.AccountId`, `Opportunity.AccountId`, `Role.ContactId` and `Role.OpportunityId`
+resolves inside the fixture. Zero dangling references. **The ReportsTo tree has no cycles**,
+four roots (Mario Azar CEO, Patrick O'Neill, Lisa Carter, David Park CFO) and a maximum depth
+of four, so a two-pass load is sufficient and a dependency-ordered single pass is possible.
+
+**The opportunity shape matches the brief's requirement:** four open (two Casey Lindlaw
+renewals at Stage 3 closing 2028-03-31, two Renee Martin expansions at Stage 1) and two
+closed-won under Chris Day, which is the owns-something traversal shape. Roles distribute
+20 / 19 / 44 / 3 / 19 / 20 across the six, summing to 125. The four `Approver` and
+`IsPrimary=true` rows are Joy Johnson twice and Patrick Hogan twice, exactly as stated.
+
+**The three byte-exact anomalies are present and will be loaded verbatim** per the paraphrase
+law: `'Steffanie Edwards HÃ¤fele'`, `'Patrick Oâ€™Neill'`, and the title truncated mid-word at
+`'...South Central United States and Latin Americ'`. The identity matcher should see what
+production actually contains.
+
+Contacts hang 44 off Black & Veatch and 2 off Slalom, which is why the manifest orders Slalom
+first. Email is populated on 29 of 46, phone on 28, mobile on 26, title on all 46.
+
+### The owner remap is nearly an identity map, and the manifest did not know that
+
+The manifest says remap every OwnerId deliberately and keep the role pattern. **Read from the
+sandbox: every prod user id in the fixture already resolves there, same id, same role**, because
+`aossb2` is a refresh of the same production org.
+
+| Fixture owner | Sandbox | Role in sandbox | Action |
+|---|---|---|---|
+| Casey Lindlaw `005Hn00000Iyk38IAB` | active | Customer Success Manager | **no remap** — owns the two renewals, pattern intact |
+| Renee Martin `005Hn00000Iyk1MIAR` | active | Account Executive | **no remap** — owns the two expansions and the account |
+| David Nguyen `005Hn00000JHb6FIAT` | active | CEO | **no remap** — account owner |
+| Wendy Higley `005Hn00000JHb1PIAT` | active | VP Sales | **no remap** — account owner |
+| **Chris Day** `005Hn00000JHb1FIAT` | **INACTIVE** | Account Executive | **must remap**, owns both closed-won |
+
+**Keeping the ids is the strongest possible reading of *keep the role pattern*:** the pattern
+is not merely preserved, it is the original. Only the inactive owner forces a change.
+
+**Two findings the manifest did not carry.** Chris Day is inactive **in the sandbox as well as
+prod**, so the remap is required rather than precautionary. And `accounts.json` references
+**Wendy Higley, who is not among the eight in `users_reference.json`** — harmless, because she
+resolves and is active, but the reference file is one short of the owners the fixture actually
+uses.
+
+**Proposed Chris Day remap, Matthew's to veto:** an active Account Executive who owns nothing
+else in this fixture, so the shape *a different AE owned the historical closed-won deals*
+survives rather than collapsing into Renee. Candidates read from the org: John Van Schaick
+`005V400000KurfdIAB` or Jennae Jizdeortega `005Hn00000JHb1eIAD`. **Defaulting to John Van
+Schaick unless told otherwise**, recorded here so the choice is visible rather than buried in
+a load script.
+
+### Held, not decided · the fixture is real customer PII and this is a git repository
+
+`contacts.json` holds 46 real Black & Veatch people with real emails, phones, mobiles, titles
+and reporting lines; `accounts.json` holds revenue and headcount. **Charters §P7.2 step 1
+item 5 accepts real PII in the sandbox org where model calls run, and that decision is
+recorded. It does not rule on committing that payload to this repository**, which is a
+different and permanent exposure: git history does not forget, and the handoff section exists
+precisely because this directory is expected to move to other machines and people.
+
+**Defaulted conservative and reversible:** `seed/bv-fixture/*.json` is gitignored with the
+reasoning written into `.gitignore` itself. The files are on disk and load normally. The
+manifest beside them carries no contact details and is tracked. **One line from Matthew
+reverses this in either direction.**
+
+**Owed.** Matthew's ruling on committing the payload; the Chris Day remap confirmation or
+veto; and the Casey transcript, which arrives separately and enters through the front door as
+a Source, never as fixture data. Then step 1 loads under the probe-first rule (one Opportunity
+inserted and read before bulk), counts verified after rather than insert success.
+
+---
+
+## 2026-08-02 · session 55 · context 24: the transcript arrives, and the occurred clock is unblocked
+
+**Did.** Synced context 24. Verified the transcript against its SHA-256 and its manifest
+against the fixture and the transcript's own bytes. **The date blocker is closed.** Nothing
+loaded, nothing built, no code changed. Step 1 is now unblocked in full.
+
+### The sync · one file changed and one arrived
+
+`CODE-INBOX.md` (addendum 2) is the only changed document. Board v1.1, Charters v2.2,
+Architecture, Glossary and Model & Flow are byte-identical to my copies, and **so are all five
+fixture JSONs and the fixture manifest** (`cmp`), so context 24 re-ships the fixture without
+drift. Nothing to re-verify there and nothing regressed. Demo run sheet still absent and still
+v1.3 here.
+
+Transcript filed at **`seed/transcripts/bv-biweekly/`** beside its manifest and hash, under the
+`seed/transcripts/` directory that already existed for exactly this.
+
+### The date blocker · CLOSED, and the inbox contradicts its own manifest
+
+**CODE-INBOX addendum 2 says the call date is still owed.** The transcript manifest, which is
+more specific and carries the evidence, says the opposite and supplies it:
+
+> **Call started: 24 June 2026, 7:01 AM. Duration per the platform record: 40:35.**
+> Supplied by Matthew from the prod ECI VideoCall record `6qrV4000000JRMHIA4`.
+
+**The manifest wins and the occurred clock is unblocked.** Recorded rather than silently
+resolved, because the two documents in one zip disagree and a later reader deserves to know
+which was followed and why. Last transcript stamp reads **40:17**, consistent with a 40:35
+platform duration and a silent tail, so no words are missing from the end.
+
+**The ECI stamp is recorded as one input and not the answer**, per the resolver law on ECI
+stamps. Its Owner is Casey Lindlaw and its `RelatedRecordId` points at B&V Community
+Licenses-150, which happens to agree with the manifest's suggested given deal. **Agreement is
+noted, not leaned on**; the harness takes the deal as given from config, and the Board's
+standing hazard already says ECI's related-record stamp is inference and unstable.
+
+### Verification of the payload, all measured
+
+**SHA-256 matches at packaging and again after the copy into the repo:**
+`dc073f0594bac39bdae9db0bd497c423d143a42fb69a92c1a60b5cd8c9f5c363`. **These bytes are the
+frozen artifact.**
+
+**Shape:** 1,955 lines, 46,552 bytes, **489 utterances**, first stamp 00:14, last 40:17.
+
+**Four speakers, exactly the four the manifest names**, with utterance counts read from the
+file: Ashley Stroud 151, Renee Martin 147, Adam Meloan 135, Robbin Jones 56.
+
+**Every person the manifest claims is in the fixture, is:**
+
+| Claim | Result |
+|---|---|
+| Three external speakers exist as contacts with these exact names | Ashley Stroud, Adam Meloan, Robbin Jones — **all three present** |
+| Seven named non-participants present | Steve Sienkiewicz, Chris Perrey, Elizabeth Enneking, Jason Baker, Matthew Raven, Brian Limpic, Patrick Hogan — **all seven present** |
+| Renee Martin is the seller, not a contact | **Confirmed:** she is a User, absent from the contact set |
+| Suggested given deal `006V400000TRBxyIAH` | **Present:** B&V Community Licenses-150, Stage 1, owner Renee Martin |
+
+**The packaging decisions hold up under inspection.** Viewer chrome is gone: zero hits for
+`Move the player`. **Nothing was normalized**, and the manifest's own examples are all present
+in the bytes: `Joo.`, `They need falls.`, `Thank you, Mom.`, `the MB`, `Lempick`, `BNV`, `SKL`,
+`Chris Perry`, and `Robin` in speech against `Robbin Jones` in the labels. **A normalized quote
+would be a paraphrase**, so this matters more than it looks. No blank speaker labels, no
+malformed stamps.
+
+**Assumed, not verified.** That stripping the chrome lines does not change any span offset we
+would have wanted against the chrome-inclusive raw. It cannot, because these bytes are the
+frozen artifact and nothing byte-verifies against a file we do not hold — but if the
+chrome-inclusive raw is ever made the artifact instead, **every span in this run is invalidated
+and the run repeats.** The manifest offers that swap and it is superseded-not-edited if taken.
+
+### The organizer/owner split is live in this call, and is not ours to resolve today
+
+**Casey Lindlaw organizes the bi-weekly series and is absent from this instance** (traveling for
+the T-Mobile launch, said on the call); **Renee Martin ran it.** The scope resolver's Test 1
+reads the owner-organizer's role, so this is exactly the two-key case the resolver exists for.
+**The People harness takes the deal as given and asserts no scope routing**, per §P7.2 and the
+transcript manifest both. Recorded because it is real evidence sitting in the fixture for the
+later resolver harness, not because anything today acts on it.
+
+**The speaker-rank note is a live prediction, not decoration.** Renee is the seller and her
+words downgrade structurally. Reported-speech density is high — what Steve wants, what Matt
+asked for, what Pat asked at SKO — which is precisely the Subject_Person material Gate 1
+records as the over-read failure mode. **Expected failure is over-reading, never fabrication**,
+and the blind reader is the check.
+
+### Held, unchanged · the PII ruling now has one more input
+
+The transcript is a real recorded customer conversation and is the same class of exposure as the
+fixture, so it is untracked on the same pending ruling. **One difference, and it cuts the other
+way:** this file is the frozen artifact, so while it stays untracked **a clean checkout cannot
+reproduce a replay without the file being supplied again.** The fixture is convenience; the
+transcript is load-bearing for reproducibility.
+
+**Split the difference where it can be split:** `bv-biweekly-transcript.sha256` and the manifest
+**are tracked**, so a fresh checkout can prove a supplied copy is the exact artifact the claims
+were verified against, without the repository carrying the words. Reasoning written into
+`.gitignore` itself so it reads as a decision rather than an omission.
+
+**Owed.** Matthew's ruling on committing the payloads; the Chris Day remap confirmation
+(defaulted to John Van Schaick `005V400000KurfdIAB`, an active AE owning nothing else in this
+fixture, so *a different AE owned the historical closed-won* survives). **Nothing else blocks
+step 1.**
+---
+
+## 2026-08-02 · session 56 · step 1: the B&V fixture loaded, and the probe says Altify builds nothing
+
+**Did.** Loaded the B&V fixture into `altify--aossb2` per §P7.2 step 1 and the fixture
+manifest. **3 accounts, 46 contacts, 6 opportunities, 125 contact roles, all verified by
+reading the org afterwards rather than by trusting insert success.** The one-record probe ran
+first and returned a finding worth more than the load. **No code was written and no test was
+run: this is data, not build.**
+
+**Matthew's two rulings, both applied:** the PII split is ratified as designed (payloads
+untracked, manifests and hashes tracked), and Chris Day remaps to **John Van Schaick**
+`005V400000KurfdIAB`.
+
+### The probe · §P7.2 step 1 item 2 · what Altify does on an API-inserted Opportunity
+
+**It does nothing. Nothing at all.**
+
+Method, because the answer is a negative and a negative is easy to fake: enumerated every
+`ALTF__` custom object in the org (**82** after excluding ChangeEvent, Share, History, Feed and
+Tag), took a timestamped baseline, inserted **one** Opportunity (`B&V Community Licenses-150`,
+the harness's own given deal), then counted rows created since the mark across all 82. **Zero.**
+Re-ran on a wider window to catch anything asynchronous. **Still zero.**
+
+**Nine ALTF objects carry an Opportunity lookup and could have received a row**, which is what
+makes the negative meaningful rather than vacuous:
+
+```
+ALTF__Account_Opportunity__c      ALTF__Insight_Section__c
+ALTF__Contact_Map_Details__c      ALTF__Object_Relationship__c
+ALTF__Decision_Criteria__c        ALTF__Opportunity__c
+ALTF__Insight_Card__c             ALTF__Relationship_Map_Persona__c
+ALTF__Log__c
+```
+
+**`ALTF__Opportunity__c` is the one to notice.** Altify's own per-opportunity record, the
+scaffolding you would most expect a package to create on insert, **was not created.** No
+qualifier scaffolding, no assessment shell, no map rows, not even a log line.
+
+**What this means for the product, and it is a product truth rather than a fixture detail.**
+The Altify surface is built lazily, by the UI or by an explicit action, never by the mere
+existence of an Opportunity. **So our projection cannot assume any ALTF scaffolding exists on a
+deal**; on a deal nobody has opened in Altify, the map rows we write may be the first ALTF rows
+that deal has ever had. That is consistent with the standing hazard that ~80% of installs carry
+no methodology history, and it means graceful absence is the normal path and not the edge.
+
+**One trap avoided, recorded because it nearly scored the probe wrong.** The baseline showed
+nine `ALTF__Log__c` rows in the preceding ten minutes and it would have been easy to read them
+as the package reacting to my inserts. They are **Matthew's**, created about one a minute by
+`Matt Weisberg` while he worked the Contact Map Details related list in the UI in parallel.
+~~Attributed by `CreatedBy` before drawing any conclusion.~~ **THE METHOD IN THAT STRUCK
+SENTENCE IS WRONG AND SESSION 57 PROVES IT: `CreatedBy` cannot distinguish me from Matthew,
+because this CLI authenticates as `matt.weisberg@altify.com.aossb2`, user
+`005V400000MCTUbIAP` — the same user record Matthew works the UI as.** The conclusion happens
+to survive on other evidence: those log rows carry `ALTF__Opportunity__c` values pointing at
+`AAO Demo - Live111` and the Discovery deal, never at any B&V record, so they are not my load.
+**Right answer, unsound method, and the unsound method is the part worth remembering.**
+**A concurrent human in the same org is a live confounder for every before-and-after
+measurement in this harness**, and attribution must be by *what the row points at*, never by
+who created it.
+
+### The load · the seven verification lines, answered in order
+
+**1 · Owners remapped deliberately, and the remap was almost an identity map.** Every prod owner
+id resolves in the sandbox with the same id and role, so the role pattern is not merely
+preserved, it is the original. Only the inactive owner needed changing. Read back from the org:
+
+| Opportunity | Owner | Role | |
+|---|---|---|---|
+| both March-2028 Renewals | Casey Lindlaw | Customer Success Manager | kept |
+| both expansions | Renee Martin | Account Executive | kept |
+| both Closed Won | **John Van Schaick** | Account Executive | **remapped from Chris Day** |
+
+Accounts: B&V Customer to Renee Martin, B&V Parent Account to David Nguyen, Slalom to Wendy
+Higley. **The shape the resolver should eventually see is intact: a CSM owns the renewals, an
+AE owns the expansions and the account, and a different AE owns the historical closed-won.**
+
+**2 · One-record probe before bulk.** Done, above, before the other five inserted.
+
+**3 · Counts verified after, not insert success.** Read from the org:
+
+```
+accounts 3/3    contacts 46/46    opportunities 6/6    contact roles 125/125
+ReportsTo chains rebuilt 42/42
+roles per opportunity 20 · 19 · 44 · 3 · 19 · 20 = 125, matching the fixture exactly
+```
+
+**4 · Stage and record-type fidelity.** `Stage 1`, `Stage 3` and `Closed Won` all survived, and
+`IsClosed`/`IsWon` derived true on both closed-won. Types `Expansion`, `New Customer` and
+`Renewal` survived. Picklist validity was checked against the sandbox **before** loading, not
+discovered during it. Amounts and close dates intact, including 2028-03-31 on both renewals.
+
+**5 · Real emails accepted deliberately.** Loaded as supplied: email on 29 of 46, phone on 28,
+mobile on 26. The decision is §P7.2's and is recorded there and here.
+
+**6 · The never-written law, distinguished and not breached.** This seeder wrote Accounts,
+Contacts and Opportunities once, at fixture time, in a sandbox. **That is scaffolding.** The
+product's runtime still never writes Opportunity or Account, and nothing in this load ran
+through the product.
+
+**7 · Multi-opportunity fixture is future-proofing and nothing here asserts routing.** Six
+opportunities exist so the later scope-resolver harness has the which-opportunity problem to
+solve. **Today's harness takes the deal as given.**
+
+**Byte-exactness held through insert and was proved by reading back out of the org**, not by
+trusting the write. All three anomalies survive with their codepoints intact:
+`'Steffanie Edwards HÃ¤fele'` (`0xc3 0xa4`), `'Patrick Oâ€™Neill'` (`0xe2 0x80 0x99`), and the
+title still truncated mid-word at `'...South Central United States and Latin Americ'`. **A
+normalized name would have been a paraphrase and the identity matcher would have been tested
+against a fiction.**
+
+Slalom loaded before contacts as the manifest ordered, and both contacts parented to it
+correctly (McKayla Allinder, Ethan Putman) rather than falling back to B&V. The four
+`Approver` + `IsPrimary` rows survived: Joy Johnson and Patrick Hogan, twice each.
+
+**Method note.** Loaded through the REST `composite/sobjects` collection endpoint with
+`allOrNone=true`, which returns ids in request order, so the prod-to-sandbox mapping is captured
+at write time rather than reconstructed by matching on names afterwards. **Matching on names
+would have been unsound here precisely because two accounts share the name `Black & Veatch`.**
+
+**Manifest item 6, paid:** `seed/bv-fixture/idmap-prod-to-sandbox.json`, 55 pairs, so the
+adjudication can name records across both orgs. It holds Salesforce ids only, no names or
+contact details, and is untracked under the ratified PII split because it lives in the payload
+directory; **say the word if it should be tracked, since it is arguably integrity rather than
+payload.**
+
+### State of the org after this load
+
+The three AAO demo deals and the Gate 1 deals are untouched. Matthew's own map row on
+`AAO Demo - Live111` is untouched. The step 0 probe row from session 53 is still on
+`AAO Discovery - Derived Contracts`, still labelled, still awaiting one word to remove it.
+**No `ALTF__Contact_Map_Details__c` row exists on any B&V opportunity, which is the point:
+building that surface is the product's job and watching it do so is the test.**
+
+**Owed.** Step 2, the run: the Casey transcript through the front door as a Source with the
+occurred clock at **24 June 2026, 7:01 AM**, People charter only, every other charter's
+contracts unhanded, then the temporary `AAO_TEMP_` projection invoker. Then step 3's mechanical
+assertions and the output surface for Matthew's adjudication.
+
+---
+
+## 2026-08-02 · session 57 · Altify builds the map surface itself, off contact roles
+
+**Did.** Applied Matthew's two rulings. **Then found that the fixture load had already caused
+Altify to build the entire B&V map surface — 125 empty `ALTF__Contact_Map_Details__c` rows —
+and traced the cause.** This changes what step 2's projection does, so it is recorded before
+step 2 starts rather than discovered inside it. **No code written, no test run.**
+
+### The two rulings, applied
+
+**PII split:** `idmap-prod-to-sandbox.json` is now tracked; it is integrity, not payload, and
+holds Salesforce ids only. The `.gitignore` carries a negation with the reason on it.
+**Probe row:** the session 53 step 0 row on `AAO Discovery - Derived Contracts` is deleted.
+Matthew's own row on `AAO Demo - Live111` was not touched.
+
+### The finding · a contact role creates a map row, synchronously, one for one
+
+After the load the org held **126** map rows where it had held one. Measured rather than
+assumed:
+
+| Check | Result |
+|---|---|
+| Map rows on B&V opportunities | **125** |
+| Contact roles on B&V opportunities | **125** |
+| Identical `(contact, opportunity)` pair sets | **true** — zero map-only, zero role-only |
+| Map row created in the same second as its contact role | **125 of 125** |
+| Distribution across the six deals | 44 · 20 · 20 · 19 · 19 · 3, the contact-role distribution exactly |
+
+**`OpportunityContactRole` insert is the trigger. Not Opportunity insert.** Session 56's step 0
+finding stands and is unchanged, but it is narrower than its own wording suggested: **nothing
+fires on an Opportunity insert** — that was measured across all 82 ALTF objects — and something
+very much fires on a contact role insert. The probe asked the right question about the wrong
+object, and only loading the rest of the fixture exposed it.
+
+**Every one of the 125 rows carries null `ALTF__Status__c` and null `ALTF__Political__c`.**
+Altify builds the skeleton and populates nothing.
+
+### The attribution error in session 56, and why it matters more than the finding
+
+Session 56 said the baseline log rows were Matthew's, **attributed by `CreatedBy`**. **That
+method is invalid.** This CLI authenticates as `matt.weisberg@altify.com.aossb2`, user
+`005V400000MCTUbIAP`, **which is the same user record Matthew works the UI as.** `CreatedBy`
+cannot separate us, and for a while I read 125 machine-created rows as a human typing in a
+browser.
+
+The session 56 conclusion survives on other evidence: those log rows carry
+`ALTF__Opportunity__c` pointing at `AAO Demo - Live111` and the Discovery deal, never at a B&V
+record, so they were not my load. **Right answer, unsound method.** Marked in place in session
+56 rather than rewritten. **Attribution in this org is by what a row points at, never by who
+created it**, and that now binds every before-and-after measurement in this harness.
+
+### What this does to §P7.2 step 2, stated before building against it
+
+The brief says: *No map rows are seeded; building the map surface is the product's own job and
+watching it do so is the test.* **No map rows were seeded — I inserted native parents only, as
+briefed. Altify created the surface itself, off native contact roles.** The letter of the
+brief holds. Its expectation does not, and the difference is load-bearing:
+
+**Projection is now a populate, not a create.** For every person who holds a contact role on
+the given deal, a map row already exists, empty, waiting. Our writer updates rather than
+inserts, which is why the step 0 probe's per-dimension `_Last_Modified` finding matters so
+much: those stamps are how a populate stays honest about which dimension it touched.
+
+**But the writer cannot only populate.** A person who appears in the transcript and holds no
+contact role has no row, and the ontology's whole point is that evidence introduces people the
+CRM has not caught up with. **So the writer must handle both, and upsert is the honest shape:
+populate where Altify built a row, create where it did not.** Recorded as a design consequence,
+not a ruling; design's to confirm.
+
+**This is also the realistic state and arguably better than the brief assumed.** A real
+customer org has contact roles, so a real org has this skeleton. Watching Altify build it off
+native data is a truer test than watching our product build it from nothing.
+
+### Standing questions this raises, not answered here
+
+Whether Altify's automation also *deletes* or re-parents map rows when a contact role is
+removed, and whether it reacts to contact role *updates*. **Not probed**, because nothing in
+step 2 depends on it and probing it means mutating fixture data the run is about to use.
+Named so a later harness can measure it rather than assume either way.
+
+**Owed.** Step 2 unchanged in scope: the Casey transcript through the front door as a Source,
+occurred clock 24 June 2026 07:01, People charter only, then the temporary `AAO_TEMP_`
+projection invoker draining into upserts on the 125-row surface that now exists.
+
+---
+
+## 2026-08-02 · session 58 · the Pipeline command center, built to spec v1.0
+
+**Did.** Rebuilt `AAO_PipelineViewController` and the `aaoPipelineView` bundle to command-center
+spec v1.0. **Items A through H and J are built. Item I is built except for one sub-item that
+requires a schema change, which the spec forbids, so it is reported instead of guessed.**
+**186 tests, 186 passing** (was 174; the view's own class went from 5 tests to 17).
+
+### The one thing I stopped and reported rather than building · spec item I
+
+The spec said the account-grain predicate must come from the built scope fields, and to stop
+rather than guess if it is ambiguous. **It is not ambiguous. It is absent.**
+
+| Object | `AAO_Account__c` | `AAO_Opportunity__c` |
+|---|---|---|
+| `AAO_Source__c` | required | **required** |
+| `AAO_Candidate__c` | required | **required** |
+| `AAO_Claim__c` | required | **required** |
+| `AAO_Answer__c` | required | **required** |
+| `AAO_Flag__c` | required | **required** |
+
+`<required>true</required>` on the opportunity lookup of all five, and `AAO_ScopeKey.compose`
+independently confirms it: it throws on a null scope and composes from the opportunity id
+alone. **No row can carry account grain, so an account-scope group would render empty on every
+account forever.** Making the lookup nullable is the schema change the Model & Flow head
+amendment already contemplates ("Source's opportunity lookup goes nullable under a scope family
+law") and it is not mine to make here.
+
+**What I built instead of an empty box:** the account context is fully live (filter on
+`AAO_Account__c`, per-deal headers, a scope column on every row), and it carries a sentence
+saying account-grain rows cannot exist yet. **An empty group implies the query found nothing;
+a sentence says the shape does not exist. Those are different claims and only one is true.**
+
+### Built, item by item
+
+**A · links.** `NavigationMixin.GenerateUrl` on every id the controller returns, resolved **once
+per distinct id** and cached across polls, so a 200-row panel does not fire hundreds of calls
+per tick. Anchors carry `target="_blank" rel="noopener"`. Sources, claims, answers, flags, flag
+subjects, people, deals, candidates' latest pass, cited rows, map rows and the banner's artifact
+all link. The claim row links its Source ref as asked. **The one-place-decides-colour principle
+is untouched:** Apex still returns finished class strings and the component still concatenates
+nothing.
+
+**B · lineage, walkable, depth one.** Claims expand to the Candidate they came from (with what
+it proposed), their Claim Basis citations (cited type, link, `Covers_Element`, and a
+cited-row-deleted badge), and the Answer they moved. Answers expand to every Claim behind them
+in occurred order. **Apex builds the nested model in two extra bounded queries**; the component
+holds only which rows are open. That set lives on the component rather than the payload, because
+the payload is replaced every two seconds and a poll would otherwise close whatever was being
+read mid-run.
+
+**C · projection is real and the hardcoded sentence is dead.** Queries answers with
+`AAO_Projected_Value__c != null`; renders value, `Projected_Modstamp`, linked subject person, and
+the target map row resolved by subject contact plus opportunity. The `off`/`live` badge and the
+greyed panel both derive from whether rows exist. Empty state is now *"No projections yet on
+this record."* **The old prose claimed projection was "not built" and "nothing has been written
+back to any customer record" — step 2 falsifies both, and a fixed sentence that goes false is
+worse than no sentence.** Where no map row resolves for a projected person, the row says so in
+red rather than rendering a blank.
+
+**D · flags have rows and no blinders.** All six types, not just `Methodological`: type badge,
+state badge, linked subject, raised stamp, standing then escalated then cleared. **The People run
+raises contention flags and the old panel could not have shown them.**
+
+**E · people made visible.** Answers group under their subject person, person header linked,
+dimensions beneath. Dimension comes from `AAO_PeopleOntology.dimension()` on the proposition
+code; a non-People contract returns null and renders nothing. **The rung is the projected value
+and nothing else** — a screen that derived its own rung would be inventing an answer the
+projection writer never wrote. Answers with no person land in a last bucket that explains itself.
+
+**F · publication honesty.** Held answers render at half opacity and greyscale with a `HELD`
+badge, are excluded from the live count, and are **never hidden**. Header reads `N live · M
+held`. View-level only; no other reader was touched.
+
+**G · two clocks, labelled.** Occurred and recorded both render `d MMM yyyy HH:mm GMT`. **The
+07:01 call cannot render as a bare date any more**, which the old `formatGmt('d MMM yyyy')` did.
+Header reads `snapshot HH:mm:ss (local) · d MMM yyyy`. No unlabelled timestamp survives.
+
+**H · scale guards.** `LIMIT 200` on sources, claims, answers and flags, each with a true total
+from a `COUNT()` and a `showing 200 of N` line. **A silent cap reads exactly like completeness**,
+which is why the total is queried separately rather than inferred from the page.
+
+**J · run banner.** Newest pending artifact, linked, with stage `arrived` / `adjudicating` /
+`committed` / `idle`, spinner while pending, last-refreshed stamp. Adaptive 2s/10s poll unchanged.
+
+### Three laws caught my test fixtures, and all three were right
+
+Recorded because the refusals are the useful part.
+
+**1 · `AAO_AnswerKey`: identity does not move.** I tried to convert an Opportunity-subject answer
+into a Contact-subject one. Refused: *"The answer key would change... This row is an answer to a
+different question or about a different subject, which is a different row."* **Correct.** The
+fixture now creates person answers instead of mutating them.
+
+**2 · The cardinality guard (invariant 9).** Setting `AAO_Subject_Contact__c` while leaving
+`AAO_Subject_Type__c = 'Opportunity'` was refused as a row expressing two subjects. **Correct**,
+and it is why the fixture moves both fields together.
+
+**3 · The evidence-family law (47/48).** A `MACHINE` establishment on a transcript basis with no
+spans was refused: *"An establishment requires a citation."* The fixture uses `Basis = 'State'`,
+which is the honest family for a projected map value — cited by the rows its claim named and
+froze, never by a quote. **The law exempted it; the fixture did not dodge it.**
+
+Two Apex reserved words also bit: `Page` (Visualforce) as an inner class name and `on` as a
+field, both renamed to `Tally` and `isOn`.
+
+### Verified, and what is NOT verified
+
+**Verified by running against real org data**, both contexts: the harness deal
+(`B&V Community Licenses-150`, correctly empty), the Tungsten rehearsal (2 sources, 2 claims,
+1 answer, lineage present, both clocks with times, 2 flag rows across two states), the B&V
+account (6 deals grouped, scope note present) and the demo account (9 sources, 9 claims, 5
+answers, 12 flags gathered across 7 deals). 25 to 29 SOQL queries per snapshot against a limit
+of 100.
+
+**Not verified: the rendered DOM.** I exercised the controller from Apex and 17 tests; I have not
+loaded the page in a browser, because that needs an interactive Salesforce login this session
+cannot perform. **The template compiles and deploys, and that is not the same as looking right.**
+Matthew should open the AAO Pipeline tab once before step 2 runs.
+
+**Placement.** The meta now exposes Opportunity **and** Account. The component is on the
+Opportunity record page's fifth tab as before. **Dropping it on an Account page is an admin
+action in Lightning App Builder and was not done from here**, since no Account flexipage exists
+in this repo to modify.
+
+**Owed.** Step 2, unblocked and unchanged: the Casey transcript through the front door as a
+Source, occurred clock 24 June 2026 07:01, People charter only, then the `AAO_TEMP_` invoker.
+**Still open from session 57 and needed before the projection writer is built: whether the writer
+upserts** (populate where Altify built a row, create where it did not) or something narrower.
+
+---
+
+## 2026-08-02 · session 59 · the tab race: an old defect the rework made visible
+
+**Did.** Diagnosed and fixed the empty-`recordId` defect Matthew found on the Opportunity
+placement. **Two of the three candidates in the report are falsified by evidence; the third is
+right in substance and wrong in one detail worth correcting.** **186 tests, 186 passing.**
+No controller logic changed apart from one error string.
+
+### Candidate 1 · a design property shadowing the auto-wire · FALSIFIED
+
+`aaoPipelineView.js-meta.xml` declares **zero** `<property>` elements. The `targetConfig` carries
+only `<objects>`. There is nothing to shadow `@api recordId` with.
+
+### Candidate 2 · stale component config cached in the flexipage XML · FALSIFIED
+
+Retrieved `FlexiPage:Opportunity_Record_Page` live from the org and diffed it against the repo
+copy: **byte-identical, `git diff` empty.** The live component instance is
+
+```xml
+<componentInstance>
+    <componentName>aaoPipelineView</componentName>
+    <identifier>aaoPipelineView_aaoTab</identifier>
+</componentInstance>
+```
+
+with no `componentInstanceProperties` at all. Nothing stale, nothing passing a blank attribute.
+The retrieved copy was reverted after the comparison so the repo is unchanged.
+
+### Candidate 3 · the race · RIGHT, with one correction
+
+**The correction, and it matters.** The report says the JS rework *moved the first Apex call
+earlier than recordId assignment*. It did not. **The previous version called
+`this.load()` from `connectedCallback` in exactly the same place**, and the previous Apex threw
+on a null id in exactly the same way. **The race is older than the command center; the rework
+did not introduce it, it made a latent defect visible.** Recording this because "the rework
+broke it" and "the rework exposed it" lead to different places next time.
+
+**Why this placement and not the other**, which is the part that actually explains the split
+Matthew saw. The component sits in the **body facet of `flexipage_tab5`, titled "AAO Pipeline",
+the fifth tab and not the default one.** A component inside a non-default tab is constructed
+lazily, and on that path `connectedCallback` can run before the framework has assigned
+`@api recordId`. The Account placement is a fresh top-level drop in a region, where the id is
+assigned before connect, so the same bundle works. **The bundle was never the problem** — which
+Matthew's own report already proved by rendering it fully on the Account page.
+
+### The fix
+
+`recordId` is taken through a getter and setter, and the first Apex call fires from there rather
+than from `connectedCallback`. **Whichever happens last, the id arriving or the element
+connecting, starts the load**, so ordering stops mattering. Four guards, each earning its place:
+
+1. **`maybeStart()`** starts once and only once an id exists.
+2. **`load()` refuses to call Apex with no id**, so if anything ever reaches it unguarded it
+   stops rather than teaching the poll to raise the same error forever.
+3. **`schedule()` does not reschedule with no id.** A poll that re-raises a configuration error
+   every ten seconds is noise dressed as diligence, and that is exactly what was happening.
+4. **`renderedCallback` fails loudly rather than spinning.** By first render the framework has
+   assigned every `@api` value it will assign, so a missing id then is a real fault. **A
+   permanent spinner is the same lie as a false empty state: it implies the system is working
+   on something.**
+
+A bonus correctness win that came free: a record swap under a console tab now reloads cleanly
+instead of showing the previous record's snapshot, because the setter detects the change.
+
+### The two guards now read differently on purpose
+
+They were both a variant of *no record was supplied*, which would have made the next occurrence
+undiagnosable. They are now discriminators:
+
+- **`COMPONENT: no record id was ever handed to this component by the page`** — the framework
+  never supplied an id. Placement fault, and the fix above did not take.
+- **`SERVER: getSnapshot was called with no record id`** — something reached Apex without an
+  id, meaning the component-side guard failed. **A different defect.**
+
+If neither appears, it works. **Whoever re-checks can now report which sentence is on screen and
+that alone identifies the failure**, instead of one string covering two causes.
+
+### Not verified here, and it needs Matthew
+
+**I cannot load the page.** That needs an interactive Salesforce login this session cannot
+perform, so the fix is verified by reasoning, by the falsification of the other two candidates,
+and by 186 passing tests — **not by looking at it.** The re-check is Matthew's, on both pages,
+and Lightning caches component definitions hard enough that a plain reload can show the old
+bundle: **hard-refresh, or the check proves nothing.**
+
+**Owed.** Matthew's confirmation on the Opportunity tab and the Account page. Then step 2,
+still unblocked and unchanged, and still carrying the open upsert question from session 57.
+
+---
+
+## 2026-08-02 · session 60 · step 2, part one: the writer, the contracts, and the rubric is global
+
+**Did.** Built the ratified projection writer, built the People Evidence Contracts from the
+seeded ontology, and closed the one gap that stopped the pipeline being per-person. **186 tests,
+186 passing.** **Step 2 is not finished:** the Source is not ingested, no model pass has run,
+there is no `AAO_TEMP_` invoker and no mechanical assertions. **I stopped on a structural finding
+rather than build past it**, and the finding is below.
+
+### Built and deployed
+
+**`AAO_Project`, the projection writer, to the ratified shape.** Query-then-branch on the
+`(contact, opportunity)` pair, never platform upsert. Row exists → populate only the dimensions
+establishment moved. Row absent → create, established dimensions populated, rest null. **Two
+rows → raise a Cardinality flag and write nothing; it never picks.** Support rung per §P7 with
+recency arbitration; Political Status under the v2.1 ceiling with no contention flag and silent
+re-derivation; Option C note that degrades to naming the value rather than clipping a quote,
+because a clipped quote is at the edge of the paraphrase law. Held answers are excluded at the
+query: **Held is live for nothing.** The human-edit watermark compares the native per-dimension
+`_Last_Modified` against our own last write, which is exactly what the step 0 probe established.
+
+**Matthew's correction is written into the class, not just the journal:** populate is normal only
+where contact-role sync is on, and **the create leg is mandatory product behaviour** because a
+person in the evidence with no contact role has no skeleton.
+
+**`AAO_PeopleContracts`, our own rubric, no Altify anywhere in the read.** 48 contracts created
+and verified in the org: **16 questions × 3 external speakers.** Coverage's three questions are
+correctly absent, being route P and never extracted from words.
+
+**The per-person code scheme, forced by a real constraint.** The extraction charter keys a
+finding by proposition code alone and has **no subject field**, so the person must live in the
+code or the model cannot say which of three people a sentence was about. `AAO_Proposition_Code__c`
+is forty characters, so the code is a compact token: `S2#003WD00001PmxYSYAZ`. **The label is
+never lost** — the byte-exact seed text is the proposition, curly apostrophes and all, and the
+code is only an identifier.
+
+**Two refusals shaped the contract, both correct.** `AAO_Element_Count__c = 0` was rejected:
+*"A contract must know how many parts its proposition has."* A guided question is one
+indivisible part, so it carries one element. Then the contract key collided across people,
+because three people shared one question's content hash. **The person is part of the content**,
+not decoration: *has THIS person expressed a preference* is a different proposition per person.
+The contact id goes into the hash rather than into `AAO_Question_Record_Id__c`, which is
+eighteen characters and cannot hold a code plus an id.
+
+### The gap that was one line, and the surprise that it was only one
+
+`AAO_Pipeline` never set `AAO_Subject_Contact__c` on a Candidate. **Everything downstream was
+already per-person ready** and had been all along: `AAO_Commit` carries the subject to the Claim
+and the Answer, `AAO_Accumulate` copies it, `AAO_Replay` reconstructs it, `AAO_AnswerKey`
+composes identity on it. The chain was built for this and only its first link was missing.
+
+Threaded on both paths, so the complete-ledger law survives per person: a People abstention is
+recorded as being about that person rather than about the deal.
+
+**One defect I introduced and caught in the same session.** Reading
+`ec.AAO_Proposition_Code__c` broke every caller that had not selected it — the demo and
+live-ingest paths hand contracts they built themselves, and an unqueried field throws. Nine
+tests failed. Fixed with a null-safe accessor and by using the code already on the proposal.
+**A per-person lookup must never be able to break a run that has no people in it.**
+
+### THE FINDING · the rubric is org-global, so "People charter only" cannot be honoured yet
+
+§P7.2 step 2 says **People charter only; every other charter's contracts sit unhanded.**
+
+`AAO_Rubric.contracts()` is the only source of the applicable set, and it reads:
+
+```sql
+WHERE AAO_Contract_State__c != 'Superseded' AND AAO_Synthetic__c = :wantSynthetic
+```
+
+**No deal scope, no rubric-version scope, no charter scope.** `AAO_Pipeline.liveContracts()`
+returns it whole, and `runForSource` has no overload that accepts a set. So a pass on the Casey
+Source would hand the model **the 48 People contracts plus every discovery and demo contract in
+the org**, which is precisely what the brief forbids. The demo contracts would abstain against a
+B&V transcript, but they would burn tokens, pollute the candidate ledger, and make the run's own
+completeness numbers meaningless.
+
+**Consequence Matthew should know about now:** the 48 People contracts are non-synthetic and
+therefore **already in the global applicable set**. They do not affect the test suite, which
+scaffolds isolated data, and they have changed no existing row. But **any real pass on any deal
+in this org would now consider them**, so they should be scoped or superseded before anything
+else is run.
+
+**This is design's call, not mine, and there are at least three shapes:** scope by rubric version
+on the run; use the existing per-deal rubric binding (session 15's *one rubric per deal* and
+session 16's *the binding becomes a fact about the deal*, which I did not have room to read
+properly); or give `runForSource` an explicit contract set. **I did not guess**, for the same
+reason I did not guess the account-grain predicate: a scoping rule invented here would look
+right and quietly decide what every future charter reads.
+
+### Owed, precisely
+
+**Not built and not started:** the Source ingest (transcript verified and in the repo, occurred
+clock 24 June 2026 07:01, roster of four), the model pass, the `AAO_TEMP_` invoker, and the
+mechanical assertions. **`AAO_Project` has no unit tests yet** — it is deployed and compiles, and
+its derivation has not been exercised against staged answers. That test is the next thing I write
+regardless of the scoping ruling, because it needs no transcript.
+
+**Assumption flagged in code, design's to rule:** Political Q1, Q2 and Q4 are two-sided, and
+Charters v2.1 says their proposal enums are runtime-closed from the wizard's own semantic
+options. Those enums are not built. The writer currently reads **TRUE as the strong side and
+FALSE as the weak side**, which is the natural reading of *does this person define the goals, or
+do they merely understand them.* Named in the class where it applies. Nothing else depends on it.
+
+---
+
+## 2026-08-02 · session 61 · the writer proved, and the applicable set declared
+
+**Did.** Wrote `AAO_ProjectTest` (18 tests, green first run) and built the applicable-set
+resolver to the ratified structure. **204 tests, 204 passing** (was 186). Build order stands:
+ingest, pass, invoker and assertions are next and are not started.
+
+### Build order step 1 · `AAO_Project` proved
+
+**18 tests, passing on the first run.** The derivation tables are tested as pure functions,
+through in-memory answers built with JSON so the contract relationship populates without DML —
+not a shortcut, but so a wrong table row fails loudly instead of failing inside a write.
+
+Support: Q2 alone is a Supporter; Q2+Q4 is **still** a Supporter and only Q2+Q4+Q5 is a Mentor,
+which is the two-beyond-Supporter asymmetry; each of 6/11/14 is Non-Supporter and each of 7/16
+is Enemy; **Q1 places nobody**; nothing established returns null and **never a computed
+Neutral**; and when both sides stand, recency owns the rung with the displaced side named for
+its opposite-polarity flag, tested in both directions.
+
+Political under the ceiling: any one of Q1/Q2/Q4 strong alone reaches Inner Circle; **Q9 places
+nobody**; brokering alone is Outside the Structure; **a lesser property arriving later never
+downgrades** (Inner Circle plus advice plus brokering stays Inner Circle, and unlike Support
+recency does not decide it); and Unset leaves the field null rather than writing the picklist's
+`Unknown`, because `Unknown` is a claim and null is the absence of one.
+
+**The ratified guard has its own test.** A `FALSE` on a two-sided question places somebody on the
+weak side — *executes after approval* is a placement, not a demotion — while an `UNVERIFIED` on
+the same question **places nobody**. The derivation reads the FALSE sets for the weak side and
+never infers a weak side from a missing TRUE, so absence cannot manufacture a placement. The
+guard is written into the class comment where the assumption used to sit.
+
+All three write legs pass, **including the create leg**: established dimensions populated, every
+other field left null, because a row filled out to look complete is a row claiming things nothing
+established. The populate leg leaves an untouched `Buyer_Role` exactly as found. Two rows block
+the write, raise a Cardinality flag, and leave both rows unwritten. A Held answer reaches nothing.
+
+**Recorded per the ruling: the harness run will exercise populate only**, since every speaker on
+the Casey call holds a contact role. **The create leg is covered by unit test and untested by the
+run**, and those are different statements.
+
+### Build order step 2 · the applicable set
+
+**`AAO_Rubric.contracts()` is marked wrong in place**, in its own class comment, naming why it
+was right for one rubric in discovery and is wrong law now. It survives for callers that want the
+whole cabinet — inventory, the pipeline view, discovery's audits — and **must never feed a model**.
+
+**`AAO_Evidence_Contract__c.AAO_Charter_Designation__c`**, restricted picklist, People / Problems
+/ Politics / Process. The description names its writer (the contract seeders) and its readers
+(the resolver only) per the field law, and states that no charter ever reads it, because a
+charter's handed unit is the Evidence Contract and it never sees a module. **48 People contracts
+stamped; 12 legacy contracts sit on null and `resolveProcess` deliberately still admits them.**
+
+**`AAO_ApplicableSet.resolve(charters, source)`.** The set is declared and never inferred; there
+is no "everything", and asking for one throws. `runForSource` gains a four-argument form, and the
+three-argument form declares `{Process}` explicitly rather than leaving the old law wearing a new
+signature.
+
+**People resolves per roster**, the union of the deal's map rows and the Source's participants.
+Both halves earn their place: the map is who the seller has already said matters, and the
+participants are who actually spoke — **and evidence introduces people the CRM has not caught up
+with, so map-only would make the writer's create leg unreachable.** A People contract whose code
+carries no person is dropped as malformed rather than treated as global.
+
+**Process resolves charter-filtered but NOT deal-filtered, and is labelled a half-measure in the
+method that does it.** The config chain (plan type → plan-type-list row → question codes) is
+walked by `AAO_Discovery` at cold start, but **nothing persists the resulting binding as a
+queryable fact about the deal**, so the resolver cannot re-derive it from the deal alone. What is
+built is strictly narrower than the global read it replaces. **This is the remaining half of the
+ruling and it is owed.**
+
+### Two defects I caused and caught, both worth the record
+
+**A silent semantic change, caught by seven tests.** I made the resolver choose the synthetic or
+product population from the Source's own flag, which reads as more correct than what it replaced.
+`liveContracts()` was `AAO_Rubric.byCode()` = `byCode(false)`: **the product population always,
+regardless of the Source.** Seven model-path tests broke, their Source marked and their contracts
+not. Reverted, with the reasoning on the method: **the ruling changed which contracts resolve,
+not which population**, and changing both at once would have hidden a semantic change inside a
+structural one.
+
+**A field that existed for Apex and not for SOQL.** The new field deployed green and every class
+referencing it compiled, yet `describe` and SOQL both insisted `No such column`. **That signature
+is missing field-level security, not a missing field** — Apex compiles against metadata while the
+REST API enforces FLS. Granted on `AAO_Admin` and the back-stamp ran immediately. Worth knowing
+as *"compiles but cannot be queried" means permissions*, because it reads exactly like a failed
+deploy that reported success.
+
+**Owed.** Step 3 onward, unstarted: the Source ingest (transcript verified in the repo, occurred
+clock 24 June 2026 07:01, roster of four, SHA-256 confirmed), the People pass with the blind
+reader on, the `AAO_TEMP_` invoker, and the mechanical assertions. Plus the Process per-deal
+binding named above.
+
+---
+
+## 2026-08-02 · session 62 · THE RUN REPORT · the pass fired, established nothing, and found two defects
+
+**Did.** Synced context 25 (Board v1.2, Charters v2.3, Architecture v3.2, Model & Flow v1.1,
+Glossary v2.3; run sheet still v1.3 here). Ingested the Casey transcript as a Source. **Ran the
+People pass against it: one real model callout, status `staged`, 48 candidates written, zero
+claims, zero answers.** The invoker and the mechanical assertions are not built, because the pass
+returned nothing to project. **Two defects found, one of them mine.**
+
+### The run, verbatim from the pass outcome
+
+```
+status=staged  src=bv/biweekly-2026-06-24  from=model  charter=1.1.0
+verdict=null  claim=null  abstentions=0 (nobody_said=0 model_declined=0)
+notReturned=48  spansDropped=0  blindOverrides=0
+EXTRACT model=claude-opus-5 charter=AAO_Extract_Evidence@1.1.0 findings=1
+in=18696 out=7532 cacheRead=13799 ms=94860 stop=end_turn
+UNANSWERED=(AAO_T2, AAO_T3, AAO_T4, AAO_T5, AAO_T6, PO1#...PmxYSYAZ, PO1#...PmxYbYAJ, ...)
+```
+
+**48 candidates on the deal, every one `Not_Returned` and every one `Subject_Type = Contact`.**
+Zero claims, zero answers, nothing projected. **Zero spans dropped: no fabricated quote.**
+
+**What worked.** The per-person threading works end to end: every candidate carries its subject
+contact, which is the gap session 60 closed. The applicable set resolved exactly right —
+**People 48, roster 44, Process 6, and an undeclared set refused.** The complete-ledger law held
+per person: a proposition nothing was said about still wrote its row, attributed to the person it
+was about rather than to the deal.
+
+### DEFECT 1 · the declared set governs what is WRITTEN, not what is ASKED
+
+`AAO_Extract.cls:203` reads `List<AAO_Evidence_Contract__c> contracts = AAO_Rubric.contracts();`
+— **the org-global read, the one the ruling marked wrong.** So `runForSource` resolved 48 People
+contracts and handed the writer 48, while the extractor built its prompt from the whole cabinet
+and asked the model about **53** propositions: the 48 People ones plus `AAO_T2` through `AAO_T6`.
+The `UNANSWERED` list names them, which is how it surfaced.
+
+**The ruling's fourth clause is currently false: something WAS handed to the model that did not
+resolve.** I marked `AAO_Rubric.contracts()` wrong in its own comment and wired the resolver into
+`AAO_Pipeline`, and I did not audit the extractor for a second call site. **One wrong-law read
+with two callers, and I fixed the caller I was looking at.**
+
+### DEFECT 2 · the Source carries no normalized hash, and the law that stopped me was right
+
+I omitted `AAO_SHA256__c` at insert. Setting it afterwards was refused:
+
+> `AAO_SHA256__c is immutable on AAO_Source__c. Every span already stored was byte-verified
+> against this record; editing it breaks the citation chain without anything appearing to fail.
+> Re-ingest as a new Source instead.`
+
+Re-ingesting collided on the scope key, correctly — dedup on bytes doing its job. Deleting the
+first Source was refused too: *Sources leave by retirement, confirm-then-purge, library
+acknowledgement first.* **Three laws in a row, all correct, all refusing to let me tidy up.**
+
+So the Source stands with `AAO_Artifact_SHA256__c` correct and `AAO_SHA256__c` null. **Span
+verification is unaffected** — it verifies against the stored text, not the fingerprint, and zero
+spans dropped this run. What is missing is the integrity fingerprint that would detect later
+tampering of the stored text by hash comparison alone.
+
+**A question for design, not a fix I should make:** the guard fired on a **null-to-value**
+transition. Setting a field that was never set is not editing it, and no span had been stored
+when I tried. If the guard is meant to protect a citation chain, it could permit the first write
+and forbid every later one. Left alone rather than loosened by the person it inconvenienced.
+
+**Also recorded, and it is a platform fact worth keeping:** the platform **strips a trailing
+newline from a LongTextArea**. The file is 46,552 bytes and the stored text is 46,551 characters,
+a prefix missing its final `\n`. **The artifact and the stored normalized text can therefore never
+be byte-identical when the artifact ends in a newline**, which is precisely why this schema
+carries two hashes. The manifest's *this file's bytes are the frozen artifact* wants that
+one-character qualification.
+
+### Why the model established nothing, read honestly
+
+**`findings=1` against 53 propositions asked.** Not a refusal and not a timeout: `stop=end_turn`,
+7,532 output tokens, 94.9 seconds. The model answered, and it answered almost nothing.
+
+**I am not going to diagnose this from one run.** The candidate explanations are the prompt
+carrying 48 near-identical per-person propositions that differ only by an opaque id suffix, the
+mixed-charter set defect above, and a transcript whose People content is largely reported speech
+of the kind Gate 1 already flags as the over-read failure mode. **Defect 1 has to be fixed before
+any of that is measurable**, because this run asked a question nobody intended to ask.
+
+**What this run does establish**, and it is not nothing: the whole spine executes on real data.
+Contracts resolve, a real callout completes, the ledger writes one row per proposition per
+person, the subject threads through, and no quote was fabricated.
+
+**Owed.** Fix defect 1 — the extractor must take the resolved set rather than read the rubric.
+Then re-run and report. Then the `AAO_TEMP_` invoker and the mechanical assertions, neither of
+which has anything to do until a claim exists. **Nothing has been handed to Matthew for
+adjudication, because there is nothing yet to adjudicate.**
+
+---
+
+## 2026-08-03 · session 63 · step 0 and step 4 built; the AspenTech seed is blocked on a prod read
+
+**Did.** Built the two items in the AspenTech post that do not need production: **step 0, the
+extractor fix, and step 4, SHA determinism.** **204 tests, 204 passing.** Synced context 25
+(Board v1.2, Charters v2.3, Architecture v3.2, Model & Flow v1.1, Glossary v2.3; run sheet still
+v1.3 here). **Steps 1, 2, 3 and 5 are blocked and the blocker is measured below.**
+
+### Step 0 · the extractor takes the resolved set, and the old read cannot be reached
+
+**The rename is the fix, because a rename is the only restriction the compiler enforces.**
+`AAO_Rubric.contracts()` is now `inventory()`, and `byCode()` is `inventoryByCode()`. **No caller
+of the old names remains** — the only surviving mention is the sentence in `AAO_Extract` that
+explains why they went.
+
+`AAO_Extract.run(Id sourceId, List<AAO_Evidence_Contract__c> declared)` **takes the applicable set
+as an argument and no longer reads a rubric at all.** Its old error, *no evidence contracts in the
+org*, is replaced by *nothing resolved for the declared charter set*, because those are different
+facts and the first one was never the true diagnosis.
+
+`AAO_Pipeline.liveContracts()` is now `inventoryForHarness()` and is documented as inventory only,
+never an applicable set and never a model path. Gate 1's harness follows it; the P route, the
+Solution route and the flag raiser follow the renamed inventory read, which is correct — none of
+them asks a model anything.
+
+**Population semantics preserved again, deliberately.** `AAO_ExtractTest` now passes
+`AAO_Rubric.inventory()`, which is byte-for-byte the population the old internal read used. The
+ruling changed which contracts resolve, not which population, and this is the second time that
+distinction has kept a structural change from smuggling a semantic one.
+
+### Step 4 · the fingerprint is now a code-path guarantee
+
+`AAO_SourceTriggerHandler.beforeInsert` computes `AAO_SHA256__c` from the received bytes
+**unconditionally**, beside the scope key, for the same stated reason: a value composed anywhere
+but here is a second composer, so a caller-supplied one is overwritten rather than trusted. The
+normalizer version fills in where blank.
+
+**The B&V gap cannot recur, by construction rather than by discipline** — omitting the value is no
+longer something a caller is able to do. **No immutability exception exists or will**, and the
+three laws that refused to let me repair that Source after the fact stay exactly as they are:
+immutable field, dedup on bytes, Sources leave by retirement.
+
+### Steps 1, 2, 3, 5 · BLOCKED, and measured rather than assumed
+
+The post says to seed from **production VideoCall `6qrV4000000LY6jIAG`**, traverse to its Account,
+and read the canonical ECI text from the org before freezing. **I cannot reach production**, which
+context 23's addendum already settled: *you never get it; design side pulled the extract
+read-only.*
+
+**I checked whether the sandbox refresh made that moot, because it plausibly could have.** The
+users carried over from prod with identical ids, so ECI data might have too. It did not:
+
+| Read against `aossb2` | Result |
+|---|---|
+| `SELECT COUNT() FROM VideoCall` | **0 records** — the object exists, the data did not come across |
+| `SELECT COUNT() FROM ConversationEntry` | **0 records** |
+| `Account WHERE Name LIKE '%spen%'` | **nothing** |
+
+So the AspenTech seed needs the same treatment B&V got: **design pulls the extract read-only from
+production and ships it, plus the canonical ECI transcript text.** Step 3's instruction is the
+sharp one and I cannot satisfy it from here: *read the canonical ECI text from the org and verify
+what it actually contains before freezing — the paste is not the transcript.* **Verifying that a
+paste matches the org requires reading the org**, so whoever pulls the extract has to do that
+comparison, not me.
+
+**What I need shipped, precisely:** the account, its contacts (including Corey, Neeraja, Fatima
+and Jacob if they exist in production), all open opportunities plus at least one closed-won, the
+users for the owner remap, the ECI recording metadata for the occurred clock, and the **canonical
+ECI transcript text as the org stores it** — with the inference labels and player-position lines
+still present, so the separation in step 3 is something I perform and record rather than something
+I receive already done.
+
+### Step 6 · the sequencing law, recorded here as binding
+
+**The resolver build is the immediate next build after the People phase closes — before Politics,
+before any other charter work.** Recorded as a hard law rather than a preference: without it no
+Source can route and there is no product. It reorders the Board's step 4, which had Politics next.
+The multi-opportunity fixtures are its harness material, and **B&V already provides half of it**:
+six opportunities on one account, four open, two closed-won, with the which-opportunity problem
+intact and deliberately unasserted by the People run.
+
+### The B&V run's standing, unchanged
+
+The 48 candidates from session 62 remain, every one `Not_Returned`, and **they were produced by
+the defective extractor**. They are history, not a result: the pass asked about 53 propositions on
+a set that declared 48. **Nothing about that run should be quoted as a measurement of the model or
+of the People charter**, and re-running B&V under the corrected extractor is a separate decision
+from seeding AspenTech.
+
+**Owed.** The AspenTech extract and canonical ECI text from design. Then steps 1, 2, 3, 5, the
+pass, the invoker and the assertions. Whether to re-run B&V corrected is Matthew's call.
+
+---
+
+## 2026-08-03 · session 64 · Emerson corrections recorded; the extract payload has not arrived
+
+**Did.** Recorded the Emerson corrections and four findings from the design-side production reads.
+**Built nothing: the extract itself is not on disk.** Steps 0 and 4 remain as session 63 left them,
+204 tests passing.
+
+### My error, corrected: the account is Emerson, not AspenTech
+
+**I probed the sandbox for `%spen%` and reported nothing found, which was true and useless.** The
+CRM account is **Emerson Electric Co., `001Hn00002CXGaMIAX`**; AspenTech is the contracting entity
+name on paper only, and the participants carry `emerson.com` emails. **There was nothing to find
+because I was looking for the wrong name** — a negative result against a wrong search term reads
+exactly like a negative result against the right one, which is the standing hazard about sweeping
+wider than the question, hitting me directly.
+
+### The extract has not shipped, measured
+
+The post describes the extract's contents in full. **The files are not on disk.** Checked
+`~/Downloads` for any Emerson or AspenTech folder (none), the newest folder `AAAO_AUG31`, and the
+`aao-context.zip` inside it: **that zip is context 25 exactly** — the five documents plus the B&V
+fixture and transcript, fifteen files, nothing Emerson. Context 25 was already synced in session 62.
+
+**What is owed as files:** the Account; 114 Contacts; three Opportunities; the two Users for the
+remap; and whatever branch 4 resolves to for the transcript.
+
+### Recorded now, because these are findings and not payload
+
+**1 · The given deal is closed-won at run time, and evidence occurred while it was open.**
+`006V400000VIJiIIAX`, Insights 500 Full Insight, closed won 31 July for $275,555; the call happened
+**29 July**, when it was open. **Whether projection writes onto a closed deal's map is design's
+open question and explicitly not mine to answer.** Recorded and proceeding when the extract lands.
+
+**2 · ECI's related-record stamp misfires in the second direction.** On B&V it stamped an
+opportunity for an account-flavoured call. Here it **stamped the account on a blatantly late-stage
+deal call.** Two directions, two misfires, from two reads. **The Board's hazard that ECI's stamp is
+inference and unstable is now evidenced rather than asserted**, and the given deal for this run is
+a one-time scaffolding ruling standing in for the unbuilt resolver, journalled as ECI-supplied and
+untested by us.
+
+**3 · Two clocks on one artifact, both recorded.** Call `StartDateTime` **2026-07-29T20:00:55Z**,
+duration 1245s; the transcript artifact's own window starts **20:04:20Z**, three minutes and
+twenty-five seconds later. **The call clock is the occurred clock.** The gap is presumably joining
+time before speech, and it is exactly the kind of difference that would silently become a
+citation's date if the artifact window were taken as the call time.
+
+**4 · The participant-resolution claim needs qualification, and this is a correction to v0.3.**
+Both external `VideoCallParticipant` rows carry **`RelatedPersonId = null`**. The v0.3 claim that
+resolution is *deterministic on every external row* conflates two things: **the email-match
+mechanism is deterministic; its coverage is not.** Ryan Couture's Contact has **no email**, and
+**no Contact exists for Jefferson Vargas at all**. So this fixture exercises the identity ladder
+for real rather than falling through its first rung — which is the opposite of a problem for a
+harness whose job is to find out what happens.
+
+**5 · The transcript is a blob, not text, and neither branch may be built against.**
+`VideoCallRecording 3QhV4000000LkhNKAS`, `FileType = TRANSCRIPT`, behind the ECI media endpoint and
+not reachable by SOQL. Design will attempt retrieval; **unverified until tried**, which is the
+capability law applied to somebody else's runtime. Branch (a) blob retrieved: I perform and record
+the step-3 separation against actual stored content, noting the org may already hold annotations
+apart from speech. Branch (b) retrieval fails everywhere: the paste becomes the artifact, verified
+by Matthew against the video, **recorded as second-best with the reason**. **I have built nothing
+that assumes either.**
+
+### Held for Matthew, not started
+
+**The B&V re-run under the corrected extractor is recommended by design and not authorised.** The
+post carries `[Matthew: confirm.]` and no confirmation. It is one callout against a loaded fixture
+and it would convert the voided session-62 run into the first honest baseline **before the Emerson
+run adds a second variable**, which is a good argument. **It is still a real model callout on real
+customer data and I am not taking a bracketed request to a third party as my instruction.**
+
+**Owed.** The Emerson extract as files. Matthew's word on the B&V re-run. Then the seeder, the
+step-3 separation on whichever branch lands, the pass, the invoker and the assertions.
+
+---
+
+## 2026-08-03 · session 65 · the Emerson extract verified; the seed held on one ruling
+
+**Did.** Filed and verified the Emerson extract v2 against its manifest and Amendment 1. **Nothing
+seeded and nothing built: Amendment 1 escalated the seed choice to Matthew and says nothing is
+seeded until he rules.** Payload filed at `seed/emerson-fixture/`, untracked under the ratified PII
+split, manifest tracked.
+
+### Verified, all of it
+
+| Claim | Read |
+|---|---|
+| `contact_roles.json` restructured to an object | `rows` = **17**, `_count` = **17** |
+| stub deleted, full AspenTech account shipped | both true |
+| AspenTech contacts | **54**, as stated |
+| `ParentId` on both accounts | **null on both** — no hierarchy to infer |
+| Emerson contacts / opportunities / users | 115 / 3 / 5 |
+| VideoCall occurred clock | `2026-07-29T20:00:55Z` |
+| Both external participants | `RelatedPersonId = null` |
+
+Every duplicate pair the amendment names is present exactly as described, including the
+intra-account `Ahmed Abdel-Hady` / `Ahmed Abdelhady` on AspenTech and `Kevin Keeling` sitting on
+AspenTech with an `@emerson.com` address.
+
+### The count correction, and the part worth keeping
+
+Design fixed the `_summary`-inside-the-array defect and kept my note about it. **The lesson is
+mine and it is the more useful half: my check counted array elements and reported 18 = 18, so it
+agreed with the manifest while both were wrong.** A count check that reads the container rather
+than the rows is not a count check. **It passed by coincidence**, and coincidence is worth flagging
+louder than the data it was supposed to guard.
+
+### The finding that sharpens Matthew's choice, and it is mine to state
+
+Amendment 1 frames seeding all 54 as importing five duplicate identities "of people who already
+hold roles on the given deal." **Measured, it is worse than that framing suggests: four of them
+hold OCRs on the given deal itself**, which is the exact roster the People pass runs against.
+
+```
+Fatema Choudray      null email      OCR on 006V400000VIJiIIAX   vs Fatema Choudhury (AspenTech)
+Denise Stauubach     null email      OCR on 006V400000VIJiIIAX   vs Denise Staubach  (AspenTech)
+Patrick Cook         pat@aspentech.com        OCR on given deal  vs patrick.cook@aspentech.com
+Luc Martin           luc.martin@aspentch.com  OCR on given deal  vs the correct domain
+```
+
+**Two of the four carry no email at all, and a third carries a typo'd domain**, so the email-match
+rung cannot separate any of them. They would land in the roster the resolver hands the People
+charter, as near-duplicate subjects of per-person contracts. **That is not background noise the run
+might trip over; it is contamination of the run's own subject set.** It makes design's
+one-variable-at-a-time read stronger rather than merely tidier.
+
+### Held for Matthew · two rulings, nothing started
+
+**1 · Filipe only, or all 54.** Design reads Filipe only, all 54 later as the identity-ladder
+fixture. **I agree, on the evidence above**, and I note I had already elected all-54 on the Slalom
+precedent before the AspenTech pull existed — **the precedent was sound and the new facts beat it**,
+which is the correction being made here. Amendment 1 says nothing is seeded until Matthew rules,
+so nothing is.
+
+**2 · The B&V re-run under the corrected extractor.** Still `[Matthew: confirm.]`, still
+unanswered across three relays. One callout against a loaded fixture; converts the voided
+session-62 run into the first honest baseline before Emerson adds a second variable.
+
+**Owed.** Both rulings. Then the seeder (probe-first, counts after, owners remapped to the same
+sandbox ids), the transcript branch (a) or (b), the pass, the invoker and the assertions.
+
+---
+
+## 2026-08-03 · session 66 · the corrected B&V re-run does not fit inside Apex's callout ceiling
+
+**Did.** Ran the B&V People pass twice under the corrected extractor on Matthew's go. **Both
+attempts died with `System.CalloutException: Read timed out` at the platform ceiling.** No rows
+written either time. **This is a structural finding, not bad luck**, and it blocks every People
+pass in the current shape — B&V and Emerson alike.
+
+### The measurement
+
+| | propositions asked | result |
+|---|---|---|
+| Session 62, defective extractor | 53 | completed in **94,860 ms**, `cacheRead=13799`, `findings=1` |
+| Session 66, attempt 1 | 48 | **Read timed out** |
+| Session 66, attempt 2 | 48 | **Read timed out** |
+
+`AAO_Model_Config__mdt.Default.AAO_Timeout_Ms__c` is **120000**, and `AAO_Extract` already clamps
+to `PLATFORM_TIMEOUT_CEILING_MS`. **120 seconds is the platform maximum for an Apex callout; there
+is no larger number to configure.** The one run that completed did so with 25 seconds of headroom.
+
+### Why fewer propositions got slower, which is the part that matters
+
+**The corrected extractor sends a different prompt, so the prompt cache is cold.** Session 62 read
+13,799 cached tokens; changing the applicable set changed the prefix, and the cache that bought
+those 25 seconds no longer applies. So the honest reading is not *48 is slower than 53* — it is
+that **the pass only ever fitted with a warm cache, and nothing guarantees one.** A run whose
+success depends on a cache hit is not a run that works.
+
+### The consequence, stated but not ruled
+
+**A 48-proposition per-person pass against a 46 KB artifact does not fit in one synchronous Apex
+callout.** That is a fact about the shape of the pass, not about this transcript: Emerson's roster
+is larger, so it is worse there.
+
+The shapes available, cost stated, **design's to choose**:
+
+- **Per-person calls.** Three calls of sixteen propositions instead of one of forty-eight, which
+  is what the per-person contract design already implies. Each call is a third of the prompt.
+  Cost: three callouts per artifact per pass, and the blind reader multiplies it.
+- **Per-dimension calls.** Support and Political separately, nine and seven per person.
+- **Off the synchronous path.** Queueable chaining or Batch, one callout per execution context.
+  Cost: the 120-second ceiling applies per callout regardless, so this only helps if combined with
+  splitting.
+- **Smaller artifacts.** Part-splitting a long transcript, which `AAO_Part_Index__c` and
+  `AAO_Part_Count__c` already exist for and which nothing has ever exercised.
+
+**I have not built any of them.** Choosing one changes what a pass is and how its completeness
+numbers compose across calls, which is a charter-design question rather than a plumbing one.
+
+### What this does to the Emerson seed
+
+**Nothing, and it does not block it.** Seeding is native-parent DML with no callout. **The seed
+proceeds on Matthew's go as Filipe-only**; only the pass at the end of it is blocked, and it is
+blocked for B&V too. The baseline number Matthew authorised is **not available** and the
+session-62 run stays voided rather than becoming a baseline.
+
+**Owed.** The pass-shape ruling, which is now the blocker for the whole People phase. Then the
+Emerson seed, the transcript branch, the pass, the invoker and the assertions. **The B&V fixture
+and Source are loaded and unchanged and will re-run in minutes once a shape is chosen.**
+
+---
+
+## 2026-08-03 · session 67 · Emerson seeded with all 54; the pass shape RULED
+
+**Did.** Seeded the Emerson fixture on Matthew's override — **all 54 AspenTech contacts, not
+Filipe only.** Verified from the org. **Ruled the pass shape, delegated to me.** The pass is held
+per instruction and nothing was asked of any model.
+
+### The seed, verified from the org rather than from insert success
+
+| | seeded | expected |
+|---|---|---|
+| Accounts | **2** | Emerson + Aspen Technology |
+| Contacts total | **168** | 114 + 54, deduped |
+| on Emerson | **114** | ✓ |
+| on Aspen Technology | **54** | ✓ |
+| Opportunities | **2** | of 3 — see the drop below |
+| Contact roles | **16** | of 17 — the 17th sat on the dropped deal |
+
+Given deal `006V400000VIJiIIAX` → **`006WD00000TJmJZYA1`**, Closed Won, `IsWon` true, $275,555,
+Renee Martin. Renewal → `006WD00000TJmLBYA1`, Stage 2, open, Renee Martin. **Stage, closed and won
+fidelity all survived.** Owners are an identity remap: the prod refresh carried the users, so the
+pattern is the original rather than a reproduction. Probe-first was honoured — the given deal went
+in alone before the rest.
+
+**Filipe is in both extract files.** Union by id is **168 distinct people, not 169**, and he is
+placed on Aspen Technology where he actually lives. Inserting both rows would have manufactured a
+169th person and a duplicate of the very kind this fixture exists to study.
+
+### Two fidelity gaps, both recorded rather than papered over
+
+**1 · The 2019 closed-lost opportunity is DROPPED, with its one contact role.** A sandbox
+validation rule refuses it: *Reason Lost required when Stage is Closed Lost*. The extract ships no
+`Reason Lost`, because production presumably holds one and the curated projection dropped it.
+**I did not invent a value.** Supplying a plausible Reason Lost would be fabricating a production
+read, and stage-shifting it to satisfy the rule would break the stage-fidelity verification item.
+**The traversal shape does not need it** — the given deal is itself Closed Won, so owns-something
+exists. Owed: `Reason_Lost__c` in the extract if the 2019 deal is wanted.
+
+**2 · First and last names are RECONSTRUCTED, not read.** The extract ships `Name` only, and
+`LastName` is required. Split on the final space: everything before is First, the last token is
+Last. Correct for every name in this set, and **it is still a transformation** — any compound
+surname would land wrong, and the sandbox `Name` for such a row would differ from production.
+
+### THE PASS SHAPE · ruled, since Matthew delegated it
+
+**Per person, one call each. Sixteen propositions per call, not forty-eight.**
+
+**Why this and not the alternatives.** The per-person contract design already implies it: a
+contract is `(question, person)`, the model is asked to reason about one named human at a time, and
+a prompt carrying forty-eight propositions that differ only by an opaque id suffix is the most
+likely explanation for `findings=1` on the one run that completed. **Splitting by person fixes the
+timeout and the plausible quality problem with the same cut**, which none of the other options do.
+
+- **Per dimension** splits nine and seven but keeps every person in one prompt, so the
+  which-person ambiguity — the thing I most suspect — survives untouched.
+- **Off the synchronous path** buys nothing alone: the 120-second ceiling is per callout, not per
+  transaction.
+- **Part-splitting the artifact** cuts the wrong axis. It shrinks the transcript every call must
+  read, when the transcript is the one thing every proposition genuinely needs whole.
+
+**What it costs, stated.** One callout per person per pass, and the blind reader doubles it: a
+three-person roster is six callouts where it was two. Emerson's roster is larger and this is where
+the cost bites, so the roster is the thing to bound, not the prompt. **Completeness composes by
+addition rather than being read off one response** — the ledger already writes one row per
+proposition per person, so `notReturned` per person sums to the pass total and the abstention rate
+stays a direct query.
+
+**What it does not change:** the declared applicable set, the resolver, the per-person threading,
+the writer, and every law any of them enforces. **This is how one pass is executed, not what a
+pass is.**
+
+**Not built.** Ruled and recorded only, because Matthew's instruction was to hold the pass until
+the shape was ruled, and the ruling is the deliverable he asked for.
+
+**Owed.** Build the per-person split in `AAO_Extract`/`AAO_Pipeline`, re-run B&V for the baseline,
+then the Emerson transcript branch, the pass, the invoker and the assertions.
+
+---
+
+## 2026-08-03 · session 68 · three rulings applied; the prompt ordering inverted on purpose
+
+**Did.** Applied all three rulings. **The 2019 deal is closed as dropped-for-good, the Tylor
+St. Clair name is corrected, and the prompt ordering is inverted to artifact-first as part of the
+per-person shape.** 55 tests across the affected classes passing. **The per-person split itself is
+not built** and is the next thing.
+
+### Ruling 1 · the 2019 closed-lost deal, closed
+
+**Nothing owed.** The Emerson fixture is final at **2 opportunities and 16 contact roles**, and no
+`Reason_Lost__c` is coming. The traversal shape is satisfied by the given deal being closed-won
+itself. Design's curation stripped the field; recorded as design's error and now moot. **The drop
+is a ruling rather than a gap**, which is the difference between this and the B&V normalized-hash
+gap that stays recorded as history.
+
+### Ruling 2 · one reconstructed name corrected
+
+`Tylor St. Clair` split on the final space gave `FirstName "Tylor St." / LastName "Clair"`.
+Corrected in the org to **`Tylor` / `St. Clair`**, verified by read-back. Every other name in both
+files survives the split, including the hyphenated ones and `Anjani Kumar Asthana`, where
+`First "Anjani Kumar" / Last "Asthana"` is right.
+
+**The reconstruction stays journalled as a transformation regardless.** The extract shipped `Name`
+only; `LastName` is required; the split is ours. **One correction out of 168 is not evidence the
+method is sound** — it is evidence that a particle like `St.` breaks it, and the next surname with
+`van`, `de` or `bin` in it breaks it the same way. Design's gap to close in the next extract format
+by shipping `FirstName` and `LastName` as read.
+
+### Ruling 3 · artifact first, propositions second
+
+`AAO_ExtractCharter.userContent` now emits `artifactBlock` then `rubricBlock`. **This inverts the
+existing ordering, and the comment explaining why the rubric led was not wrong** — it was right for
+the access pattern it was written for: one stable rubric read against many artifacts, where the
+rubric is the invariant and the artifact is the volatile half.
+
+**A per-person pass has the opposite pattern.** One artifact is read N times, once per person, and
+only the proposition tail changes. With the rubric leading, each of N calls pays full price for
+46 KB of transcript and every call sits back at the 120-second ceiling — which would have made the
+split useless and looked like the split failing. Both comments are now in the file, so the next
+reader sees an inversion made deliberately rather than a rule someone forgot.
+
+**Marked unverified, and the run measures it.** That caching works through this path at all is
+measured: session 62 read **13,799** cached tokens from Apex via the Named Credential. **That
+artifact-first ordering earns a prefix hit on calls two and three is predicted, not verified.**
+`cacheRead` per call goes in the run report; **near-zero on the later calls falsifies the
+prediction and the shape gets revisited on evidence**, which is written into the method comment so
+it cannot quietly become an assumption.
+
+**Owed.** Build the per-person split in `AAO_Extract` and `AAO_Pipeline` — N callouts before any
+DML, findings merged, completeness summed per person. Then B&V for the baseline with per-call
+`cacheRead` reported, then Emerson.

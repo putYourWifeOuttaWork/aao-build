@@ -69,7 +69,7 @@ public class AAO_Gate1 {
                 AAO_Synthetic.MARK = false;
             }
             out.add('opportunity ' + deal + ' ' + oppId);
-            out.add('contracts in org ' + AAO_Pipeline.liveContracts().size());
+            out.add('contracts in org ' + AAO_Pipeline.inventoryForHarness().size());
             return 'GATE1 RESET\n  ' + String.join(out, '\n  ');
         } finally {
             AAO_Ingest.AUTO = priorAuto;
@@ -338,7 +338,7 @@ public class AAO_Gate1 {
                 );
             }
 
-            List<String> codes = new List<String>(AAO_Pipeline.liveContracts().keySet());
+            List<String> codes = new List<String>(AAO_Pipeline.inventoryForHarness().keySet());
             codes.sort();
             for (String code : codes) {
                 Map<String, Object> truth = truthByCode.get(code);

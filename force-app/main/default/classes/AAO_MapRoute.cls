@@ -188,7 +188,7 @@ public class AAO_MapRoute {
     ) {
         Outcome o = new Outcome();
 
-        Map<String, AAO_Evidence_Contract__c> contracts = AAO_Rubric.byCode(synthetic);
+        Map<String, AAO_Evidence_Contract__c> contracts = AAO_Rubric.inventoryByCode(synthetic);
         AAO_Evidence_Contract__c ec = contracts.get(CODE);
         if (ec == null) {
             throw new MapRouteException(

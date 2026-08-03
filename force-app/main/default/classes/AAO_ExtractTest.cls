@@ -515,7 +515,7 @@ private class AAO_ExtractTest {
         Test.setMock(HttpCalloutMock.class, new Mock(envelope(findings, 'end_turn')));
 
         Test.startTest();
-        AAO_Extract.Result r = AAO_Extract.run(src.Id);
+        AAO_Extract.Result r = AAO_Extract.run(src.Id, AAO_Rubric.inventory());
         Test.stopTest();
 
         System.assertEquals(4211, r.usage.inputTokens);
@@ -556,7 +556,7 @@ private class AAO_ExtractTest {
         String message;
         Test.startTest();
         try {
-            AAO_Extract.run(src.Id);
+            AAO_Extract.run(src.Id, AAO_Rubric.inventory());
         } catch (AAO_Extract.ExtractException e) {
             threw = true;
             message = e.getMessage();
@@ -588,7 +588,7 @@ private class AAO_ExtractTest {
         String message;
         Test.startTest();
         try {
-            AAO_Extract.run(src.Id);
+            AAO_Extract.run(src.Id, AAO_Rubric.inventory());
         } catch (AAO_Extract.ExtractException e) {
             threw = true;
             message = e.getMessage();
@@ -618,7 +618,7 @@ private class AAO_ExtractTest {
         String message;
         Test.startTest();
         try {
-            AAO_Extract.run(src.Id);
+            AAO_Extract.run(src.Id, AAO_Rubric.inventory());
         } catch (AAO_Extract.ExtractException e) {
             threw = true;
             message = e.getMessage();
@@ -643,7 +643,7 @@ private class AAO_ExtractTest {
         Boolean threw = false;
         Test.startTest();
         try {
-            AAO_Extract.run(src.Id);
+            AAO_Extract.run(src.Id, AAO_Rubric.inventory());
         } catch (AAO_Extract.ExtractException e) {
             threw = true;
         }
@@ -911,7 +911,7 @@ private class AAO_ExtractTest {
         Test.setMock(HttpCalloutMock.class, mock);
 
         Test.startTest();
-        AAO_Extract.run(src.Id);
+        AAO_Extract.run(src.Id, AAO_Rubric.inventory());
         Test.stopTest();
 
         String body = mock.sent[0];

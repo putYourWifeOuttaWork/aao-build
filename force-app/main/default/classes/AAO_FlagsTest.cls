@@ -177,7 +177,7 @@ private class AAO_FlagsTest {
 
         System.assertEquals(
             0,
-            AAO_Rubric.contracts().size(),
+            AAO_Rubric.inventory().size(),
             'Nothing unmarked exists yet, so the product set is empty. An empty product ' +
             'set is the cold-start condition, not a view of the fixture.'
         );
@@ -213,7 +213,7 @@ private class AAO_FlagsTest {
         System.assertEquals(1, raised, 'The product set has exactly one gating question.');
         System.assertEquals(
             1,
-            AAO_Rubric.contracts().size(),
+            AAO_Rubric.inventory().size(),
             'And the fixture is still invisible to it.'
         );
         System.assertEquals(
@@ -229,12 +229,12 @@ private class AAO_FlagsTest {
     static void theDefaultReadIsTheProductSetNotTheFixture() {
         scaffold();
         System.assert(
-            AAO_Rubric.contracts(true).size() > 0,
+            AAO_Rubric.inventory(true).size() > 0,
             'The fixture exists and has to be asked for by name.'
         );
         System.assertEquals(
             0,
-            AAO_Rubric.contracts().size(),
+            AAO_Rubric.inventory().size(),
             'A reader that forgets the distinction gets the product questions and never ' +
             'the fixture, which is the direction an accident should fail in.'
         );

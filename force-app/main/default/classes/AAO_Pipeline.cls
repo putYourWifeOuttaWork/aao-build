@@ -248,12 +248,51 @@ public class AAO_Pipeline {
                 return o;
             }
 
-            AAO_Extract.Result ex = AAO_Extract.run(src.Id, resolved.contracts.values());
-            o.extraction = ex;
-            o.charter = ex.charter;
-            o.charterVersion = ex.charterVersion;
+            // PER-PERSON SPLIT, ruled. One call per subject, sixteen propositions instead of
+            // forty-eight, because a forty-eight-proposition prompt against a 46 KB artifact
+            // does not fit inside Apex's 120-second callout ceiling and because propositions
+            // that differ only by an opaque id suffix are the likeliest reason the one run that
+            // ever completed returned a single finding.
+            //
+            // **Every callout happens before any DML in this block, and that ordering is load
+            // bearing** — Apex forbids a callout after DML in the same transaction, so the loop
+            // collects proposals and writes nothing until it is done.
+            Map<String, List<AAO_Evidence_Contract__c>> byPerson =
+                new Map<String, List<AAO_Evidence_Contract__c>>();
+            for (AAO_Evidence_Contract__c ec : resolved.contracts.values()) {
+                Id who = AAO_PeopleContracts.contactOf(ec.AAO_Proposition_Code__c);
+                // Contracts carrying no person keep their own group rather than being spread
+                // across the people, so a non-People charter in the declared set is asked once.
+                String key = who == null ? 'NO_SUBJECT' : String.valueOf(who);
+                if (!byPerson.containsKey(key)) {
+                    byPerson.put(key, new List<AAO_Evidence_Contract__c>());
+                }
+                byPerson.get(key).add(ec);
+            }
 
-            proposals = fromModel(ex, src, contracts, o, abstentionByContract);
+            proposals = new List<Proposal>();
+            List<String> cacheLine = new List<String>();
+            Integer callNo = 0;
+            for (String key : byPerson.keySet()) {
+                callNo++;
+                AAO_Extract.Result ex = AAO_Extract.run(src.Id, byPerson.get(key));
+                o.extraction = ex;
+                o.charter = ex.charter;
+                o.charterVersion = ex.charterVersion;
+                // The falsification condition, reported rather than argued. Artifact-first
+                // ordering is PREDICTED to earn a prefix hit on calls two onward; near-zero
+                // cacheRead there falsifies the shape and it gets revisited on evidence.
+                cacheLine.add(
+                    'call' + callNo +
+                    '(' + byPerson.get(key).size() + 'p)' +
+                    ' cacheRead=' + (ex.usage == null ? 'n/a' : String.valueOf(ex.usage.cacheReadTokens)) +
+                    ' in=' + (ex.usage == null ? 'n/a' : String.valueOf(ex.usage.inputTokens)) +
+                    ' findings=' + (ex.findings == null ? 0 : ex.findings.size())
+                );
+                proposals.addAll(fromModel(ex, src, contracts, o, abstentionByContract));
+            }
+            o.note = (String.isBlank(o.note) ? '' : o.note + ' | ') +
+                'PER-PERSON ' + callNo + ' calls :: ' + String.join(cacheLine, ' :: ');
         } else {
             Map<String, Object> fixture = AAO_Seed.fixture();
             List<Object> staged = stagedFor(fixture, src.AAO_Artifact_SHA256__c);

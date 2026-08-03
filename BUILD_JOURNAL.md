@@ -6299,3 +6299,62 @@ it cannot quietly become an assumption.
 **Owed.** Build the per-person split in `AAO_Extract` and `AAO_Pipeline` — N callouts before any
 DML, findings merged, completeness summed per person. Then B&V for the baseline with per-call
 `cacheRead` reported, then Emerson.
+
+---
+
+## 2026-08-03 · session 70 · the per-person split is built and the B&V baseline still times out
+
+**Did.** Built the per-person split and ran B&V. **`System.CalloutException: Read timed out` again.**
+No rows written. **The prediction behind the shape is now in doubt on evidence, which is what the
+falsification condition existed for**, and the decisive measurement is named below rather than
+attempted on a dying context.
+
+### What was built
+
+`AAO_Pipeline` groups the resolved set by subject contact and makes **one `AAO_Extract.run` call per
+person**, sixteen propositions each instead of one call of forty-eight. Contracts carrying no
+person keep their own group, so a non-People charter in a declared set is asked once rather than
+smeared across the people. **Every callout happens before any DML**, which the callout-after-DML
+prohibition makes load bearing, and the loop accumulates proposals and writes nothing until done.
+Per-call `cacheRead`, `inputTokens`, proposition count and finding count are composed into the
+outcome note, as the run report requires.
+
+### The result, and the reasoning it undermines
+
+**Third consecutive timeout at the 120,000 ms ceiling**, now with a third of the propositions per
+call. That points somewhere different from where I pointed.
+
+**Session 62's completed run had a warm cache: 13,799 cached tokens, 94,860 ms.** Every attempt
+since has been cold, because both the applicable-set fix and the artifact-first inversion changed
+the prompt prefix. So the emerging reading is:
+
+**the 46 KB artifact, read cold, is the dominant cost — not the proposition count.**
+
+If that is right, my per-person reasoning is **half wrong in a way worth stating plainly.** Reducing
+propositions per call does not reduce the artifact each call must read, and **call one can never hit
+a cache**, so call one always pays cold whatever the split. Splitting by person cannot rescue a
+shape whose first call does not fit. The part of the reasoning that survives is the which-person
+ambiguity argument, which was about answer quality and never about latency.
+
+**This does not yet falsify artifact-first ordering** — that prediction is about calls two onward and
+no call two has ever run. It falsifies the assumption underneath the whole shape: that proposition
+count was the binding constraint.
+
+### The decisive measurement, named and NOT taken
+
+**Time one single-person call — sixteen propositions, cold — and read whether it fits under 120
+seconds at all.** That one number separates two very different worlds:
+
+- **It fits.** The split works, the timeouts were the cold first call plus latency variance, and the
+  cache prediction is testable from call two.
+- **It does not fit.** No split on the proposition axis can work, because the artifact is the cost.
+  The axis that matters becomes the artifact: part-splitting via `AAO_Part_Index__c` /
+  `AAO_Part_Count__c`, which I dismissed as *cutting the wrong axis* and which this evidence would
+  make the right one. Or the callout leaves Apex entirely.
+
+**I did not take the measurement**, because a context ending mid-callout would leave an unreported
+result, which is worse than an unreported plan.
+
+**Owed.** That measurement first, before any further shape work. The shape ruling stands as ruled
+until evidence moves it, and this entry is the evidence starting to move it. B&V and Emerson
+fixtures are loaded and unchanged; nothing has been asked of any model that wrote a row.

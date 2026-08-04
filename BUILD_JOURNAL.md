@@ -7556,3 +7556,102 @@ text field is carried now so the receipt can join later without backfilling a co
 Also unbuilt, deliberately: the two writers. Nothing yet inserts an `AAO_Pair__c` — that is
 call 1's and call 2's Apex, and it follows the §P8.9 wording updates and the 24 June recall
 gate.
+
+---
+
+## 2026-08-05 · session 76 · addendum 06 absorbed · call 1 exists, and omission is now catchable
+
+273 tests, 100% pass, the same one pre-existing unrelated failure. Two classes: `AAO_PairLedger`
+(the arithmetic ruling 1 named) and `AAO_LocateCharter` (call 1, with §P8.9 written in).
+
+### Ruling 1 · the index cannot detect zero, and now something can
+
+Matthew ratified the `run|ref|stage` unique index and named its limit in the same breath.
+**The index refuses more than one; it cannot detect zero.** A located pair call 2 silently
+never disposes of breaks one-for-one exactly as badly as a duplicate, and no insert ever
+collides to reveal it. "Exactly one" is two assertions.
+
+`AAO_PairLedger.assertOneForOne(runKey, afterVerify)` is the second one. It compares counts
+between the row sets and throws; it writes no row, because the counts are the proof (§P8.0)
+and a mismatch is always our bug per the parse law.
+
+Three things it does deliberately:
+
+- **A `None` or `Ambiguous` counts as a disposition.** Counting only the named ones would
+  make a correct refusal look like an omission, which is precisely the confusion the
+  abstention rows used to create.
+- **`afterVerify` is an argument, not read off the data.** Before call 3 a pass with no
+  verdicts is correct; after call 3 the identical rows are an omission. Inferring it from
+  the shape would be a state with two physical shapes, which is what the explicit stage
+  picklist exists to refuse.
+- **The verdict count compares against identified-to-a-person only.** A `None` row is not
+  owed a verdict; there is no claim in front of the reader on it.
+
+### Ruling 2 · Participant is the grain, recorded as the model
+
+Absorbed as stated, and it is a better reason than mine: the pass operates on **who was on
+the call**, and Contact is a resolution *outcome* of a person rather than their identity.
+Shadow people, mentioned-but-absent people with no last name, participants awaiting match —
+all exist at Participant and only sometimes acquire a Contact. **Contact resolution hangs
+off Participant and never gates it.** Owed to Model & Flow at its bump.
+
+### Call 1 exists · `AAO_LocateCharter`, version `locate-2.0.0`
+
+The §P8.9 item could not be "wording into call 1" because call 1 had no code. Built with the
+four rulings written in from the start rather than patched over a neutral draft.
+
+**The prohibition law is a missing field, not a sentence.** There is no `person`, `speaker`,
+`contact`, `who_said` or `subject` property in the schema, and a test asserts each absence.
+Same move `AAO_Pair__c` makes at the database: a charter instruction is a request, a missing
+field is a refusal.
+
+**§P8.9 is asserted literally in the tests, and that is on purpose.** Those rulings came from
+a grading where every single disagreement was the guarded reader establishing LESS than the
+grader, zero over-reads. An edit that quietly softens one of them is the one regression this
+build cannot see from its own output, because **an under-read leaves no trace anywhere**. So
+the test asserts the strings, and the reasons travel with the rules in the prompt.
+
+### A reversal, recorded rather than left to look like an accident
+
+`AAO_InventoryCharter` 1.1.0 says one sentence bearing on three families is **one item**.
+§P8.9 ruling 2 says it is **three pairs**. Both charters are live in this org and would
+otherwise read as disagreeing by accident. A test asserts the old rule still exists and the
+new schema says `One entry per ESTABLISHMENT, not per sentence`.
+
+### The meaning vocabulary, and the coupling it makes visible
+
+Meanings are runtime-closed per family. Fifteen of the seventeen allow exactly one value,
+because the propositions point one way; the two carrying real choice are sentiment (four
+states) and criteria typing (`FORMAL`/`INFORMAL`). **A single-valued enum is not noise**: it
+is what lets the parser reject a `MENTOR` on a Buyer Role pair as our bug rather than store a
+meaning nothing can read.
+
+A test walks `AAO_PassContracts.specs()` and asserts every declared code has a meaning. Mint
+an eighteenth contract without one and call 1 would offer the question, the parser would
+reject every pair against it, and **the question would be answered as silence** — which is
+the failure this build spent three sessions learning to see.
+
+### Two parser choices that cut toward reporting
+
+- **Missing coverage becomes `Partial`, never a discard.** Partial is the instructed default
+  under doubt, and an omitted value is doubt by definition. Discarding the pair would be an
+  under-read created by our own parser.
+- **Every refusal keeps its reason** in `Result.rejected`. A silently dropped pair is exactly
+  how `AAO_Interpretation__c` lost two of nine refusals on the 3 August run.
+
+### One deviation from §P8.1's schema, named rather than slipped in
+
+§P8.1 gives call 1 a `resolution` object. It is emitted here as `deal` and `account` and
+**never written anywhere**: the Source already carries both, and asking a model to re-resolve
+what the record answers is asking a question the data has. It is collected so a
+**disagreement is a finding**, which is a different thing from a resolution. There is no
+field on `AAO_Pair__c` to receive it, and a test says so.
+
+Same reasoning as the speaker key, which is derived in Apex from the offsets and the roster
+rather than asked of the model.
+
+### Still not built, named so the queue is honest
+
+Nothing calls this charter yet. The runner, the byte-location step that turns `answer_text`
+into offsets plus occurrence, call 2 and call 3 are the 24 June gate's work and the Emerson
+run's. The run receipt object is still owed by §P8.0.

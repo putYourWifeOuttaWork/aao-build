@@ -244,6 +244,98 @@ private class AAO_PairLedgerTest {
         );
     }
 
+    // ============================ the half the unique index cannot see (ruling 1) ===
+
+    @isTest
+    static void theIndexRefusesMoreThanOne_TheAssertionCatchesZero() {
+        // Matthew, 5 August: the index refuses more than one and cannot detect zero. A
+        // located pair call 2 silently never disposes of breaks one-for-one just as surely
+        // as a duplicate, and no insert ever collides to reveal it.
+        insert located('a1');
+        insert located('a2');
+        insert identified('a1', 'Identified');
+
+        Boolean threw = false;
+        try {
+            AAO_PairLedger.assertOneForOne(RUN, false);
+        } catch (AAO_PairLedger.ArithmeticException e) {
+            threw = true;
+            System.assert(
+                e.getMessage().contains('never disposed of'),
+                'The message must name the omission, since the index cannot. Got: ' +
+                e.getMessage()
+            );
+            System.assert(
+                e.getMessage().contains('our bug'),
+                'A mismatch is always our bug, never a model behaviour, per the parse law.'
+            );
+        }
+        System.assert(threw, 'An undisposed pair must throw loudly.');
+    }
+
+    @isTest
+    static void aRefusedIdentificationIsADispositionAndSatisfiesTheLaw() {
+        // Counting only the named ones would make a correct refusal look like an omission,
+        // which is exactly the confusion the abstention rows used to create.
+        insert located('b1');
+        insert located('b2');
+        insert identified('b1', 'None');
+        insert identified('b2', 'Ambiguous');
+
+        AAO_PairLedger.Counts c = AAO_PairLedger.assertOneForOne(RUN, false);
+        System.assertEquals(2, c.located, 'unit: pairs');
+        System.assertEquals(2, c.disposed, 'unit: pairs');
+        System.assertEquals(0, c.identifiedToAPerson, 'unit: pairs');
+        System.assertEquals(2, c.identificationsRefused, 'unit: pairs');
+        System.assert(c.toString().contains('(unit: pairs)'), 'Every counter names its unit.');
+    }
+
+    @isTest
+    static void theForOneHalfCountsOnlyWhatWentInFrontOfTheReader() {
+        insert located('c1');
+        insert located('c2');
+        AAO_Pair__c named = identified('c1', 'Identified');
+        insert named;
+        insert identified('c2', 'None');
+
+        // Before call 3 the same data is correct, and after call 3 it is an omission. That
+        // is why afterVerify is an argument rather than something read off the rows: a state
+        // inferred from the shape of the data is a state with two shapes.
+        AAO_PairLedger.assertOneForOne(RUN, false);
+
+        Boolean threw = false;
+        try {
+            AAO_PairLedger.assertOneForOne(RUN, true);
+        } catch (AAO_PairLedger.ArithmeticException e) {
+            threw = true;
+            System.assert(
+                e.getMessage().contains('not missing verdicts'),
+                'The None row is not owed a verdict. Got: ' + e.getMessage()
+            );
+        }
+        System.assert(threw, 'One identified claim with no verdict must throw.');
+
+        named.AAO_Verification__c = 'Upheld';
+        update named;
+        AAO_PairLedger.Counts c = AAO_PairLedger.assertOneForOne(RUN, true);
+        System.assertEquals(1, c.verified, 'unit: claims');
+        System.assertEquals(1, c.verificationsUpheld, 'unit: claims');
+    }
+
+    @isTest
+    static void theArithmeticIsPerRunAndDoesNotBleedAcrossRuns() {
+        insert located('d1');
+        AAO_Pair__c otherRun = located('d1');
+        otherRun.AAO_Run_Key__c = 'run-2026-08-04-b';
+        insert otherRun;
+
+        System.assertEquals(
+            1,
+            AAO_PairLedger.counts(RUN).located,
+            'Two runs over the same artifact emit the same refs and mean different things.'
+        );
+    }
+
     // ------------------------------------------------------------------- fixtures
 
     private static AAO_Participant__c cachedParticipant;

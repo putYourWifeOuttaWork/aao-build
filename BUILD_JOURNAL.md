@@ -6988,3 +6988,74 @@ tables place people the way the charters say.
 
 Does not prove, and must not be read as: any rate, any coverage number, any latency budget, or
 anything at all about stage 1. **There is still no baseline.**
+
+---
+
+## 2026-08-04 · session 74 · two answers to the adjudication sheet
+
+### S2 for Adam Meloan · `Abstained` / `nobody_said`
+
+Asked which of three things happened. It is the first, and the least like a model failure:
+
+```
+S2#003WD00001PmxZ7YAJ  outcome=Abstained  reason=nobody_said
+                       proposed=None  spans=None  interpretation=None  coverage=None
+```
+
+**No model was ever asked.** Stage 1 surfaced no item that bound to S2 for Adam, so it never
+reached the binder and never reached the blind reader. Apex wrote the silence at zero cost, which
+is what the charter says to do.
+
+**The reason string overstates what was established.** `nobody_said` asserts the transcript is
+silent. What is actually established is that this draw of stage 1 did not surface it. Nothing in
+the pass can separate those, and `model_missed` was reported 0 — a lower bound by construction.
+S2/Adam is therefore recorded as silence on the authority of a read that returned nothing at all
+in ten of fourteen runs this session.
+
+**This is the consequential abstention, because S2 is the only Support question with placement
+power.** `supporter = t.contains('2')` and Mentor needs `{2,4,5}`. Adam's Support row: S1 TRUE
+(places nobody), **S2 nobody_said**, S4 model_declined, S5 blind-refused, and S6/S7/S11/S14/S16
+nobody_said. That is the whole reason `ALTF__Status__c` is null and only Political landed. **The
+one question that could have placed him was never put to a model.** The mirror of the sheet's S1
+finding: S1 is high cost, zero placement power and majority wrong; S2 is total placement power
+and silently did not run.
+
+### The "missing 1" · a unit mismatch in my report, not a lost claim
+
+`16 − 9 = 7` was never required to equal `6`. The counters are in two units:
+
+| counter | increments per | unit |
+|---|---|---|
+| `establishedByBinder` = 16 | `BindItem` in the bind group | **item** |
+| `verificationRejections` = 9 | verify item; denominator `verifyPlan.size()` = 16 | **item** |
+| `claimsEstablished` = 6 | proposal in `byCode.values()` with verdict TRUE | **(contract, person) pair** |
+
+Corroborated in the org: the 6 Upheld pairs carry **10 spans** between them, and **7 pairs carry
+a refusal note against 9 rejections**, so at least two pairs had more than one refused item and
+`AAO_Interpretation__c` keeps only the last one written.
+
+**DEFECT, MINE: `report()` prints item-unit and pair-unit counts adjacent with no label**, which
+is what made the sheet compute a phantom. Not patched in this entry; named so the fix is one
+change and not a rediscovery.
+
+### Correction to the sheet's §3, rows 1 and 2
+
+Rows 1 and 2 display the same span for PO9 and PS7. PS7's establishing span is *"That needs to go
+to Scott and Matt and Brian. Like that's Matt, that was a very specific ask from Matt last week.
+So I just want to make sure we keep that moving."* Both pairs carry two spans and the display
+truncated to the shared first one. The grades are unaffected; the quote attributed to PS7 in the
+sheet is not the one that established it.
+
+### Full disposition of all 48 pairs, attempt 5
+
+| outcome | reason | n |
+|---|---|---|
+| Abstained | nobody_said | 23 |
+| Abstained | (UNVERIFIED) | 11 — of which **6 blind-refused**, **5 binder-UNVERIFIED** |
+| Abstained | model_declined | 8 |
+| Upheld | — | 6 |
+
+**The 9 rejections are still ungraded and remain the highest-value ungraded evidence**, exactly as
+the sheet says. Note for whoever grades them: 5 of the 11 UNVERIFIED never reached the blind
+reader at all — the binder itself declined — so the blind reader's catch rate must be computed
+against the 6 it refused plus the 3 refusals absorbed by pairs that survived, not against 11.

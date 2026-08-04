@@ -7243,3 +7243,83 @@ ungraded material.
 
 **Recorded as a finding with its denominator and its ambiguity, not as a verdict.** It relocates
 the question from the read to the reader, which changes where the next measurement points.
+
+---
+
+## 2026-08-04 · session 75 · the fix bundle · one repair, four symptoms, verified on real data
+
+### D1 · verification status per span
+
+`AAO_Model.Span` gains `verification` (`UPHELD` / `REFUSED` / null) and `AAO_Model.upheld()` is
+the one filter every reader calls. Stage 4 stamps each span from `verifyOk` **at the item that
+was actually verified**, not from the pair's conclusion — which is the whole point, because a
+pair can survive on one span while another was refused, and before this the refused one stayed on
+the Answer as a citation.
+
+**Refused spans are kept and marked, never deleted**, per design's lean and the standing law.
+Null passes the filter deliberately: legacy rows predate the field, and treating unknown as
+refused would silently blank every citation written before today. **Only REFUSED is refused.**
+
+This also closes a data loss the defect caused: `AAO_Interpretation__c` is one field and kept only
+the **last** refusal per pair, so of the 3 August run's 9 item-refusals, **7 are recoverable and 2
+were overwritten** — and the logs that held them aged out (oldest retained is 4 Aug 05:00). Per-
+span status means that cannot recur.
+
+### D2 · the note's attribution
+
+`AAO_Project.citation()` read `spans[0]` unconditionally. It now filters to upheld first. Harmless
+on the 3 August run because both of Ashley's spans were hers; not something to leave resting on
+that.
+
+### The watermark · written by the writer, never inferred
+
+`AAO_Project.stampProjected()` writes `AAO_Projected_Value__c` and `AAO_Projected_Modstamp__c` on
+the answers whose own dimension moved. **`humanEdited()` now actually functions**: it compares the
+native stamp against our last write, and our last write existed nowhere until today, so *"a human
+edit beats the machine forever"* had never once fired.
+
+**One nuance, decided and named.** The populate leg first stamped only when something changed,
+which would have left the 3 August row unprotected forever and made the alarm unable to reach
+zero. It now stamps when the row **already reads what we derive** as well. That cannot weaken the
+guard: a hand edit changes the value, so it lands in the heldBack branch instead.
+
+### §6 · two numbers, side by side
+
+Ruled 4 August. The panel counts **map rows written** and, beside it, **rows projected with no
+watermark**. Units in the field names and in the sentence.
+
+The `AAO_Projected_Value__c != null` filter is gone from the query — it was what made a panel
+report on a field nothing wrote. The detail list is scoped instead to rows that actually reached
+Altify's record.
+
+**A bug I introduced and the test caught, recorded because the catch is the point:** the first
+counter treated any linked map row as written, because `mapRowLabel` always contains the record
+Name — so empty contact-role skeletons counted as our output. That is reporting the customer's
+configuration as our work, which is the first thing this counter exists to stop. Now keyed on the
+row's own `Status`/`Political`.
+
+### Verified on the real B&V deal, not only in tests
+
+```
+BEFORE   section6 label=live  mapRowsWritten=1  noWatermark=1
+         (it read `off` before this bundle, while Adam's row was populated)
+RE-PROJECT  0 created, 0 populated, 0 blocked, 3 unchanged
+AFTER    PO9 Adam Meloan  value=Outside Political Structure  stamp=2026-08-04 16:47:47
+         PS7 Adam Meloan  value=Outside Political Structure  stamp=2026-08-04 16:47:47
+         section6 label=live  mapRowsWritten=1  noWatermark=0
+```
+
+**The alarm went 1 to 0 exactly as design predicted**, and it went there by re-projecting from
+claims with the fixed writer — the sanctioned route — not by backfilling a stamp from a native
+one. The 3 August run stands in history as what it was.
+
+### The unit law
+
+Eight counters in `AAO_EBV.report()` now name their unit at the point of print: bind items, verify
+items, contract-person pairs, items, contracts. This is the line that made the adjudication sheet
+compute a phantom missing claim from `16 − 9 ≠ 6`.
+
+### Standing
+
+**239 tests, one failure: the pre-existing `ConvertToOpportunityTest` / `AE_Summary__c` validation,
+untouched by this session and nothing to do with AAO.** The touched classes are 51/51.

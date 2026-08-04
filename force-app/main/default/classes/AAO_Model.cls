@@ -26,10 +26,57 @@ public class AAO_Model {
         public String speaker;
         /** Which element of the proposition this span is offered for. */
         public String element;
+        /**
+         * WHAT THE BLIND READER SAID ABOUT THIS SPAN. `UPHELD`, `REFUSED`, or null where no
+         * verification ran (legacy rows, and paths that never reach stage 3).
+         *
+         * Defect D1, session 74: the blind reader's refusal was recorded in the proposal's
+         * interpretation and pruned nothing, so a span the reader explicitly refused stayed on
+         * the standing Answer as a citation. The verdict was right — another span covered the
+         * element — and the evidence set was wrong, which is the one thing the reader exists to
+         * prevent. Recording per span rather than dropping the span follows the standing law:
+         * wrong text is marked wrong, never deleted, and a refused quote is part of the record
+         * of what the machine considered.
+         *
+         * **Readers filter; the ledger keeps.** Anything rendering citations to a human calls
+         * `upheld()`. Nothing deletes.
+         *
+         * It also fixes a loss this defect caused: `AAO_Interpretation__c` is one field and kept
+         * only the LAST refusal per pair, so on the 3 August run 2 of 9 item-refusals were
+         * overwritten and unrecoverable once the logs aged out. Per-span status ends that.
+         */
+        public String verification;
+
+        public Boolean isRefused() {
+            return verification == REFUSED;
+        }
 
         public String fingerprint() {
             return sourceId + ':' + startOffset + ':' + endOffset;
         }
+    }
+
+    public static final String UPHELD = 'UPHELD';
+    public static final String REFUSED = 'REFUSED';
+
+    /**
+     * The spans a reader may show or cite: everything the blind reader did not refuse.
+     *
+     * Null verification passes deliberately. Legacy rows carry no status and predate the
+     * check, and treating unknown as refused would silently blank every citation written
+     * before this field existed. Unknown is not refused; only REFUSED is refused.
+     */
+    public static List<Span> upheld(List<Span> spans) {
+        List<Span> out = new List<Span>();
+        if (spans == null) {
+            return out;
+        }
+        for (Span sp : spans) {
+            if (sp != null && !sp.isRefused()) {
+                out.add(sp);
+            }
+        }
+        return out;
     }
 
     public class SpanSet {

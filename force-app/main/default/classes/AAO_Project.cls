@@ -272,6 +272,7 @@ public with sharing class AAO_Project {
             insert fresh;
             r.mapRowId = fresh.Id;
             r.action = 'created';
+            stampProjected(answers, d);
             // Everything else stays null on purpose: we establish what evidence establishes
             // and we do not fill a row out to look complete.
             return r;
@@ -282,6 +283,19 @@ public with sharing class AAO_Project {
         r.mapRowId = row.Id;
         ALTF__Contact_Map_Details__c patch = new ALTF__Contact_Map_Details__c(Id = row.Id);
         Boolean wrote = false;
+
+        // Whether the row ALREADY reads what we derive. It matters for the watermark: a
+        // re-projection that changes nothing has still asserted this value, and if only a
+        // changed write stamped, the 3 August rows would stay unprotected forever and the
+        // no-watermark alarm could never reach zero. Stamping here cannot weaken the human
+        // guard: a hand edit changes the value, so it lands in the heldBack branch instead.
+        Boolean matched = false;
+        if (d.support != null && row.ALTF__Status__c == d.support) {
+            matched = true;
+        }
+        if (d.political != null && row.ALTF__Political__c == d.political) {
+            matched = true;
+        }
 
         if (d.support != null) {
             if (humanEdited(row.ALTF__Status_Last_Modified__c, lastProjected(answers))) {
@@ -308,6 +322,9 @@ public with sharing class AAO_Project {
             patch.ALTF__Note__c = d.note;
             update patch;
         }
+        if (wrote || matched) {
+            stampProjected(answers, d);
+        }
 
         r.action = wrote ? 'populated' : 'unchanged';
         if (!wrote && r.heldBack.isEmpty()) {
@@ -331,6 +348,64 @@ public with sharing class AAO_Project {
             return false;
         }
         return nativeStamp > ourLastWrite;
+    }
+
+    /**
+     * THE WATERMARK, WRITTEN BY THE WRITER. Session 75, and it was simply missing.
+     *
+     * `lastProjected` below READ `AAO_Projected_Modstamp__c` and nothing ever wrote it, so it
+     * always returned null, so `humanEdited` always returned false, so **"a human edit beats
+     * the machine forever" never fired**: its own comment carves out first contact as ours to
+     * write, and with the field never written every contact was first contact. A second pass
+     * would have silently overwritten a seller's hand edit. The same omission is why command
+     * centre section 6 read `off` while a map row was populated.
+     *
+     * Ruled 4 August, and it generalizes past this row: **a watermark is written by the writer
+     * or it does not exist.** No watermark is ever inferred, reconstructed, or backfilled from
+     * a native stamp, however sound the chain looks — the 3 August run's chain was provably
+     * deterministic and the backfill was still refused, because the precedent costs more than
+     * the row. Replay over claims re-projects for real, so refusing costs nothing.
+     *
+     * Stamped only where something was actually written, and only on the answers that carried
+     * the dimension that moved: an answer whose dimension was held back for a human edit has
+     * not been projected and must not claim it has.
+     */
+    private static void stampProjected(List<AAO_Answer__c> answers, Derivation d) {
+        Datetime now = Datetime.now();
+        List<AAO_Answer__c> touched = new List<AAO_Answer__c>();
+        for (AAO_Answer__c a : answers) {
+            String value = projectedValueFor(a, d);
+            if (value == null) {
+                continue;
+            }
+            touched.add(new AAO_Answer__c(
+                Id = a.Id,
+                AAO_Projected_Value__c = value,
+                AAO_Projected_Modstamp__c = now
+            ));
+        }
+        if (!touched.isEmpty()) {
+            update touched;
+        }
+    }
+
+    /** The value this answer's own dimension contributed, or null if it contributed none. */
+    private static String projectedValueFor(AAO_Answer__c a, Derivation d) {
+        String code = a.AAO_Evidence_Contract__r == null
+            ? null
+            : a.AAO_Evidence_Contract__r.AAO_Proposition_Code__c;
+        String token = String.isBlank(code) ? null : AAO_PeopleContracts.tokenOf(code);
+        String family = token == null ? null : familyOf(token);
+        if (family == null) {
+            return null;
+        }
+        if (family == SUP) {
+            return d.support;
+        }
+        if (family == POL_SHARED || family == POL_OM) {
+            return d.political;
+        }
+        return null;
     }
 
     private static Datetime lastProjected(List<AAO_Answer__c> answers) {
@@ -557,7 +632,13 @@ public with sharing class AAO_Project {
 
     /** Plain date and speaker. No record id ever reaches a human surface. */
     private static String citation(AAO_Answer__c a) {
-        List<AAO_Model.Span> spans = AAO_Model.parseSpans(a.AAO_Spans__c).spans;
+        // D2, session 74: this read spans[0] unconditionally, so the person credited on a
+        // customer-visible note could be taken from a span the blind reader had refused.
+        // Harmless where every span shares a speaker; not guaranteed, and not something to
+        // leave resting on that. Filter first, then take the first survivor.
+        List<AAO_Model.Span> spans = AAO_Model.upheld(
+            AAO_Model.parseSpans(a.AAO_Spans__c).spans
+        );
         String who = spans.isEmpty() || String.isBlank(spans[0].speaker)
             ? 'on the call'
             : spans[0].speaker;

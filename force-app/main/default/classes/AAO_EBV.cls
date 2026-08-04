@@ -513,6 +513,17 @@ public class AAO_EBV {
 
             AAO_Model.Span sp = locate(src, b.span, b.speaker);
             if (sp != null) {
+                // D1: the span carries what the reader said about IT, not what the pair
+                // concluded. A pair can survive on one span while another was refused, and
+                // before this the refused one stayed on the Answer as a citation.
+                // Only spans the reader actually saw get a status; a span on a binding the
+                // binder never established was never verified and stays null rather than
+                // being called upheld by default.
+                if (verdict == AAO_BindCharter.ESTABLISHES && s.verifyOk.containsKey(b.id)) {
+                    sp.verification = s.verifyOk.get(b.id) == true
+                        ? AAO_Model.UPHELD
+                        : AAO_Model.REFUSED;
+                }
                 p.spans.add(sp);
             }
             if (established) {
@@ -710,24 +721,30 @@ public class AAO_EBV {
         );
         out.add('');
         out.add('--- counts ---');
-        out.add('declared contracts        ' + s.declaredContracts);
+        out.add('declared contracts        ' + s.declaredContracts + ' (unit: contracts)');
         out.add('roster                    ' + s.rosterSize + ' people');
         out.add('families read against     ' + s.families);
-        out.add('inventory items           ' + s.inventoryItems);
+        out.add('inventory items           ' + s.inventoryItems + ' (unit: items)');
         out.add('spans dropped, not found  ' + s.spanDropsNotFound);
         out.add('spans dropped, ambiguous  ' + s.spanDropsAmbiguous);
         out.add('subject out of set        ' + s.subjectOutOfSet);
         out.add('family with no contract   ' + s.familyWithoutContract);
-        out.add('bindings attempted        ' + s.bindingsAttempted);
-        out.add('bindings unanswered       ' + s.bindingsUnanswered);
-        out.add('established by binder     ' + s.establishedByBinder);
+        out.add('bindings attempted        ' + s.bindingsAttempted + ' (unit: bind items)');
+        out.add('bindings unanswered       ' + s.bindingsUnanswered + ' (unit: bind items)');
+        // THE UNIT LAW, ruled 4 August, and this line is its origin. `establishedByBinder`
+        // and `verificationRejections` count bind and verify ITEMS; `claimsEstablished`
+        // counts (contract, person) PAIRS. Printed adjacent and unlabeled, they made the
+        // adjudication sheet compute a phantom missing claim from 16 - 9 != 6. Nothing was
+        // missing; the units were different. Every counter now names its unit at the point
+        // of print.
+        out.add('established by binder     ' + s.establishedByBinder + ' (unit: bind items)');
         out.add(
             'VERIFICATION REJECTIONS   ' + s.verificationRejections +
-            ' of ' + s.verifyPlan.size() + ' checked' +
+            ' of ' + s.verifyPlan.size() + ' checked (unit: verify items)' +
             rate(s.verificationRejections, s.verifyPlan.size())
         );
-        out.add('verifications unanswered  ' + s.verificationsUnanswered);
-        out.add('claims established        ' + s.claimsEstablished);
+        out.add('verifications unanswered  ' + s.verificationsUnanswered + ' (unit: verify items)');
+        out.add('claims established        ' + s.claimsEstablished + ' (unit: contract-person pairs)');
         out.add('');
         out.add('--- outcome, from the writer that has always written ---');
         out.add('  ' + s.outcomeLine);

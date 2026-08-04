@@ -352,12 +352,41 @@ private class AAO_PipelineViewControllerTest {
         Id acctId = [SELECT AccountId FROM Opportunity WHERE Id = :oppId].AccountId;
         personAnswer(oppId, acctId, subject.Id, 'Supporter');
 
+        // AN ANSWER CARRYING A WATERMARK IS NOT A PROJECTION, and this assertion is the
+        // ruling of 4 August made executable. Until v2.8 the panel counted answers with a
+        // projected value, so this state read `live` while NOTHING had reached the customer's
+        // map. That is the collapse the ruling removes: projected and protected are two facts.
+        AAO_PipelineViewController.Snapshot answerOnly =
+            AAO_PipelineViewController.getSnapshot(oppId);
+        System.assertEquals(
+            'off',
+            answerOnly.projection.label,
+            'A watermarked answer with no map row has projected nothing. The old panel said ' +
+            'live here, which is exactly the confusion section 6 was rebuilt to end.'
+        );
+        System.assertEquals(0, answerOnly.projection.mapRowsWritten, 'unit: rows');
+
+        // Now the value actually reaches Altify's own row, which is what projection means.
+        insert new ALTF__Contact_Map_Details__c(
+            ALTF__Account__c = acctId,
+            ALTF__Opportunity__c = oppId,
+            ALTF__Contact__c = subject.Id,
+            ALTF__Status__c = 'Supporter'
+        );
+
         Test.startTest();
         AAO_PipelineViewController.Snapshot s = AAO_PipelineViewController.getSnapshot(oppId);
         Test.stopTest();
 
         System.assertEquals('live', s.projection.label);
-        System.assertEquals(true, s.projection.isOn, 'The badge derives from the rows.');
+        System.assertEquals(true, s.projection.isOn, 'The badge derives from the map rows.');
+        System.assertEquals(1, s.projection.mapRowsWritten, 'unit: rows');
+        System.assertEquals(
+            0,
+            s.projection.rowsProjectedWithNoWatermark,
+            'The answer behind this row carries a watermark, so the alarm counter is zero. ' +
+            'Any nonzero here means a human edit on that row would not be protected.'
+        );
         System.assertEquals(1, s.projection.rows.size());
         System.assertEquals('Supporter', s.projection.rows[0].value);
         System.assertEquals(subject.Id, s.projection.rows[0].subjectId, 'The person is linkable.');
@@ -367,8 +396,9 @@ private class AAO_PipelineViewControllerTest {
             'The write stamp shows, so a reader can tell a fresh projection from a stale one.'
         );
         System.assert(
-            s.projection.sentence.contains('projected onto'),
-            'Got: ' + s.projection.sentence
+            s.projection.sentence.contains('map row') &&
+                s.projection.sentence.contains('unit: rows'),
+            'The sentence counts map rows and names its unit. Got: ' + s.projection.sentence
         );
 
         // The person group sorts first, so the projected row is index 0 of the flat list.

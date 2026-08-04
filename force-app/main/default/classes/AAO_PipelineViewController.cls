@@ -432,6 +432,19 @@ public with sharing class AAO_PipelineViewController {
         public String sentence;
         @AuraEnabled
         public List<ProjectionRow> rows = new List<ProjectionRow>();
+        /**
+         * TWO NUMBERS, SIDE BY SIDE, ruled 4 August. Projected and protected are different
+         * facts and collapsing them into one indicator is what produced the `off` confusion:
+         * the panel read `off` while a map row was populated, because it counted answers
+         * carrying a watermark and the writer never wrote one.
+         *
+         * Units in the names, per the unit law.
+         */
+        @AuraEnabled
+        public Integer mapRowsWritten = 0;
+        /** Rows our values sit on whose backing answers carry no watermark. Any nonzero is an alarm. */
+        @AuraEnabled
+        public Integer rowsProjectedWithNoWatermark = 0;
         @AuraEnabled
         public Tally page = new Tally();
     }
@@ -918,7 +931,9 @@ public with sharing class AAO_PipelineViewController {
             'AAO_Subject_Contact__c, AAO_Subject_Contact__r.Name, AAO_Opportunity__c, ' +
             'AAO_Evidence_Contract__r.AAO_Proposition_Code__c ' +
             'FROM AAO_Answer__c WHERE ' + scopeField + ' = :scopeId ' +
-            'AND AAO_Projected_Value__c != null ' +
+            // The watermark filter is GONE. It was `AND AAO_Projected_Value__c != null`, which
+            // made this panel a report on a field nothing wrote rather than on what reached
+            // the customer's map. What counts as projected is now the map row, below.
             'ORDER BY AAO_Projected_Modstamp__c DESC NULLS LAST LIMIT ' + PAGE;
 
         List<AAO_Answer__c> rows = (List<AAO_Answer__c>) Database.query(soql);
@@ -937,9 +952,11 @@ public with sharing class AAO_PipelineViewController {
         }
         Map<String, ALTF__Contact_Map_Details__c> mapRows =
             new Map<String, ALTF__Contact_Map_Details__c>();
+        Set<Id> carriesValue = new Set<Id>();
         if (!contactIds.isEmpty() && !oppIds.isEmpty()) {
             for (ALTF__Contact_Map_Details__c m : [
-                SELECT Id, Name, ALTF__Contact__c, ALTF__Opportunity__c, ALTF__Status__c
+                SELECT Id, Name, ALTF__Contact__c, ALTF__Opportunity__c, ALTF__Status__c,
+                       ALTF__Political__c
                 FROM ALTF__Contact_Map_Details__c
                 WHERE ALTF__Contact__c IN :contactIds AND ALTF__Opportunity__c IN :oppIds
                 LIMIT 2000
@@ -948,6 +965,10 @@ public with sharing class AAO_PipelineViewController {
                     String.valueOf(m.ALTF__Contact__c) + '|' + String.valueOf(m.ALTF__Opportunity__c),
                     m
                 );
+                if (String.isNotBlank(m.ALTF__Status__c) ||
+                    String.isNotBlank(m.ALTF__Political__c)) {
+                    carriesValue.add(m.Id);
+                }
             }
         }
 
@@ -975,18 +996,52 @@ public with sharing class AAO_PipelineViewController {
                 p.mapRowLabel = m.Name +
                     (String.isBlank(m.ALTF__Status__c) ? '' : ' · ' + m.ALTF__Status__c);
             }
-            s.projection.rows.add(p);
+            // THE LIST IS WHAT REACHED THE MAP, not every answer and not every watermark.
+            // Dropping the watermark filter from the query was necessary (it made the panel
+            // blind to a real projection) but it must not turn this into a list of all
+            // answers: a row belongs here when our value is standing on Altify's record.
+            if (p.mapRowId != null && carriesValue.contains(p.mapRowId)) {
+                s.projection.rows.add(p);
+            }
         }
 
         s.projection.page.seal(s.projection.rows.size(), s.projection.rows.size());
-        s.projection.isOn = !s.projection.rows.isEmpty();
+
+        // WHAT IS PROJECTED IS WHAT REACHED THE MAP. Counted from Altify's own rows rather
+        // than from our watermark, so a writer that forgets to stamp can no longer make the
+        // panel claim nothing happened.
+        Set<Id> written = new Set<Id>();
+        Set<Id> watermarked = new Set<Id>();
+        for (ProjectionRow p : s.projection.rows) {
+            if (p.mapRowId == null || !carriesValue.contains(p.mapRowId)) {
+                // An empty skeleton from contact-role sync is a row we have NOT written.
+                // Counting it would report the customer's configuration as our output, which
+                // is the first thing this counter was rebuilt to stop doing.
+                continue;
+            }
+            written.add(p.mapRowId);
+            if (String.isNotBlank(p.modstamp)) {
+                watermarked.add(p.mapRowId);
+            }
+        }
+        s.projection.mapRowsWritten = written.size();
+        Set<Id> unstamped = new Set<Id>(written);
+        unstamped.removeAll(watermarked);
+        s.projection.rowsProjectedWithNoWatermark = unstamped.size();
+
+        s.projection.isOn = s.projection.mapRowsWritten > 0;
         s.projection.label = s.projection.isOn ? 'live' : 'off';
-        s.projection.sentence = s.projection.isOn
-            ? s.projection.rows.size() +
-              (s.projection.rows.size() == 1 ? ' answer has' : ' answers have') +
-              ' been projected onto Altify\'s own map rows. Every value below traces to the ' +
-              'answer that wrote it and the claims behind that answer.'
-            : 'No projections yet on this record.';
+        s.projection.sentence = !s.projection.isOn
+            ? 'No projections yet on this record.'
+            : s.projection.mapRowsWritten +
+              (s.projection.mapRowsWritten == 1 ? ' map row (unit: rows) carries' : ' map rows (unit: rows) carry') +
+              ' values we wrote onto Altify\'s own record. Every value traces to the answer ' +
+              'that wrote it and the claims behind that answer.' +
+              (s.projection.rowsProjectedWithNoWatermark == 0
+                  ? ''
+                  : ' ' + s.projection.rowsProjectedWithNoWatermark +
+                    ' (unit: rows) carry no watermark, which means a human edit there would ' +
+                    'not be protected. Any number above zero is an alarm.');
     }
 
     // ---------------------------------------------------------------- J · run banner

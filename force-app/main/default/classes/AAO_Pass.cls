@@ -215,7 +215,21 @@ public with sharing class AAO_Pass {
      * The reader is handed the question, the meaning, and the words. It is NOT handed the
      * person, and `AAO_VerifyPairsCharter` records why.
      */
+    /**
+     * DRIVEN ACROSS TRANSACTIONS, and the sweep is why.
+     *
+     * At one claim per call and ~5 s each, forty claims is ~200 s of cumulative callout time
+     * against a 120-second per-transaction ceiling that is law-grade and unraiseable. So
+     * `verify` takes only unverified claims, up to `maxClaims`, and the caller drives it until
+     * none remain. **The sweep doubled the harvest and thereby made call 3 the first stage
+     * that cannot finish in one transaction** — recorded as a real consequence of the ruling
+     * rather than discovered later by a timeout.
+     */
     public static VerifyRun verify(String runKey) {
+        return verify(runKey, 1000);
+    }
+
+    public static VerifyRun verify(String runKey, Integer maxClaims) {
         List<AAO_Pair__c> claims = [
             // DEFECT, MINE, CAUGHT ON THE FIRST EMERSON RUN: this selected AAO_Meaning__c
             // from the IDENTIFIED row, where it is always null because the ledger's own
@@ -234,12 +248,14 @@ public with sharing class AAO_Pass {
             WHERE AAO_Run_Key__c = :runKey
                 AND AAO_Stage__c = :AAO_PairKey.IDENTIFIED
                 AND AAO_Disposition__c = 'Identified'
+                AND AAO_Verification__c = null
             ORDER BY AAO_Located_Pair__r.AAO_Start_Offset__c
+            LIMIT :maxClaims
         ];
         if (claims.isEmpty()) {
             throw new PassException(
-                'No identified claims on run ' + runKey + '. Call 3 verifies claims that ' +
-                'exist.'
+                'No unverified identified claims on run ' + runKey + '. Call 3 verifies ' +
+                'claims that exist and have not been verified.'
             );
         }
 

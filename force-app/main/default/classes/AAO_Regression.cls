@@ -26,6 +26,17 @@ public with sharing class AAO_Regression {
     public static final String GRADED_MISS = 'GRADED_MISS';
     /** A graded finding whose family is not declared, so no run can produce it. */
     public static final String UNREACHABLE = 'UNREACHABLE';
+    /**
+     * Graded a CORRECT REFUSAL. Reported, never scored.
+     *
+     * `emerson-q13` was a MUST_APPEAR until Matthew's ruling of 5 August, and the ruling is
+     * right: **asserting that a correct refusal must keep appearing asserts that call 1 must
+     * keep making a mistake call 3 can catch.** Finding it and refusing it is acceptable;
+     * not finding it at all is better. The assertion's own words — *a run that stops finding
+     * it has not got better, it has stopped looking* — are true of a graded PASS and false
+     * here, and that difference belongs in the code rather than in a comment.
+     */
+    public static final String CORRECT_REFUSAL = 'CORRECT_REFUSAL';
 
     public static final String EMERSON = 'ec8e717045f8701534963576ded2a736df5a27b5314721f20b6aa004d5f25a5f';
     public static final String BV = 'bv/biweekly-2026-06-24-nf1';
@@ -57,12 +68,12 @@ public with sharing class AAO_Regression {
             'Graded PASS: "This should be a real criteria, Flexibility of Services Hours." ' +
             '**THIS IS THE ONE THAT VANISHED** on the re-run of the same artifact, which is ' +
             'why this class exists.'));
-        out.add(a(EMERSON, MUST_APPEAR, 'emerson-q13', 'AAO_BR_USER',
+        out.add(a(EMERSON, CORRECT_REFUSAL, 'emerson-q13', 'AAO_BR_USER',
             'we want to get ahead of the relationship map gap that we have for sales',
             'Refused',
             'Graded a CORRECT REFUSAL: "False outright, she is speaking to a company goal, ' +
-            'not a user statement." Call 1 must still find it; call 3 must still refuse it. ' +
-            'A run that stops finding it has not got better, it has stopped looking.'));
+            'not a user statement." Reported, never scored: a run that stops emitting it has ' +
+            'stopped making a mistake, which is an improvement rather than a loss.'));
 
         // ---- EMERSON · Matthew's added rows, byte-located by design in ec8e7170 -------
         //
@@ -158,6 +169,8 @@ public with sharing class AAO_Regression {
         public List<String> missesStillMissed = new List<String>();
         public List<String> missesNowFound = new List<String>();
         public List<String> unreachable = new List<String>();
+        /** Correct refusals whose status moved. Diagnostic only; never a pass or a fail. */
+        public List<String> changedUndiagnosed = new List<String>();
 
         public Boolean clean() {
             return regressions.isEmpty() && trapsFired.isEmpty() && verdictChanged.isEmpty();
@@ -173,6 +186,8 @@ public with sharing class AAO_Regression {
                 'graded misses now found  ' + missesNowFound.size() + ' (unit: targets)',
                 'graded misses still open ' + missesStillMissed.size() + ' (unit: targets)',
                 'unreachable, undeclared  ' + unreachable.size() + ' (unit: targets)',
+                'correct refusals moved   ' + changedUndiagnosed.size() +
+                    ' (unit: findings, diagnostic only)',
                 'REGRESSION SET           ' + (clean() ? 'HELD' : 'BROKEN')
             };
             for (String r : regressions) { o.add('  LOST      ' + r); }
@@ -180,6 +195,7 @@ public with sharing class AAO_Regression {
             for (String r : verdictChanged) { o.add('  VERDICT   ' + r); }
             for (String r : missesNowFound) { o.add('  RECOVERED ' + r); }
             for (String r : missesStillMissed) { o.add('  still missed ' + r); }
+            for (String r : changedUndiagnosed) { o.add('  CHANGED, undiagnosed  ' + r); }
             for (String r : unreachable) { o.add('  unreachable  ' + r); }
             return String.join(o, '\n');
         }
@@ -213,6 +229,30 @@ public with sharing class AAO_Regression {
         rep.runKey = runKey;
         for (Assertion x : assertions()) {
             if (x.fixture != sha && x.fixture != ref) {
+                continue;
+            }
+            if (x.kind == CORRECT_REFUSAL) {
+                List<Integer> w = AAO_RecallGate.ranges(artifact, x.quote);
+                Boolean found = false;
+                for (AAO_Pair__c p : rows) {
+                    String c = p.AAO_Evidence_Contract__r == null
+                        ? null : p.AAO_Evidence_Contract__r.AAO_Proposition_Code__c;
+                    String words = p.AAO_Stage__c == AAO_PairKey.LOCATED
+                        ? p.AAO_Answer_Text__c
+                        : (p.AAO_Located_Pair__r == null ? null : p.AAO_Located_Pair__r.AAO_Answer_Text__c);
+                    if (codeMatches(x.contractCode, c) &&
+                        AAO_RecallGate.overlaps(artifact, w, words)) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    rep.changedUndiagnosed.add(
+                        x.key + ' [' + x.contractCode + '] no longer emitted. Not a loss: ' +
+                        'the read stopped making a mistake. Undiagnosed because nothing here ' +
+                        'distinguishes that from having stopped looking.'
+                    );
+                }
                 continue;
             }
             if (x.kind == UNREACHABLE) {

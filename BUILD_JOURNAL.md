@@ -8329,3 +8329,82 @@ real gain, and neither held everything it was supposed to.
 **Recurrence at 52% on a doubled harvest is the honest summary: the sweep is a large
 improvement and not a fix.** No further repair proposed here; the ruling was to build it, run
 it twice, measure, and hand the output to Matthew.
+
+---
+
+## 2026-08-05 · session 76 · addendum 13 · the correct refusal leaves the set, and the breakage is one row
+
+`locate-3.0.0+d314a73c`. Sweep graded output produced; the two corrections absorbed.
+
+### The withdrawn assertion, and it changes the headline
+
+`emerson-q13` was a `MUST_APPEAR` and the ruling is right that it should not have been:
+**asserting a correct refusal must keep appearing asserts that call 1 must keep making a
+mistake call 3 can catch.** It is now `CORRECT_REFUSAL` — reported as `CHANGED, undiagnosed`,
+never scored — and the class carries the reason, because my own assertion text (*a run that
+stops finding it has not got better, it has stopped looking*) is true of a graded PASS and
+false here.
+
+With it withdrawn:
+
+| run | regressions |
+|---|---|
+| `emerson-sweep-s1` | **1** — `emerson-q9` |
+| `emerson-sweep-s2` | **0 — HELD** |
+
+**Named by ref as asked: the single lost graded PASS is `emerson-q9`, Matthew's *Flexibility of
+Services Hours*.** And it is not new. It has been absent from every run since the grading —
+`0617-r3`, both sweeps. **The sweep did not break it; the sweep did not repair it.** That
+distinction was invisible inside my last aggregate and it is the one that matters: this is a
+standing recall failure on one specific criterion, not instability introduced by the ruling.
+
+### Design's metric correction, absorbed
+
+Recurrence rate has a denominator that grows with the harvest, so a read finding more marginal
+material scores worse at identical stability. **Stable establishments tripled, 9 → 27**, and
+the trustworthy share of any one run went 50% → 67.5%. Recurrence rate is a secondary
+diagnostic here and the gate is the regression set.
+
+### The sweep, graded end to end
+
+```
+pairs located            40 (unit: pairs)
+dispositions made        40 · to a person 40 · None or Ambiguous 0
+verdicts returned        40 (unit: claims) · upheld 17 · refused 23
+```
+
+Zero byte discards, zero coverage defaults, zero traps reproduced. **Seven quotes carry more
+than one establishment**, against 1 of 17 under the single read.
+
+### Call 3 no longer fits in one transaction, and that is the sweep's real cost
+
+Forty claims at one per call is **172 s of cumulative callout against a 120-second
+per-transaction ceiling that is law-grade and unraiseable.** `verify` now takes only
+unverified claims up to a limit and the caller drives it; three batches of 14 finished it.
+
+**The sweep's cost is not call 1's 63 s — call 1 was always going to be fine. It is that
+doubling the harvest doubled call 3, and call 3 is the stage with a hard ceiling.** Recorded
+here rather than discovered by a timeout on a longer transcript.
+
+### The load-bearing finding, ratified
+
+**Sentiment holds one contract and went from 2 pairs to 11.** It cannot have been capacity-
+bound by how many propositions it was holding. The scarce resource is **attention** — what one
+read gives any single question when it is also asked sixteen others — and that explains the
+rumination, the 15% on B&V, and why two rewordings failed where a partition succeeded without
+instructing anything.
+
+**The law it yields, worth stating once:** where an instruction has failed twice, change the
+structure so the wrong answer cannot be expressed. Do not write the instruction a third time.
+
+Design's named-but-unproposed next lever (partitioning the artifact rather than the contract
+set) is recorded and **not built, not proposed, not ruled**.
+
+### Owed to Matthew
+
+`review/emerson-sweep-s1-FOR-MATTHEW.csv` — 40 establishments, resolution rows first,
+multi-establishment rows marked as such, blank UNDER rows at the bottom.
+`…-RUN-FACTS.md` carries the per-family table, the per-call latency, the transaction split, and
+the regression line naming `emerson-q9`.
+
+Still open and untouched: the seller-side flag, UNDER-3's turn-spanning span.

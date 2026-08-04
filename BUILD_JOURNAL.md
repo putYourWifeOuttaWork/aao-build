@@ -7655,3 +7655,126 @@ rather than asked of the model.
 Nothing calls this charter yet. The runner, the byte-location step that turns `answer_text`
 into offsets plus occurrence, call 2 and call 3 are the 24 June gate's work and the Emerson
 run's. The run receipt object is still owed by §P8.0.
+
+---
+
+## 2026-08-05 · session 76 · THE 24 JUNE RECALL GATE RAN · three times · NOT PASSED, and it should not have
+
+283 tests, 100% pass, same one pre-existing unrelated failure. Call 1 made its first real
+callouts. **The gate does not pass, on all three runs, for the same two targets.**
+
+### The numbers, first, because they answer the question three sessions have been asking
+
+| run | wall ms | in | out | **thinking** | cacheRead | pairs parsed | located | discarded |
+|---|---|---|---|---|---|---|---|---|
+| 1 | 23,941 | 16,620 | 1,534 | **0** | 0 | 17 | 15 | 2 no match |
+| 2 | 27,812 | 16,620 | 2,156 | **602** | 0 | 15 | 15 | 0 |
+| 3 | 28,302 | 16,620 | 2,164 | **1,410** | 5,820 | 8 | 7 | 1 no match |
+
+**Against 87,805 ms per person on the retired shape: ~28 seconds for the whole transcript,
+whole roster, once.** No call is near the 120-second ceiling with room to spare, and the
+prefix cached on run 3 as designed.
+
+**The rumination is gone.** Thinking was the entire failure of the old stage 1 — a read that
+spent its whole output budget deliberating and returned an empty inventory. Here it is 0,
+602 and 1,410 tokens against 1,534 to 2,164 of output. That question is answered.
+
+**The instability is NOT gone. 17, 15, 8 pairs on identical input.** Better than the old
+8/0/0/0/20 — it never returns empty, which was the specific pathology — but a 2× spread
+across runs is not a stable instrument, and it is recorded open exactly as the old one was.
+
+### The gate did not pass, and the two failures are different failures
+
+```
+targets covered          0/2 (unit: targets)
+targets owed             3 (unit: targets)
+  missed, not found      1 (unit: targets)
+  missed, routed away    1 (unit: targets)
+GATE                     NOT PASSED
+```
+
+**The canonical criterion is still missed.** *"what I'm trying to do is just eliminate
+clicks"* is at offset 14,264 of the artifact, verified present. Run 1: not found at all. Run
+3: not found at all. Run 2: found, and filed under `AAO_BR_EVAL`. **The case charters v2.5
+names as the one this build produced and missed by declaration is still missing under the
+new shape**, and now it has a declared contract to land on. Criteria the read did produce
+were different ones ("adoption and utilization of Altify"), so the family is not silent, it
+is aimed wrong.
+
+**The broker words are found but routed.** *"That needs to go to Scott and Matt and Brian…"*
+comes back on runs 1 and 3 as `AAO_POL_PS2` (*called on to make it happen*) where the grade
+says `AAO_POL_OPS1` (*collects and provides information to people of power and influence*).
+The read saw the words. Two one-way contracts compete for the same sentence, which is a
+wording problem in the contracts rather than a coverage problem in call 1.
+
+**Separating those two was itself a repair, and the gate's own first run forced it.** The
+first version scored by string containment. The located quote and the target quote shared
+thirty-nine characters of one sentence, neither contained the other, and the report said NOT
+FOUND AT ALL about words the read had plainly found. **A gate lying in the direction of
+alarm is still a gate lying.** Matching is now byte-range intersection in the frozen
+artifact — the same byte truth every other layer uses, with no opinion about where a sentence
+ends — and the report says which of the two failures it is, because they call for opposite
+repairs.
+
+### A finding that changes the gate's target set, from §P8.0's own words
+
+§P8.0 says a pair must exist for the words behind **each graded PASS**. Mapping the four onto
+the seventeen:
+
+| graded PASS | §P8 home |
+|---|---|
+| PS7/Adam · *collects and provides information to people of power and influence* | `AAO_POL_OPS1`, verbatim |
+| PO9/Ashley · *Is this person aware of the politics in the organisation?* | **none** |
+| PO9/Adam · same question | **none** |
+| one of three S1 rows | `AAO_PS_1`, and WHICH is owed |
+
+**Two of the four graded PASSES are on the one question §P8 deliberately does not declare.**
+PO9 is political awareness, retired for placing nobody and being true of everyone worth
+mapping. Their absence is the design working, not a recall failure, so the gate cannot
+require them.
+
+That is worth more than a footnote. The findings=1 explanation was *the read establishes gate
+questions that place nobody and misses placement questions* — and here it is from the other
+side: **half the graded PASSES were on a question that places nobody.** The gate's own target
+set is evidence for the retirement.
+
+### Three targets are OWED, and the gate refuses to pass while they are
+
+Declared unresolved rather than left out, because a gate that silently omits the targets it
+does not know about reports a clean pass over a smaller test.
+
+1. **The S2/Adam placement words.** The first recorded UNDER. Never surfaced, so the words
+   are nowhere in this org; only the grading names them. **Needed: the verbatim words, and
+   `AAO_PS_1`/SUPPORTER is the expected landing.**
+2. **Which S1 row is the fourth PASS** — Ashley, Adam or Robbin.
+3. **Which two S1 rows are the OVERs**, so the must-not-reproduce assertion can run. It
+   currently reports 0 reproduced, which is a vacuous 0.
+
+### What the read actually returned, since this is the first look at the new shape
+
+Run 1, 15 located pairs: 4 sentiment (1 SUPPORTER, **3 MENTOR**), 6 Political Structure, 2
+Evaluator, 2 User, 1 criterion. **Zero Inner Circle, zero Approver, Decision Maker or
+Signature, zero DC-F or DC-R.** Every fact pair came back `Partial`, which is the instructed
+default under doubt behaving exactly as written.
+
+**Three MENTOR reads on one call is worth grading before it is trusted.** §P8.9's advocacy
+ruling was aimed at a reader that was under-reading support; whether it has over-corrected is
+a question for Matthew's key, not for me.
+
+**The hallucinated-quote rate is measured: 2 of 17 (run 1), 0 of 15 (run 2), 1 of 8 (run 3).**
+Both run-1 discards were the same fabricated DC quote offered twice under DC-N and DC-F.
+Byte matching caught every one, which is what it is for.
+
+### Two things the build learned about itself on the way
+
+**Field-level security is not granted by deploying a field.** Twenty of `AAO_Pair__c`'s
+twenty-five fields were invisible to the running user and the whole object read as five
+fields; Apex writes worked because Apex runs in system mode, so nothing failed until a query
+from outside. The five that WERE visible are exactly the five marked required — required
+fields cannot have FLS withheld. `AAO_Admin` now grants the rest. **A schema nobody can read
+is not deployed, it is hidden.**
+
+**The unique index caught a real duplicate on its second day.** Re-running the gate under the
+same run key threw `DUPLICATE_VALUE` on `AAO_Pair_Key__c` rather than writing a second copy
+of the run. That is ruling 1's first half working on live data, three hours after it was
+ratified.

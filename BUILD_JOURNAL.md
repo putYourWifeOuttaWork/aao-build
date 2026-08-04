@@ -7380,3 +7380,73 @@ The first build keyed grades to a positional `ref` that a later sort reassigned,
 every basis to the wrong row. Rebuilt keyed on (contract, person) and verified row by row. **A
 misattached grading would have poisoned the answer key's spine**, which is the one artifact
 everything downstream is measured against.
+
+---
+
+## 2026-08-04 · session 75 · contract minting · seventeen live, forty-eight superseded
+
+`AAO_PassContracts` mints the §P8 declared claim-path set. **17 minted, 48 superseded, nothing
+deleted.** 247 tests, one pre-existing unrelated failure; the new class carries 8 of its own.
+
+### The scaling law, as a number in the org
+
+The retired set put the person in the proposition code (`S2#003WD...`) because the old charter
+had no subject field. On the 17 June fixture's five-person roster that shape is **80
+contract-questions**. This set is **17 at any roster size**, because the person is call 2's job
+and appears in no code. There is a test asserting the count does not move with the roster, which
+is the law rather than a comment.
+
+| family | n | basis |
+|---|---|---|
+| Sentiment (`AAO_PS_1`) | 1 | ours |
+| Political Status | 8 | 3 vendor-verbatim, 5 ours |
+| Buyer Role | 5 | ours |
+| Decision criteria | 3 | ours |
+| Coverage | 0 | computed, never extracted |
+
+### Vendor text byte-exact, ours marked as ours
+
+`AAO_POL_PS3`, `PS4` and `OPS1` carry Altify's own wording character for character and land
+`Authored` — the vendor's text needs nobody's ratification to be the vendor's text. The five
+one-way halves we split out of the two-sided questions, plus Buyer Role and criteria, land
+`Inferred_Pending` with `Requires_Ratification` true. **No paraphrase is presented as recovered
+text**, and the vendor's originals stay untouched in `AAO_People_Question__mdt`.
+
+### The split is the repair for a loss this build measured
+
+The 24 June run refused four claims on the two-sided `PS4`/`PO2`, and Matthew graded all four
+**right refusals**: the words carried the weak side and the single two-sided contract had no slot
+for it, so a correct refusal destroyed a real placement. `AAO_POL_PS1` (*executes after approval*)
+and `AAO_POL_PS2` (*called on to make it happen*) are the slots those quotes needed. **A test
+asserts no proposition is two-sided**, so true-or-nothing cannot be reintroduced by wording.
+
+`AAO_BR_EVAL` carries §P8.9's behavioural note: evaluating behaviour on the call establishes it
+FULL; a stated function with no behaviour behind it is PARTIAL.
+
+### Deliberately absent, each for a stated reason
+
+The nine Support questions (retired from extraction at §P8.4, still the vendor's asset); vendor
+`_9` political awareness and the weak half of `_1`, which place nobody under the ceiling
+derivation — two of the three faults that retired S1; and Coverage, computed from participation.
+
+### Minting is idempotent, and an edit cannot hide
+
+The contract key is `code|contentHash`, unique and external. Re-minting unchanged text upserts
+onto the same row (**second run: 0 minted, 17 unchanged**); re-minting *changed* text mints a new
+contract and leaves the old one to be superseded. The trigger is the single composer of the key,
+and `mint()` calls the same `compose()` so they cannot disagree.
+
+### Three refusals from the object's own laws, all mine, all in the test fixture
+
+The trigger and validation rules rejected my stand-in row three times running: no question record
+id, no element count (*"the number of parts is never unknown"*), no speaker requirement or decay
+class. **Every one was the schema refusing an incomplete contract, and every one was in my test
+data rather than in `mint()`** — which is the field enforcing laws before the code reasons to
+them, the same thing that happened to the flag clock in v1.7.
+
+### What this retires, stated plainly
+
+Superseding the 48 means `AAO_ApplicableSet.resolve` returns nothing for the People charter under
+the old pass, so **`AAO_EBV` can no longer run on B&V**. That is intended — §P8 supersedes the
+pass shape and the 24 June gate runs against call 1, not against `AAO_EBV`. Recorded so nobody
+reads it later as a regression.

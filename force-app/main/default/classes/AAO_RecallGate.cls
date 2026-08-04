@@ -137,6 +137,42 @@ public with sharing class AAO_RecallGate {
             'that carries no preference for any solution.'
         ));
 
+
+        // ---- THE SECOND JOINT GRADING'S TRAPS (CODE addendum 08, 5 August). ------------
+        //
+        // The 24 June gate's own three MENTOR reads, all graded **Neutral — no pair**. They
+        // join the two S1 over-reads, so five rows the re-run must not reproduce.
+        //
+        // THE CORRECT OUTPUT FOR ALL THREE IS ABSENCE. That is worth saying plainly, because
+        // every other entry in this list is scored on presence and the asymmetry is the whole
+        // point of §P8.4's new sentence: emitting no pair on a warm sentence is CORRECT
+        // BEHAVIOUR, not under-reading. These are the specimens that make it checkable.
+        out.add(over(
+            'MENTOR-trap-adam',
+            'Yeah, I think this is a key step. Yeah, I think this is a key step, right, of ' +
+            'like, we have to understand what the MCP does with the newest upgrade',
+            'Graded Neutral by Matthew: "not guiding or providing sentiment but noting the ' +
+            'need for understanding what the new MCP does." The canonical "key step" case ' +
+            '§P8.4 now names by hand.'
+        ));
+        out.add(over(
+            'MENTOR-trap-robbin',
+            'I just have one question, Renee. Have you guys shared like any potential ' +
+            'business cases, knowing BV that maybe we haven\'t thought of, that might be a ' +
+            'good option to add onto the list for the stakeholders to kind of review',
+            'Graded Neutral by Matthew: "asking a question which could lead to better ' +
+            'success... not without further coexistent context." A question is engagement, ' +
+            'and engagement is not stance.'
+        ));
+        out.add(over(
+            'MENTOR-trap-ashley',
+            'Yeah, and I think I hear you. I think we can do both. You know, I think I think ' +
+            'we have to do we have to do a tier one scorecard, but we also can use we can use ' +
+            'MCP to accelerate inputs.',
+            'Graded Neutral by Matthew: "stating what can happen in a neutral way." Sits ' +
+            'beside CLM-31, the S1 over-read on the same speaker, with the same objection.'
+        ));
+
         // ---- WITHDRAWN. Kept visible; the reason is the point. ------------------------
         Target s2 = t(
             'S2-adam-placement',

@@ -7886,3 +7886,111 @@ comes back.
 **The Emerson blind key.** The sheet has held that slot empty since 29 July. Emerson end to
 end does not start until Matthew dictates it, or the `model_missed` denominator is lost for
 the second fixture running.
+
+---
+
+## 2026-08-05 · session 76 · charters v2.9 · the three traps are dead and MENTOR moved rather than shrank
+
+285 tests, 100% pass, same one pre-existing unrelated failure. v2.9 synced by delta, the label
+text landed in the contract, three fresh gate runs.
+
+### The sync, and one gap the fix exposed in minting
+
+v2.9 applied against exact v2.8 anchors: the head stamp, and §P8.4's pinned label paragraph
+inserted before *The scope of the retirement*. Everything else byte-identical.
+
+The label meanings are now **quoted from §P8.4, never paraphrased**, in `AAO_PS_1`'s guidance —
+which is where the defect came from in the first place. The first draft of MENTOR was written
+in `AAO_PassContracts` rather than read from a charter, it opened with *guides you with
+insight*, and that line is true of anyone participating well in a meeting.
+
+**Re-minting exposed a real hole in `mint()`.** Editing a proposition changes its content hash,
+so it mints a NEW row on the **same** rubric and the old one keeps standing. Supersession only
+looked at the OLD rubric, so this would have left **two live `AAO_PS_1` contracts** and handed
+call 1 the same question under two different definitions. Fixed: supersede anything live whose
+key is not in the freshly minted set, either rubric. Result:
+
+```
+contracts: 1 minted, 16 unchanged, 1 superseded (unit: contracts)
+AAO_PS_1  Superseded  f9945ac61b26      <- the "guides you with insight" text
+AAO_PS_1  Derived     85eb2e9948df      <- v2.9
+live on people-p8-v1: 17
+```
+
+**An in-place edit could not hide; its predecessor could. Now neither can.**
+
+### The three named traps are gone. Every one of them.
+
+None of the three graded-Neutral quotes reproduces as sentiment in any of the three v2.9 runs.
+The exact sentences §P8.4 now names by hand — *this is a key step*, the business-cases question,
+*we can do both* — are absent. `ENGAGEMENT IS NOT STANCE` did the specific job it was written
+to do.
+
+### But MENTOR did not shrink. It moved.
+
+| | r1 | r2 | r3 | → | r4 | r5 | r6 |
+|---|---|---|---|---|---|---|---|
+| located pairs | 15 | 15 | 7 | | 10 | 23 | 30 |
+| MENTOR | 3 | 4 | 1 | | 4 | 3 | **10** |
+| SUPPORTER | 1 | 1 | 0 | | 0 | 1 | 3 |
+
+The reads landed on an entirely different class of sentence: **routing and coordination talk.**
+*"Again, let me talk, I'll talk to Steve about that"* (all three runs). *"That needs to go to
+Scott and Matt and Brian."* *"engage our D&IT team first."* *"we can piggyback Ashley on
+Robin's note."*
+
+**Those fit the new definition better than the old ones fit the old.** Taking our item to a
+named person inside their own organization is *their people, on our behalf*, which is what the
+line says. So the model is reading the new text and finding a new candidate set, not ignoring
+it. **Whether that set is right is Matthew's, and it is a fresh grading question rather than
+this fix reporting home.**
+
+### The fix created a contract collision, and it lands on a recall target
+
+**`PS7-broker` — a graded PASS — now files as `AAO_PS_1`/MENTOR in two of three runs.** v2.9's
+MENTOR (*guide you through their own organization... their politics, their process, their
+people*) and `AAO_POL_OPS1` (*collect and provide information to people of power and
+influence*) now describe overlapping evidence, and the model picks sentiment. The gate reports
+it as **routed away** rather than not found, which is exactly the distinction that was built
+two entries ago and is earning its keep here.
+
+Named as a defect rather than worked around: **two live contracts compete for the same
+sentence, and the newer one is winning a recall target away from the older.**
+
+### A graded over-read reproduced for the first time in six runs
+
+Run 6: **`S1-over-robbin` came back as `AAO_PS_1`/SUPPORTER** — CLM-35's exact words, which
+Matthew graded OVER as wrong-scope carrying no preference. Five gate runs reported a clean
+zero; this one did not. The exclusion set stopped being decorative.
+
+### Two things no label meaning would have caught
+
+**A sentiment read on our own seller.** Run 6 emitted `AAO_PS_1`/SUPPORTER on Renee Martin,
+who is on the selling side. The question asks how **they** stand toward **us**; a sentiment
+read on our own person has no subject. **That is a scope failure, not a calibration one**, and
+no wording of the ladder addresses it — the gate needs a side check.
+
+**The same words read two ways across runs.** *"let's try to get that discussion going pretty
+quickly"* came back SUPPORTER in run 5 and MENTOR in run 6. Whatever the correct grade, the two
+cannot both be right, and this is an instability specimen rather than a calibration one.
+
+### Instability, again, and wider
+
+10, 23, 30 located pairs against the previous 17, 15, 8. Part of that is §P8.9 working as
+intended (one quote, several establishments), and part of it is the same 3× spread on identical
+input. **The measurement stands open and untouched, per the ruling.** Thinking: 910, 1,160, 0.
+Latency 27.8 s, 42.1 s, 33.2 s — run 5 is the longest call yet and still less than half the
+ceiling.
+
+### Queued for grading, out of this prose per the standing rule
+
+`review/sentiment-v29-2026-06-24-FOR-MATTHEW.csv` — the 17 distinct sentiment reads across the
+three v2.9 runs, clustered by speaker and quote so a boundary shift counts once, each carrying
+**how many of the three runs produced it**, with the v2.9 label meanings exactly as the model
+received them. Recurrence is on the sheet because a read that survives all three runs is a
+different kind of claim than one that appeared once. `…-CODE-FIRST-PASS.csv` is in this commit
+and stays out of the narrative until his copy comes back.
+
+### Still blocking, still not mine
+
+**The Emerson blind key.**

@@ -83,7 +83,11 @@ private class AAO_RecallGateTest {
         );
         System.assertEquals(2, c.targetsAnswerable, 'unit: targets');
         System.assertEquals(2, c.targetsCovered, 'Both recall targets found.');
-        System.assertEquals(2, c.exclusionsChecked, 'unit: targets');
+        System.assertEquals(
+            5,
+            c.exclusionsChecked,
+            'Two S1 over-reads plus the three MENTOR traps from the second grading.'
+        );
         System.assertEquals(1, c.reproduced.size(), 'And one over-read is back.');
         System.assertEquals(false, c.passed(), 'So the gate does not pass.');
     }

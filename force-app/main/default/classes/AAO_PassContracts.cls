@@ -88,19 +88,34 @@ public with sharing class AAO_PassContracts {
             'AAO_PS_1',
             'Sentiment · How does this person stand toward us?',
             'Do this person\'s own words voice how they stand toward us and our solution?',
+            // THE LABEL MEANINGS ARE THE CHARTER'S, VERBATIM (§P8.4, pinned at v2.9). They are
+            // quoted here, never paraphrased, for the reason the propositions are byte-exact:
+            // the first draft of MENTOR was written here rather than read from the charter, it
+            // opened with "guides you with insight," and the second joint grading found that
+            // line true of anyone participating well in a meeting. Three MENTOR reads, three
+            // Neutrals. **The ladder's strictest state carried its loosest wording — the same
+            // defect class that retired S1 — and a reader pushed off under-reading by §P8.9
+            // escaped straight into it.** Mentor-grade evidence is what crosses to +3, so a
+            // cheap MENTOR makes terminals cheap.
             'One of MENTOR, SUPPORTER, NON_SUPPORTER, ENEMY. These are label meanings, never ' +
             'an interrogation checklist.\n' +
-            'MENTOR: guides you with insight, and advocates for you inside their organization ' +
-            'when you are not in the room.\n' +
+            'MENTOR: their words guide you through THEIR OWN ORGANIZATION on your behalf - ' +
+            'their politics, their process, their people - or advocate for you when you are ' +
+            'not in the room; insight about the work, the product, or the project is ' +
+            'participation, not mentoring.\n' +
             'SUPPORTER: prefers you and says so.\n' +
             'NON_SUPPORTER: prefers an alternative, including doing nothing.\n' +
             'ENEMY: works against you, or believes your success harms them.\n' +
-            'There is no partial and no neutral. Courtesy and pleasantries voice no stance and ' +
-            'produce nothing. Advocacy is never discounted for coming from a professional ' +
-            '(§P8.9): a buyer who coaches you through her own approval process, tells you what ' +
-            'the approvers need to see, or moves your case internally is voicing support while ' +
-            'doing her job. Guidance the speaker cancels in the same breath is not guidance ' +
-            '(Matthew, 4 August, on "let\'s not plan on it").',
+            'There is no partial and no neutral. No neutral label exists: words that voice no ' +
+            'stance produce no pair, and ENGAGEMENT IS NOT STANCE - questions, process ' +
+            'suggestions, "I think this is a key step," a person doing their job well and ' +
+            'warmly, all voice nothing and emit nothing; emitting no pair on a warm sentence ' +
+            'is correct behaviour, not under-reading.\n' +
+            'Advocacy is never discounted for coming from a professional (§P8.9): a buyer who ' +
+            'coaches you through her own approval process, tells you what the approvers need ' +
+            'to see, or moves your case internally is voicing support while doing her job. ' +
+            'Guidance the speaker cancels in the same breath is not guidance (Matthew, ' +
+            '4 August, on "let\'s not plan on it").',
             'Subject_Person',
             BASIS_OURS,
             new List<String>{ 'Do this person\'s own words voice how they stand toward us and our solution?' }
@@ -338,11 +353,23 @@ public with sharing class AAO_PassContracts {
             }
         }
 
+        // TWO SUPERSESSIONS, NOT ONE, and the second was missing until the v2.9 label fix
+        // needed it. Editing a proposition changes its content hash, so it mints a NEW row
+        // and the old one keeps standing — on the SAME rubric. Superseding only the old
+        // rubric would have left two live AAO_PS_1 contracts, the declared set would offer
+        // sentiment twice, and call 1 would be handed the same question under two different
+        // definitions. An in-place edit cannot hide, and now neither can its predecessor.
+        Set<String> minted = new Set<String>();
+        for (AAO_Evidence_Contract__c ec : rows) {
+            minted.add(ec.AAO_Contract_Key__c);
+        }
         List<AAO_Evidence_Contract__c> old = [
-            SELECT Id
+            SELECT Id, AAO_Contract_Key__c
             FROM AAO_Evidence_Contract__c
-            WHERE AAO_Rubric_Version__c = :SUPERSEDES_RUBRIC
-                AND AAO_Contract_State__c != 'Superseded'
+            WHERE AAO_Contract_State__c != 'Superseded'
+                AND (AAO_Rubric_Version__c = :SUPERSEDES_RUBRIC
+                    OR (AAO_Rubric_Version__c = :RUBRIC_VERSION
+                        AND AAO_Contract_Key__c NOT IN :minted))
         ];
         for (AAO_Evidence_Contract__c ec : old) {
             ec.AAO_Contract_State__c = 'Superseded';

@@ -7323,3 +7323,60 @@ compute a phantom missing claim from `16 − 9 ≠ 6`.
 
 **239 tests, one failure: the pre-existing `ConvertToOpportunityTest` / `AE_Summary__c` validation,
 untouched by this session and nothing to do with AAO.** The touched classes are 51/51.
+
+---
+
+## 2026-08-04 · session 75 · the 7 refusals · CODE's first pass, REGISTERED BEFORE COMPARISON
+
+Protocol per addendum 04. Two files in `review/`: `…-FOR-MATTHEW.csv` with **no grade filled by
+me**, and `…-CODE-FIRST-PASS.csv` with my mechanical read. **This entry is the registration:
+committed before I have seen any grade of his.** Denominator is **7, not 9**, and travels with the
+finding always.
+
+| Ref | Contract | Person | CODE grade |
+|---|---|---|---|
+| R1 | PO9 | Ashley Stroud | WRONGLY_REFUSED |
+| R2 | S5 | Adam Meloan | WRONGLY_REFUSED |
+| R3 | S5 | Ashley Stroud | WRONGLY_REFUSED |
+| R4 | PS4 | Adam Meloan | RIGHTLY_REFUSED |
+| R5 | PS4 | Ashley Stroud | RIGHTLY_REFUSED |
+| R6 | PS4 | Robbin Jones | RIGHTLY_REFUSED |
+| R7 | PO2 | Robbin Jones | RIGHTLY_REFUSED |
+
+**3 wrongly-refused, 4 rightly-refused.**
+
+### The pattern, and it is a third answer to the question the grading was set to decide
+
+The grading was to decide whether call 3's bar on projecting claims is **miscalibrated** or
+**correctly strict**. My read says neither, cleanly split by family:
+
+**The four two-sided refusals (PS4 ×3, PO2) are correct, and the loss was a contract-shape
+artifact.** Every one refuses the STRONG side while its own reason describes the WEAK side:
+*"execution within others' direction"*, *"coordination activity but not controlling outcomes"*,
+*"executing within a release plan ... not approving or sponsoring"*. Those are
+`called on to make it happen` and `executes projects after they are approved` — **both of which
+place Political Structure.** The old single two-sided contract had no slot for the side the words
+actually supported, so a correct refusal destroyed a real placement. **v2.8's split into one-way
+halves (`AAO_POL_PS1`, `AAO_POL_PS2`) already fixes this**; those same quotes would place under
+the new set.
+
+**The three wrong refusals are all the guard §P8.9 just corrected.** Two are S5 (mentoring:
+guidance, political insight, competitive information) where the buyer names who to approach and
+in what order, and offers to work a stakeholder — advocacy from a professional, refused for being
+professional. The third is PO9, my least confident. **§P8.4 retires the Support quiz from
+extraction entirely**, so S5 as an extraction contract is already gone.
+
+**So both failure classes this grading exposes are already closed by v2.8, from opposite
+directions** — the two-sided split for the four, the Support-quiz retirement for the two S5s. On
+my read that argues **against** tightening call 3's wording: its judgments were sound and the
+contract shape was what lost the evidence.
+
+**That is a candidate, not a verdict.** Matthew's grades are the standard, mine is one read, and
+the whole point of registering first is that it can be wrong in the open.
+
+### One error, caught before it shipped
+
+The first build keyed grades to a positional `ref` that a later sort reassigned, silently attaching
+every basis to the wrong row. Rebuilt keyed on (contract, person) and verified row by row. **A
+misattached grading would have poisoned the answer key's spine**, which is the one artifact
+everything downstream is measured against.

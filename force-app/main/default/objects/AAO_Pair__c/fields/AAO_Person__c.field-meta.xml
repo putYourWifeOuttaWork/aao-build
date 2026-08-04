@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Person__c</fullName>
+    <description>Written by: call 2, from call 1&apos;s closed candidate list. Read by: the gates and projection, which resolve the Contact through it. Participant rather than Contact because participation is the grain that exists for everyone on the call: the 17 June fixture carries two participants with no Contact link, and a Contact lookup would silently drop them.</description>
+    <label>Person</label>
+    <type>Lookup</type>
+    <referenceTo>AAO_Participant__c</referenceTo>
+    <relationshipName>AAO_Pairs</relationshipName>
+    <relationshipLabel>AAO Pairs</relationshipLabel>
+    <deleteConstraint>Restrict</deleteConstraint>
+    <required>false</required>
+</CustomField>

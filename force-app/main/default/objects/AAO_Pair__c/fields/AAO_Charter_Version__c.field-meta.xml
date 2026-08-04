@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Charter_Version__c</fullName>
+    <description>Written by: each call. Read by: the recall gate. A charter change that softens a prohibition is a shape change, so the version is on the row and not only in the log.</description>
+    <label>Charter Version</label>
+    <type>Text</type>
+    <length>20</length>
+    <caseSensitive>false</caseSensitive>
+    <unique>false</unique>
+    <externalId>false</externalId>
+    <required>true</required>
+</CustomField>

@@ -7450,3 +7450,109 @@ Superseding the 48 means `AAO_ApplicableSet.resolve` returns nothing for the Peo
 the old pass, so **`AAO_EBV` can no longer run on B&V**. That is intended — §P8 supersedes the
 pass shape and the 24 June gate runs against call 1, not against `AAO_EBV`. Recorded so nobody
 reads it later as a regression.
+
+---
+
+## 2026-08-04 · session 75 · `AAO_Pair__c` · the ledger, with both refinements as refusals
+
+New object, self-lookup, 25 fields, one trigger, 12 tests, all green. 259 tests overall,
+same one pre-existing unrelated failure. The two refinements Matthew ruled are not comments
+in the schema: they are DML the database rejects.
+
+### Why a new object rather than `AAO_Candidate__c`, in the org's own terms
+
+A Candidate is a proposed **claim** with per-row verification state that retires into the
+decision log. A call-1 pair has no subject, no person and no verdict; it is an observation
+about the transcript, and it must outlive the Candidate rows because it is the
+byte-verification and recall-gate record. Different fact, different lifecycle, different
+container. The precedent is the envelope law, where handed and discovered findings are
+separated for exactly this reason.
+
+### Refinement 1 · the stage is explicit, and BOTH disagreements are refused
+
+`AAO_Stage__c` is a restricted picklist, `Located` / `Identified`, required. Inferring the
+stage from a null parent lookup would rebuild the unanswered-answer-row scar: one state with
+two physical shapes. So the trigger refuses a `Located` row that carries a parent **and** an
+`Identified` row that does not. The picklist and the lookup cannot disagree about which row
+this is, in either direction.
+
+`AAO_Stage__c` and `AAO_Disposition__c` are deliberately different fields with an
+overlapping value name. **Stage says which call wrote this row; disposition says what call 2
+concluded.** Both descriptions carry that sentence, because the collision is the kind of
+thing that reads as a duplicate six months from now.
+
+### Refinement 2 · the occurrence ordinal, plus the count it needs to mean anything
+
+`AAO_Occurrence__c` is required on every located row and one-based; a row with none, or with
+occurrence 3 of 2, is refused. `AAO_Occurrence_Count__c` came with it unasked, because
+**occurrence 1 of 1 and occurrence 1 of 3 are different facts** and only the second tells a
+reader the words were said more than once. Count 0 is refused outright: zero matches
+discards the pair and increments a counter (unit: pairs), and never writes a row saying the
+words were not found. On the 17 June fixture the ordinal will almost always be 1, which is
+the ruling's own point.
+
+### The prohibition law stops being a prompt sentence
+
+The charter says call 1 never names a person and call 2 never finds new evidence. Those are
+instructions to a model, and an instruction is a request. Here there are two field sets and
+the trigger refuses either row carrying the other's:
+
+| refused | because |
+|---|---|
+| `Located` row with a disposition, person, basis, verification or claim | call 1 never names a person |
+| `Identified` row with answer text, meaning, coverage, offsets, occurrence or speaker key | call 2 never finds new evidence and never re-judges |
+
+**Enforced both directions on purpose.** A rule enforced one way is a rule that gets around
+itself.
+
+### One-for-one-for-one is a unique index, not a count query
+
+`AAO_Pair_Key__c` is `<run key>|<pair ref>|<L or I>`, Text(67), unique, external id,
+composed only by the trigger. **The stage is inside the key**, so a second identification of
+the same located pair collides on the database's own index. The arithmetic cannot race, and
+a new caller cannot forget to check it. The run key is in there because the arithmetic is
+per run: two runs over the same artifact emit the same pair refs and mean different things.
+
+The pair ref is stored as the model returned it, so a disposition naming a ref we never
+emitted is detectable as our bug per the parse law. **Binding by position is the defect this
+build already paid for once**, in the refusal-grading CSV.
+
+### `None` and `Ambiguous` are not abstention rows, stated in the field
+
+They record what happened to a pair **that exists**. Nothing here asserts the transcript was
+silent about anything. `Identified` with no person is refused (the unanswered answer row
+again) and `None`/`Ambiguous` carrying a person is refused (call 2 doing both). A
+verification stamp on a non-identified row is refused too: call 3 sees an identified claim
+or it sees nothing.
+
+### Two more things the object settled
+
+**The anchor is immutable and the pair is undeletable.** Stage, keys, parent, answer text,
+offsets, occurrence and artifact hash are frozen after insert; editing an anchor would move
+it out from under a claim that cites it. There is no supersession path, unlike a contract,
+because a pair is an observation about a **frozen** artifact: it does not go out of date,
+and a re-run writes a new run key and leaves this one standing.
+
+**The speaker key is derived in Apex, never asked of the model.** Whose turn contains a byte
+range is arithmetic over the normal form. `AAO_Person__c` points at `AAO_Participant__c`
+rather than Contact, because the 17 June fixture carries **two participants with no Contact
+link** and a Contact lookup would drop them silently.
+
+### The test fixture was wrong in exactly the way last entry's was
+
+Three tests failed on `REQUIRED_FIELD_MISSING: AAO_Source__c` because I hand-built an
+`AAO_Participant__c`. Participation is written by `AAO_Participants.record` on Source insert,
+and that is the only path this org has. Rebuilt to insert a Source with a one-speaker roster
+and read the participant back. **Same mistake as the contract minting: a stand-in row in a
+shape the org never produces.** Worth naming twice, because it is now a pattern rather than
+an incident.
+
+### Owed, and named rather than assumed
+
+`AAO_Run_Key__c` is text because **the run receipt object does not exist yet**. §P8.0 makes
+it the replacement for abstention rows (one row per Source per pass) and it is not built. The
+text field is carried now so the receipt can join later without backfilling a corpus.
+
+Also unbuilt, deliberately: the two writers. Nothing yet inserts an `AAO_Pair__c` — that is
+call 1's and call 2's Apex, and it follows the §P8.9 wording updates and the 24 June recall
+gate.

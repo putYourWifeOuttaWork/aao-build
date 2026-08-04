@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Stage__c</fullName>
+    <description>Written by: call 1 (Located) and call 2 (Identified). Read by: everything that counts a stage in isolation. EXPLICIT BY RULING, never inferred from whether the parent lookup is null: this build already carries a scar from a state with two physical shapes (the unanswered answer row), and inferring stage from a null lookup rebuilds it. Distinct from AAO_Disposition__c: stage says which call wrote this row, disposition says what call 2 concluded.</description>
+    <label>Stage</label>
+    <type>Picklist</type>
+    <required>true</required>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Located</fullName>
+                <default>false</default>
+                <label>Located</label>
+            </value>
+            <value>
+                <fullName>Identified</fullName>
+                <default>false</default>
+                <label>Identified</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

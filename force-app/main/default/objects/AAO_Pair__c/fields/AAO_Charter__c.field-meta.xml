@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Charter__c</fullName>
+    <description>Written by: each call. Read by: the recall gate, which re-runs on any call 1 charter change, and needs to know which charter a stored pair came from to say whether it still counts.</description>
+    <label>Charter</label>
+    <type>Text</type>
+    <length>80</length>
+    <caseSensitive>false</caseSensitive>
+    <unique>false</unique>
+    <externalId>false</externalId>
+    <required>true</required>
+</CustomField>

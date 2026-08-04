@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Verification__c</fullName>
+    <description>Written by: call 3, the blind reader, on the identified row. Read by: the gates, which promote only what it upheld. Blank until call 3 has seen it. STAMPED PER ROW rather than summarised per pair, which is defect D1&apos;s lesson taken at the object level: AAO_Interpretation__c was one field and kept only the last refusal, so 2 of the 3 August run&apos;s 9 item-refusals were overwritten and unrecoverable.</description>
+    <label>Verification</label>
+    <type>Picklist</type>
+    <required>false</required>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Upheld</fullName>
+                <default>false</default>
+                <label>Upheld</label>
+            </value>
+            <value>
+                <fullName>Refused</fullName>
+                <default>false</default>
+                <label>Refused</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

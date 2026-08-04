@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Evidence_Contract__c</fullName>
+    <description>Written by: call 1. Read by: the gates, and coverage arithmetic. The declared question these words answer. A pair against no contract is a pair against an undeclared question, which the declared-set law forbids.</description>
+    <label>Evidence Contract</label>
+    <type>Lookup</type>
+    <referenceTo>AAO_Evidence_Contract__c</referenceTo>
+    <relationshipName>AAO_Pairs</relationshipName>
+    <relationshipLabel>AAO Pairs</relationshipLabel>
+    <deleteConstraint>Restrict</deleteConstraint>
+    <required>false</required>
+</CustomField>

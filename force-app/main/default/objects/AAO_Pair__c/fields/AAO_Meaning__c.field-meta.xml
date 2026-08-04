@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Meaning__c</fullName>
+    <description>Written by: call 1. Read by: the derivations. The state the words voice, one direction, from the family&apos;s runtime-closed set. Never a false, never an inversion, never a two-sided verdict: true-or-nothing, so words either voice the question&apos;s own direction or produce no pair at all. Text rather than a picklist because the closed set differs per family and is composed at runtime; the closing is code&apos;s job, not the field&apos;s.</description>
+    <label>Meaning</label>
+    <type>Text</type>
+    <length>128</length>
+    <caseSensitive>false</caseSensitive>
+    <unique>false</unique>
+    <externalId>false</externalId>
+    <required>false</required>
+</CustomField>

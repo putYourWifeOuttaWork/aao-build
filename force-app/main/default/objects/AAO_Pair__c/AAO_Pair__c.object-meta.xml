@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>The pair ledger. Two rows per pair: the unowned row call 1 located, and the row call 2 identified, linked by self-lookup. Ruled by Matthew 4 August. It is a new object rather than a Candidate because a pair is not a proposed claim: it has no subject, no person and no verdict, it is an observation about the transcript, and it must persist as the byte-verification and recall-gate record long after Candidate rows retire. Two rows because every stage must be measurable on its own: pairs located, pairs identified, identifications refused, verifications refused, each a count between two row sets. The located row&apos;s verbatim answer string, byte-located in the frozen artifact, IS the anchor; there is no separate anchor entity.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <label>AAO Pair</label>
+    <nameField>
+        <displayFormat>PAIR-{00000000}</displayFormat>
+        <label>AAO Pair Name</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>AAO Pairs</pluralLabel>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

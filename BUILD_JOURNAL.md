@@ -7994,3 +7994,110 @@ and stays out of the narrative until his copy comes back.
 ### Still blocking, still not mine
 
 **The Emerson blind key.**
+
+---
+
+## 2026-08-05 · session 76 · EMERSON END TO END · all three calls ran, 14 pairs, 4 upheld
+
+285 tests, 100% pass, same one pre-existing unrelated failure. **The §P8 pass exists end to
+end for the first time.** Calls 2 and 3 were built this session; before today only call 1 had
+ever run.
+
+### The fixture is seeded and the hash round-trips exactly
+
+`SRC-00000035` · `emerson/aspentech-2026-06-17-nf1` · **carrier, stored and declared all
+`ec8e7170…5a5f`**, 42,784 chars. The trailing-newline hazard that produced two fingerprints in
+session 73 is simply absent, because the artifact was reissued without one. Five participants
+recorded at ingest. The 42 KB artifact rides a StaticResource because anonymous Apex caps
+source at 32 KB.
+
+### The numbers
+
+| call | wall ms | in | out | thinking | cacheWrite |
+|---|---|---|---|---|---|
+| 1 · locate | 17,060 | 15,330 | 1,308 | **0** | 5,956 |
+| 2 · identify | 9,361 | 4,355 | 748 | **0** | 1,549 |
+| 3 · verify (14 calls) | 68,041 | — | 2,169 | 103 | 868 |
+| **total** | **94,462** | | **4,225** | | |
+
+**94.5 seconds for the whole call, whole roster, all three stages, against 87,805 ms per
+person on the retired shape** — which on this five-person fixture would have been ~440 s for
+one stage. **Call 3 is now the expensive stage at 72% of the wall clock**, because it runs one
+claim per call.
+
+### The arithmetic held, twice
+
+```
+pairs located            14 (unit: pairs)
+dispositions made        14 (unit: pairs)     <- assertOneForOne(run, false)
+  to a person            14 (unit: pairs)
+  None or Ambiguous       0 (unit: pairs)
+verdicts returned        14 (unit: claims)    <- assertOneForOne(run, true)
+  upheld                  4 · refused 10 (unit: claims)
+```
+
+**Zero discarded for byte mismatch. All 14 quotes located in the frozen artifact exactly
+once** — no hallucinated quote on this fixture at all, against 2/17 and 1/8 on B&V.
+
+### Four defects, three of them mine, and one is an API constraint
+
+**1 · The blind reader was never told the claimed meaning.** `verify()` selected
+`AAO_Meaning__c` from the **identified** row, where it is always null — the ledger's own
+trigger forbids call 2 from carrying it. So call 3 was handed *"the words below answer that
+question"* with no meaning at all, and **for a sentiment claim that deletes the scope check
+entirely**, which is the one thing §P8.3 adds for sentiment. Fixed to read from the located
+row and re-run: **5 upheld / 9 refused became 4 upheld / 10 refused.** One claim survived only
+because the reader could not see what it was being asked to verify.
+
+**2 · `minItems` is not available on this API.** Handed 14 claims against a schema description
+saying one verdict per claim, never omitting, call 3 returned **one**. The parse law caught it
+and threw. The obvious repair is a schema bound, and the Messages API refuses it outright:
+`For 'array' type, 'minItems' values other than 0 or 1 are not supported`. Measured, 400.
+
+**3 · Batching by four failed differently and worse.** Handed q1/q10/q11/q12 the reader
+returned q1 twice; handed one claim with a one-value `ref` enum it returned that ref twice.
+Three malformations of one envelope, none repairable by wording. **The fix removes the field
+rather than instructing against it:** at one claim per call there is nothing to key, so the
+response is a verdict and a reason and mis-referencing is unexpressible. Same move as call 1
+having no person field.
+
+**4 · Every seller on this call is marked buyer side.** The sandbox's internal-domain list does
+not carry `altify.com`, so both Altify participants read `buyer side` — **and call 2 was handed
+that wrong label.** This is the same class as the Renee Martin sentiment read on B&V, and it is
+the side check that finding said was needed. It is on the CSV as a defect row rather than
+buried.
+
+### What the read produced, and what the reader did to it
+
+14 establishments: 5 Political Structure, 3 Evaluator, 3 criteria, 2 sentiment, 1 User, 1
+Outside. Two people carry all of them — Jefferson Vargas (8) and Neeraja Chimata (6) — and
+**Jefferson has no Contact link at all**, which is precisely why `AAO_Person__c` points at
+Participant. Call 2 returned **14 of 14 to a person, zero NONE, zero AMBIGUOUS**, which is
+either a clean roster or an over-confident reader and is one of the things the grading settles.
+
+**Call 3 refused 10 of 14 (71%).** Against 24 June's 9 refusals of 16 items that is in the same
+band, and both surviving criteria plus one sentiment read are what stands.
+
+### Scoped narrower than the charter, said plainly
+
+Call 2's closed list is the Source's **participants only**. Call 1 also reported two
+mentioned-but-absent people (Fatima; Travis Hill, *VP of professional services who scoped the
+managed services hours*), and under §P8.1 those are real candidates — but a mentioned person
+has no Participant row, so a disposition naming one could not be written and would be dropped
+after being paid for. **Shadow creation is the gates' work and is not built.**
+
+The context window is **two turns each side**, and it is a **chosen** number, not a measured
+one. §P8.0 says the threshold is measured and no document carries it; a chosen number
+pretending to be measured is exactly what that law prevents.
+
+### Owed to Matthew
+
+`review/emerson-2026-06-17-FOR-MATTHEW.csv` — resolution rows first (account, occurred clock,
+opportunity, and each person's identity outcome), then all 14 establishments including the ten
+call 3 already refused, then eight blank UNDER rows. `…-RUN-FACTS.md` carries the run key,
+charter versions, and the latency table beside it.
+
+**Two resolution rows are marked NOT ASSERTED rather than presented for grading:** the
+occurred-clock window cannot run honestly in a sandbox where every opportunity carries a seed
+`CreatedDate` of 3 August, and the opportunity was **given by the seeder, not resolved**.
+Grading either would grade the seed rather than the machine.

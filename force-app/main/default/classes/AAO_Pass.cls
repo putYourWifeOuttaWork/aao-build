@@ -58,6 +58,124 @@ public with sharing class AAO_Pass {
     }
 
 
+
+    // ========================================================== call 1 · THE FAMILY SWEEP
+
+    public class SweepRun {
+        public List<AAO_Extract.StageResult> calls = new List<AAO_Extract.StageResult>();
+        public Map<String, Integer> pairsByFamily = new Map<String, Integer>();
+        public Integer parsed = 0;
+        public Integer located = 0;
+        public Integer discardedNoMatch = 0;
+        public Integer discardedCrossesTurns = 0;
+        public Integer coverageDefaulted = 0;
+        public List<String> rejected = new List<String>();
+        public List<String> discardNotes = new List<String>();
+        /** Serial wall clock. Concurrency is a separate question and is reported separately. */
+        public Long serialMs = 0;
+
+        public override String toString() {
+            List<String> o = new List<String>{
+                'call-1 invocations       ' + calls.size() + ' (unit: reads, one per family)',
+                'pairs parsed             ' + parsed + ' (unit: pairs)',
+                'pairs located            ' + located + ' (unit: pairs)',
+                'discarded, no match      ' + discardedNoMatch + ' (unit: pairs)',
+                'discarded, crosses turns ' + discardedCrossesTurns + ' (unit: pairs)',
+                'coverage defaulted       ' + coverageDefaulted + ' (unit: pairs)',
+                'wall clock, SERIAL       ' + serialMs + ' ms'
+            };
+            List<String> fams = new List<String>(pairsByFamily.keySet());
+            fams.sort();
+            for (String f : fams) {
+                o.add('  ' + f.rightPad(22) + ' ' + pairsByFamily.get(f) + ' (unit: pairs)');
+            }
+            return String.join(o, '\n');
+        }
+    }
+
+    /**
+     * ONE READ PER FAMILY over the whole artifact. Matthew's ruling, 5 August.
+     *
+     * **The invocation count is `families.size()` and nothing else.** Not roster size, not
+     * transcript length, not evidence density. That is the cost law preserved exactly: it
+     * forbids crossing by person, which is unbounded, and crossing by family is bounded by the
+     * declared set.
+     *
+     * **Refs are family-prefixed** so two families cannot collide on the pair key, and so a
+     * ref reads as the family that produced it. Same bytes reached by different contracts in
+     * different families is the INTENDED behaviour of this shape and is never deduplicated:
+     * that is precisely the multi-establishment the sweep exists to make structural.
+     */
+    public static SweepRun locateSweep(Id sourceId, String runKey) {
+        AAO_Source__c src = source(sourceId);
+        List<AAO_Evidence_Contract__c> declared = AAO_RecallGate.declaredSet();
+        Map<String, Id> idByCode = new Map<String, Id>();
+        for (AAO_Evidence_Contract__c ec : declared) {
+            idByCode.put(ec.AAO_Proposition_Code__c, ec.Id);
+        }
+        String version = AAO_LocateCharter.effectiveVersion(declared);
+        Map<String, List<AAO_Evidence_Contract__c>> fams =
+            AAO_LocateCharter.families(declared);
+
+        SweepRun sweep = new SweepRun();
+        List<AAO_Pair__c> all = new List<AAO_Pair__c>();
+        List<String> famNames = new List<String>(fams.keySet());
+        famNames.sort();
+
+        for (String fam : famNames) {
+            List<AAO_Evidence_Contract__c> block = fams.get(fam);
+            List<String> codes = new List<String>();
+            for (AAO_Evidence_Contract__c ec : block) {
+                codes.add(ec.AAO_Proposition_Code__c);
+            }
+
+            AAO_Extract.StageSpec spec = AAO_Extract.inventorySpec();
+            spec.stage = 'call1_sweep_' + fam.deleteWhitespace().toLowerCase();
+            spec.charter = 'AAO_LocateCharter';
+            spec.charterVersion = version;
+
+            AAO_Extract.StageResult sr = AAO_Extract.callStage(
+                spec,
+                AAO_LocateCharter.systemPrompt(),
+                new List<String>{
+                    AAO_LocateCharter.rubricBlock(block),
+                    '# The transcript\n\n' + src.AAO_Normalized_Text__c
+                },
+                AAO_LocateCharter.schema(codes)
+            );
+            sweep.calls.add(sr);
+            sweep.serialMs += sr.elapsedMs;
+
+            AAO_LocateCharter.Result parsed = AAO_LocateCharter.parse(sr.rawText, codes);
+            sweep.parsed += parsed.pairs.size();
+            sweep.coverageDefaulted += AAO_LocateCharter.coverageDefaulted;
+            sweep.rejected.addAll(parsed.rejected);
+
+            // The family prefix is what keeps two reads' refs from colliding on the pair key.
+            String prefix = fam.substring(0, 2).toLowerCase();
+            for (AAO_LocateCharter.Pair p : parsed.pairs) {
+                p.ref = prefix + p.ref;
+            }
+
+            AAO_Locate.Located loc = AAO_Locate.locate(
+                src, parsed.pairs, runKey, version, idByCode
+            );
+            sweep.located += loc.rows.size();
+            sweep.discardedNoMatch += loc.discardedNoMatch;
+            sweep.discardedCrossesTurns += loc.discardedCrossesTurns;
+            sweep.discardNotes.addAll(loc.discardNotes);
+            sweep.pairsByFamily.put(fam, loc.rows.size());
+            all.addAll(loc.rows);
+        }
+
+        // One insert after every callout: the callout-then-DML order is the caller's sequence
+        // to hold, exactly as AAO_Locate.write keeps it out of the locator.
+        if (!all.isEmpty()) {
+            insert all;
+        }
+        return sweep;
+    }
+
     // ====================================================================== call 3 · verify
 
     public class VerifyRun {

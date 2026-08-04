@@ -8226,3 +8226,106 @@ row.
 `24:43`, `33:15`, `12:48`) that will not byte-locate in `ec8e7170`. **I do not hold his
 returned file** — the sheet quotes the timestamps but not the row text — so the normalization
 is owed and blocked on that file, and no target is built from a quote I cannot locate.
+
+---
+
+## 2026-08-05 · session 76 · the family sweep · recurrence 39% → 52%, pairs 18 → 40
+
+289 tests, 100% pass, same one pre-existing unrelated failure. `locate-3.0.0+d314a73c`. Built
+in the ruled order: the regression assertion set first, then the sweep, then two identical
+runs.
+
+### The regression set, built first, and it caught the thing retroactively
+
+`AAO_Regression` turns every graded finding into a standing assertion. **No model call:** the
+spans are recorded, and checking them is arithmetic over bytes. Traps and passes are the same
+mechanism from opposite ends.
+
+Run against the two existing Emerson runs before the sweep touched anything:
+
+| run | verdict |
+|---|---|
+| `emerson-0617-r1` | **HELD** |
+| `emerson-0617-r3` | **BROKEN** — `LOST emerson-q9 [AAO_DC_N]` |
+
+The instrument named the exact regression the last report had to find by hand, from data that
+was already in the org. **That is the whole argument for building it before the sweep rather
+than after.**
+
+Matthew's nine spans are in it, byte-located by design in `ec8e7170`. Six carry declared homes
+and are `GRADED_MISS` targets; **three are Decision Orientation, an undeclared family, and are
+reported as `UNREACHABLE` on their own line** so they can never inflate a recall failure — no
+prompt, no read and no repair could produce them.
+
+**UNDER-3 is recorded as a limit of the model, not a bad paste.** Matthew's read is one
+establishment continued across an interruption: 248 of his 512 characters locate at 23,230,
+three other speakers' turns intervene, and the resumed clause is a second span at 23,530. **One
+establishment, two spans, and one-span-per-pair cannot express it.** On the record before
+anything is built that assumes contiguity.
+
+### The sweep · four reads, and the measurements CODE asked for
+
+**1 · Recurrence across two identical sweep runs: 27 of 51, 52%.** Against 39% across the two
+Emerson single reads and 15% across three 24 June runs. **Better, and not decisively** — the
+bar was to beat 39% decisively and 52% does not clear that bar the way the ruling wanted. It is
+the largest single improvement measured on this problem and it is not the answer to it.
+
+**2 · Contracts reached by more than one family read: 0 in both runs.** The partition holds.
+Same bytes reached by different contracts in different families is intended and is never
+deduplicated — that is the multi-establishment the sweep exists to make structural.
+
+**3 · Per-family pair counts**, which is addendum 11's concentration measurement arriving free:
+
+| family | contracts | s1 | s2 |
+|---|---|---|---|
+| Buyer Role | 5 | 14 | 11 |
+| Sentiment | 1 | 11 | 10 |
+| Political Status | 8 | 9 | 12 |
+| Decision criteria | 3 | 6 | 5 |
+
+**The misses were not concentrated in one family.** Every family produced more under the sweep,
+including Sentiment, which holds a single contract and still went from 2 pairs to 11 — a family
+that cannot have been capacity-bound by contract count. That is worth stating plainly: **the
+capacity problem is not only how many contracts are in view, it is how many things the read is
+holding at once, and attention was the scarce resource rather than prompt size.**
+
+**4 · Wall clock. Serial 63.1 s and 71.6 s, transaction 63.7 s and 71.8 s.** CODE's estimate
+was ~68 s and assumed concurrency would be needed to stay inside the ceiling. **It is not:
+four serial reads fit inside 120 s with room, and Apex cannot issue concurrent callouts from
+one transaction anyway.** Concurrency is not available and is not needed; the number is
+reported serial because that is the only number there is.
+
+**5 · Total pairs: 40 and 38, against the single read's 18 and 14.** More than double, with
+**zero byte-match discards and zero coverage defaults in both runs.**
+
+### Defect 4 dissolved, structurally, as the ruling predicted
+
+| | single read | sweep s1 | sweep s2 |
+|---|---|---|---|
+| quotes carrying >1 establishment | 1 of 17 | **7 of 31** | **4 of 33** |
+| carrying >2 | 0 | **2** | **1** |
+
+The worked example is gone from the prompt and multi-establishment went up sixfold. **Two
+rewordings failed to teach what a partition made automatic.** Fourth time this build has taken
+the same move: no person field on call 1, no `ref` field on call 3, no placement string at call
+3, and now no cross-family judgment asked of one read.
+
+### The sweep breaks the regression set, and that is a finding rather than a footnote
+
+| run | regressions |
+|---|---|
+| s1 | **2** — `emerson-q9` and `emerson-q13` |
+| s2 | **1** — `emerson-q13` |
+
+`emerson-q13` is Matthew's **correct refusal**, lost in both sweep runs. A run that stops
+finding it has not got better, it has stopped looking — and the assertion says so in those
+words because that is exactly the reading a bigger pair count invites.
+
+**So the sweep more than doubles the harvest and still loses graded findings.** Recall variance
+did not go away; it went up in absolute terms and stayed present in kind. Both sweep runs
+recovered a Matthew UNDER that no previous run had found (`under-1` and `under-5`), which is
+real gain, and neither held everything it was supposed to.
+
+**Recurrence at 52% on a doubled harvest is the honest summary: the sweep is a large
+improvement and not a fix.** No further repair proposed here; the ruling was to build it, run
+it twice, measure, and hand the output to Matthew.

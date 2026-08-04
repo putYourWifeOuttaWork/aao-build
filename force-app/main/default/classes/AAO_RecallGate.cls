@@ -410,7 +410,7 @@ public with sharing class AAO_RecallGate {
     }
 
     /** Start and end offsets of every occurrence of `quote`, flattened as [s,e,s,e,...]. */
-    private static List<Integer> ranges(String artifact, String quote) {
+    public static List<Integer> ranges(String artifact, String quote) {
         List<Integer> out = new List<Integer>();
         if (String.isBlank(artifact) || String.isBlank(quote)) {
             return out;
@@ -430,7 +430,7 @@ public with sharing class AAO_RecallGate {
      * A target quote that is nowhere in the artifact intersects nothing and reports as not
      * found, which is correct and is also a signal about the TARGET rather than the read.
      */
-    private static Boolean overlaps(String artifact, List<Integer> want, String found) {
+    public static Boolean overlaps(String artifact, List<Integer> want, String found) {
         if (want.isEmpty() || String.isBlank(found)) {
             return false;
         }

@@ -55,7 +55,65 @@ public with sharing class AAO_LocateCharter {
      * Bumped from 2.0.0 on 5 August: the worked example, the second pass, and coverage
      * becoming required all change what the model reads.
      */
-    public static final String VERSION = 'locate-2.1.0';
+    /**
+     * 3.0.0 · THE FAMILY SWEEP, ruled by Matthew 5 August. Call 1 runs once per FAMILY over
+     * the whole artifact rather than once per transcript holding all seventeen contracts.
+     *
+     * The reasoning, recorded because the alternative was cheaper to build: seventeen
+     * contracts held against a forty-minute artifact in one read is a capacity problem, and
+     * the flicker — 15% recurrence across three 24 June runs, 39% across two Emerson runs — is
+     * what capacity exhaustion looks like from outside. A union over N runs would raise recall
+     * by paying three times for the same defect and leave output volume run-dependent, and a
+     * system whose answer depends on how many times you asked it is not an instrument.
+     *
+     * **THE COST LAW IS PRESERVED EXACTLY.** It forbids crossing questions BY PERSON, which
+     * scales with the roster without bound and is what made the retired shape cost 87,805 ms
+     * per person. Crossing by FAMILY is bounded at four and scales with nothing about the
+     * call: not roster size, not transcript length, not evidence density. A twelve-person call
+     * is still four reads. `AAO_PassTest` fails if that ever stops being true.
+     *
+     * **The worked example is REMOVED at this version.** It produced imitation rather than
+     * generalisation — one quote of seventeen carried two establishments and it was the one in
+     * the example, yielding exactly the two pairs the example named. Under the sweep it has
+     * nothing left to do: the sentiment read and the political read see the same sentence
+     * independently, so multi-establishment across families stops being instructed and becomes
+     * structural. The affirmative instruction survives only for the narrower within-family
+     * case, which is a real thing that still has to work.
+     */
+    public static final String VERSION = 'locate-3.0.0';
+
+    /**
+     * THE FAMILY OF A CONTRACT, from its code. Four families, and the number is bounded by the
+     * declared set rather than by anything about the call.
+     */
+    public static String familyOf(String code) {
+        if (code == 'AAO_PS_1') { return 'Sentiment'; }
+        if (code.startsWith('AAO_POL_')) { return 'Political Status'; }
+        if (code.startsWith('AAO_BR_')) { return 'Buyer Role'; }
+        if (code.startsWith('AAO_DC_')) { return 'Decision criteria'; }
+        throw new CharterException(
+            'Contract ' + code + ' belongs to no family the sweep knows. A contract with no ' +
+            'family would be silently swept by nobody, so this throws rather than dropping it.'
+        );
+    }
+
+    /** Declared contracts grouped by family, in a deterministic order. */
+    public static Map<String, List<AAO_Evidence_Contract__c>> families(
+        List<AAO_Evidence_Contract__c> declared
+    ) {
+        Map<String, List<AAO_Evidence_Contract__c>> out =
+            new Map<String, List<AAO_Evidence_Contract__c>>();
+        List<AAO_Evidence_Contract__c> sorted = new List<AAO_Evidence_Contract__c>(declared);
+        sorted.sort(new ByCode());
+        for (AAO_Evidence_Contract__c ec : sorted) {
+            String fam = familyOf(ec.AAO_Proposition_Code__c);
+            if (!out.containsKey(fam)) {
+                out.put(fam, new List<AAO_Evidence_Contract__c>());
+            }
+            out.get(fam).add(ec);
+        }
+        return out;
+    }
 
     /**
      * THE VERSION THE ROW CARRIES, and it is not this class's version alone.
@@ -357,22 +415,11 @@ public with sharing class AAO_LocateCharter {
                 'single best reading of a rich sentence. Picking one is under-reading wearing ' +
                 'discipline\'s clothes.',
                 '',
-                'WORKED EXAMPLE, because this is the rule that is hardest to follow. Take: ' +
-                '"I\'m right here and I\'m going to support whatever it\'s going to take to ' +
-                'make sure that it gets through." That is ONE sentence and it is at least TWO ' +
-                'pairs, quoting the same words both times: it voices how the speaker stands ' +
-                'toward us, AND it says they are the one called on to make it happen. Emit ' +
-                'both. A pair is one establishment, never one sentence, and the same words ' +
-                'appearing twice in your output is correct rather than a duplicate.',
+                'TWO QUESTIONS IN THE LIST CAN BOTH BE ANSWERED BY ONE SENTENCE. Where ' +
+                'that happens, emit both pairs quoting the same words. The same quote ' +
+                'appearing twice in your output is correct, not a duplicate.',
                 '',
-                'THEN GO BACK OVER WHAT YOU WROTE. When your list is complete, read each ' +
-                'quote once more and ask: does this sentence also answer a DIFFERENT question ' +
-                'on the list? Add the pair where it does. On the first run of this charter ' +
-                'every consequential sentence produced exactly one pair, and the sentences ' +
-                'were carrying two and three. This second pass is where that gets fixed.',
-                '',
-                // ---- §P8.9, ruling 1 ------------------------------------------------
-                'THE CONTENT OF THE CALL, NEVER THE TITLE, IN BOTH DIRECTIONS. A title never ' +
+                                'THE CONTENT OF THE CALL, NEVER THE TITLE, IN BOTH DIRECTIONS. A title never ' +
                 'establishes anything by itself: a person called Director of Operations has ' +
                 'established nothing by being called that. And the reverse is equally binding ' +
                 '— BEHAVIOUR ON THE CALL ESTABLISHES. Somebody comparing options against a ' +
@@ -474,7 +521,7 @@ public with sharing class AAO_LocateCharter {
         return String.join(out, '\n');
     }
 
-    private class ByCode implements Comparator<AAO_Evidence_Contract__c> {
+    public class ByCode implements Comparator<AAO_Evidence_Contract__c> {
         public Integer compare(AAO_Evidence_Contract__c a, AAO_Evidence_Contract__c b) {
             return a.AAO_Proposition_Code__c.compareTo(b.AAO_Proposition_Code__c);
         }

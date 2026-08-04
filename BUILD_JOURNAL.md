@@ -8408,3 +8408,79 @@ multi-establishment rows marked as such, blank UNDER rows at the bottom.
 the regression line naming `emerson-q9`.
 
 Still open and untouched: the seller-side flag, UNDER-3's turn-spanning span.
+
+---
+
+## 2026-08-05 · session 76 · addendum 14 · q9 checked against the ledger, and the third state
+
+289 tests, 100% pass, same one pre-existing unrelated failure.
+
+### `emerson-q9` · the assertion is sound and the finding changes shape
+
+Design's hypothesis was that the sweep emitted the **wider** UNDER-4 span (26,782–26,952),
+which wholly contains q9's graded span (26,850–26,952), and that an assertion keyed on exact
+string or exact range would report `LOST` while the establishment was present.
+
+**Two things to answer, and the ledger answered both.**
+
+First, whether the instrument carries the 24 June repair. **It does.** `AAO_Regression` calls
+`AAO_RecallGate.ranges` and `overlaps` directly rather than reimplementing them, so it has been
+byte-range intersection since it was written. A wider span containing the target would have
+matched.
+
+Second, what the runs actually emitted anywhere near those bytes, whatever contract it landed
+on:
+
+| run | anything touching 26,850–26,952 |
+|---|---|
+| `emerson-0617-r1` | `AAO_DC_N` 26,850–26,952 — the graded PASS |
+| `emerson-0617-r3` | **nothing at all** |
+| `emerson-sweep-s1` | **nothing at all** |
+| `emerson-sweep-s2` | `AAO_DC_N` 26,850–26,952 — **byte-identical** |
+
+**Not a wider span. Not a different contract. Nothing.** Design's expectation is wrong and is
+recorded wrong.
+
+**And the finding is neither of the two outcomes design named.** It is not an instrument defect,
+and it is not *found once and never since* — **s2 found it, at the identical byte range, under
+the identical contract.** So:
+
+> **`emerson-q9` is a graded PASS that flickers. Two of four runs, byte-identical when present,
+> absent without trace when not.**
+
+That is a better finding than the one it replaces, and it is the cleanest specimen of the open
+recall problem that exists, because it is the only flickering establishment carrying a human
+grade. My previous report's *"lost on every run since the grading"* was wrong: it stated three
+losses where the ledger shows two, and s2's find is the fact that makes this a flicker rather
+than a systematic loss. **Corrected here rather than left standing.**
+
+It also means the regression instrument's verdict on a run is itself sampling the flicker: s1
+BROKEN and s2 HELD differ on this one row.
+
+**Person was considered as a third key and deliberately not added.** At the `Located` stage no
+pair carries a person — call 1 never names one — so a person-keyed assertion could only ever
+match identified rows, and would silently stop checking call 1's output, which is the stage the
+regression set exists to watch.
+
+### The batched-verify hazard · a third state, and the gap it exposes
+
+A pass that stops between call-3 batches leaves claims with a disposition and no verdict, and
+that is **byte-for-byte what a dropped claim looks like.** Throwing there fails a healthy
+mid-pass run; suppressing it there blinds the check on an unhealthy one.
+
+`assertOneForOne` now returns `HELD` / `INCOMPLETE` / `BROKEN`. INCOMPLETE reports its counts
+and is scored as neither, the same shape as `CHANGED, undiagnosed` and the `UNREACHABLE` line.
+
+**And the gap is named rather than papered over: what would make INCOMPLETE distinguishable
+from BROKEN is the run receipt, and the receipt does not exist.** §P8.0 owes it. Until it does,
+this class can say a pass is unfinished but not whether it was *abandoned* unfinished. The
+alternative — a caller-supplied "I finished" flag — is the caller asserting its own health, and
+that is not evidence.
+
+### The general fact, recorded
+
+**Call 3 is the system's only stage whose cost is linear in harvest size against a hard
+platform ceiling.** Call 1 is bounded by families, call 2 is one call over all pairs, call 3 is
+one callout per claim. The sweep doubled the harvest and therefore doubled the only thing that
+was ever going to hit a wall. Not a problem at 40 claims and three batches; **the first thing
+to break on a denser transcript**, and named now rather than found by a timeout in a demo.

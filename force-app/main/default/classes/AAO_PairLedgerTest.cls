@@ -303,21 +303,25 @@ private class AAO_PairLedgerTest {
         // inferred from the shape of the data is a state with two shapes.
         AAO_PairLedger.assertOneForOne(RUN, false);
 
-        Boolean threw = false;
-        try {
-            AAO_PairLedger.assertOneForOne(RUN, true);
-        } catch (AAO_PairLedger.ArithmeticException e) {
-            threw = true;
-            System.assert(
-                e.getMessage().contains('not missing verdicts'),
-                'The None row is not owed a verdict. Got: ' + e.getMessage()
-            );
-        }
-        System.assert(threw, 'One identified claim with no verdict must throw.');
+        // CHANGED 5 August, and the change is the batched-verify hazard. One identified
+        // claim with no verdict is INCOMPLETE, not BROKEN: call 3 runs one claim per callout
+        // against a 120-second ceiling, so a pass in progress looks exactly like a pass that
+        // dropped a claim. Throwing here would fail every healthy mid-pass run.
+        AAO_PairLedger.Counts mid = AAO_PairLedger.assertOneForOne(RUN, true);
+        System.assertEquals(
+            AAO_PairLedger.INCOMPLETE,
+            mid.outcome,
+            'A claim still awaiting a verdict is an unfinished pass, not a broken one.'
+        );
+        System.assert(
+            mid.toString().contains('run receipt'),
+            'And the report names the thing that would tell the two apart, which is owed.'
+        );
 
         named.AAO_Verification__c = 'Upheld';
         update named;
         AAO_PairLedger.Counts c = AAO_PairLedger.assertOneForOne(RUN, true);
+        System.assertEquals(AAO_PairLedger.HELD, c.outcome, 'Now it is finished.');
         System.assertEquals(1, c.verified, 'unit: claims');
         System.assertEquals(1, c.verificationsUpheld, 'unit: claims');
     }

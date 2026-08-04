@@ -19,6 +19,11 @@ public with sharing class AAO_PairLedger {
     public class ArithmeticException extends Exception {
     }
 
+    /** HELD, INCOMPLETE, or BROKEN. Three states, because two would have to lie about one. */
+    public static final String HELD = 'HELD';
+    public static final String INCOMPLETE = 'INCOMPLETE';
+    public static final String BROKEN = 'BROKEN';
+
     /**
      * What one run of the pass did, in counts that each name their unit.
      *
@@ -29,6 +34,12 @@ public with sharing class AAO_PairLedger {
      */
     public class Counts {
         public String runKey;
+        /**
+         * Set by `assertOneForOne`. INCOMPLETE where the verify stage has claims left to
+         * verify — a legitimate mid-pass state that is INDISTINGUISHABLE from the omission
+         * this class exists to catch.
+         */
+        public String outcome = HELD;
         public Integer located = 0;
         public Integer disposed = 0;
         public Integer identifiedToAPerson = 0;
@@ -46,7 +57,14 @@ public with sharing class AAO_PairLedger {
                     '  None or Ambiguous      ' + identificationsRefused + ' (unit: pairs)',
                     'verdicts returned        ' + verified + ' (unit: claims)',
                     '  upheld                 ' + verificationsUpheld + ' (unit: claims)',
-                    '  refused                ' + verificationsRefused + ' (unit: claims)'
+                    '  refused                ' + verificationsRefused + ' (unit: claims)',
+                    'outcome                  ' + outcome +
+                        (outcome != INCOMPLETE
+                            ? ''
+                            : ' (' + (identifiedToAPerson - verified) +
+                              ' claims awaiting a verdict; a stopped pass and a dropped ' +
+                              'claim look identical here, and the run receipt that would ' +
+                              'separate them is owed by section P8.0)')
                 },
                 '\n'
             );
@@ -101,6 +119,7 @@ public with sharing class AAO_PairLedger {
         Counts c = counts(runKey);
 
         if (c.located != c.disposed) {
+            c.outcome = BROKEN;
             throw new ArithmeticException(
                 'One for one is broken on run ' + runKey + ': ' + c.located +
                 ' pairs located, ' + c.disposed + ' dispositions (unit: pairs). ' +
@@ -114,7 +133,28 @@ public with sharing class AAO_PairLedger {
             );
         }
 
+        // THE BATCHED-VERIFY HAZARD, named 5 August. Call 3 runs one claim per callout and
+        // forty claims is ~172 s against a 120-second per-transaction ceiling, so a pass is
+        // driven in batches by its caller. **A pass that stops between batches leaves claims
+        // with a disposition and no verdict — which is byte-for-byte what a dropped claim
+        // looks like.** Throwing there fails a healthy run; suppressing it there blinds the
+        // check on an unhealthy one.
+        //
+        // So there is a third state rather than a binary that has to lie about one of the two
+        // cases, the same shape as `CHANGED, undiagnosed` and the `UNREACHABLE` line.
+        // INCOMPLETE is reported with its counts and scored as neither held nor broken.
+        //
+        // **What makes INCOMPLETE distinguishable from BROKEN is the run receipt, and the
+        // receipt does not exist.** §P8.0 owes it — one row per Source per pass, carrying
+        // which stages completed — and until it does, this class can say a pass is unfinished
+        // but not whether it was ABANDONED unfinished. Recorded as the gap rather than papered
+        // over by a caller-supplied flag, which would be the caller asserting its own health.
+        if (afterVerify && c.verified < c.identifiedToAPerson) {
+            c.outcome = INCOMPLETE;
+            return c;
+        }
         if (afterVerify && c.verified != c.identifiedToAPerson) {
+            c.outcome = BROKEN;
             throw new ArithmeticException(
                 'For one is broken on run ' + runKey + ': ' + c.identifiedToAPerson +
                 ' pairs identified to a person, ' + c.verified + ' verdicts returned ' +

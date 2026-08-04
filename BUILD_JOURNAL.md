@@ -7778,3 +7778,111 @@ is not deployed, it is hidden.**
 same run key threw `DUPLICATE_VALUE` on `AAO_Pair_Key__c` rather than writing a second copy
 of the run. That is ruling 1's first half working on live data, three hours after it was
 ratified.
+
+---
+
+## 2026-08-05 · session 76 · addendum 07 · the target set settles, and the instability answers its own question
+
+285 tests, 100% pass, same one pre-existing unrelated failure. No new callouts: the three
+stored runs are re-scored against the settled target set, which is what having a run key on
+every row is for.
+
+### The three asks, absorbed
+
+**The fourth PASS is Adam's S1 (CLM-34), and it does not add a target.** Its span is *"what
+I'm trying to do is just eliminate clicks"* — the same span already carried as the canonical
+criterion, and Matthew's 4 August ruling makes it the criterion Adam should carry. Two grades
+land on one span, so the answerable count stays at two. **Recorded because a resolved ask
+that changes no number reads as an omission otherwise.** The distinction the sheet draws is
+the durable one and is now in the target's own text: *a person stating what he himself wants
+establishes; describing a process or directing an implementation does not.*
+
+**The two OVERs are Ashley's CLM-31 and Robbin's CLM-35**, both `wrong-scope`. They are
+must-not-reproduce targets scored against `AAO_PS_1`, since S1 is retired and sentiment is
+where a preference claim would now land. The reported zero has its denominator.
+
+**The S2/Adam target is WITHDRAWN, not answered.** The sheet recorded that UNDER **with no
+span**, from Matthew's read of the output against his knowledge of the call. Nobody has ever
+named Adam's supporter words in the 24 June transcript and it is possible none exist.
+**A gate target must be transcript-grounded; a read cannot be failed for missing what the
+frozen bytes do not carry.** It stays in the target list carrying its reason, because
+deleting it would erase why it was ever expected. `withdrawn` is a distinct state from
+`owed`: owed means nobody has answered, withdrawn means the answer was that the artifact
+does not carry it.
+
+**PO9 is excluded by ruling now rather than by my inference**, with the reason journalled.
+
+### Two scoring repairs the answers forced
+
+**The coverage ratio no longer mixes in the exclusions.** With two must-not-reproduce targets
+in the denominator the ratio could never reach one, so it would report a permanent failure
+that means nothing. Recall targets and exclusions are counted separately: `targets covered
+0/2`, `exclusions checked 2`.
+
+**An over-read's words under a DIFFERENT contract are reported, never failed.** The grading
+judged those words against one proposition and said nothing about any other. Calling
+`AAO_BR_EVAL` on *"use your components"* a reproduction would punish a reading nobody graded.
+It prints as a NOTE and goes in front of Matthew.
+
+### Restraint holds. Recall does not.
+
+**Zero over-reads reproduced as sentiment, in all three runs.** Both graded over-reads stayed
+out of `AAO_PS_1`. The one-way split and the sentiment definition are doing the job they were
+built for.
+
+But both come back elsewhere, and one of those is a finding rather than a note:
+
+| over-read | where it landed |
+|---|---|
+| Robbin CLM-35 *"use your components…"* | `AAO_BR_EVAL`, **all three runs** |
+| Ashley CLM-31 *"we look at as many use cases…"* | `AAO_DC_N`, run 2 |
+
+**Run 2 filed a graded-OVER process description as a criterion while filing the canonical
+criterion under `AAO_BR_EVAL`.** The criteria family is not silent; it is aimed wrong, and it
+swapped the two exactly.
+
+### The instability question, answered with the separating measurement CODE asked for
+
+Clustering every located pair across the three runs by (contract, overlapping byte range) —
+overlap rather than string equality, because a boundary shift is not a different finding:
+
+```
+distinct establishments across 3 runs   26 (unit: establishments)
+  in all three runs                      4
+  in two runs                            2
+  in one run only                       20
+```
+
+**This is not a stable core with a noisy fringe. The fringe is the read.** Fifteen per cent
+recurs; seventy-seven per cent appears once and never again.
+
+And the targets flicker. `PS7-broker` is 2 of 3; the canonical criterion is 1 of 3. Neither
+is ever *covered*, so the headline stays a stable 0/2 — but what varies is **how** it fails,
+which means a single run cannot be trusted to tell you which repair you need.
+
+**The four that recur in all three runs are the whole stable core:**
+
+| | contract | speaker | words |
+|---|---|---|---|
+| 1 | `AAO_BR_EVAL` | Robbin | *use your components that you guys to Altify design components…* |
+| 2 | `AAO_POL_PS1` | Robbin | *That will be upgraded in our next sprint.* |
+| 3 | `AAO_POL_PS1` | Robbin | *any Altify install, we don't have to go through security…* |
+| 4 | `AAO_POL_PS2` | Robbin | *but I'll send a message and make sure they keep everybody up to date* |
+
+**All four are one person, and the most stable establishment in the entire read is a graded
+over-read wearing a new hat.** Nothing about the four is load-bearing for a relationship map.
+
+Per the ruling: measured, not touched. No change to temperature, prompt or splitting.
+
+### Queued for grading, and out of this prose per the standing rule
+
+`review/sentiment-2026-06-24-FOR-MATTHEW.csv` — the three MENTOR reads from run 1, with
+their proposition, their quotes, and the label meanings exactly as the model received them.
+`…-CODE-FIRST-PASS.csv` is in this commit and stays out of the narrative until his copy
+comes back.
+
+### Blocking, and it is not mine to resolve
+
+**The Emerson blind key.** The sheet has held that slot empty since 29 July. Emerson end to
+end does not start until Matthew dictates it, or the `model_missed` denominator is lost for
+the second fixture running.

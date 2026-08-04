@@ -6,7 +6,8 @@
 @isTest
 private class AAO_RecallGateTest {
     /**
-     * The two answerable targets, verbatim, in a stand-in artifact.
+     * Every scored target's words, verbatim, in a stand-in artifact: the two that must be
+     * found and the two that must not come back as sentiment.
      *
      * They are carried verbatim rather than approximated, because a target quote that is
      * not in the artifact reports NOT FOUND correctly, and a test built on that would be
@@ -18,7 +19,11 @@ private class AAO_RecallGateTest {
         'That needs to go to Scott and Matt and Brian. Like that\'s Matt, that was a very ' +
         'specific ask from Matt last week. So I just want to make sure we keep that moving.\n' +
         'adam\tBut I understand this is a pilot, so what I\'m trying to do is just ' +
-        'eliminate clicks and just like, wouldn\'t it be great for a seller';
+        'eliminate clicks and just like, wouldn\'t it be great for a seller\n' +
+        'robbin\tYeah, use your components that you guys to Altify design components that ' +
+        'you have for like all your other buttons so that it can be consistent.\n' +
+        'ashley\tI think we look at as many use cases as we can take on that are going to ' +
+        'add value to the organization and we go after them.';
 
     @isTest
     static void aBoundaryDisagreementIsNotAMiss() {
@@ -64,9 +69,29 @@ private class AAO_RecallGateTest {
     }
 
     @isTest
-    static void anOwedTargetMakesAPassImpossible() {
-        // A gate that passes while a target is owed is a gate over a smaller test, which is
-        // the exact shape of the mistake this build exists to refuse.
+    static void findingEverythingIsNotEnoughIfAnOverReadComesBack() {
+        // Both recall targets covered, and the gate still fails, because one of the graded
+        // over-reads came back as sentiment. Recall and restraint are separate conditions
+        // and passing one is not passing.
+        AAO_RecallGate.Coverage c = AAO_RecallGate.score(
+            new List<AAO_Pair__c>{
+                pair('AAO_POL_OPS1', 'That needs to go to Scott and Matt and Brian.'),
+                pair('AAO_DC_N', 'what I\'m trying to do is just eliminate clicks'),
+                pair('AAO_PS_1', 'use your components that you guys to Altify design components')
+            },
+            ARTIFACT
+        );
+        System.assertEquals(2, c.targetsAnswerable, 'unit: targets');
+        System.assertEquals(2, c.targetsCovered, 'Both recall targets found.');
+        System.assertEquals(2, c.exclusionsChecked, 'unit: targets');
+        System.assertEquals(1, c.reproduced.size(), 'And one over-read is back.');
+        System.assertEquals(false, c.passed(), 'So the gate does not pass.');
+    }
+
+    @isTest
+    static void theCoverageRatioNeverMixesInTheExclusions() {
+        // A ratio counting must-not-reproduce targets in its denominator can never reach
+        // one, so it would report a permanent failure that means nothing.
         AAO_RecallGate.Coverage c = AAO_RecallGate.score(
             new List<AAO_Pair__c>{
                 pair('AAO_POL_OPS1', 'That needs to go to Scott and Matt and Brian.'),
@@ -74,35 +99,52 @@ private class AAO_RecallGateTest {
             },
             ARTIFACT
         );
-        System.assertEquals(
-            c.targetsAnswerable,
-            c.targetsCovered,
-            'Every answerable target is covered in this fixture.'
-        );
-        System.assert(c.targetsOwed > 0, 'And three targets are still owed.');
-        System.assertEquals(
-            false,
-            c.passed(),
-            'So the gate does not pass. There is no argument that gets around this.'
-        );
+        System.assertEquals(c.targetsAnswerable, c.targetsCovered, '2 of 2, not 2 of 4.');
+        System.assertEquals(0, c.reproduced.size());
+        System.assertEquals(0, c.targetsOwed, 'Addendum 07 answered every ask.');
+        System.assert(c.passed(), 'This is what a pass looks like, and no run has one yet.');
     }
 
     @isTest
-    static void theOwedTargetsCarryTheQuestionTheyNeedAnswered() {
-        // An owed target whose note does not say what is needed is a TODO, not an entry in
-        // an instrument.
-        Integer owed = 0;
-        for (AAO_RecallGate.Target t : AAO_RecallGate.targets()) {
-            if (!t.isOwed()) {
-                continue;
-            }
-            owed++;
-            System.assert(
-                t.why.contains('Needed:'),
-                t.key + ' is owed but does not say what would resolve it.'
-            );
-        }
-        System.assertEquals(3, owed, 'unit: targets');
+    static void overReadWordsUnderAnotherContractAreReportedAndNotFailed() {
+        // The grading judged those words against one proposition and said nothing about any
+        // other. "use your components" may honestly be evaluating behaviour; calling that a
+        // reproduction would punish a reading nobody graded.
+        AAO_RecallGate.Coverage c = AAO_RecallGate.score(
+            new List<AAO_Pair__c>{
+                pair('AAO_POL_OPS1', 'That needs to go to Scott and Matt and Brian.'),
+                pair('AAO_DC_N', 'what I\'m trying to do is just eliminate clicks'),
+                pair('AAO_BR_EVAL', 'use your components that you guys to Altify design components')
+            },
+            ARTIFACT
+        );
+        System.assertEquals(0, c.reproduced.size(), 'Not a reproduction.');
+        System.assertEquals(1, c.overReadWordsElsewhere.size(), 'But it is worth saying.');
+        System.assert(
+            c.overReadWordsElsewhere[0].contains('AAO_BR_EVAL'),
+            'The note names where the words went. Got: ' + c.overReadWordsElsewhere
+        );
+        System.assert(c.passed(), 'A reported observation does not fail the gate.');
+    }
+
+    @isTest
+    static void theWithdrawnTargetStaysVisibleAndCarriesItsReason() {
+        // The S2/Adam UNDER was recorded with no span, from deal knowledge rather than a
+        // graded quote. A gate target must be transcript-grounded, so it is withdrawn — and
+        // kept, because deleting it would erase why it was ever expected.
+        AAO_RecallGate.Coverage c = AAO_RecallGate.score(new List<AAO_Pair__c>(), ARTIFACT);
+        System.assertEquals(1, c.targetsWithdrawn, 'unit: targets');
+        System.assert(
+            c.withdrawn[0].contains('S2-adam-placement') &&
+            c.withdrawn[0].contains('WITHDRAWN'),
+            'Got: ' + c.withdrawn
+        );
+        System.assertEquals(
+            0,
+            c.targetsOwed,
+            'Withdrawn is not owed. Owed means nobody has answered; withdrawn means the ' +
+            'answer was that the artifact does not carry it.'
+        );
     }
 
     private static AAO_Pair__c pair(String code, String words) {

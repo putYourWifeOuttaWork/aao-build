@@ -34,11 +34,29 @@
  * nobody.** The gate's own target set is evidence for the retirement.
  * ------------------------------------------------------------------------------------
  *
- * WHAT IS OWED, AND WHY THIS GATE CANNOT REPORT A PASS UNTIL IT ARRIVES. Two targets and
- * both over-read exclusions depend on grades that live in the adjudication sheet rather
- * than in this repo. They are declared here UNRESOLVED. A gate that silently omitted the
- * targets it did not know about would report a clean pass over a smaller test, which is the
- * precise shape of the mistake this whole build exists to refuse.
+ * THE THREE ASKS, ANSWERED FROM THE ADJUDICATION SHEET (CODE addendum 07, 5 August). They
+ * were carried here as OWED rather than left out, because a gate that silently omits the
+ * targets it does not know about reports a clean pass over a smaller test.
+ *
+ * - **The fourth PASS is Adam's S1** (CLM-34), span *"what I'm trying to do is just
+ *   eliminate clicks"*. That is the SAME SPAN as the canonical criterion target, and
+ *   Matthew's 4 August ruling makes it the decision criterion Adam should carry. So the
+ *   answer MERGES into an existing target rather than adding one, and the answerable count
+ *   does not grow. Recorded because a resolved ask that quietly changes no number looks
+ *   like an omission otherwise.
+ * - **The two OVERs are Ashley's (CLM-31) and Robbin's (CLM-35)**, both `wrong-scope`: a
+ *   process description and an implementation instruction, neither carrying preference.
+ *   They are must-not-reproduce targets now, so the reported zero stops being vacuous.
+ * - **The S2/Adam words do not exist anywhere.** The sheet recorded that UNDER with NO
+ *   SPAN, from deal knowledge rather than a graded quote. Ruled: a gate target must be
+ *   transcript-grounded, and a read cannot be failed for missing what the frozen bytes do
+ *   not carry. The target is WITHDRAWN, kept visible with its reason, pending Matthew
+ *   locating the words or ruling them absent.
+ *
+ * PO9 IS EXCLUDED BY RULING NOW, not by my inference. Two of the four graded PASSES sit on
+ * the political-awareness question v2.8 deliberately does not declare; their absence is the
+ * design working, the gate cannot require them, and the finding is further evidence for the
+ * retirement.
  */
 public with sharing class AAO_RecallGate {
     public class GateException extends Exception {
@@ -61,9 +79,15 @@ public with sharing class AAO_RecallGate {
         public String why;
         /** True where a pair reproducing this is the failure, rather than its absence. */
         public Boolean mustNotReproduce = false;
+        /**
+         * Declared, kept visible, and not scored. A withdrawn target is one the grading
+         * cannot ground in the artifact, which is a fact about the target rather than about
+         * the read. Deleting it would erase the reason it was ever expected.
+         */
+        public Boolean withdrawn = false;
 
         public Boolean isOwed() {
-            return String.isBlank(quote);
+            return !withdrawn && String.isBlank(quote);
         }
     }
 
@@ -76,48 +100,63 @@ public with sharing class AAO_RecallGate {
             'That needs to go to Scott and Matt and Brian. Like that\'s Matt, that was a ' +
             'very specific ask from Matt last week. So I just want to make sure we keep ' +
             'that moving.',
-            'Graded PASS on the old PS7, whose text survives byte-exact as AAO_POL_OPS1. ' +
-            'The clearest surviving PASS-to-contract mapping in the set.'
+            'Graded PASS on the old PS7 (CLM-33, Adam), whose text survives byte-exact as ' +
+            'AAO_POL_OPS1. The clearest surviving PASS-to-contract mapping in the set.'
         ));
 
         out.add(t(
             'canonical-criterion',
             'AAO_DC_N',
             'what I\'m trying to do is just eliminate clicks',
-            'THE canonical informal criterion, named in charters v2.5 as the case this build ' +
-            'produced and missed by declaration. The old run extracted it as S1, a support ' +
-            'question; under §P8 it is a criterion naming. If call 1 files it as sentiment ' +
-            'again, the criteria family is still invisible.'
+            'TWO GRADES LAND ON THIS ONE SPAN. It is the canonical informal criterion named ' +
+            'in charters v2.5 as the case this build produced and missed by declaration, AND ' +
+            'it is CLM-34, Adam\'s S1, the fourth graded PASS — the one that passed where ' +
+            'design predicted failure. The distinction Matthew\'s grades drew is the durable ' +
+            'one: a person stating what he himself wants establishes; describing a process ' +
+            'or directing an implementation does not. Under §P8 it is a criterion naming, ' +
+            'per his 4 August ruling, so both grades score as one target.'
         ));
 
-        // ---- OWED. Declared unresolved rather than quietly left out. ------------------
-        out.add(owed(
+        // ---- MUST NOT REPRODUCE. Both graded OVER, both wrong-scope. -------------------
+        //
+        // Scored against AAO_PS_1 because S1 is retired from extraction and sentiment is
+        // where a preference claim would now land. Where these words come back under some
+        // OTHER contract the run reports it as an observation rather than a failure: "use
+        // your components" may honestly be evaluating behaviour, and calling that a
+        // reproduction would punish the read for a reading the grading never judged.
+        out.add(over(
+            'S1-over-ashley',
+            'we look at as many use cases as we can take on that are going to add value',
+            'CLM-31, Ashley Stroud, graded OVER, wrong-scope: a process description that ' +
+            'carries no preference for any solution.'
+        ));
+        out.add(over(
+            'S1-over-robbin',
+            'use your components that you guys to Altify design components',
+            'CLM-35, Robbin Jones, graded OVER, wrong-scope: an implementation instruction ' +
+            'that carries no preference for any solution.'
+        ));
+
+        // ---- WITHDRAWN. Kept visible; the reason is the point. ------------------------
+        Target s2 = t(
             'S2-adam-placement',
             'AAO_PS_1',
-            'THE FIRST RECORDED UNDER: S2 for Adam Meloan, the only Support question with ' +
-            'placement power, never surfaced by the read. Because it was never surfaced, ' +
-            'the words are nowhere in this org — only Matthew\'s grading names them. Needed: ' +
-            'the verbatim words he would point at. Expected meaning SUPPORTER.'
-        ));
-        out.add(owed(
-            'S1-fourth-pass',
-            'AAO_PS_1',
-            'Three S1 answers exist and the sheet grades two of them OVER, so one is the ' +
-            'fourth PASS. Needed: which of the three, by person (Ashley, Adam or Robbin).'
-        ));
-
-        Target over = owed(
-            'S1-over-reads',
-            'AAO_PS_1',
-            'The two graded OVER answers, both wrong-scope, both S1. The same run must ' +
-            'assert no pair reproduces them. Needed: which two of the three S1 rows.'
+            null,
+            'WITHDRAWN 5 August. The first recorded UNDER, S2 for Adam Meloan, was recorded ' +
+            'in the sheet WITH NO SPAN: it came from Matthew\'s read of the output against ' +
+            'his knowledge of the call, which is deal knowledge rather than a graded quote. ' +
+            'Nobody has ever named Adam\'s supporter words in the 24 June transcript and it ' +
+            'is possible none exist. A gate target must be transcript-grounded, and a read ' +
+            'cannot be failed for missing what the frozen bytes do not carry. Reinstated at ' +
+            'AAO_PS_1/SUPPORTER if the words are located; if ruled absent, the UNDER ' +
+            're-classifies from model_missed to out-of-set deal knowledge and this target ' +
+            'stays here as the record of why it was ever expected.'
         );
-        over.mustNotReproduce = true;
-        out.add(over);
+        s2.withdrawn = true;
+        out.add(s2);
 
         return out;
     }
-
 
     private static Target t(String key, String code, String quote, String why) {
         Target x = new Target();
@@ -125,6 +164,12 @@ public with sharing class AAO_RecallGate {
         x.questionCode = code;
         x.quote = quote;
         x.why = why;
+        return x;
+    }
+
+    private static Target over(String key, String quote, String why) {
+        Target x = t(key, 'AAO_PS_1', quote, why);
+        x.mustNotReproduce = true;
         return x;
     }
 
@@ -140,17 +185,31 @@ public with sharing class AAO_RecallGate {
 
     public class Coverage {
         public Integer targetsDeclared = 0;
+        /** Targets that must be FOUND. Must-not-reproduce targets are counted separately
+         * below, because a coverage ratio that mixes them can never reach one and would
+         * report a permanent failure that means nothing. */
         public Integer targetsAnswerable = 0;
+        public Integer exclusionsChecked = 0;
         public Integer targetsCovered = 0;
         public Integer targetsOwed = 0;
         /** Missed because the words are nowhere in the pairs. A recall failure. */
         public Integer notFound = 0;
         /** Missed because the words landed on a different contract. A routing failure. */
         public Integer routedElsewhere = 0;
+        /** Declared, not scored, kept visible. Never counted as covered or missed. */
+        public Integer targetsWithdrawn = 0;
         public List<String> covered = new List<String>();
         public List<String> missed = new List<String>();
         public List<String> owed = new List<String>();
         public List<String> reproduced = new List<String>();
+        /**
+         * An over-read's words coming back under a DIFFERENT contract. Reported, never
+         * failed: the grading judged those words against one proposition and said nothing
+         * about any other, so calling this a reproduction would punish a reading nobody
+         * graded. It is the line to put in front of Matthew, not a verdict.
+         */
+        public List<String> overReadWordsElsewhere = new List<String>();
+        public List<String> withdrawn = new List<String>();
 
         /**
          * A gate that passes while a target is owed is a gate over a smaller test. There is
@@ -169,7 +228,11 @@ public with sharing class AAO_RecallGate {
                 'targets owed             ' + targetsOwed + ' (unit: targets)',
                 '  missed, not found      ' + notFound + ' (unit: targets)',
                 '  missed, routed away    ' + routedElsewhere + ' (unit: targets)',
-                'over-reads reproduced    ' + reproduced.size() + ' (unit: pairs)',
+                'exclusions checked       ' + exclusionsChecked + ' (unit: targets)',
+                'over-reads reproduced    ' + reproduced.size() + ' (unit: targets)',
+                'over-read words elsewhere ' + overReadWordsElsewhere.size() +
+                    ' (unit: targets, reported not failed)',
+                'targets withdrawn        ' + targetsWithdrawn + ' (unit: targets)',
                 'GATE                     ' + (passed() ? 'PASSED' : 'NOT PASSED')
             };
             for (String c : covered) {
@@ -183,6 +246,12 @@ public with sharing class AAO_RecallGate {
             }
             for (String r : reproduced) {
                 out.add('  REPRODUCED ' + r);
+            }
+            for (String e : overReadWordsElsewhere) {
+                out.add('  NOTE     ' + e);
+            }
+            for (String w : withdrawn) {
+                out.add('  WITHDRAWN ' + w);
             }
             return String.join(out, '\n');
         }
@@ -215,12 +284,21 @@ public with sharing class AAO_RecallGate {
         Coverage c = new Coverage();
         for (Target tg : targets()) {
             c.targetsDeclared++;
+            if (tg.withdrawn) {
+                c.targetsWithdrawn++;
+                c.withdrawn.add(tg.key + ' [' + tg.questionCode + '] ' + tg.why);
+                continue;
+            }
             if (tg.isOwed()) {
                 c.targetsOwed++;
                 c.owed.add(tg.key + ' [' + tg.questionCode + '] ' + tg.why);
                 continue;
             }
-            c.targetsAnswerable++;
+            if (tg.mustNotReproduce) {
+                c.exclusionsChecked++;
+            } else {
+                c.targetsAnswerable++;
+            }
 
             List<Integer> want = ranges(artifact, tg.quote);
             Boolean hit = false;
@@ -237,7 +315,21 @@ public with sharing class AAO_RecallGate {
 
             if (tg.mustNotReproduce) {
                 if (hit) {
-                    c.reproduced.add(tg.key + ': ' + tg.quote.abbreviate(60));
+                    c.reproduced.add(tg.key + ' as ' + tg.questionCode + ': ' +
+                        tg.quote.abbreviate(60));
+                    continue;
+                }
+                for (AAO_Pair__c p : located) {
+                    if (p.AAO_Evidence_Contract__r != null &&
+                        overlaps(artifact, want, p.AAO_Answer_Text__c)) {
+                        c.overReadWordsElsewhere.add(
+                            tg.key + ' came back as ' +
+                            p.AAO_Evidence_Contract__r.AAO_Proposition_Code__c +
+                            ' (graded OVER on the old S1, ungraded here): "' +
+                            tg.quote.abbreviate(50) + '"'
+                        );
+                        break;
+                    }
                 }
                 continue;
             }

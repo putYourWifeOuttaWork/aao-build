@@ -51,7 +51,36 @@ public with sharing class AAO_LocateCharter {
     public class CharterException extends Exception {
     }
 
-    public static final String VERSION = 'locate-2.0.0';
+    /**
+     * Bumped from 2.0.0 on 5 August: the worked example, the second pass, and coverage
+     * becoming required all change what the model reads.
+     */
+    public static final String VERSION = 'locate-2.1.0';
+
+    /**
+     * THE VERSION THE ROW CARRIES, and it is not this class's version alone.
+     *
+     * The first Emerson grading raised it as a provenance break and it is a real one. Call 1's
+     * prompt is this charter's prose PLUS the declared contracts' own text, so when v2.9's
+     * label-meaning fix landed in `AAO_PS_1`'s guidance the prompt changed and
+     * `locate-2.0.0` did not. **Same version string, two different prompts** — which makes
+     * every stamped row's provenance a claim rather than a fact.
+     *
+     * The effective version composes the charter version with a fingerprint of the declared
+     * set's contract keys, and those keys already carry each contract's content hash. So an
+     * edit anywhere in either half moves the string, and it cannot not move.
+     */
+    public static String effectiveVersion(List<AAO_Evidence_Contract__c> declared) {
+        List<String> keys = new List<String>();
+        for (AAO_Evidence_Contract__c ec : declared) {
+            keys.add(ec.AAO_Contract_Key__c);
+        }
+        keys.sort();
+        String hex = EncodingUtil.convertToHex(
+            Crypto.generateDigest('SHA-256', Blob.valueOf(String.join(keys, '|')))
+        );
+        return VERSION + '+' + hex.substring(0, 8);
+    }
 
     /** Pairs beyond this are dropped by the parser rather than trusted. */
     public static final Integer MAX_PAIRS = 400;
@@ -106,6 +135,30 @@ public with sharing class AAO_LocateCharter {
         return m == null ? new List<String>() : m;
     }
 
+    /**
+     * True where the family's meaning set carries an actual CHOICE.
+     *
+     * Fifteen of the seventeen allow exactly one meaning, because the propositions point one
+     * way — `AAO_POL_IC2` means Inner Circle or it is not a pair. For those, **the meaning IS
+     * the placement, and a placement is what a true proposition points at rather than
+     * something the words must voice.**
+     *
+     * That distinction is not academic. It is the defect the first Emerson grading found, and
+     * I introduced it hours before it was caught: repairing "the blind reader was never told
+     * the meaning" I began handing call 3 the placement string, and call 3 then required the
+     * words to voice BOTH the proposition and its placement. Every political refusal joined
+     * two clauses with *nor*, and one of them cited `who must approve` — `AAO_POL_PS1`, the
+     * OTHER one-way half. **The two-sided test the split was minted to kill, alive at call 3
+     * while the schema test correctly reported no two-sided proposition exists.**
+     *
+     * So this is the gate on what reaches the blind reader: the meaning travels only where it
+     * carries information the proposition does not. Sentiment (four states) and criteria
+     * typing (formal or informal) do. Nothing else does.
+     */
+    public static Boolean carriesChoice(String code) {
+        return meaningsFor(code).size() > 1;
+    }
+
     public static Boolean takesCoverage(String code) {
         return !NO_COVERAGE.contains(code);
     }
@@ -133,6 +186,9 @@ public with sharing class AAO_LocateCharter {
         public String name;
         public String note;
     }
+
+    /** How many pairs arrived with no coverage and took the default. Should be zero. */
+    public static Integer coverageDefaulted = 0;
 
     public class Result {
         /**
@@ -195,7 +251,22 @@ public with sharing class AAO_LocateCharter {
             });
         }
 
-        List<String> required = new List<String>{ 'question_code', 'answer_text', 'meaning' };
+        // COVERAGE IS REQUIRED, changed 5 August. It was optional, the model omitted it on
+        // every pair, and the parser's default-to-Partial then wrote Partial 14 of 14 across
+        // every family on every quote. **A dimension that emits one value is not reading, it
+        // is defaulting** — and because the default was silent, the whole run looked like a
+        // reading that happened to be uniformly cautious.
+        //
+        // Required for every pair including sentiment, where the parser discards it: a
+        // per-item conditional requirement is not expressible in one schema, and one wasted
+        // enum on a sentiment pair costs less than an unreachable value on the fifteen
+        // families where Full is the honest answer.
+        List<String> required = new List<String>{
+            'question_code', 'answer_text', 'meaning'
+        };
+        if (anyCoverage) {
+            required.add('coverage');
+        }
 
         return new Map<String, Object>{
             'type' => 'object',
@@ -285,6 +356,20 @@ public with sharing class AAO_LocateCharter {
                 'questions you emit three pairs quoting the same words. Do not choose the ' +
                 'single best reading of a rich sentence. Picking one is under-reading wearing ' +
                 'discipline\'s clothes.',
+                '',
+                'WORKED EXAMPLE, because this is the rule that is hardest to follow. Take: ' +
+                '"I\'m right here and I\'m going to support whatever it\'s going to take to ' +
+                'make sure that it gets through." That is ONE sentence and it is at least TWO ' +
+                'pairs, quoting the same words both times: it voices how the speaker stands ' +
+                'toward us, AND it says they are the one called on to make it happen. Emit ' +
+                'both. A pair is one establishment, never one sentence, and the same words ' +
+                'appearing twice in your output is correct rather than a duplicate.',
+                '',
+                'THEN GO BACK OVER WHAT YOU WROTE. When your list is complete, read each ' +
+                'quote once more and ask: does this sentence also answer a DIFFERENT question ' +
+                'on the list? Add the pair where it does. On the first run of this charter ' +
+                'every consequential sentence produced exactly one pair, and the sentences ' +
+                'were carrying two and three. This second pass is where that gets fixed.',
                 '',
                 // ---- §P8.9, ruling 1 ------------------------------------------------
                 'THE CONTENT OF THE CALL, NEVER THE TITLE, IN BOTH DIRECTIONS. A title never ' +
@@ -420,6 +505,7 @@ public with sharing class AAO_LocateCharter {
         }
 
         Set<String> allowed = new Set<String>(declaredCodes);
+        coverageDefaulted = 0;
         Result r = new Result();
         r.dealSaid = (String) root.get('deal');
         r.accountSaid = (String) root.get('account');
@@ -481,7 +567,13 @@ public with sharing class AAO_LocateCharter {
         if (wantsCoverage && String.isBlank(p.coverage)) {
             // Partial is the instructed default under doubt, so an omission takes it rather
             // than costing the pair. A missing value is doubt by definition.
+            //
+            // BUT THE DEFAULT IS COUNTED NOW. It ran silently on all fourteen pairs of the
+            // first Emerson run and made a defaulted field look like a read one. With
+            // `coverage` required in the schema this should be zero; if it is not, the
+            // number says so instead of the value hiding it.
             p.coverage = 'Partial';
+            coverageDefaulted++;
         }
         if (wantsCoverage && p.coverage != 'Full' && p.coverage != 'Partial') {
             return 'coverage "' + p.coverage + '" is neither Full nor Partial';

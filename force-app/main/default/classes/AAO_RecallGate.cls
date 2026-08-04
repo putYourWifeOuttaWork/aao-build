@@ -473,7 +473,7 @@ public with sharing class AAO_RecallGate {
         AAO_Extract.StageSpec spec = AAO_Extract.inventorySpec();
         spec.stage = 'call1_locate';
         spec.charter = 'AAO_LocateCharter';
-        spec.charterVersion = AAO_LocateCharter.VERSION;
+        spec.charterVersion = AAO_LocateCharter.effectiveVersion(declared);
 
         RunResult r = new RunResult();
         r.runKey = runKey;
@@ -488,7 +488,7 @@ public with sharing class AAO_RecallGate {
         );
         r.parsed = AAO_LocateCharter.parse(r.call.rawText, codes);
         r.located = AAO_Locate.locate(
-            src, r.parsed.pairs, runKey, AAO_LocateCharter.VERSION, idByCode
+            src, r.parsed.pairs, runKey, spec.charterVersion, idByCode
         );
         AAO_Locate.write(r.located);
 
@@ -525,7 +525,7 @@ public with sharing class AAO_RecallGate {
     public static List<AAO_Evidence_Contract__c> declaredSet() {
         List<AAO_Evidence_Contract__c> rows = [
             SELECT Id, AAO_Proposition_Code__c, AAO_Proposition_Text__c,
-                AAO_Guidance_Text__c, AAO_Element_Count__c
+                AAO_Guidance_Text__c, AAO_Element_Count__c, AAO_Contract_Key__c
             FROM AAO_Evidence_Contract__c
             WHERE AAO_Rubric_Version__c = :AAO_PassContracts.RUBRIC_VERSION
                 AND AAO_Contract_State__c != 'Superseded'

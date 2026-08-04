@@ -8101,3 +8101,128 @@ charter versions, and the latency table beside it.
 occurred-clock window cannot run honestly in a sandbox where every opportunity carries a seed
 `CreatedDate` of 3 August, and the opportunity was **given by the seeder, not resolved**.
 Grading either would grade the seed rather than the machine.
+
+---
+
+## 2026-08-05 · session 76 · the four Emerson defects · three closed, one barely moved, and a regression
+
+285 tests, 100% pass, same one pre-existing unrelated failure. Re-run `emerson-0617-r3`,
+`locate-2.1.0+d314a73c`. **Four variables changed at once, so a clean run cannot attribute the
+repair, and the per-defect evidence below is what carries the attribution instead.**
+
+**Upheld went from 4 of 14 (29%) to 14 of 18 (78%).** Matthew's grading implies ~10 of 14
+should have stood, so this lands in the right band rather than overshooting into agreement.
+
+### Defect 1 · the placement leak · CLOSED, and it was mine, made hours before it was caught
+
+Repairing *"the blind reader was never told the meaning"* this morning, I began handing call 3
+the **meaning** — and for the fifteen one-way families the meaning IS the placement. Call 3
+then required the words to voice the proposition **and** its placement. Every political
+refusal joined two clauses with *nor*, and one cited *who must approve*, which is
+`AAO_POL_PS1` — the OTHER one-way half. **The two-sided test the split was minted to kill,
+alive at call 3 while the schema test correctly reported no two-sided proposition exists.**
+
+The fix makes it unexpressible rather than instructing against it. `carriesChoice(code)` is
+true only where the family's meaning set has more than one member — sentiment's four states
+and criteria typing's two. There is no branch that can leak a placement, the same move as call
+1 having no person field and call 3 having no `ref` field.
+
+Row for row against Matthew's grades:
+
+| his grade | run 1 | run 3 |
+|---|---|---|
+| *"This looks like full coverage on political structure"* (Neeraja) | Refused, Partial | **Upheld, Full** |
+| *"Overcomplicating, this is full"* (Jefferson, per-user rate) | Refused, Partial | **Upheld, Full** |
+| Jefferson → Emerson procurement, wrongly refused | Refused | **Upheld, Full** |
+| Jefferson brokering to approvers, wrongly refused | Refused | **Upheld, Full** |
+
+**Zero refusals in the re-run join clauses with *nor*.** All four remaining refusals reason
+about the proposition alone.
+
+### Defect 2 · `AAO_BR_EVAL` · CLOSED
+
+The old text was the vendor's definition read literally and **demanded criteria that do not
+exist yet**: on most calls no criteria set is established, so a proposition requiring
+assessment *against defined criteria* can never be true whatever the buyer does. §P8.9's
+behavioural note was in the guidance and guidance cannot lower a bar the question raises.
+
+Rewritten to behaviour — *weigh what is being offered, comparing options, pressing on
+capability against a need, or probing price, terms or fit* — with Altify's definition kept as
+the authored proposition's provenance rather than its test. Both graded rows now stand Full,
+and **three Evaluator reads exist that did not exist before**, including two from Ryan Couture,
+who carried nothing at all in run 1.
+
+### Defect 3 · Full was unreachable · CLOSED, and the cause was mine
+
+`coverage` was **not in the schema's `required` list**. The model omitted it on every pair and
+the parser's default-to-Partial wrote Partial 14 of 14 — silently. A defaulted field looked
+like a uniformly cautious reading.
+
+Now required, and the default is counted rather than silent. **Run 3: Full 5, Partial 10, null
+3 (sentiment), `coverageDefaulted = 0`.** The model is choosing.
+
+### Defect 4 · multi-establishment · BARELY MOVED, and the way it moved is the finding
+
+18 pairs from 17 distinct quotes: **exactly one quote carries two establishments.** And it is
+the one I put in the prompt as the worked example, producing exactly the two pairs the example
+named. **The model reproduced the example rather than generalising the rule**, which is a
+worse result than the number suggests.
+
+The three specimens:
+
+| specimen | wanted | got |
+|---|---|---|
+| Neeraja *"I'm right here and I'm going to support…"* | 2 | **2** — SUPPORTER + POLITICAL_STRUCTURE |
+| Neeraja *"flexibility of using those hours"* | 2 | **0 — the quote is gone from this run entirely** |
+| Jefferson *"the annual total…"* | 3 | **2** — DC_N + DC_F |
+
+Two things worth separating. The annual-total quote's missing third establishment is
+**Decision Orientation, which is an undeclared family** — it was never reachable, so that
+third pair could not have been emitted by any prompt. And the flexibility-of-hours quote is
+not a multi-establishment failure at all: it is a **recall regression**.
+
+### The regression, named rather than absorbed into the good news
+
+**A graded PASS from run 1 is gone in run 2.** Matthew wrote of it *"This should be a real
+criteria, Flexibility of Services Hours"* — and the re-run does not contain those words at
+all. Nor does the THIN row he asked for more context on.
+
+Same fixture, same artifact, clustered by contract and overlapping byte range:
+
+```
+distinct establishments across the two Emerson runs   23
+  in both runs                                         9
+  run 1 only                                           5
+  run 2 only                                           9
+```
+
+**39% recur.** On the 24 June gate it was 15% across three runs. The four repairs changed what
+gets read, so these two runs are not a clean instability measurement — but **the second data
+point CODE asked for has arrived and it answers its question: the 77%-appears-once figure was
+not that fixture's character.** Recall instability is the read's character, on both fixtures,
+and it is the open problem.
+
+### The provenance break · answered and closed
+
+Call 1 ran as `locate-2.0.0` on both the 24 June gate and the first Emerson run, though v2.9's
+label-meaning fix changed the prompt. **The break is real and the cause is that call 1's prompt
+is two halves:** this charter's prose, and the declared contracts' own text. The fix landed in
+`AAO_PS_1`'s guidance, so the contract moved and the charter version did not.
+
+The stamped version now composes both: `locate-2.1.0+d314a73c`, where the suffix is a
+fingerprint over the declared set's contract keys, and those keys already carry each
+contract's content hash. **An edit to either half moves the string and it cannot not move.**
+`AAO_Charter_Version__c` widened 20 → 40; the first write threw `STRING_TOO_LONG` at 22
+characters, which is the field refusing an incomplete provenance rather than truncating it.
+
+### Not repaired, deliberately
+
+**The seller-side flag.** Both Altify participants still read `buyer side`, because the
+sandbox's internal-domain list does not carry `altify.com`. It was not one of the four defects
+and **changing a fifth variable would have made this re-run unreadable.** On the CSV as an open
+row.
+
+**Matthew's timestamped quotes.** His added rows carry ECI viewer timestamps (`21:39-59`,
+`24:43`, `33:15`, `12:48`) that will not byte-locate in `ec8e7170`. **I do not hold his
+returned file** — the sheet quotes the timestamps but not the row text — so the normalization
+is owed and blocked on that file, and no target is built from a quote I cannot locate.

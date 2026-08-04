@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>AAO_Charter_Version__c</fullName>
-    <description>Written by: each call. Read by: the recall gate. A charter change that softens a prohibition is a shape change, so the version is on the row and not only in the log.</description>
+    <description>Written by: each call. Read by: the recall gate. A charter change that softens a prohibition is a shape change, so the version is on the row and not only in the log. WIDENED FROM 20 TO 40 on 5 August: call 1&apos;s stamped version is the charter version PLUS a fingerprint of the declared contract set, because the prompt is both halves and an edit to either must move the string. The first attempt to write one threw STRING_TOO_LONG at 22 characters, which is the field refusing an incomplete provenance rather than truncating it.</description>
     <label>Charter Version</label>
     <type>Text</type>
-    <length>20</length>
+    <length>40</length>
     <caseSensitive>false</caseSensitive>
     <unique>false</unique>
     <externalId>false</externalId>

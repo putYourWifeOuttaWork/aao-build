@@ -191,12 +191,30 @@ public with sharing class AAO_PassContracts {
         out.add(br('AAO_BR_DM', 'Buyer Role · Decision Maker',
             'Does this person make the commitment to a vendor or a strategic direction?',
             behaviour));
+        // REWRITTEN 5 August from the first Emerson grading. The old text was the vendor's
+        // definition read literally — *responsible for analysing proposed solutions against
+        // defined criteria* — and it refused a buyer interrogating pricing tiers and probing
+        // the per-user rate, both of which Matthew graded established, one with
+        // "Overcomplicating, this is full."
+        //
+        // **The defect is that it demanded criteria that do not exist yet.** On most calls no
+        // criteria set has been established, so a proposition requiring assessment AGAINST one
+        // can never be true no matter what the buyer does. §P8.9's behavioural establishment
+        // was added as a NOTE to the guidance and the note was not enough: the proposition
+        // itself set the bar, and guidance cannot lower a bar the question raises.
         out.add(br('AAO_BR_EVAL', 'Buyer Role · Evaluator',
-            'Is this person responsible for analysing proposed solutions against defined criteria?',
-            behaviour + ' For this proposition specifically, ruled 4 August: EVALUATING ' +
-            'BEHAVIOUR ON THE CALL ESTABLISHES THIS FULLY — comparing options, pressing on ' +
-            'capability against a stated need, running the solution against criteria. A stated ' +
-            'function with no evaluating behaviour behind it is PARTIAL.'));
+            'Did this person weigh what is being offered - comparing options, pressing on capability against a need, or probing price, terms or fit?',
+            behaviour + ' EVALUATING BEHAVIOUR ON THE CALL ESTABLISHES THIS, ruled 4 August ' +
+            'and sharpened 5 August. Interrogating pricing tiers, probing what a per-user rate ' +
+            'would mean, pressing on whether a capability meets a stated need, comparing one ' +
+            'option against another: all of these are evaluating, and none of them requires a ' +
+            'criteria set to exist first. **Do not ask whether the person assessed the ' +
+            'solution against DEFINED CRITERIA.** Most calls have no criteria set established, ' +
+            'so that bar refuses real evaluating behaviour, which is what it did on the 17 ' +
+            'June fixture. A stated function with no evaluating behaviour behind it is ' +
+            'PARTIAL. Altify\'s own definition text, kept as the provenance of this authored ' +
+            'proposition and not as its test: "Responsible for analysing proposed solutions ' +
+            'against defined criteria."'));
         out.add(br('AAO_BR_USER', 'Buyer Role · User',
             'Does this person use, or will they use, the products or services being bought?',
             behaviour));

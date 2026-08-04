@@ -35,10 +35,11 @@ public with sharing class AAO_Pass {
             idByCode.put(ec.AAO_Proposition_Code__c, ec.Id);
         }
 
+        String version = AAO_LocateCharter.effectiveVersion(declared);
         AAO_Extract.StageSpec spec = AAO_Extract.inventorySpec();
         spec.stage = 'call1_locate';
         spec.charter = 'AAO_LocateCharter';
-        spec.charterVersion = AAO_LocateCharter.VERSION;
+        spec.charterVersion = version;
 
         LocateRun r = new LocateRun();
         r.call = AAO_Extract.callStage(
@@ -51,9 +52,7 @@ public with sharing class AAO_Pass {
             AAO_LocateCharter.schema(codes)
         );
         r.parsed = AAO_LocateCharter.parse(r.call.rawText, codes);
-        r.located = AAO_Locate.locate(
-            src, r.parsed.pairs, runKey, AAO_LocateCharter.VERSION, idByCode
-        );
+        r.located = AAO_Locate.locate(src, r.parsed.pairs, runKey, version, idByCode);
         AAO_Locate.write(r.located);
         return r;
     }
@@ -146,11 +145,20 @@ public with sharing class AAO_Pass {
                 refs.add(c.AAO_Pair_Ref__c);
                 block.add('## ' + c.AAO_Pair_Ref__c);
                 block.add('Question: ' + c.AAO_Evidence_Contract__r.AAO_Proposition_Text__c);
+                // THE PLACEMENT NEVER REACHES THE BLIND READER. Ruled 5 August from the
+                // first Emerson grading: call 3 verifies the proposition and nothing else.
+                // `carriesChoice` is false for the fifteen one-way families, where the
+                // meaning IS the placement, so there is no branch here that can leak it —
+                // the wrong answer is unexpressible rather than instructed against, the same
+                // move as call 1 having no person field and this call having no ref field.
+                String voiced =
+                    AAO_LocateCharter.carriesChoice(
+                        c.AAO_Evidence_Contract__r.AAO_Proposition_Code__c
+                    )
+                        ? c.AAO_Located_Pair__r.AAO_Meaning__c
+                        : null;
                 block.add('The claim: the words below answer that question' +
-                    (String.isBlank(c.AAO_Located_Pair__r.AAO_Meaning__c)
-                        ? ''
-                        : ', and what they voice is ' +
-                            c.AAO_Located_Pair__r.AAO_Meaning__c) + '.');
+                    (String.isBlank(voiced) ? '' : ', and what they voice is ' + voiced) + '.');
                 block.add('Words: "' + c.AAO_Located_Pair__r.AAO_Answer_Text__c + '"');
                 block.add('');
             }

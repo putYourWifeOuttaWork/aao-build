@@ -1,0 +1,2409 @@
+{
+  "artifact": "emerson-2026-06-17-nf1",
+  "source_format": "eci_viewer_paste",
+  "diarization_class": "Attributed",
+  "video_call_id": "6qrV4000000J5K9IAK",
+  "occurred_start_utc": "2026-06-17T20:29:36Z",
+  "turns": 415,
+  "stripped_counts": {
+    "navigation": 414,
+    "item_number": 1,
+    "timestamp": 415,
+    "topic_label": 33
+  },
+  "topic_labels": [
+    {
+      "kind": "topic_label",
+      "text": "Procurement Process Engaged",
+      "decomposed": [
+        "Procurement Process Engaged"
+      ],
+      "speaker": "Renee Martin"
+    },
+    {
+      "kind": "topic_label",
+      "text": "Go To Market Tech Stack Discussion",
+      "decomposed": [
+        "Go To Market Tech Stack Discussion"
+      ],
+      "speaker": "Renee Martin"
+    },
+    {
+      "kind": "topic_label",
+      "text": "Go To Market Tech Stack Discussion",
+      "decomposed": [
+        "Go To Market Tech Stack Discussion"
+      ],
+      "speaker": "Renee Martin"
+    },
+    {
+      "kind": "topic_label",
+      "text": "Next Step",
+      "decomposed": [
+        "Next Step"
+      ],
+      "speaker": "Renee Martin"
+    },
+    {
+      "kind": "topic_label",
+      "text": "Next Step",
+      "decomposed": [
+        "Next Step"
+      ],
+      "speaker": "Renee Martin"
+    },
+    {
+      "kind": "topic_label",
+      "text": "Next Step",
+      "decomposed": [
+        "Next Step"
+      ],
+      "speaker": "Neeraja Chimata"
+    },
+    {
+      "kind": "topic_label",
+      "text": "ProductNext Step",
+      "decomposed": [
+        "Product",
+        "Next Step"
+      ],
+      "speaker": "Renee Martin"
+    },
+    {
+      "kind": "topic_label",
+      "text": "License Count or Usage Discussion",
+      "decomposed": [
+        "License Count or Usage Discussion"
+      ],
+      "speaker": "Renee Martin"
+    },
+    {
+      "kind": "topic_label",
+      "text": "License Count or Usage Discussion (2)",
+      "decomposed": [
+        "License Count or Usage Discussion (2)"
+      ],
+      "speaker": "Renee Martin"
+    },
+    {
+      "kind": "topic_label",
+      "text": "Pricing",
+      "decomposed": [
+        "Pricing"
+      ],
+      "speaker": "Wendy Higley"
+    },
+    {
+      "kind": "topic_label",
+      "text": "License Count or Usage Discussion (2)",
+      "decomposed": [
+        "License Count or Usage Discussion (2)"
+      ],
+      "speaker": "Wendy Higley"
+    },
+    {
+      "kind": "topic_label",
+      "text": "License Count or Usage Discussion (2)",
+      "decomposed": [
+        "License Count or Usage Discussion (2)"
+      ],
+      "speaker": "Renee Martin"
+    },
+    {
+      "kind": "topic_label",
+      "text": "License Count or Usage Discussion (2)Next Step",
+      "decomposed": [
+        "License Count or Usage Discussion (2)",
+        "Next Step"
+      ],
+      "speaker": "Renee Martin"
+    },
+    {
+      "kind": "topic_label",
+      "text": "Product",
+      "decomposed": [
+        "Product"
+      ],
+      "speaker": "Wendy Higley"
+    },
+    {
+      "kind": "topic_label",
+      "text": "Product",
+      "decomposed": [
+        "Product"
+      ],
+      "speaker": "Renee Martin"
+    },
+    {
+      "kind": "topic_label",
+      "text": "Product",
+      "decomposed": [
+        "Product"
+      ],
+      "speaker": "Renee Martin"
+    },
+    {
+      "kind": "topic_label",
+      "text": "Product",
+      "decomposed": [
+        "Product"
+      ],
+      "speaker": "Renee Martin"
+    },
+    {
+      "kind": "topic_label",
+      "text": "Product (2)",
+      "decomposed": [
+        "Product (2)"
+      ],
+      "speaker": "Wendy Higley"
+    },
+    {
+      "kind": "topic_label",
+      "text": "License Count or Usage Discussion",
+      "decomposed": [
+        "License Count or Usage Discussion"
+      ],
+      "speaker": "Wendy Higley"
+    },
+    {
+      "kind": "topic_label",
+      "text": "Product",
+      "decomposed": [
+        "Product"
+      ],
+      "speaker": "Renee Martin"
+    },
+    {
+      "kind": "topic_label",
+      "text": "Product (2)",
+      "decomposed": [
+        "Product (2)"
+      ],
+      "speaker": "Wendy Higley"
+    },
+    {
+      "kind": "topic_label",
+      "text": "Procurement Process Engaged",
+      "decomposed": [
+        "Procurement Process Engaged"
+      ],
+      "speaker": "Renee Martin"
+    },
+    {
+      "kind": "topic_label",
+      "text": "AI Tools and Automation MentionedProduct",
+      "decomposed": [
+        "AI Tools and Automation Mentioned",
+        "Product"
+      ],
+      "speaker": "Renee Martin"
+    },
+    {
+      "kind": "topic_label",
+      "text": "AI Tools and Automation MentionedProduct",
+      "decomposed": [
+        "AI Tools and Automation Mentioned",
+        "Product"
+      ],
+      "speaker": "Wendy Higley"
+    },
+    {
+      "kind": "topic_label",
+      "text": "AI Tools and Automation Mentioned (2)Product",
+      "decomposed": [
+        "AI Tools and Automation Mentioned (2)",
+        "Product"
+      ],
+      "speaker": "Wendy Higley"
+    },
+    {
+      "kind": "topic_label",
+      "text": "Product (2)",
+      "decomposed": [
+        "Product (2)"
+      ],
+      "speaker": "Wendy Higley"
+    },
+    {
+      "kind": "topic_label",
+      "text": "AI Tools and Automation Mentioned",
+      "decomposed": [
+        "AI Tools and Automation Mentioned"
+      ],
+      "speaker": "Wendy Higley"
+    },
+    {
+      "kind": "topic_label",
+      "text": "Low Adoption SignalsAI Tools and Automation Mentioned (2)",
+      "decomposed": [
+        "Low Adoption Signals",
+        "AI Tools and Automation Mentioned (2)"
+      ],
+      "speaker": "Neeraja Chimata"
+    },
+    {
+      "kind": "topic_label",
+      "text": "AI Tools and Automation MentionedGo To Market Tech Stack Discussion",
+      "decomposed": [
+        "AI Tools and Automation Mentioned",
+        "Go To Market Tech Stack Discussion"
+      ],
+      "speaker": "Neeraja Chimata"
+    },
+    {
+      "kind": "topic_label",
+      "text": "Budget Constraints DiscussedNext Step",
+      "decomposed": [
+        "Budget Constraints Discussed",
+        "Next Step"
+      ],
+      "speaker": "Neeraja Chimata"
+    },
+    {
+      "kind": "topic_label",
+      "text": "Budget Constraints Discussed",
+      "decomposed": [
+        "Budget Constraints Discussed"
+      ],
+      "speaker": "Neeraja Chimata"
+    },
+    {
+      "kind": "topic_label",
+      "text": "Next Step",
+      "decomposed": [
+        "Next Step"
+      ],
+      "speaker": "Renee Martin"
+    },
+    {
+      "kind": "topic_label",
+      "text": "Next Step",
+      "decomposed": [
+        "Next Step"
+      ],
+      "speaker": "Renee Martin"
+    }
+  ],
+  "turn_timestamps": [
+    {
+      "i": 0,
+      "speaker_key": "renee_martin",
+      "mmss": "00:27"
+    },
+    {
+      "i": 1,
+      "speaker_key": "ryan_couture",
+      "mmss": "00:28"
+    },
+    {
+      "i": 2,
+      "speaker_key": "renee_martin",
+      "mmss": "00:29"
+    },
+    {
+      "i": 3,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "00:30"
+    },
+    {
+      "i": 4,
+      "speaker_key": "renee_martin",
+      "mmss": "00:33"
+    },
+    {
+      "i": 5,
+      "speaker_key": "renee_martin",
+      "mmss": "00:35"
+    },
+    {
+      "i": 6,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "00:37"
+    },
+    {
+      "i": 7,
+      "speaker_key": "renee_martin",
+      "mmss": "00:37"
+    },
+    {
+      "i": 8,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "00:38"
+    },
+    {
+      "i": 9,
+      "speaker_key": "renee_martin",
+      "mmss": "00:38"
+    },
+    {
+      "i": 10,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "00:38"
+    },
+    {
+      "i": 11,
+      "speaker_key": "renee_martin",
+      "mmss": "00:41"
+    },
+    {
+      "i": 12,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "00:45"
+    },
+    {
+      "i": 13,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "00:45"
+    },
+    {
+      "i": 14,
+      "speaker_key": "ryan_couture",
+      "mmss": "00:45"
+    },
+    {
+      "i": 15,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "00:52"
+    },
+    {
+      "i": 16,
+      "speaker_key": "renee_martin",
+      "mmss": "00:54"
+    },
+    {
+      "i": 17,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "00:54"
+    },
+    {
+      "i": 18,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "00:55"
+    },
+    {
+      "i": 19,
+      "speaker_key": "renee_martin",
+      "mmss": "00:57"
+    },
+    {
+      "i": 20,
+      "speaker_key": "ryan_couture",
+      "mmss": "00:58"
+    },
+    {
+      "i": 21,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "00:58"
+    },
+    {
+      "i": 22,
+      "speaker_key": "renee_martin",
+      "mmss": "01:01"
+    },
+    {
+      "i": 23,
+      "speaker_key": "ryan_couture",
+      "mmss": "01:01"
+    },
+    {
+      "i": 24,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "01:05"
+    },
+    {
+      "i": 25,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "01:09"
+    },
+    {
+      "i": 26,
+      "speaker_key": "ryan_couture",
+      "mmss": "01:11"
+    },
+    {
+      "i": 27,
+      "speaker_key": "renee_martin",
+      "mmss": "01:13"
+    },
+    {
+      "i": 28,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "01:13"
+    },
+    {
+      "i": 29,
+      "speaker_key": "wendy_higley",
+      "mmss": "01:13"
+    },
+    {
+      "i": 30,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "01:16"
+    },
+    {
+      "i": 31,
+      "speaker_key": "ryan_couture",
+      "mmss": "01:18"
+    },
+    {
+      "i": 32,
+      "speaker_key": "renee_martin",
+      "mmss": "01:19"
+    },
+    {
+      "i": 33,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "01:20"
+    },
+    {
+      "i": 34,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "01:21"
+    },
+    {
+      "i": 35,
+      "speaker_key": "wendy_higley",
+      "mmss": "01:25"
+    },
+    {
+      "i": 36,
+      "speaker_key": "ryan_couture",
+      "mmss": "01:25"
+    },
+    {
+      "i": 37,
+      "speaker_key": "wendy_higley",
+      "mmss": "01:28"
+    },
+    {
+      "i": 38,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "01:30"
+    },
+    {
+      "i": 39,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "01:35"
+    },
+    {
+      "i": 40,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "01:36"
+    },
+    {
+      "i": 41,
+      "speaker_key": "renee_martin",
+      "mmss": "01:38"
+    },
+    {
+      "i": 42,
+      "speaker_key": "ryan_couture",
+      "mmss": "01:38"
+    },
+    {
+      "i": 43,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "01:39"
+    },
+    {
+      "i": 44,
+      "speaker_key": "ryan_couture",
+      "mmss": "01:40"
+    },
+    {
+      "i": 45,
+      "speaker_key": "wendy_higley",
+      "mmss": "01:42"
+    },
+    {
+      "i": 46,
+      "speaker_key": "renee_martin",
+      "mmss": "01:43"
+    },
+    {
+      "i": 47,
+      "speaker_key": "wendy_higley",
+      "mmss": "01:56"
+    },
+    {
+      "i": 48,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "01:57"
+    },
+    {
+      "i": 49,
+      "speaker_key": "wendy_higley",
+      "mmss": "02:00"
+    },
+    {
+      "i": 50,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "02:09"
+    },
+    {
+      "i": 51,
+      "speaker_key": "ryan_couture",
+      "mmss": "02:19"
+    },
+    {
+      "i": 52,
+      "speaker_key": "wendy_higley",
+      "mmss": "02:20"
+    },
+    {
+      "i": 53,
+      "speaker_key": "renee_martin",
+      "mmss": "02:21"
+    },
+    {
+      "i": 54,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "02:30"
+    },
+    {
+      "i": 55,
+      "speaker_key": "renee_martin",
+      "mmss": "02:37"
+    },
+    {
+      "i": 56,
+      "speaker_key": "ryan_couture",
+      "mmss": "02:38"
+    },
+    {
+      "i": 57,
+      "speaker_key": "renee_martin",
+      "mmss": "02:42"
+    },
+    {
+      "i": 58,
+      "speaker_key": "wendy_higley",
+      "mmss": "02:54"
+    },
+    {
+      "i": 59,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "02:57"
+    },
+    {
+      "i": 60,
+      "speaker_key": "renee_martin",
+      "mmss": "03:00"
+    },
+    {
+      "i": 61,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "03:15"
+    },
+    {
+      "i": 62,
+      "speaker_key": "renee_martin",
+      "mmss": "03:19"
+    },
+    {
+      "i": 63,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "03:30"
+    },
+    {
+      "i": 64,
+      "speaker_key": "renee_martin",
+      "mmss": "03:32"
+    },
+    {
+      "i": 65,
+      "speaker_key": "renee_martin",
+      "mmss": "03:36"
+    },
+    {
+      "i": 66,
+      "speaker_key": "wendy_higley",
+      "mmss": "03:41"
+    },
+    {
+      "i": 67,
+      "speaker_key": "renee_martin",
+      "mmss": "03:46"
+    },
+    {
+      "i": 68,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "04:01"
+    },
+    {
+      "i": 69,
+      "speaker_key": "renee_martin",
+      "mmss": "04:06"
+    },
+    {
+      "i": 70,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "04:16"
+    },
+    {
+      "i": 71,
+      "speaker_key": "renee_martin",
+      "mmss": "04:26"
+    },
+    {
+      "i": 72,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "04:41"
+    },
+    {
+      "i": 73,
+      "speaker_key": "renee_martin",
+      "mmss": "04:44"
+    },
+    {
+      "i": 74,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "04:50"
+    },
+    {
+      "i": 75,
+      "speaker_key": "renee_martin",
+      "mmss": "05:03"
+    },
+    {
+      "i": 76,
+      "speaker_key": "renee_martin",
+      "mmss": "05:07"
+    },
+    {
+      "i": 77,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "05:08"
+    },
+    {
+      "i": 78,
+      "speaker_key": "renee_martin",
+      "mmss": "05:20"
+    },
+    {
+      "i": 79,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "05:30"
+    },
+    {
+      "i": 80,
+      "speaker_key": "renee_martin",
+      "mmss": "05:43"
+    },
+    {
+      "i": 81,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "05:50"
+    },
+    {
+      "i": 82,
+      "speaker_key": "renee_martin",
+      "mmss": "05:53"
+    },
+    {
+      "i": 83,
+      "speaker_key": "wendy_higley",
+      "mmss": "05:53"
+    },
+    {
+      "i": 84,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "05:57"
+    },
+    {
+      "i": 85,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "06:08"
+    },
+    {
+      "i": 86,
+      "speaker_key": "renee_martin",
+      "mmss": "06:12"
+    },
+    {
+      "i": 87,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "06:29"
+    },
+    {
+      "i": 88,
+      "speaker_key": "renee_martin",
+      "mmss": "06:39"
+    },
+    {
+      "i": 89,
+      "speaker_key": "wendy_higley",
+      "mmss": "06:40"
+    },
+    {
+      "i": 90,
+      "speaker_key": "renee_martin",
+      "mmss": "06:50"
+    },
+    {
+      "i": 91,
+      "speaker_key": "wendy_higley",
+      "mmss": "06:52"
+    },
+    {
+      "i": 92,
+      "speaker_key": "renee_martin",
+      "mmss": "06:57"
+    },
+    {
+      "i": 93,
+      "speaker_key": "renee_martin",
+      "mmss": "07:08"
+    },
+    {
+      "i": 94,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "07:09"
+    },
+    {
+      "i": 95,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "07:12"
+    },
+    {
+      "i": 96,
+      "speaker_key": "wendy_higley",
+      "mmss": "07:20"
+    },
+    {
+      "i": 97,
+      "speaker_key": "wendy_higley",
+      "mmss": "07:26"
+    },
+    {
+      "i": 98,
+      "speaker_key": "wendy_higley",
+      "mmss": "07:27"
+    },
+    {
+      "i": 99,
+      "speaker_key": "renee_martin",
+      "mmss": "07:27"
+    },
+    {
+      "i": 100,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "07:33"
+    },
+    {
+      "i": 101,
+      "speaker_key": "wendy_higley",
+      "mmss": "07:33"
+    },
+    {
+      "i": 102,
+      "speaker_key": "renee_martin",
+      "mmss": "07:43"
+    },
+    {
+      "i": 103,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "07:46"
+    },
+    {
+      "i": 104,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "07:47"
+    },
+    {
+      "i": 105,
+      "speaker_key": "renee_martin",
+      "mmss": "07:58"
+    },
+    {
+      "i": 106,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "08:00"
+    },
+    {
+      "i": 107,
+      "speaker_key": "ryan_couture",
+      "mmss": "08:01"
+    },
+    {
+      "i": 108,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "08:01"
+    },
+    {
+      "i": 109,
+      "speaker_key": "renee_martin",
+      "mmss": "08:02"
+    },
+    {
+      "i": 110,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "08:05"
+    },
+    {
+      "i": 111,
+      "speaker_key": "ryan_couture",
+      "mmss": "08:06"
+    },
+    {
+      "i": 112,
+      "speaker_key": "renee_martin",
+      "mmss": "08:07"
+    },
+    {
+      "i": 113,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "08:08"
+    },
+    {
+      "i": 114,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "08:11"
+    },
+    {
+      "i": 115,
+      "speaker_key": "renee_martin",
+      "mmss": "08:27"
+    },
+    {
+      "i": 116,
+      "speaker_key": "ryan_couture",
+      "mmss": "08:29"
+    },
+    {
+      "i": 117,
+      "speaker_key": "renee_martin",
+      "mmss": "08:34"
+    },
+    {
+      "i": 118,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "08:37"
+    },
+    {
+      "i": 119,
+      "speaker_key": "renee_martin",
+      "mmss": "08:40"
+    },
+    {
+      "i": 120,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "08:45"
+    },
+    {
+      "i": 121,
+      "speaker_key": "ryan_couture",
+      "mmss": "08:50"
+    },
+    {
+      "i": 122,
+      "speaker_key": "renee_martin",
+      "mmss": "08:58"
+    },
+    {
+      "i": 123,
+      "speaker_key": "ryan_couture",
+      "mmss": "09:10"
+    },
+    {
+      "i": 124,
+      "speaker_key": "renee_martin",
+      "mmss": "09:15"
+    },
+    {
+      "i": 125,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "09:22"
+    },
+    {
+      "i": 126,
+      "speaker_key": "renee_martin",
+      "mmss": "09:36"
+    },
+    {
+      "i": 127,
+      "speaker_key": "ryan_couture",
+      "mmss": "09:44"
+    },
+    {
+      "i": 128,
+      "speaker_key": "renee_martin",
+      "mmss": "09:45"
+    },
+    {
+      "i": 129,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "09:46"
+    },
+    {
+      "i": 130,
+      "speaker_key": "renee_martin",
+      "mmss": "09:47"
+    },
+    {
+      "i": 131,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "10:03"
+    },
+    {
+      "i": 132,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "10:05"
+    },
+    {
+      "i": 133,
+      "speaker_key": "ryan_couture",
+      "mmss": "10:05"
+    },
+    {
+      "i": 134,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "10:06"
+    },
+    {
+      "i": 135,
+      "speaker_key": "ryan_couture",
+      "mmss": "10:10"
+    },
+    {
+      "i": 136,
+      "speaker_key": "ryan_couture",
+      "mmss": "10:10"
+    },
+    {
+      "i": 137,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "10:24"
+    },
+    {
+      "i": 138,
+      "speaker_key": "renee_martin",
+      "mmss": "10:33"
+    },
+    {
+      "i": 139,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "10:44"
+    },
+    {
+      "i": 140,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "10:46"
+    },
+    {
+      "i": 141,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "10:50"
+    },
+    {
+      "i": 142,
+      "speaker_key": "renee_martin",
+      "mmss": "10:50"
+    },
+    {
+      "i": 143,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "10:54"
+    },
+    {
+      "i": 144,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "10:54"
+    },
+    {
+      "i": 145,
+      "speaker_key": "renee_martin",
+      "mmss": "11:09"
+    },
+    {
+      "i": 146,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "11:13"
+    },
+    {
+      "i": 147,
+      "speaker_key": "ryan_couture",
+      "mmss": "11:16"
+    },
+    {
+      "i": 148,
+      "speaker_key": "renee_martin",
+      "mmss": "11:28"
+    },
+    {
+      "i": 149,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "11:33"
+    },
+    {
+      "i": 150,
+      "speaker_key": "wendy_higley",
+      "mmss": "11:35"
+    },
+    {
+      "i": 151,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "11:53"
+    },
+    {
+      "i": 152,
+      "speaker_key": "wendy_higley",
+      "mmss": "11:55"
+    },
+    {
+      "i": 153,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "12:09"
+    },
+    {
+      "i": 154,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "12:09"
+    },
+    {
+      "i": 155,
+      "speaker_key": "renee_martin",
+      "mmss": "12:17"
+    },
+    {
+      "i": 156,
+      "speaker_key": "wendy_higley",
+      "mmss": "12:19"
+    },
+    {
+      "i": 157,
+      "speaker_key": "renee_martin",
+      "mmss": "12:20"
+    },
+    {
+      "i": 158,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "12:28"
+    },
+    {
+      "i": 159,
+      "speaker_key": "wendy_higley",
+      "mmss": "12:31"
+    },
+    {
+      "i": 160,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "12:41"
+    },
+    {
+      "i": 161,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "12:48"
+    },
+    {
+      "i": 162,
+      "speaker_key": "renee_martin",
+      "mmss": "12:57"
+    },
+    {
+      "i": 163,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "13:08"
+    },
+    {
+      "i": 164,
+      "speaker_key": "renee_martin",
+      "mmss": "13:28"
+    },
+    {
+      "i": 165,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "13:33"
+    },
+    {
+      "i": 166,
+      "speaker_key": "renee_martin",
+      "mmss": "13:48"
+    },
+    {
+      "i": 167,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "13:51"
+    },
+    {
+      "i": 168,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "14:08"
+    },
+    {
+      "i": 169,
+      "speaker_key": "renee_martin",
+      "mmss": "14:22"
+    },
+    {
+      "i": 170,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "14:27"
+    },
+    {
+      "i": 171,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "14:32"
+    },
+    {
+      "i": 172,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "14:38"
+    },
+    {
+      "i": 173,
+      "speaker_key": "renee_martin",
+      "mmss": "14:45"
+    },
+    {
+      "i": 174,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "14:46"
+    },
+    {
+      "i": 175,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "14:54"
+    },
+    {
+      "i": 176,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "15:02"
+    },
+    {
+      "i": 177,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "15:04"
+    },
+    {
+      "i": 178,
+      "speaker_key": "renee_martin",
+      "mmss": "15:05"
+    },
+    {
+      "i": 179,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "15:05"
+    },
+    {
+      "i": 180,
+      "speaker_key": "wendy_higley",
+      "mmss": "15:06"
+    },
+    {
+      "i": 181,
+      "speaker_key": "renee_martin",
+      "mmss": "15:16"
+    },
+    {
+      "i": 182,
+      "speaker_key": "wendy_higley",
+      "mmss": "15:25"
+    },
+    {
+      "i": 183,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "15:39"
+    },
+    {
+      "i": 184,
+      "speaker_key": "wendy_higley",
+      "mmss": "15:39"
+    },
+    {
+      "i": 185,
+      "speaker_key": "renee_martin",
+      "mmss": "15:42"
+    },
+    {
+      "i": 186,
+      "speaker_key": "renee_martin",
+      "mmss": "15:45"
+    },
+    {
+      "i": 187,
+      "speaker_key": "wendy_higley",
+      "mmss": "15:47"
+    },
+    {
+      "i": 188,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "15:50"
+    },
+    {
+      "i": 189,
+      "speaker_key": "renee_martin",
+      "mmss": "15:51"
+    },
+    {
+      "i": 190,
+      "speaker_key": "renee_martin",
+      "mmss": "16:10"
+    },
+    {
+      "i": 191,
+      "speaker_key": "renee_martin",
+      "mmss": "16:35"
+    },
+    {
+      "i": 192,
+      "speaker_key": "renee_martin",
+      "mmss": "16:56"
+    },
+    {
+      "i": 193,
+      "speaker_key": "renee_martin",
+      "mmss": "17:05"
+    },
+    {
+      "i": 194,
+      "speaker_key": "wendy_higley",
+      "mmss": "17:16"
+    },
+    {
+      "i": 195,
+      "speaker_key": "wendy_higley",
+      "mmss": "17:34"
+    },
+    {
+      "i": 196,
+      "speaker_key": "ryan_couture",
+      "mmss": "17:52"
+    },
+    {
+      "i": 197,
+      "speaker_key": "wendy_higley",
+      "mmss": "17:54"
+    },
+    {
+      "i": 198,
+      "speaker_key": "wendy_higley",
+      "mmss": "18:18"
+    },
+    {
+      "i": 199,
+      "speaker_key": "wendy_higley",
+      "mmss": "18:38"
+    },
+    {
+      "i": 200,
+      "speaker_key": "wendy_higley",
+      "mmss": "19:03"
+    },
+    {
+      "i": 201,
+      "speaker_key": "wendy_higley",
+      "mmss": "19:24"
+    },
+    {
+      "i": 202,
+      "speaker_key": "wendy_higley",
+      "mmss": "19:45"
+    },
+    {
+      "i": 203,
+      "speaker_key": "ryan_couture",
+      "mmss": "19:54"
+    },
+    {
+      "i": 204,
+      "speaker_key": "ryan_couture",
+      "mmss": "19:56"
+    },
+    {
+      "i": 205,
+      "speaker_key": "wendy_higley",
+      "mmss": "20:00"
+    },
+    {
+      "i": 206,
+      "speaker_key": "renee_martin",
+      "mmss": "20:02"
+    },
+    {
+      "i": 207,
+      "speaker_key": "ryan_couture",
+      "mmss": "20:02"
+    },
+    {
+      "i": 208,
+      "speaker_key": "wendy_higley",
+      "mmss": "20:04"
+    },
+    {
+      "i": 209,
+      "speaker_key": "ryan_couture",
+      "mmss": "20:05"
+    },
+    {
+      "i": 210,
+      "speaker_key": "wendy_higley",
+      "mmss": "20:07"
+    },
+    {
+      "i": 211,
+      "speaker_key": "ryan_couture",
+      "mmss": "20:08"
+    },
+    {
+      "i": 212,
+      "speaker_key": "renee_martin",
+      "mmss": "20:09"
+    },
+    {
+      "i": 213,
+      "speaker_key": "ryan_couture",
+      "mmss": "20:12"
+    },
+    {
+      "i": 214,
+      "speaker_key": "wendy_higley",
+      "mmss": "20:23"
+    },
+    {
+      "i": 215,
+      "speaker_key": "wendy_higley",
+      "mmss": "20:45"
+    },
+    {
+      "i": 216,
+      "speaker_key": "ryan_couture",
+      "mmss": "20:59"
+    },
+    {
+      "i": 217,
+      "speaker_key": "wendy_higley",
+      "mmss": "21:01"
+    },
+    {
+      "i": 218,
+      "speaker_key": "renee_martin",
+      "mmss": "21:10"
+    },
+    {
+      "i": 219,
+      "speaker_key": "ryan_couture",
+      "mmss": "21:18"
+    },
+    {
+      "i": 220,
+      "speaker_key": "ryan_couture",
+      "mmss": "21:26"
+    },
+    {
+      "i": 221,
+      "speaker_key": "renee_martin",
+      "mmss": "21:29"
+    },
+    {
+      "i": 222,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "21:39"
+    },
+    {
+      "i": 223,
+      "speaker_key": "renee_martin",
+      "mmss": "21:49"
+    },
+    {
+      "i": 224,
+      "speaker_key": "renee_martin",
+      "mmss": "21:54"
+    },
+    {
+      "i": 225,
+      "speaker_key": "wendy_higley",
+      "mmss": "21:54"
+    },
+    {
+      "i": 226,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "21:59"
+    },
+    {
+      "i": 227,
+      "speaker_key": "wendy_higley",
+      "mmss": "22:01"
+    },
+    {
+      "i": 228,
+      "speaker_key": "renee_martin",
+      "mmss": "22:02"
+    },
+    {
+      "i": 229,
+      "speaker_key": "wendy_higley",
+      "mmss": "22:09"
+    },
+    {
+      "i": 230,
+      "speaker_key": "wendy_higley",
+      "mmss": "22:10"
+    },
+    {
+      "i": 231,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "22:19"
+    },
+    {
+      "i": 232,
+      "speaker_key": "wendy_higley",
+      "mmss": "22:24"
+    },
+    {
+      "i": 233,
+      "speaker_key": "wendy_higley",
+      "mmss": "22:42"
+    },
+    {
+      "i": 234,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "22:46"
+    },
+    {
+      "i": 235,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "23:03"
+    },
+    {
+      "i": 236,
+      "speaker_key": "wendy_higley",
+      "mmss": "23:04"
+    },
+    {
+      "i": 237,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "23:23"
+    },
+    {
+      "i": 238,
+      "speaker_key": "wendy_higley",
+      "mmss": "23:24"
+    },
+    {
+      "i": 239,
+      "speaker_key": "wendy_higley",
+      "mmss": "23:26"
+    },
+    {
+      "i": 240,
+      "speaker_key": "wendy_higley",
+      "mmss": "23:37"
+    },
+    {
+      "i": 241,
+      "speaker_key": "renee_martin",
+      "mmss": "23:39"
+    },
+    {
+      "i": 242,
+      "speaker_key": "renee_martin",
+      "mmss": "23:41"
+    },
+    {
+      "i": 243,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "23:41"
+    },
+    {
+      "i": 244,
+      "speaker_key": "wendy_higley",
+      "mmss": "23:44"
+    },
+    {
+      "i": 245,
+      "speaker_key": "wendy_higley",
+      "mmss": "23:46"
+    },
+    {
+      "i": 246,
+      "speaker_key": "wendy_higley",
+      "mmss": "23:54"
+    },
+    {
+      "i": 247,
+      "speaker_key": "wendy_higley",
+      "mmss": "24:01"
+    },
+    {
+      "i": 248,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "24:02"
+    },
+    {
+      "i": 249,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "24:03"
+    },
+    {
+      "i": 250,
+      "speaker_key": "renee_martin",
+      "mmss": "24:09"
+    },
+    {
+      "i": 251,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "24:09"
+    },
+    {
+      "i": 252,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "24:16"
+    },
+    {
+      "i": 253,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "24:26"
+    },
+    {
+      "i": 254,
+      "speaker_key": "renee_martin",
+      "mmss": "24:26"
+    },
+    {
+      "i": 255,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "24:29"
+    },
+    {
+      "i": 256,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "24:43"
+    },
+    {
+      "i": 257,
+      "speaker_key": "renee_martin",
+      "mmss": "24:50"
+    },
+    {
+      "i": 258,
+      "speaker_key": "renee_martin",
+      "mmss": "24:57"
+    },
+    {
+      "i": 259,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "25:03"
+    },
+    {
+      "i": 260,
+      "speaker_key": "wendy_higley",
+      "mmss": "25:08"
+    },
+    {
+      "i": 261,
+      "speaker_key": "wendy_higley",
+      "mmss": "25:26"
+    },
+    {
+      "i": 262,
+      "speaker_key": "wendy_higley",
+      "mmss": "25:48"
+    },
+    {
+      "i": 263,
+      "speaker_key": "ryan_couture",
+      "mmss": "26:07"
+    },
+    {
+      "i": 264,
+      "speaker_key": "wendy_higley",
+      "mmss": "26:09"
+    },
+    {
+      "i": 265,
+      "speaker_key": "wendy_higley",
+      "mmss": "26:31"
+    },
+    {
+      "i": 266,
+      "speaker_key": "renee_martin",
+      "mmss": "27:02"
+    },
+    {
+      "i": 267,
+      "speaker_key": "wendy_higley",
+      "mmss": "27:19"
+    },
+    {
+      "i": 268,
+      "speaker_key": "renee_martin",
+      "mmss": "27:32"
+    },
+    {
+      "i": 269,
+      "speaker_key": "ryan_couture",
+      "mmss": "27:35"
+    },
+    {
+      "i": 270,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "27:41"
+    },
+    {
+      "i": 271,
+      "speaker_key": "wendy_higley",
+      "mmss": "28:05"
+    },
+    {
+      "i": 272,
+      "speaker_key": "wendy_higley",
+      "mmss": "28:29"
+    },
+    {
+      "i": 273,
+      "speaker_key": "wendy_higley",
+      "mmss": "28:51"
+    },
+    {
+      "i": 274,
+      "speaker_key": "renee_martin",
+      "mmss": "29:09"
+    },
+    {
+      "i": 275,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "29:09"
+    },
+    {
+      "i": 276,
+      "speaker_key": "renee_martin",
+      "mmss": "29:11"
+    },
+    {
+      "i": 277,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "29:20"
+    },
+    {
+      "i": 278,
+      "speaker_key": "wendy_higley",
+      "mmss": "29:21"
+    },
+    {
+      "i": 279,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "29:34"
+    },
+    {
+      "i": 280,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "29:37"
+    },
+    {
+      "i": 281,
+      "speaker_key": "wendy_higley",
+      "mmss": "29:56"
+    },
+    {
+      "i": 282,
+      "speaker_key": "renee_martin",
+      "mmss": "29:57"
+    },
+    {
+      "i": 283,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "29:59"
+    },
+    {
+      "i": 284,
+      "speaker_key": "wendy_higley",
+      "mmss": "30:01"
+    },
+    {
+      "i": 285,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "30:02"
+    },
+    {
+      "i": 286,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "30:04"
+    },
+    {
+      "i": 287,
+      "speaker_key": "wendy_higley",
+      "mmss": "30:24"
+    },
+    {
+      "i": 288,
+      "speaker_key": "renee_martin",
+      "mmss": "30:25"
+    },
+    {
+      "i": 289,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "30:25"
+    },
+    {
+      "i": 290,
+      "speaker_key": "renee_martin",
+      "mmss": "30:41"
+    },
+    {
+      "i": 291,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "31:11"
+    },
+    {
+      "i": 292,
+      "speaker_key": "renee_martin",
+      "mmss": "31:14"
+    },
+    {
+      "i": 293,
+      "speaker_key": "renee_martin",
+      "mmss": "31:21"
+    },
+    {
+      "i": 294,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "31:22"
+    },
+    {
+      "i": 295,
+      "speaker_key": "wendy_higley",
+      "mmss": "31:24"
+    },
+    {
+      "i": 296,
+      "speaker_key": "renee_martin",
+      "mmss": "31:30"
+    },
+    {
+      "i": 297,
+      "speaker_key": "wendy_higley",
+      "mmss": "31:52"
+    },
+    {
+      "i": 298,
+      "speaker_key": "wendy_higley",
+      "mmss": "32:11"
+    },
+    {
+      "i": 299,
+      "speaker_key": "wendy_higley",
+      "mmss": "32:30"
+    },
+    {
+      "i": 300,
+      "speaker_key": "wendy_higley",
+      "mmss": "32:50"
+    },
+    {
+      "i": 301,
+      "speaker_key": "wendy_higley",
+      "mmss": "33:11"
+    },
+    {
+      "i": 302,
+      "speaker_key": "renee_martin",
+      "mmss": "33:13"
+    },
+    {
+      "i": 303,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "33:13"
+    },
+    {
+      "i": 304,
+      "speaker_key": "ryan_couture",
+      "mmss": "33:14"
+    },
+    {
+      "i": 305,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "33:15"
+    },
+    {
+      "i": 306,
+      "speaker_key": "wendy_higley",
+      "mmss": "33:31"
+    },
+    {
+      "i": 307,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "33:35"
+    },
+    {
+      "i": 308,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "33:54"
+    },
+    {
+      "i": 309,
+      "speaker_key": "ryan_couture",
+      "mmss": "34:10"
+    },
+    {
+      "i": 310,
+      "speaker_key": "wendy_higley",
+      "mmss": "34:11"
+    },
+    {
+      "i": 311,
+      "speaker_key": "renee_martin",
+      "mmss": "34:13"
+    },
+    {
+      "i": 312,
+      "speaker_key": "ryan_couture",
+      "mmss": "34:13"
+    },
+    {
+      "i": 313,
+      "speaker_key": "wendy_higley",
+      "mmss": "34:13"
+    },
+    {
+      "i": 314,
+      "speaker_key": "wendy_higley",
+      "mmss": "34:15"
+    },
+    {
+      "i": 315,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "34:15"
+    },
+    {
+      "i": 316,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "34:20"
+    },
+    {
+      "i": 317,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "34:26"
+    },
+    {
+      "i": 318,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "34:35"
+    },
+    {
+      "i": 319,
+      "speaker_key": "renee_martin",
+      "mmss": "34:35"
+    },
+    {
+      "i": 320,
+      "speaker_key": "ryan_couture",
+      "mmss": "34:36"
+    },
+    {
+      "i": 321,
+      "speaker_key": "wendy_higley",
+      "mmss": "34:37"
+    },
+    {
+      "i": 322,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "34:38"
+    },
+    {
+      "i": 323,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "34:54"
+    },
+    {
+      "i": 324,
+      "speaker_key": "wendy_higley",
+      "mmss": "34:56"
+    },
+    {
+      "i": 325,
+      "speaker_key": "wendy_higley",
+      "mmss": "35:00"
+    },
+    {
+      "i": 326,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "35:08"
+    },
+    {
+      "i": 327,
+      "speaker_key": "wendy_higley",
+      "mmss": "35:20"
+    },
+    {
+      "i": 328,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "35:20"
+    },
+    {
+      "i": 329,
+      "speaker_key": "renee_martin",
+      "mmss": "35:23"
+    },
+    {
+      "i": 330,
+      "speaker_key": "wendy_higley",
+      "mmss": "35:26"
+    },
+    {
+      "i": 331,
+      "speaker_key": "wendy_higley",
+      "mmss": "35:30"
+    },
+    {
+      "i": 332,
+      "speaker_key": "renee_martin",
+      "mmss": "35:31"
+    },
+    {
+      "i": 333,
+      "speaker_key": "wendy_higley",
+      "mmss": "35:33"
+    },
+    {
+      "i": 334,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "35:34"
+    },
+    {
+      "i": 335,
+      "speaker_key": "renee_martin",
+      "mmss": "35:38"
+    },
+    {
+      "i": 336,
+      "speaker_key": "wendy_higley",
+      "mmss": "35:39"
+    },
+    {
+      "i": 337,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "35:40"
+    },
+    {
+      "i": 338,
+      "speaker_key": "renee_martin",
+      "mmss": "35:43"
+    },
+    {
+      "i": 339,
+      "speaker_key": "renee_martin",
+      "mmss": "35:49"
+    },
+    {
+      "i": 340,
+      "speaker_key": "wendy_higley",
+      "mmss": "35:50"
+    },
+    {
+      "i": 341,
+      "speaker_key": "renee_martin",
+      "mmss": "35:55"
+    },
+    {
+      "i": 342,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "35:56"
+    },
+    {
+      "i": 343,
+      "speaker_key": "renee_martin",
+      "mmss": "35:57"
+    },
+    {
+      "i": 344,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "36:00"
+    },
+    {
+      "i": 345,
+      "speaker_key": "renee_martin",
+      "mmss": "36:11"
+    },
+    {
+      "i": 346,
+      "speaker_key": "wendy_higley",
+      "mmss": "36:15"
+    },
+    {
+      "i": 347,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "36:28"
+    },
+    {
+      "i": 348,
+      "speaker_key": "wendy_higley",
+      "mmss": "36:29"
+    },
+    {
+      "i": 349,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "36:49"
+    },
+    {
+      "i": 350,
+      "speaker_key": "renee_martin",
+      "mmss": "37:08"
+    },
+    {
+      "i": 351,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "37:08"
+    },
+    {
+      "i": 352,
+      "speaker_key": "wendy_higley",
+      "mmss": "37:08"
+    },
+    {
+      "i": 353,
+      "speaker_key": "renee_martin",
+      "mmss": "37:11"
+    },
+    {
+      "i": 354,
+      "speaker_key": "wendy_higley",
+      "mmss": "37:11"
+    },
+    {
+      "i": 355,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "37:28"
+    },
+    {
+      "i": 356,
+      "speaker_key": "wendy_higley",
+      "mmss": "37:30"
+    },
+    {
+      "i": 357,
+      "speaker_key": "renee_martin",
+      "mmss": "37:31"
+    },
+    {
+      "i": 358,
+      "speaker_key": "renee_martin",
+      "mmss": "37:35"
+    },
+    {
+      "i": 359,
+      "speaker_key": "wendy_higley",
+      "mmss": "37:35"
+    },
+    {
+      "i": 360,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "37:37"
+    },
+    {
+      "i": 361,
+      "speaker_key": "renee_martin",
+      "mmss": "37:44"
+    },
+    {
+      "i": 362,
+      "speaker_key": "wendy_higley",
+      "mmss": "37:44"
+    },
+    {
+      "i": 363,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "37:51"
+    },
+    {
+      "i": 364,
+      "speaker_key": "wendy_higley",
+      "mmss": "37:52"
+    },
+    {
+      "i": 365,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "37:56"
+    },
+    {
+      "i": 366,
+      "speaker_key": "neeraja_chimata",
+      "mmss": "38:00"
+    },
+    {
+      "i": 367,
+      "speaker_key": "renee_martin",
+      "mmss": "38:01"
+    },
+    {
+      "i": 368,
+      "speaker_key": "wendy_higley",
+      "mmss": "38:03"
+    },
+    {
+      "i": 369,
+      "speaker_key": "renee_martin",
+      "mmss": "38:04"
+    },
+    {
+      "i": 370,
+      "speaker_key": "wendy_higley",
+      "mmss": "38:05"
+    },
+    {
+      "i": 371,
+      "speaker_key": "renee_martin",
+      "mmss": "38:09"
+    },
+    {
+      "i": 372,
+      "speaker_key": "wendy_higley",
+      "mmss": "38:12"
+    },
+    {
+      "i": 373,
+      "speaker_key": "renee_martin",
+      "mmss": "38:13"
+    },
+    {
+      "i": 374,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "38:19"
+    },
+    {
+      "i": 375,
+      "speaker_key": "renee_martin",
+      "mmss": "38:21"
+    },
+    {
+      "i": 376,
+      "speaker_key": "wendy_higley",
+      "mmss": "38:24"
+    },
+    {
+      "i": 377,
+      "speaker_key": "renee_martin",
+      "mmss": "38:24"
+    },
+    {
+      "i": 378,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "38:28"
+    },
+    {
+      "i": 379,
+      "speaker_key": "renee_martin",
+      "mmss": "38:32"
+    },
+    {
+      "i": 380,
+      "speaker_key": "wendy_higley",
+      "mmss": "38:33"
+    },
+    {
+      "i": 381,
+      "speaker_key": "renee_martin",
+      "mmss": "38:34"
+    },
+    {
+      "i": 382,
+      "speaker_key": "renee_martin",
+      "mmss": "38:38"
+    },
+    {
+      "i": 383,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "38:58"
+    },
+    {
+      "i": 384,
+      "speaker_key": "renee_martin",
+      "mmss": "38:58"
+    },
+    {
+      "i": 385,
+      "speaker_key": "wendy_higley",
+      "mmss": "39:02"
+    },
+    {
+      "i": 386,
+      "speaker_key": "renee_martin",
+      "mmss": "39:04"
+    },
+    {
+      "i": 387,
+      "speaker_key": "renee_martin",
+      "mmss": "39:06"
+    },
+    {
+      "i": 388,
+      "speaker_key": "renee_martin",
+      "mmss": "39:10"
+    },
+    {
+      "i": 389,
+      "speaker_key": "wendy_higley",
+      "mmss": "39:11"
+    },
+    {
+      "i": 390,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "39:11"
+    },
+    {
+      "i": 391,
+      "speaker_key": "renee_martin",
+      "mmss": "39:13"
+    },
+    {
+      "i": 392,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "39:20"
+    },
+    {
+      "i": 393,
+      "speaker_key": "renee_martin",
+      "mmss": "39:23"
+    },
+    {
+      "i": 394,
+      "speaker_key": "wendy_higley",
+      "mmss": "39:23"
+    },
+    {
+      "i": 395,
+      "speaker_key": "renee_martin",
+      "mmss": "39:37"
+    },
+    {
+      "i": 396,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "39:38"
+    },
+    {
+      "i": 397,
+      "speaker_key": "renee_martin",
+      "mmss": "39:42"
+    },
+    {
+      "i": 398,
+      "speaker_key": "wendy_higley",
+      "mmss": "39:45"
+    },
+    {
+      "i": 399,
+      "speaker_key": "renee_martin",
+      "mmss": "39:45"
+    },
+    {
+      "i": 400,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "39:56"
+    },
+    {
+      "i": 401,
+      "speaker_key": "renee_martin",
+      "mmss": "39:58"
+    },
+    {
+      "i": 402,
+      "speaker_key": "renee_martin",
+      "mmss": "39:59"
+    },
+    {
+      "i": 403,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "40:04"
+    },
+    {
+      "i": 404,
+      "speaker_key": "renee_martin",
+      "mmss": "40:08"
+    },
+    {
+      "i": 405,
+      "speaker_key": "wendy_higley",
+      "mmss": "40:08"
+    },
+    {
+      "i": 406,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "40:09"
+    },
+    {
+      "i": 407,
+      "speaker_key": "renee_martin",
+      "mmss": "40:12"
+    },
+    {
+      "i": 408,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "40:12"
+    },
+    {
+      "i": 409,
+      "speaker_key": "renee_martin",
+      "mmss": "40:14"
+    },
+    {
+      "i": 410,
+      "speaker_key": "wendy_higley",
+      "mmss": "40:15"
+    },
+    {
+      "i": 411,
+      "speaker_key": "jefferson_vargas",
+      "mmss": "40:15"
+    },
+    {
+      "i": 412,
+      "speaker_key": "wendy_higley",
+      "mmss": "40:17"
+    },
+    {
+      "i": 413,
+      "speaker_key": "renee_martin",
+      "mmss": "40:19"
+    },
+    {
+      "i": 414,
+      "speaker_key": "wendy_higley",
+      "mmss": "40:19"
+    }
+  ],
+  "roster_resolution": [
+    {
+      "artifact_name": "Vargas, Jefferson [EMR/SYSS/AT/MEDI]",
+      "participant_name": "Vargas, Jefferson [EMR/SYSS/AT/MEDI]",
+      "speaker_key": "jefferson_vargas",
+      "match": "exact",
+      "related_person_id": null,
+      "side": "external"
+    },
+    {
+      "artifact_name": "Neeraja Chimata",
+      "participant_name": "Chimata, Neeraja [EMR/SYSS/AT/BED]",
+      "speaker_key": "neeraja_chimata",
+      "match": "permutation",
+      "related_person_id": "003V400000v7x90IAA",
+      "side": "external"
+    },
+    {
+      "artifact_name": "Renee Martin",
+      "participant_name": "Renee Martin",
+      "speaker_key": "renee_martin",
+      "match": "exact",
+      "related_person_id": "005Hn00000Iyk1MIAR",
+      "side": "internal"
+    },
+    {
+      "artifact_name": "Couture, Ryan [EMR/SYSS/AT/BED]",
+      "participant_name": "Couture, Ryan [EMR/SYSS/AT/BED]",
+      "speaker_key": "ryan_couture",
+      "match": "exact",
+      "related_person_id": null,
+      "side": "external"
+    },
+    {
+      "artifact_name": "Wendy Higley",
+      "participant_name": "Wendy Higley",
+      "speaker_key": "wendy_higley",
+      "match": "exact",
+      "related_person_id": "005Hn00000JHb1PIAT",
+      "side": "internal"
+    }
+  ],
+  "warnings": [],
+  "nf1_sha256": "c6d056baeb751d7025ea646f8755d717278e785ec06bb7526989e91735769196"
+}

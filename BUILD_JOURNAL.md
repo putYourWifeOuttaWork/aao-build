@@ -7059,3 +7059,78 @@ sheet is not the one that established it.
 the sheet says. Note for whoever grades them: 5 of the 11 UNVERIFIED never reached the blind
 reader at all — the binder itself declined — so the blind reader's catch rate must be computed
 against the 6 it refused plus the 3 refusals absorbed by pairs that survived, not against 11.
+
+---
+
+## 2026-08-04 · session 75 · the watermark question answered · three symptoms, one omission
+
+Inbox item 1, taken first because it decays.
+
+### It was never written
+
+**Zero of the six Answers on the B&V deal carry `AAO_Projected_Value__c` or
+`AAO_Projected_Modstamp__c`**, although `AAO_Project.run` populated Adam Meloan's map row at
+`2026-08-03T23:27:03Z`. `AAO_Project` **reads** `AAO_Projected_Modstamp__c` (in `lastProjected`)
+and **never writes** it or the value. The projection wrote to the customer surface and recorded
+nothing on our own row saying it had.
+
+### The omission disables the human-edit law
+
+```apex
+/** A human edit beats the machine forever. ... */
+private static Boolean humanEdited(Datetime nativeStamp, Datetime ourLastWrite) {
+    if (nativeStamp == null || ourLastWrite == null) { return false; }
+    return nativeStamp > ourLastWrite;
+}
+```
+
+`ourLastWrite` is `lastProjected(answers)`, the max `AAO_Projected_Modstamp__c`. Never written, so
+always null, so **`humanEdited` always returns false and "a human edit beats the machine forever"
+never fires.** The doc comment's carve-out is right and is being applied universally: it says a
+row we have never written is "deliberately treated as ours to write", and because the field is
+never written **every** contact is treated as first contact. A second pass would silently
+overwrite a seller's hand edit. That is why this blocks a second pass on B&V, and the block is
+real.
+
+### The same omission is why command centre §6 renders `off`
+
+§6 queries `AAO_Answer__c WHERE AAO_Projected_Value__c != null` and sets
+`isOn = !rows.isEmpty()`. The field is never written, so the query returns nothing, so the panel
+reads `off` and "No projections yet on this record" **while Adam's map row is populated**. §6
+counts *answers carrying a projection watermark*, not map rows written, and those two have
+silently diverged. One omission, three symptoms: no watermark, no human-edit protection, a
+command centre blind to a projection that happened.
+
+### CORRECTION to the inbox: for this run the modstamp IS reconstructible
+
+The inbox records "the modstamp cannot be reconstructed later." **For this run it can.** The map
+row carries `ALTF__Political_Last_Modified__c = 2026-08-03T23:27:03Z`, the package maintains that
+stamp on API writes (Architecture v2.2, step 0 probe), and this row went from **0 populated to 1**
+in our write — so that timestamp is ours and nobody else's. The two Answers behind the political
+placement (PO9 and PS7 for Adam) can be stamped with it.
+
+**Offered, not done.** Backfilling a watermark from a native stamp is inference standing in for a
+record, and the standing rule is one input is never the answer. Design's to rule whether the
+backfill is legitimate or whether B&V's second pass waits for a clean re-projection.
+
+### Ruling 2 collides with existing data, and the harness will catch it
+
+T7 asserts **"no abstention row exists anywhere (a query proving zero such rows is itself a
+test)"**. The org holds **122 `AAO_Candidate__c` rows with `AAO_Outcome__c = 'Abstained'`, of 150
+total**, all written by the retired shape. As written, T7 fails on contact regardless of what the
+new pass does. Named rather than pre-emptively purged: this org's standing laws are that wrong
+text is marked wrong rather than deleted and that Sources leave by retirement, so a mass delete is
+not mine to assume.
+
+### The 17 June fixture carries two fingerprints, and T0 should say which it asserts
+
+| | bytes | sha256 |
+|---|---|---|
+| file as delivered | 42,785 | `c6d056ba…9196` (the addendum's number) |
+| stored after `LongTextArea` | 42,784 | `ec8e7170…5a5f` |
+
+The file ends with a trailing newline; `LongTextArea` strips it on save, measured session 73 and
+now hit for the third time. Both numbers are correct about different things and **spans
+byte-locate against the stored one**. T0's determinism assertion is satisfiable as written if it
+targets the normalizer's in-memory output; it is not satisfiable against the stored artifact. One
+clarifying line in the harness prevents a one-byte failure being read as a normalizer bug.

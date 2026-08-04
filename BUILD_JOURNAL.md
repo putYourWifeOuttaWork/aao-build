@@ -7134,3 +7134,58 @@ now hit for the third time. Both numbers are correct about different things and 
 byte-locate against the stored one**. T0's determinism assertion is satisfiable as written if it
 targets the normalizer's in-memory output; it is not satisfiable against the stored artifact. One
 clarifying line in the harness prevents a one-byte failure being read as a normalizer bug.
+
+---
+
+## 2026-08-04 · session 75 · addendum 02 synced; the re-paste is the retired artifact, not a second path
+
+### The four answers, absorbed
+
+Watermark backfill **refused**, and the reasoning is better than my offer: a watermark reconstructable
+from a native stamp makes reconstruction available where the chain is *not* provable, and replay over
+claims already re-projects for real. **Law: a watermark is written by the writer or it does not
+exist.** The 3 August run stands as a projection made before the writer wrote watermarks.
+
+T7 **scoped to the run** by provenance, not date, with the excluded count printed. The 122 legacy
+`Abstained` rows stand as the decision log. T0's hash: **the stored form is canonical**, artifact
+reissued, `ec8e7170` asserted and `c6d056ba` retired rather than corrected, because it named a file
+that no longer exists. New law, third bite: **a normalizer's output contract is the stored form** —
+any transform the platform applies on save is applied by the normalizer first, so what we hash, store
+and verify against are one thing and never three. Pair ledger ratified as `AAO_Pair__c` with two
+refinements I did not propose and both of which close real holes: **stage as an explicit picklist**
+(`Located`/`Identified`) rather than inferred from a null lookup, and an **occurrence ordinal** on the
+located row so a string matching more than once can say which match it is. Contracts: **mint 17,
+supersede the 48, delete nothing.**
+
+### The reissued artifact verifies
+
+`ec8e7170…5a5f` · 42,784 bytes · 415 lines · 415 tabs · **0 no-tab lines** · no trailing newline.
+Independently recomputed here and matching the addendum. The retired file is kept beside it as
+`RETIRED-c6d056ba-…` rather than overwritten.
+
+### The pasted transcript is the RETIRED artifact, and I nearly framed it as a second intake path
+
+A transcript arrived pasted in full. It is the same 17 June call, and I checked before treating it as
+new:
+
+| | turns | speakers | sha256 |
+|---|---|---|---|
+| pasted | 415 | the five, snake-key | **`c6d056ba`** |
+| retired artifact | 415 | identical | **`c6d056ba`** |
+| canonical artifact | 415 | identical | `ec8e7170` |
+
+**The paste is byte-identical to the retired artifact**, and identical to the canonical one after the
+trailing newline. Utterance-set difference is zero in both directions; sequence similarity 1.0000.
+Kept as `CONFIRM-repaste-reproduces-retired-c6d056ba.txt`.
+
+**So there is still exactly one intake path, and T0's convergence diff still has nothing to converge.**
+I had started to write this up as Path B2 before checking, which would have reported a convergence
+test that never happened.
+
+**What it does prove, and it is worth having:** the reissue changed *only* the trailing newline.
+Nothing in the 415 turns moved. A reissued artifact could in principle have carried content changes
+under cover of a hash change, and now it demonstrably did not.
+
+**Path A remains untried.** The Get Conversation Transcript action has still never been called from
+Apex, so hand-carried artifacts remain the only proven intake and the convergence assertion stays
+unexercised.

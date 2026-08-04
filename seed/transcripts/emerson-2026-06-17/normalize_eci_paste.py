@@ -175,7 +175,7 @@ def normalize(raw_text):
                     "side": hit["side"],
                 }
 
-    nf1 = "\n".join(f"{t['key']}\t{t['text']}" for t in turns) + "\n"
+    nf1 = "\n".join(f"{t['key']}\t{t['text']}" for t in turns)  # no trailing newline: stored form is canonical
     sidecar = {
         "artifact": "emerson-2026-06-17-nf1",
         "source_format": "eci_viewer_paste",

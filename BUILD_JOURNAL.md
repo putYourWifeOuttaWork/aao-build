@@ -7189,3 +7189,57 @@ under cover of a hash change, and now it demonstrably did not.
 **Path A remains untried.** The Get Conversation Transcript action has still never been called from
 Apex, so hand-carried artifacts remain the only proven intake and the convergence assertion stays
 unexercised.
+
+---
+
+## 2026-08-04 · session 75 · Charters v2.8 synced · the cheap count partly BREAKS the findings=1 explanation
+
+### v2.8 in, delta applied surgically
+
+Charters v2.8 arrived as a paste rather than a file. Rather than retype 199 KB — which is the
+paraphrase hazard this build exists to refuse — the delta was applied against exact v2.7 anchors:
+the v2.8 head stamp, §P8's title, §P8.4's counter paragraph, §P8.5's tightening, and §P8.9 whole
+(which sits between §P8.7 and §P8.8, as delivered). **Verified: everything from `PART I` down is
+BYTE-IDENTICAL to v2.7**, so the edit touched only what it claimed to. **A file would still be
+better than a paste for the authoritative copy and is worth sending when convenient.**
+
+### Inbox item 3 · the cheap count · UNIT: pairs, not bind items
+
+The 16 established **items** sat across **12 pairs** (contract × person). Unit labelled at the
+point of print, per the unit law.
+
+| | established pairs | upheld | refused |
+|---|---|---|---|
+| **placing-nobody** (S1, PO9) | 5 | **5** | **0** |
+| **projecting** (PS4, S5, PS7, PO2) | 7 | **1** | **6** |
+
+By code: S1 ×3 and PO9 ×2 place nobody; PS4 ×3, S5 ×2, PS7 ×1, PO2 ×1 project.
+
+### THE RESULT PARTLY BREAKS THE HYPOTHESIS, and the correction matters
+
+The structural explanation on record is *"the read establishes gate questions that place nobody
+and misses placement questions."* **The first half does not hold. The read established projecting
+questions at 7 of 12, a clear majority.** It was not blind to placement.
+
+**Every single pair the blind reader killed was a projecting question. Not one placing-nobody pair
+was killed.** The one placing-nobody pair that drew a refusal at item level (PO9/Ashley) survived
+anyway, because a second span covered the element. So the surviving claim set inverts: **5 of 6
+upheld pairs place nobody, and exactly one projecting claim survived the whole pass** — PS7,
+which is the single map value that landed.
+
+**So the loss is at verification, not at the read.** The read finds placement evidence; the blind
+reader refuses it at 6 of 7 while refusing placing-nobody evidence at 0 of 5.
+
+### What this does NOT establish, stated because the numbers are small
+
+Seven and five. **The asymmetry may be the verifier working correctly rather than failing:**
+projecting questions are narrower claims (controls the outcomes, sells internally, approves and
+sponsors) and are genuinely harder to carry coextensively than "aware of the politics" or
+"expressed a preference". A reader that refuses the hard ones more often is doing its job. The
+count cannot separate *the verifier is too strict on placement* from *placement claims are
+actually weaker*, and **the 9 item-refusals remain ungraded**, which is exactly the evidence that
+would separate them, and exactly what the adjudication sheet already names as the highest-value
+ungraded material.
+
+**Recorded as a finding with its denominator and its ambiguity, not as a verdict.** It relocates
+the question from the read to the reader, which changes where the next measurement points.

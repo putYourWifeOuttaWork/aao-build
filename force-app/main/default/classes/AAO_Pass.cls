@@ -59,6 +59,191 @@ public with sharing class AAO_Pass {
 
 
 
+
+    // ========================================================== call 0 · THE RESOLVER READ
+
+    /**
+     * The deterministic ladder's outputs, computed in Apex before call 0 and handed to it AS
+     * EVIDENCE rather than as a verdict. That is the ladder's own pattern: a deterministic
+     * read whose meaning cannot be interpreted alone is not decisive.
+     */
+    public class LadderEvidence {
+        public String ownerRole = 'NOT AVAILABLE';
+        public Boolean accountMapExists = false;
+        public List<Opportunity> candidates = new List<Opportunity>();
+        public Map<Id, Integer> overlapByOpp = new Map<Id, Integer>();
+        public List<String> notes = new List<String>();
+    }
+
+    public class ResolveRun {
+        public AAO_Extract.StageResult call;
+        public AAO_ResolverCharter.Result verdict;
+        public LadderEvidence ladder;
+        /** Which grains dispatch. Today this is opportunity or nothing, per v3.2. */
+        public List<String> dispatchedGrains = new List<String>();
+        public List<String> routedNotDispatched = new List<String>();
+    }
+
+    /**
+     * CALL 0, ALWAYS. It routes and resolves and never establishes.
+     *
+     * **THE ACCOUNT GRAIN IS BACKBURNERED (v3.2), so exactly one grain dispatches.** An
+     * ACCOUNT verdict dispatches nothing and the Source lands carrying its verdict; a DUAL
+     * verdict dispatches the opportunity family reads exactly as today and logs the account
+     * half as routed-not-dispatched. Nothing account-side is extracted, written, or authored.
+     *
+     * **The verdict is returned and not persisted, and that is the run receipt's gap again.**
+     * A resolution belongs to a run rather than to a Source — a re-run resolves again — so
+     * its home is the receipt §P8.0 owes and does not have. Recorded rather than parked on a
+     * field that would make a per-run fact look like a per-Source one.
+     */
+    public static ResolveRun resolve(Id sourceId) {
+        AAO_Source__c src = source(sourceId);
+        ResolveRun r = new ResolveRun();
+        r.ladder = ladder(src);
+
+        List<String> handles = new List<String>();
+        Map<String, Id> oppByHandle = new Map<String, Id>();
+        List<String> block = new List<String>{
+            '# What was computed before you', '',
+            'Owner-organizer role: ' + r.ladder.ownerRole,
+            'An account-level map exists for this account: ' +
+                (r.ladder.accountMapExists ? 'yes' : 'no'),
+            ''
+        };
+        for (String n : r.ladder.notes) {
+            block.add('  note: ' + n);
+        }
+        block.add('');
+        block.add('# The candidate deals, as of the day this call happened');
+        block.add('');
+        Integer i = 0;
+        for (Opportunity o : r.ladder.candidates) {
+            i++;
+            String h = 'd' + i;
+            handles.add(h);
+            oppByHandle.put(h, o.Id);
+            Integer overlap = r.ladder.overlapByOpp.containsKey(o.Id)
+                ? r.ladder.overlapByOpp.get(o.Id)
+                : 0;
+            block.add('  ' + h + ': ' + o.Name + ' (' + o.StageName + ', closes ' +
+                o.CloseDate + '). Participants on this call who sit on its map: ' + overlap);
+        }
+        if (handles.isEmpty()) {
+            block.add('  (none — no candidate deal was open at the time of this call)');
+        }
+        block.add('');
+
+        AAO_Extract.StageSpec spec = AAO_Extract.inventorySpec();
+        spec.stage = 'call0_resolve';
+        spec.charter = 'AAO_ResolverCharter';
+        spec.charterVersion = AAO_ResolverCharter.effectiveVersion();
+
+        r.call = AAO_Extract.callStage(
+            spec,
+            AAO_ResolverCharter.systemPrompt(),
+            new List<String>{
+                AAO_ResolverCharter.ontologyText(),
+                String.join(block, '\n'),
+                '# The transcript\n\n' + src.AAO_Normalized_Text__c
+            },
+            AAO_ResolverCharter.schema(handles)
+        );
+        r.verdict = AAO_ResolverCharter.parse(r.call.rawText, handles);
+
+        // v3.2 dispatch. One grain, and the other is logged rather than silently dropped.
+        if (r.verdict.scope == AAO_ResolverCharter.OPPORTUNITY ||
+            r.verdict.scope == AAO_ResolverCharter.DUAL) {
+            r.dispatchedGrains.add('opportunity');
+        }
+        if (r.verdict.scope == AAO_ResolverCharter.ACCOUNT ||
+            r.verdict.scope == AAO_ResolverCharter.DUAL) {
+            r.routedNotDispatched.add(
+                'account grain: backburnered at charters v3.2, no extraction, no writes, no ' +
+                'contracts. Routed and logged.'
+            );
+        }
+        return r;
+    }
+
+    /**
+     * THE CANDIDATE SET IS BUILT ON THE EVIDENCE-OCCURRED CLOCK, never the run clock. The 17
+     * June fixture is the standing specimen: at call time the account held one open deal;
+     * by the first test run it had closed won and a renewal had opened, so a naive set
+     * resolves the call to a deal that did not exist when the words were spoken.
+     *
+     * **In this sandbox the window cannot run honestly and says so** rather than producing a
+     * number: every opportunity carries a seed `CreatedDate` weeks after the call, so
+     * "existed at call time" is unanswerable from `CreatedDate` here. The candidates are
+     * taken unfiltered and the note travels with them.
+     */
+    private static LadderEvidence ladder(AAO_Source__c src) {
+        LadderEvidence e = new LadderEvidence();
+
+        // Test 1: the owner-organizer's role, through the role map. There is no role map in
+        // this org, so this leg reports NOT AVAILABLE rather than guessing — which is §P5's
+        // own file-dump case, and the reason call 0 is unconditional.
+        e.notes.add(
+            'Owner role unavailable: no role map exists in this org, so Test 1 cannot run. ' +
+            'Roughly 75% of the market are file-dump orgs in the same position.'
+        );
+
+        List<Opportunity> opps = [
+            SELECT Id, Name, StageName, CloseDate, CreatedDate
+            FROM Opportunity
+            WHERE AccountId = :src.AAO_Account__c
+            ORDER BY CreatedDate
+        ];
+        e.candidates = opps;
+        e.notes.add(
+            'The occurred-time window is NOT APPLIED here and no result depends on it: every ' +
+            'opportunity in this sandbox carries a seed CreatedDate later than the call, so ' +
+            'filtering on it would remove every candidate. All candidates are listed.'
+        );
+
+        // The map check, and participant overlap, both graceful under absence: a read failure
+        // on an unlicensed or unpopulated ALTF table is absence and a note, never an error.
+        try {
+            e.accountMapExists = [
+                SELECT COUNT()
+                FROM ALTF__Contact_Map_Details__c
+                WHERE ALTF__Account__c = :src.AAO_Account__c
+                    AND ALTF__Opportunity__c = null
+            ] > 0;
+
+            Set<Id> onCall = new Set<Id>();
+            for (AAO_Participant__c p : [
+                SELECT AAO_Contact__c FROM AAO_Participant__c
+                WHERE AAO_Source__c = :src.Id AND AAO_Contact__c != null
+            ]) {
+                onCall.add(p.AAO_Contact__c);
+            }
+            if (!onCall.isEmpty()) {
+                for (ALTF__Contact_Map_Details__c m : [
+                    SELECT ALTF__Opportunity__c, ALTF__Contact__c
+                    FROM ALTF__Contact_Map_Details__c
+                    WHERE ALTF__Contact__c IN :onCall AND ALTF__Opportunity__c != null
+                ]) {
+                    Integer n = e.overlapByOpp.containsKey(m.ALTF__Opportunity__c)
+                        ? e.overlapByOpp.get(m.ALTF__Opportunity__c)
+                        : 0;
+                    e.overlapByOpp.put(m.ALTF__Opportunity__c, n + 1);
+                }
+            } else {
+                e.notes.add(
+                    'Participant overlap is empty: no participant on this call carries a ' +
+                    'Contact link, so the deterministic overlap read has nothing to compare.'
+                );
+            }
+        } catch (Exception ex) {
+            e.notes.add(
+                'The Altify map tables could not be read (' + ex.getTypeName() +
+                '). Treated as absence and a configuration note, never an error.'
+            );
+        }
+        return e;
+    }
+
     // ========================================================== call 1 · THE FAMILY SWEEP
 
     public class SweepRun {

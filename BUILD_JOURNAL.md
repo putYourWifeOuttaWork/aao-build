@@ -8585,3 +8585,94 @@ is that numbers come from here:
 
 Superseded contracts are **50, not 48**: the original 48 on `people-om-v1` plus two within
 `people-p8-v1`, when `AAO_PS_1` took v2.9's label text and `AAO_BR_EVAL` was rewritten.
+
+---
+
+## 2026-08-05 · session 76 · addendum 16 · call 0 exists · B&V reads ACCOUNT, Emerson does not read DUAL
+
+289 tests, 100% pass, same one pre-existing unrelated failure. `resolve-1.0.0+9a98540f`.
+
+### The gate, run
+
+| # | assertion | expected | got |
+|---|---|---|---|
+| 1 | Emerson 17 June scope | DUAL | **OPPORTUNITY — FAILS** |
+| 2 | B&V 24 June scope | ACCOUNT | **ACCOUNT — holds** |
+| 4 | account-grain reads dispatched / writes | zero / zero | **zero / zero** |
+| 5 | occurred-time window | NOT ASSERTED | not applied, and the note travels |
+
+Assertion 3 (the 27-assertion regression set with call 0 in front) is not yet run: call 0
+returns its verdict and dispatches nothing on its own, so the sweep has to be re-driven behind
+it. Named as not-done rather than assumed.
+
+### Assertion 1 fails, and the cause is not the one the gate was probing
+
+The named risk was that one scope read collapses to the majority scope. **That is not what
+happened, and the evidence says so twice.**
+
+**First, the deterministic half of the dual trigger is FALSE in this sandbox.** §P5's trigger
+is *an account map exists AND the content reads both sides*. Measured: **142 map rows in the
+org, and zero of them account-scoped** — every one carries an opportunity. So call 0 was handed
+`An account-level map exists for this account: no` as evidence, and answered OPPORTUNITY. **It
+followed the evidence it was given, correctly.**
+
+**Second, its reason applies the ontology's own caveat by name:** *"implementation/training
+talk is scoping the SOW inside a still-open deal, not adoption of something owned."* That is
+caveat 1, verbatim in substance — *late-stage onboarding discussion inside a still-open deal
+reads account-shaped and is not.*
+
+**So this is a real conflict between the authored ontology and the graded expectation, and it
+is the most useful thing this run produced.** Matthew's five account-grain rows are CSM
+coverage under regular licensing, global rollout and training across APJ and Europe, post-sale
+enablement, the enterprise AI strategy. **Several of those are exactly what caveat 1 tells the
+reader to route to the opportunity.** One of the two is wrong and the model is downstream of
+both. Not mine to settle; put in front of Matthew as the probe's actual result.
+
+The fixture gap is separately real and cheaply fixable: **no account-scoped map row exists in
+this sandbox**, so the dual trigger cannot be satisfied on any call here regardless of content.
+
+### What call 0 got right, worth stating
+
+**B&V reads ACCOUNT**, and its reason is the deal list rather than the vocabulary: *"No listed
+deal matches the MCP scoping/agents work discussed, and the closed-won license/managed-services
+deals plus far-future renewals were never referenced."* That is the 24 June misfile ECI made —
+stamped to an opportunity while the transcript discusses adoption, enablement, MCP rollout and
+QBR prep — **read correctly by call 0 on the first try.**
+
+**Load-bearing mentions land at the right bar.** Emerson: Fatima, the internal approvers, and
+Travis Hill. B&V: Steve, Matt Raven, Scott, Patrick, Travis. Each carries what the call said
+they hold or decide, and none is a name in passing.
+
+**Emerson's deal resolves to `d1` on substance** — pricing, discount tiers, MSA/SOW, InfoSec and
+legal, October go-live — with deterministic overlap agreeing (2 participants on that map, the
+only non-zero).
+
+### Two defects, mine
+
+**A required receipt can be blank.** B&V's `scope_because` came back as `":"`. The schema
+requires the field and does not require it to say anything, so **a receipt that carries no
+reason satisfies the contract.** Same class as the coverage default: a field that is present
+and empty reads as a field that was answered.
+
+**Call 0's verdict is returned and not persisted, and the run receipt is the gap again.** A
+resolution belongs to a run rather than to a Source — a re-run resolves again — so its home is
+the receipt §P8.0 owes. Parking it on a Source field would make a per-run fact look like a
+per-Source one, so it is returned, journalled, and named as owed.
+
+### What the deterministic ladder could and could not do
+
+**Test 1 reports `NOT AVAILABLE` rather than guessing.** There is no role map in this org, so
+the owner-organizer leg cannot run — which is §P5's own file-dump case at roughly 75% of the
+market, and the reason call 0 is unconditional rather than a fallback.
+
+**The occurred-time window is not applied and says so.** Every opportunity in this sandbox
+carries a seed `CreatedDate` weeks after the call, so filtering on it would remove every
+candidate. All are listed and the note travels with them into the prompt.
+
+**The map reads are graceful under absence** — a read failure on the Altify tables is absence
+and a configuration note, never an error.
+
+### Costs
+
+Emerson 10.9 s, B&V 12.7 s, ~360 and ~470 output tokens. **Call 0 is the cheapest model call in
+the pass** and it gates every read after it.

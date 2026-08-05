@@ -9006,3 +9006,101 @@ list, so the replay sort threw on its first element. Appending is its own branch
 
 Addendum 17's run, now unblocked: fresh sweep with the fixes in, regression report before
 projection, project the upheld, hand Matthew the run id for the map read sheet v0.2 procedure.
+
+---
+
+## 2026-08-05 · session 76 · addendum 17's run · `em0617-a17`
+
+**Run id `em0617-a17`. Projected to `006WD00000TJmJZYA1`, "Emerson/Aspen Tech Insights 500
+Full Insight".** Source `a1XWD0000081W9J2AU`, the 17 June NF1 artifact, sha `ec8e7170…5a5f`.
+
+### Call 0 resolved the deal, and it did it on content
+
+Two candidates on the account, and **both were created 2026-08-03**, weeks after the call. The
+ladder says so out loud rather than producing a number:
+
+> The occurred-time window is NOT APPLIED here and no result depends on it: every opportunity
+> in this sandbox carries a seed CreatedDate later than the call, so filtering on it would
+> remove every candidate. All candidates are listed.
+
+So the date window could not decide it, and **call 0 decided it on what was said**:
+
+- scope OPPORTUNITY — *"procurement and purchase mechanics: legal/InfoSec review gates, MSA and
+  draft SOW, three-year 35% discount tiers, approvers and budget story"*
+- deal d1 — *"pricing, discount tiers, MSA/SOW, InfoSec and legal review for the Insights
+  500-600 license purchase with an October 2026 go-live"*
+
+d1 is the Insights 500 deal, **now Closed Won with a 31 July close date**; d2 is
+`006WD00000TJmLBYA1`, "Emerson Electric Co. - Renewal", Stage 2, closing 2029. Overlap was 2 on
+d1 and null on d2, so the ladder leaned the same way — but the ladder is evidence and not a
+verdict, and the words are what chose. **This is the case call 0 exists for**, arriving in the
+one org where the cheap mechanism is unavailable.
+
+Test 1 also reported NOT AVAILABLE — no role map exists here — which is the file-dump position
+roughly three quarters of the market are in. Call 0 ran anyway, which is why it is unconditional.
+
+### The stages
+
+| stage | result |
+|---|---|
+| call 0 resolve | OPPORTUNITY, d1, 7,777 ms, 15,646 in / 368 out |
+| call 1 sweep | **4 invocations (unit: reads, one per family)**, 29 located (unit: pairs) |
+| call 2 identify | 29 to a person, 0 None, 0 Ambiguous, 14,539 ms |
+| call 3 verify | 29 verdicts, **10 upheld, 19 refused** (unit: claims), 4 caller-driven batches |
+| ledger | one-for-one-for-one holds: 29 located, 29 disposed, 29 verified |
+| join | 10 claims, 6 answers, 1 counter rebuilt |
+| projection | 2 populated, 1 unresolved, 4 dimension values (unit: values) |
+
+The map now reads **Neeraja Chimata: Evaluator** and **Ryan Couture: Evaluator**, each with the
+note explaining the value showing.
+
+**Jefferson Vargas came back `unresolved`, and that is the new action doing its job.** His
+derivation stands on our rows — Outside Political Structure, Evaluator — and no Contact
+resolves for him, so no map row can be reached. Reported as its own line rather than folded
+into `unchanged`, which is exactly the distinction that was owed.
+
+### Three findings, and the first is serious
+
+**a · The criteria family located ZERO pairs.** Codes emitted were `AAO_PS_1` 8, `AAO_POL_*` 11,
+`AAO_BR_*` 10, and **no `AAO_DC_*` at all**. The criteria read ran — the sweep reports its four
+invocations — and returned nothing. §P8.5 says criteria are sparse and a rich harvest is a
+calibration alarm, but **Matthew graded six criteria establishments True on this same artifact
+at s1**, so zero is a recall regression rather than correctness. It accounts for seven of the
+nine regressions below.
+
+**b · The regression report is BROKEN, and it was run before projection as ruled.** 27
+assertions checked, 14 held, **9 regressions, 0 traps reproduced, 0 verdicts changed.** Two
+graded misses recovered (`under-1-neeraja-supporter`, `under-8-jefferson-supporter`), four still
+open, three unreachable on the undeclared Decision Orientation family. The nine lost are
+`emerson-q9`, `poq1`, `seq6`, and the six criteria rows. **`emerson-q9` is now lost in 3 of 5
+runs** — it flickers, byte-identical when present, and this run is another absence.
+
+**c · Sentiment emitted a PARTIAL, and §P8.4 says sentiment has no partial.** Jefferson's
+`AAO_PS_1` pair came back Partial, so the join proposed UNVERIFIED, so the answer stands
+UNVERIFIED with interpretation MENTOR and **counter 0**. The arithmetic is right — only
+established claims accumulate — but the input should not exist: *"sentiment reads are whole,
+never graded into partial supportiveness, because partial sentiment is the second-guessing this
+ruling kills."* Either call 1 must not offer coverage on the sentiment contract, or the join
+must treat sentiment coverage as whole by construction. **The second is the safer shape** and
+it is the failed-twice law's direction: make the wrong answer unexpressible rather than ask for
+it not to be given. Not built; it needs no ruling but it does need the call.
+
+**Support therefore wrote zero values on this run.** Nobody carries a rung, and the report says
+so on its own line rather than leaving a blank map to be read as a finding.
+
+### What the stage arithmetic did
+
+```
+projection: 0 created, 0 populated, 0 blocked, 2 unchanged, 1 unresolved
+  answers read             6 (unit: answers)
+  answers unplaced         0 (unit: answers)
+  dimension values written 4 (unit: values)
+    support                0 (unit: values)
+    political              1 (unit: values)
+    buyer role             3 (unit: values)
+    criteria               0 (unit: values)
+```
+
+**Zero unplaced codes** — every answer the run produced was one this writer recognises, which is
+the v3.9 defect measured at zero on live data rather than asserted in a test. And a run that
+wrote 4 values off 6 answers is not `DERIVED NOTHING`, so the alarm correctly stayed silent.

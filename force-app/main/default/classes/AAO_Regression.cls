@@ -122,6 +122,100 @@ public with sharing class AAO_Regression {
             'the total cost, the annual total is going to be the thing that gets the most amount of scrutiny',
             null, 'Matthew: Decision Orientation, Financial. Undeclared family.'));
 
+
+        // ---- EMERSON · the sweep s1 grading, 5 August · 18 standing assertions ---------
+        //
+        // Every establishment Matthew graded True in the s1 file. **Keyed on contract plus
+        // byte-range intersection, never the stored string**, and the spans below are the
+        // STORED ones rather than the review CSV's, per the ruling.
+        //
+        // The 21 rightly-refused rows are deliberately neither asserted nor trapped: a
+        // correct refusal is not a property worth defending, per the 5 August law.
+        out.add(a(EMERSON, MUST_APPEAR, 'poq1', 'AAO_POL_PS2',
+            'Yeah, I think it will help to have the latest quote that I can include with legal. And then when it comes to InfoSec, there\'s a bit of a separate track there where we go to our compliance team where they will send out some',
+            null,
+            's1 graded True by Matthew, 5 August. Vargas, Jefferson [EMR/SYSS/AT/MEDI], offset 5634.'));
+        out.add(a(EMERSON, MUST_APPEAR, 'seq6', 'AAO_PS_1',
+            'it\'s helpful for you to send that material anyways, because it might help to, you know, answer some of those questions before they\'re asked',
+            null,
+            's1 graded True by Matthew, 5 August. Vargas, Jefferson [EMR/SYSS/AT/MEDI], offset 7071.'));
+        out.add(a(EMERSON, MUST_APPEAR, 'poq7', 'AAO_POL_PS3',
+            'I just want to make sure that if anything, I help support, right, Jeff, I work with on this one, Ryan, this is his first. So I just want to make sure that I\'m available to support.',
+            null,
+            's1 graded True by Matthew, 5 August. Neeraja Chimata, offset 10348. **STANDING ASSERTION THAT CURRENTLY FAILS AT VERIFICATION**: graded True and refused by call 3. Carried deliberately so the disagreement is a reported number rather than a memory. No wording change until the shape fails twice.'));
+        out.add(a(EMERSON, MUST_APPEAR, 'seq2', 'AAO_PS_1',
+            'I just want to make sure that if anything, I help support, right, Jeff, I work with on this one, Ryan, this is his first. So I just want to make sure that I\'m available to support.',
+            null,
+            's1 graded True by Matthew, 5 August. Neeraja Chimata, offset 10348. **STANDING ASSERTION THAT CURRENTLY FAILS AT VERIFICATION**: graded True and refused by call 3. Carried deliberately so the disagreement is a reported number rather than a memory. No wording change until the shape fails twice.'));
+        out.add(a(EMERSON, MUST_APPEAR, 'buq3', 'AAO_BR_EVAL',
+            'Is that tiers, tier priced? Wendy, is this the tier of like 0 to 600 and 600 and above?',
+            null,
+            's1 graded True by Matthew, 5 August. Neeraja Chimata, offset 13593.'));
+        out.add(a(EMERSON, MUST_APPEAR, 'buq4', 'AAO_BR_EVAL',
+            'the reason why I\'m asking is if we, let\'s say, go above 600, will that get us into a higher tier?',
+            null,
+            's1 graded True by Matthew, 5 August. Neeraja Chimata, offset 13768.'));
+        out.add(a(EMERSON, MUST_APPEAR, 'deq1', 'AAO_DC_N',
+            'And I think that the, you know, the total cost, the annual total is going to be the thing that gets the most amount of scrutiny when it comes to the approvals. And so I know that our internal approvers would be looking to see, you know, something that was',
+            null,
+            's1 graded True by Matthew, 5 August. Vargas, Jefferson [EMR/SYSS/AT/MEDI], offset 14315.'));
+        out.add(a(EMERSON, MUST_APPEAR, 'deq2', 'AAO_DC_F',
+            'And I think that the, you know, the total cost, the annual total is going to be the thing that gets the most amount of scrutiny when it comes to the approvals. And so I know that our internal approvers would be looking to see, you know, something that was',
+            null,
+            's1 graded True by Matthew, 5 August. Vargas, Jefferson [EMR/SYSS/AT/MEDI], offset 14315.'));
+        out.add(a(EMERSON, MUST_APPEAR, 'buq2', 'AAO_BR_EVAL',
+            'Is there anywhere else to go with this as far as the per user rate? Like, I mean, I appreciate the flexibility of the up to 600, but if we were to list it at 500, where would that put us?',
+            null,
+            's1 graded True by Matthew, 5 August. Vargas, Jefferson [EMR/SYSS/AT/MEDI], offset 14670.'));
+        out.add(a(EMERSON, MUST_APPEAR, 'buq5', 'AAO_BR_EVAL',
+            'Wendy is that when you say 10, is that 10 days worth like an 80 hours thing?',
+            null,
+            's1 graded True by Matthew, 5 August. Ryan Couture, offset 21368.'));
+        out.add(a(EMERSON, MUST_APPEAR, 'buq6', 'AAO_BR_EVAL',
+            'Yeah, okay, so that\'s 20 hours of that assistance. And then is there an option to do like a train the trainer type deal?',
+            null,
+            's1 graded True by Matthew, 5 August. Ryan Couture, offset 21812.'));
+        out.add(a(EMERSON, MUST_APPEAR, 'buq8', 'AAO_BR_EVAL',
+            'Is there like an end date for this? Or the reason why I\'m asking is, is there like an end date for the insight user, like training, for example, we get the 10 hours, but is there like an end date for that within like 3 months or six months or a year or?',
+            null,
+            's1 graded True by Matthew, 5 August. Neeraja Chimata, offset 24975.'));
+        out.add(a(EMERSON, MUST_APPEAR, 'deq6', 'AAO_DC_N',
+            'No, I don\'t. I feel like we got to be flexible about starting that at a later point, because from a change management perspective, the relationship map user training has to happen first',
+            null,
+            's1 graded True by Matthew, 5 August. Neeraja Chimata, offset 25394. Partial: accrues UNVERIFIED with receipts, places nobody, and projects nothing until later evidence completes the elements.'));
+        out.add(a(EMERSON, MUST_APPEAR, 'buq7', 'AAO_BR_EVAL',
+            'Can you kind of, you touched on it earlier. Can you give me a little bit more context on the reoccurring cost than the managed services one at the bottom?',
+            null,
+            's1 graded True by Matthew, 5 August. Vargas, Jefferson [EMR/SYSS/AT/MEDI], offset 29704.'));
+        out.add(a(EMERSON, MUST_APPEAR, 'seq4', 'AAO_PS_1',
+            'I want to make sure that we\'re presenting a compelling story to those approvers. You know, I\'m going to need the, you mentioned an SOW, would you be able to provide a draft SOW with all those line items?',
+            null,
+            's1 graded True by Matthew, 5 August. Vargas, Jefferson [EMR/SYSS/AT/MEDI], offset 31871.'));
+        out.add(a(EMERSON, MUST_APPEAR, 'deq4', 'AAO_DC_F',
+            'I\'ll take that on to the Emerson due diligence team just to see if they can take a look at those line items and see if they jive with what they would expect',
+            null,
+            's1 graded True by Matthew, 5 August. Vargas, Jefferson [EMR/SYSS/AT/MEDI], offset 32187. Partial: accrues UNVERIFIED with receipts, places nobody, and projects nothing until later evidence completes the elements.'));
+        out.add(a(EMERSON, MUST_APPEAR, 'deq3', 'AAO_DC_N',
+            'I\'ll take that on to the Emerson due diligence team just to see if they can take a look at those line items and see if they jive with what they would expect',
+            null,
+            's1 graded True by Matthew, 5 August. Vargas, Jefferson [EMR/SYSS/AT/MEDI], offset 32187. Partial: accrues UNVERIFIED with receipts, places nobody, and projects nothing until later evidence completes the elements.'));
+        out.add(a(EMERSON, MUST_APPEAR, 'deq5', 'AAO_DC_N',
+            'I don\'t want to introduce anything, especially on the Salesforce layer at this point of time without going through.',
+            null,
+            's1 graded True by Matthew, 5 August. Neeraja Chimata, offset 34748. Partial: accrues UNVERIFIED with receipts, places nobody, and projects nothing until later evidence completes the elements.'));
+
+        // seq11 · the first courtesy read to survive v2.9's label fix. Ryan Couture,
+        // "Looking forward to it." **Courtesy is not stance**, and §P8.4 already says so:
+        // ENGAGEMENT IS NOT STANCE, and a warm sentence producing no pair is correct
+        // behaviour. Matthew's ruling is that this must not reappear as an upheld
+        // establishment; the charter does not move until the shape fails twice.
+        out.add(a(EMERSON, MUST_NOT_APPEAR, 'trap-seq11-courtesy', 'AAO_PS_1',
+            'I think we\'ll be working, we\'ll be working with, or together through this for the next couple of weeks or whatever through procurement. Looking forward to it.',
+            null,
+            'Graded a trap 5 August: courtesy is not stance. Call 3 UPHELD it, which is ' +
+            'the serious half: the blind reader read positive anticipation as a supportive ' +
+            'stance toward us and our solution.'));
+
         // ---- 24 JUNE · the five graded traps ----------------------------------------
         out.add(a(BV, MUST_NOT_APPEAR, 'trap-s1-over-ashley', 'AAO_PS_1',
             'we look at as many use cases as we can take on that are going to add value', null,

@@ -8484,3 +8484,104 @@ platform ceiling.** Call 1 is bounded by families, call 2 is one call over all p
 one callout per claim. The sweep doubled the harvest and therefore doubled the only thing that
 was ever going to hit a wall. Not a problem at 40 claims and three batches; **the first thing
 to break on a denser transcript**, and named now rather than found by a timeout in a demo.
+
+---
+
+## 2026-08-05 · session 76 · addendum 15 · the export defect does not exist, and the regression set is 27
+
+289 tests, 100% pass, same one pre-existing unrelated failure.
+
+### DEFECT, CODE's · WITHDRAWN. There is no truncation.
+
+The named defect was the review CSV cutting the quote column at 255 bytes, with `deq1` and
+`deq2` cut mid-word. **Three independent checks say the export is clean:**
+
+- `AAO_Pair__c.AAO_Answer_Text__c` describes as `TEXTAREA`, **length 32,768.**
+- Across the four Emerson runs, located spans of **261, 272, 273 and 322** characters exist.
+  There is no 255 anywhere to be capped by.
+- `deq1`'s stored span is **14,315–14,570 = exactly 255 characters**, and the CSV cell is 255.
+  Stored and exported agree.
+
+**What the artifact says at 14,570:** `…something that was` and then the turn ends —
+`renee_martin Yeah.` begins the next one. **The model quoted to the end of Jefferson's turn.**
+It reads as cut mid-word because his sentence resumes after Renee interrupts.
+
+And the *two* pairs at exactly 255 are not two emissions: `deq1` and `deq2` are the **same
+quote under two contracts**, which is the multi-establishment behaviour working. One emission,
+counted twice, and the coincidence dissolves.
+
+**A truncation would have been invisible to the byte check, which is worth keeping.** A cut
+prefix of a real quote is still a substring of the artifact, so it still byte-locates. The
+check that catches invented words cannot catch shortened ones. Named as a live blind spot.
+
+**The real finding is the span-boundary hazard for the second time**, and this time in our own
+output rather than in a graded paste: an establishment whose words continue past an
+interruption, which one span per pair cannot express. Same shape as UNDER-3.
+
+### The regression set is 27 assertions
+
+The 18 s1 rows plus `q9`, `seq11` as a trap, the five 24 June traps, and the earlier Emerson
+rows. Keyed on contract plus byte-range intersection, with the **stored** spans.
+
+| run | held | regressions | traps |
+|---|---|---|---|
+| `emerson-sweep-s1` | 20 of 27 | **1** — `q9` | **1** — `seq11` |
+| `emerson-sweep-s2` | 19 of 27 | **3** — `seq2`, `deq3`, `deq4` | 0 |
+
+`seq11` firing on s1 is correct by construction: the trap was graded *from* s1. It is a
+forward assertion.
+
+**s2 losing three more rows widens the flicker: it was never only `q9`.** Two identical sweep
+runs disagree on four graded establishments between them.
+
+### An instrument defect I found by running it, and it is mine
+
+Checked against `emerson-0617-r1`, the set reports **13 regressions.** Every one is false.
+`r1` predates the grading and found 14 pairs total, so most s1-graded rows could not have been
+in it. **An assertion is only meaningful forward from the run it was graded on, and the class
+has no way to know that** — it will happily score a grading against a run that predates it.
+
+Owed, and named rather than half-built while low on context: an assertion carries the run it
+was graded from, and the report says so instead of manufacturing a regression. Until then, do
+not check the set against runs older than the grading.
+
+### The two disputed refusals · reported, no wording change
+
+Both are offset 10,348, Neeraja, graded True and refused by call 3. **What the refusals keyed
+on:**
+
+- `poq7` (`AAO_POL_PS3`, *others seek this person out*): *"his own offer of help, not evidence
+  that others seek him out for advice or direction."* The reader keyed on **direction of the
+  relationship** — the proposition says others come to him, the words say he goes to them.
+- `seq2` (`AAO_PS_1` MENTOR): *"a stance toward teammates and their internal roles, not toward
+  us or our solution."* The reader keyed on **the scope check §P8.3 adds for sentiment** —
+  the feeling must point at us.
+
+**Both refusals are the guards doing exactly what they were built to do.** `poq7`'s is
+coextension on the proposition's own direction; `seq2`'s is the wrong-scope guard added
+because both 24 June over-reads were right-sounding words about the wrong thing. Carried as
+standing assertions that currently fail, so the disagreement is a reported number rather than
+a memory. No change until the shape fails twice.
+
+### Ratified and recorded
+
+`q10` closes: `deq1`/`deq2` at 14,315 carry *Annual total cost* as DC_N and DC_F Formal, both
+upheld. Partial criteria run under the standing partial-evidence law with **no new machinery**.
+`seq11` is a trap. Both Altify-side rows were caught by Matthew, and **the seller-side flag
+stands untouched as recorded.** `q9` absent from s1 is the specimen behaving to its 2-of-4
+record.
+
+### The board, and three corrections against its stamp
+
+Board v1.6 landed in `docs/`. Three numbers disagree with this journal, and the board's own law
+is that numbers come from here:
+
+- **The ~95 s headline is the single-read shape's total for 14 establishments.** The sweep's 40
+  cost **~261 s serial** — 63.1 + 25.8 + 172.4.
+- **§2 names `locate-2.1.0+d314a73c`;** the sweep ran **`locate-3.0.0+d314a73c`**.
+- **Zero fabrication is true of STORED rows.** Call 1 emitted non-locating quotes on B&V — 2 of
+  17 and 1 of 8 — which the byte check discarded before they became rows. Zero on both Emerson
+  shapes.
+
+Superseded contracts are **50, not 48**: the original 48 on `people-om-v1` plus two within
+`people-p8-v1`, when `AAO_PS_1` took v2.9's label text and `AAO_BR_EVAL` was rewritten.

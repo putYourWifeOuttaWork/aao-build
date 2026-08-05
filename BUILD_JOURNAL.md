@@ -8676,3 +8676,72 @@ and a configuration note, never an error.
 
 Emerson 10.9 s, B&V 12.7 s, ~360 and ~470 output tokens. **Call 0 is the cheapest model call in
 the pass** and it gates every read after it.
+
+---
+
+## 2026-08-05 · session 76 · addendum 17 · the seller-side fix lands; the writer join does not exist
+
+### BLOCKING item · done and verified
+
+`altify.com` added to the internal-domain list. **The fix is the list, not a person** — side classification is the same domain-recognition function it always was, and no name appears anywhere in it, per the ruling.
+
+Existing participant rows were re-derived, because they were written under the old list and a
+list change does not retroactively reclassify rows already recorded:
+
+```
+buyer side   Vargas, Jefferson [EMR/SYSS/AT/MEDI]   (no email)
+buyer side   Neeraja Chimata    neeraja.chimata@emerson.com
+SELLER SIDE  Renee Martin       renee.martin@altify.com
+buyer side   Ryan Couture       (no email)
+SELLER SIDE  Wendy Higley       wendy.higley@altify.com
+```
+
+**Both Altify people classify seller side; the three Emerson people do not.** Per v3.3's note at
+Ruling 2, this is now the permanent deterministic input to call 0's internal-side resolution
+rather than a throwaway.
+
+**One thing the fix does not reach, named:** the list lives in `AAO_Seed.json`, a demo static
+resource, not in org-overridable metadata. The ruling calls for seed-at-setup, LAW #1 shape.
+**The value is right and the home is wrong**, and the home is owed.
+
+### CONFIRM item · the answer is no, and it is a bigger gap than a wiring job
+
+**Nothing joins `AAO_Pair__c` to claims or answers.** Measured, not assumed: twelve classes
+reference `AAO_Pair__c` and every one is ledger, charter, gate or test. `AAO_Answer__c` is
+written by `AAO_Commit`, `AAO_Project` and `AAO_Replay`, all of which read `AAO_Candidate__c`
+— the retired EBV path.
+
+**So the §P8 pass has only ever run to verdicts, exactly as the addendum suspected, and the
+join is not one wire.** What it needs, stated so the size is visible rather than discovered
+half-built:
+
+1. **Upheld pairs to Claims.** A claim carries four keys, both clocks, basis, spans, and the
+   contract. The pair carries the contract, the person as a `AAO_Participant__c`, and the span
+   — **but `AAO_Claim__c` keys on Contact**, and Jefferson Vargas has no Contact. That is the
+   Participant-versus-Contact ruling arriving at the writer, and it needs the shadow path or a
+   ruling, not a cast.
+2. **Claims to Answers, per dimension.** Political runs the ceiling derivation, Buyer Role its
+   own, and **sentiment runs the counter** — each distinct verified establishment moves one,
+   net sum per call, clamped at ±3, ceilinged by the strongest state voiced. The counter has a
+   ruled arithmetic and **no field home**; §P8.8 still owes it to Model & Flow.
+3. **Answers to the map**, which is the one part that exists and is proven: `AAO_Project`,
+   query-then-branch, mandatory create leg, per-dimension watermark, Option C note.
+
+**Only step 3 is built.** Steps 1 and 2 are the pass's missing spine, and both carry an open
+ruling inside them rather than only code.
+
+### What I did not do, and why
+
+**I did not start the fresh sweep.** Steps 1 and 2 of the run are cheap and would have
+produced a run id; steps 3 and 4 are what the run is FOR, and they cannot execute. A sweep run
+that cannot project is a run Matthew cannot open in the UI, which is the whole purpose stated
+at the top of the addendum.
+
+**And I did not begin the writer join.** It carries two things that are rulings rather than
+code — the claim's Contact key against the Participant grain, and the counter's field home —
+and starting it would have meant guessing both. Named here in full rather than half-built.
+
+### Charters v3.3
+
+Stamped into `docs/`. Recorded: the repo copy does not carry the v3.1 and v3.2 heads, so this
+stamp names v3.3 and points at the project for the full text.

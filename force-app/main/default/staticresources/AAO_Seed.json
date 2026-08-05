@@ -1,8 +1,10 @@
 {
   "v": 1,
   "note": "The mini-rubric and the dummy transcripts. FROZEN once written: a transcript edited after a span was verified against it breaks the citation chain, which is the exact failure immutability exists to prevent. Spans are given as quotes, never as offsets, and AAO_Seed resolves them against the composed normalized text, so a fixture and the verifier cannot disagree about bytes.",
-  "internalDomains": ["altify.example"],
-
+  "internalDomains": [
+    "altify.example",
+    "altify.com"
+  ],
   "people": [
     {
       "key": "dana",
@@ -19,7 +21,6 @@
       "mapRole": null
     }
   ],
-
   "rubric": [
     {
       "code": "AAO_T1",
@@ -28,9 +29,18 @@
       "guidance": "Budget is confirmed when a decision maker states that funds are approved, that they are allocated to this initiative specifically, and that they are available in the current fiscal year.",
       "route": "E",
       "elements": [
-        { "id": "e1", "text": "funds are approved" },
-        { "id": "e2", "text": "allocated to this initiative specifically" },
-        { "id": "e3", "text": "available in the current fiscal year" }
+        {
+          "id": "e1",
+          "text": "funds are approved"
+        },
+        {
+          "id": "e2",
+          "text": "allocated to this initiative specifically"
+        },
+        {
+          "id": "e3",
+          "text": "available in the current fiscal year"
+        }
       ],
       "elementsBasis": "Authored",
       "speakerRequirement": "Decision_Maker_Or_Influencer",
@@ -49,7 +59,10 @@
       "guidance": "This is satisfied when at least one person on the relationship map carries the buying role of decision maker.",
       "route": "P",
       "elements": [
-        { "id": "e1", "text": "at least one mapped decision maker exists" }
+        {
+          "id": "e1",
+          "text": "at least one mapped decision maker exists"
+        }
       ],
       "elementsBasis": "Authored",
       "speakerRequirement": "Any_Participant",
@@ -68,8 +81,14 @@
       "guidance": "Satisfied when a buyer-side participant names an alternative under consideration and states what that alternative offers them.",
       "route": "C",
       "elements": [
-        { "id": "e1", "text": "an alternative is named" },
-        { "id": "e2", "text": "what the alternative offers them is stated" }
+        {
+          "id": "e1",
+          "text": "an alternative is named"
+        },
+        {
+          "id": "e2",
+          "text": "what the alternative offers them is stated"
+        }
       ],
       "elementsBasis": "Authored",
       "speakerRequirement": "Buyer_Side",
@@ -88,8 +107,14 @@
       "guidance": "For each person on the relationship map carrying the buying role of decision maker, satisfied when that person states a measurable outcome they are accountable for and a timeframe for it.",
       "route": "C",
       "elements": [
-        { "id": "e1", "text": "a measurable outcome they are accountable for" },
-        { "id": "e2", "text": "a timeframe for it" }
+        {
+          "id": "e1",
+          "text": "a measurable outcome they are accountable for"
+        },
+        {
+          "id": "e2",
+          "text": "a timeframe for it"
+        }
       ],
       "elementsBasis": "Authored",
       "speakerRequirement": "Decision_Maker_Or_Influencer",
@@ -108,8 +133,14 @@
       "guidance": "Satisfied when both sides have agreed when the work would start and when it would be live.",
       "route": "E",
       "elements": [
-        { "id": "e1", "text": "an agreed start" },
-        { "id": "e2", "text": "an agreed go-live" }
+        {
+          "id": "e1",
+          "text": "an agreed start"
+        },
+        {
+          "id": "e2",
+          "text": "an agreed go-live"
+        }
       ],
       "elementsBasis": "Inferred_Pending",
       "speakerRequirement": "Any_Participant",
@@ -128,8 +159,14 @@
       "guidance": "Satisfied when a comparable customer is named to a buyer-side participant.",
       "route": "E",
       "elements": [
-        { "id": "e1", "text": "a comparable customer is named" },
-        { "id": "e2", "text": "it was said to a buyer-side participant" }
+        {
+          "id": "e1",
+          "text": "a comparable customer is named"
+        },
+        {
+          "id": "e2",
+          "text": "it was said to a buyer-side participant"
+        }
       ],
       "elementsBasis": "Authored",
       "speakerRequirement": "Any_Participant",
@@ -142,7 +179,6 @@
       "why": "Non-gating, so day-one red is not the only behaviour tested."
     }
   ],
-
   "sources": [
     {
       "code": "T1SRC",
@@ -153,7 +189,10 @@
       "sourceRef": "dummy/transcript-one",
       "durationSeconds": 1800,
       "turns": [
-        { "speaker": "priya", "text": "So on the money side, where does this stand?" },
+        {
+          "speaker": "priya",
+          "text": "So on the money side, where does this stand?"
+        },
         {
           "speaker": "dana",
           "text": "The funding is approved. It came out of the operations modernisation pot, so it is earmarked for this project specifically, not a general pool."
@@ -177,7 +216,10 @@
       "sourceRef": "dummy/transcript-two",
       "durationSeconds": 1200,
       "turns": [
-        { "speaker": "priya", "text": "Did finance land on the timing?" },
+        {
+          "speaker": "priya",
+          "text": "Did finance land on the timing?"
+        },
         {
           "speaker": "dana",
           "text": "They did. It is in the current fiscal year, confirmed last Thursday. The budget is approved and sitting against this initiative, so we are clear to proceed this year."
@@ -193,7 +235,10 @@
       "sourceRef": "dummy/transcript-two-wrong-speaker",
       "durationSeconds": 1200,
       "turns": [
-        { "speaker": "dana", "text": "Did finance land on the timing?" },
+        {
+          "speaker": "dana",
+          "text": "Did finance land on the timing?"
+        },
         {
           "speaker": "priya",
           "text": "They did. It is in the current fiscal year, confirmed last Thursday. The budget is approved and sitting against this initiative, so we are clear to proceed this year."
@@ -210,7 +255,6 @@
       "unsegmentedText": "Operations modernisation - working notes\nBudget: approved, allocated to this initiative, current fiscal year confirmed.\nNext step: schedule the technical review with the platform team."
     }
   ],
-
   "candidates": [
     {
       "code": "C1",
@@ -219,8 +263,13 @@
       "contractCode": "AAO_T1",
       "subjectType": "Opportunity",
       "proposedVerdict": "TRUE",
-      "covered": ["e1", "e2"],
-      "missing": ["e3"],
+      "covered": [
+        "e1",
+        "e2"
+      ],
+      "missing": [
+        "e3"
+      ],
       "charter": "AAO_Extract_Evidence",
       "charterVersion": "0.1.0",
       "spans": [
@@ -246,7 +295,11 @@
       "contractCode": "AAO_T1",
       "subjectType": "Opportunity",
       "proposedVerdict": "TRUE",
-      "covered": ["e1", "e2", "e3"],
+      "covered": [
+        "e1",
+        "e2",
+        "e3"
+      ],
       "missing": [],
       "charter": "AAO_Extract_Evidence",
       "charterVersion": "0.1.0",
@@ -279,7 +332,11 @@
       "contractCode": "AAO_T1",
       "subjectType": "Opportunity",
       "proposedVerdict": "TRUE",
-      "covered": ["e1", "e2", "e3"],
+      "covered": [
+        "e1",
+        "e2",
+        "e3"
+      ],
       "missing": [],
       "charter": "AAO_Extract_Evidence",
       "charterVersion": "0.1.0",
@@ -312,7 +369,11 @@
       "contractCode": "AAO_T1",
       "subjectType": "Opportunity",
       "proposedVerdict": "TRUE",
-      "covered": ["e1", "e2", "e3"],
+      "covered": [
+        "e1",
+        "e2",
+        "e3"
+      ],
       "missing": [],
       "charter": "AAO_Extract_Evidence",
       "charterVersion": "0.1.0",

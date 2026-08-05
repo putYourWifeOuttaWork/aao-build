@@ -459,4 +459,41 @@ private class AAO_ProjectTest {
         AAO_Synthetic.MARK = false;
         return a;
     }
+
+    @isTest
+    static void anEmptyDerivationIsAReportedZeroAndNeverASuccess() {
+        // Architecture v3.9's guard, from the defect that produced it: derive() was proven
+        // against the retired EBV path, skipped every P8-coded answer, and projection wrote
+        // nothing while reporting success. The counters make that state unexpressible as
+        // success - answers in and dimension-writes out, both printed.
+        AAO_Project.Outcome o = new AAO_Project.Outcome();
+        o.answersRead = 40;
+        System.assertEquals(0, o.dimensionWrites(), 'unit: values');
+        System.assert(
+            o.derivedNothing(),
+            'Forty answers producing no value is the writer failing, not the read finding nothing.'
+        );
+        String s = o.toString();
+        System.assert(s.contains('answers read             40'), 'Got: ' + s);
+        System.assert(s.contains('DERIVED NOTHING'), 'And it says so in words. Got: ' + s);
+        System.assert(
+            s.contains('writer defect, not a recall result'),
+            'The report names which kind of failure it is, because a blank map reads as the ' +
+            'other one. Got: ' + s
+        );
+    }
+
+    @isTest
+    static void aRunThatWroteNothingBecauseItReadNothingIsNotADefect() {
+        // Zero answers is a pass that found nothing, which is an ordinary and correct
+        // outcome. The alarm fires on answers-in-with-no-values-out, never on an empty read.
+        AAO_Project.Outcome o = new AAO_Project.Outcome();
+        System.assertEquals(0, o.answersRead);
+        System.assertEquals(
+            false,
+            o.derivedNothing(),
+            'Nothing in and nothing out is silence, not a silent failure.'
+        );
+        System.assert(!o.toString().contains('DERIVED NOTHING'));
+    }
 }

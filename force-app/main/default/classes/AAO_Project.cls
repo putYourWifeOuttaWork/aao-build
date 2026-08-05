@@ -117,9 +117,54 @@ public with sharing class AAO_Project {
         public Integer blocked = 0;
         public Integer unchanged = 0;
 
+        /**
+         * THE STAGE ARITHMETIC EXTENDED THROUGH PROJECTION, the fourth stage. Architecture
+         * v3.9, from a defect: `derive()` was proven against the retired EBV path and, run
+         * against the §P8 contract set, skipped every answer and returned empty — so
+         * **projection wrote nothing and reported success**, and the map would have come back
+         * blank from a run that looked like it worked.
+         *
+         * Answers in and dimension-writes out, counted and reported. **An empty derivation is
+         * now expressible only as a reported zero.** The one-for-one-for-one law already
+         * counts between the pair rows; this is the same law reaching the last stage, and the
+         * reason it belongs here rather than in a test is that a test asserts what someone
+         * thought to assert, while a printed pair of counters is read by whoever reads the run.
+         */
+        public Integer answersRead = 0;
+        public Map<String, Integer> writesByDimension = new Map<String, Integer>{
+            'support' => 0,
+            'political' => 0
+        };
+
+        public Integer dimensionWrites() {
+            Integer n = 0;
+            for (Integer v : writesByDimension.values()) {
+                n += v;
+            }
+            return n;
+        }
+
+        /** True where answers were read and not one of them produced a value. */
+        public Boolean derivedNothing() {
+            return answersRead > 0 && dimensionWrites() == 0;
+        }
+
         public override String toString() {
             String s = 'projection: ' + created + ' created, ' + populated + ' populated, ' +
-                blocked + ' blocked, ' + unchanged + ' unchanged';
+                blocked + ' blocked, ' + unchanged + ' unchanged' +
+                '\n  answers read             ' + answersRead + ' (unit: answers)' +
+                '\n  dimension values written ' + dimensionWrites() + ' (unit: values)';
+            List<String> dims = new List<String>(writesByDimension.keySet());
+            dims.sort();
+            for (String d : dims) {
+                s += '\n    ' + d.rightPad(22) + ' ' + writesByDimension.get(d) +
+                    ' (unit: values)';
+            }
+            if (derivedNothing()) {
+                s += '\n  DERIVED NOTHING. ' + answersRead + ' answers produced no value on ' +
+                    'any dimension. This is a writer defect, not a recall result: the map ' +
+                    'comes back blank and the run would otherwise have reported success.';
+            }
             for (PersonResult p : people) {
                 s += '\n  ' + p;
             }
@@ -151,7 +196,16 @@ public with sharing class AAO_Project {
         Id accountId = [SELECT AccountId FROM Opportunity WHERE Id = :opportunityId].AccountId;
 
         for (Id contactId : byPerson.keySet()) {
-            PersonResult r = project(opportunityId, accountId, contactId, byPerson.get(contactId));
+            List<AAO_Answer__c> answers = byPerson.get(contactId);
+            o.answersRead += answers.size();
+            Derivation d = derive(answers);
+            if (String.isNotBlank(d.support)) {
+                o.writesByDimension.put('support', o.writesByDimension.get('support') + 1);
+            }
+            if (String.isNotBlank(d.political)) {
+                o.writesByDimension.put('political', o.writesByDimension.get('political') + 1);
+            }
+            PersonResult r = project(opportunityId, accountId, contactId, answers);
             o.people.add(r);
             if (r.action == 'created') {
                 o.created++;

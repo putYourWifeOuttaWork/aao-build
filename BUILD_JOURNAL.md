@@ -8811,3 +8811,63 @@ projection can write, or the read grades the wrong thing.**
 
 The internal-domain list's home: from the demo static resource to org-overridable seed
 metadata at packaging, the role-map pattern. The value stands correct for this run.
+
+---
+
+## 2026-08-05 · session 76 · architecture v3.9 · the stage arithmetic reaches projection
+
+291 tests, 100% pass, same one pre-existing unrelated failure.
+
+### The guard v3.9 names, built
+
+`AAO_Project.Outcome` now counts **answers in and dimension-values out**, per dimension, and
+prints both:
+
+```
+projection: 0 created, 3 populated, 0 blocked, 0 unchanged
+  answers read             40 (unit: answers)
+  dimension values written  0 (unit: values)
+    political               0 (unit: values)
+    support                 0 (unit: values)
+  DERIVED NOTHING. 40 answers produced no value on any dimension. This is a writer
+  defect, not a recall result: the map comes back blank and the run would otherwise
+  have reported success.
+```
+
+**The last sentence is the whole point.** A blank map has two possible causes that look
+identical from outside — the read found nothing, or the writer dropped everything — and they
+call for opposite responses. The report now names which one it is, in the run's own output,
+before anyone opens the map.
+
+**Zero answers in is not the alarm.** A pass that read nothing and wrote nothing is silence
+rather than a silent failure, and `derivedNothing()` is false there. The alarm fires only on
+answers-in-with-no-values-out, which is the shape the defect actually had.
+
+**It is the one-for-one-for-one law reaching its fourth stage.** The pair ledger already counts
+between its row sets; this is the same arithmetic at the last hop. And the reason it is a
+printed counter rather than only a test: **a test asserts what somebody thought to assert, and
+a printed pair of counters is read by whoever reads the run.** The defect it guards against
+survived a passing suite precisely because nobody had thought to assert it.
+
+### The correction, absorbed
+
+v3.8 item 3 recorded projection's step three as *exists and is proven*, and v3.9 marks it wrong
+in place. **It was proven for the retired EBV path and never tried against the live one** —
+which is the capability law collecting a fee it had only ever charged against the platform
+before. The law now reads with its extension: **including claims about our own code.**
+
+Worth stating plainly because it is mine: I read `AAO_Project` as built, saw eighteen passing
+tests, and reported it as the one step that existed. **Those tests pass against
+`people-om-v1`-shaped codes**, so they proved the class works on the contract set it was
+written for and said nothing about the one it now faces. A suite can be green and irrelevant
+at the same time, and the only thing that separates them is trying it from the runtime that
+will make the call.
+
+### The join, unchanged and unblocked
+
+Three pieces, all ordinary work, none needing a ruling: `AAO_PairCommit`; `derive()` re-aimed
+at `people-p8-v1` with the Political ceiling over the one-way halves, Buyer Role and criteria;
+and the counter arithmetic writing `AAO_Support_Counter__c`. The guard above travels with them.
+
+**The run still holds until projection can write**, so Matthew's map read grades the writer's
+output rather than a silent blank.

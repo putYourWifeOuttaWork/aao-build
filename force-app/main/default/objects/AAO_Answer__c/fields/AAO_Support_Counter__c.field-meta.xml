@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Support_Counter__c</fullName>
+    <description>Written by: reconciliation, from cited claims. Read by: the Support rung derivation and projection. THE COUNTER LIVES HERE, ruled 5 August and placed at Architecture v3.8: one standing integer per person per scope, minus three to plus three. The clamp and the voiced-state ceiling stay in code; this field is the standing value only, and it is rebuildable from claims in evidence-occurred order, so a drift between the two is our bug rather than a tie-break. Null means no sentiment establishment stands, which is the derived Neutral and is never written as a value.</description>
+    <label>Support Counter</label>
+    <type>Number</type>
+    <precision>2</precision>
+    <scale>0</scale>
+    <required>false</required>
+</CustomField>

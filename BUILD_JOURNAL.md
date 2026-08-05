@@ -8745,3 +8745,69 @@ and starting it would have meant guessing both. Named here in full rather than h
 
 Stamped into `docs/`. Recorded: the repo copy does not carry the v3.1 and v3.2 heads, so this
 stamp names v3.3 and points at the project for the full text.
+
+---
+
+## 2026-08-05 · session 76 · addendum 18 · the two ruled fields land, and the writer is aimed at retired codes
+
+289 tests, 100% pass, same one pre-existing unrelated failure.
+
+### Both rulings are schema now
+
+**`AAO_Claim__c.AAO_Participant__c`**, lookup, `Restrict`. The claim keys the Participant.
+`AAO_Subject_Contact__c` stays for rows written before the ruling and for the resolved Contact
+where one exists, but **it is no longer the key** — a person with no Contact was previously
+unclaimable, and Jefferson Vargas is the specimen that made it visible.
+
+**`AAO_Answer__c.AAO_Support_Counter__c`**, Number(2,0). The counter lives on the Support
+Answer row, per person per scope. **The field carries the standing value only**; the clamp and
+the voiced-state ceiling stay in code, and the value is rebuildable from claims in
+evidence-occurred order — so a drift between field and ledger is our bug rather than a
+tie-break. Null is the derived Neutral and is never written as a value.
+
+FLS granted on both, because a field nobody can read is hidden rather than deployed.
+
+### The finding that stops the run, and it is upstream of the join
+
+Addendum 17 named three steps. **Step 3, the one recorded as built and proven, does not work
+against the §P8 contract set — and it fails silently.**
+
+`AAO_Project.derive()` routes every answer through `AAO_PeopleContracts.tokenOf(code)`, which
+splits the code on `#` and returns null when there is none:
+
+```apex
+Integer i = code == null ? -1 : code.indexOf(SEP);   // SEP is '#'
+return i <= 0 ? null : code.substring(0, i);
+```
+
+**The seventeen §P8 codes carry no `#`** — that was the whole point of retiring the
+person-crossed shape. So `tokenOf('AAO_POL_PS2')` is null, the loop `continue`s on every
+answer, `derive()` returns an empty `Derivation`, and **projection writes nothing while
+reporting success.** The map would come back blank and the run would look like it worked.
+
+**And the codes are the smaller half.** `AAO_Project`'s Support derivation is the retired TREE
+— `SUP_MENTOR = {2,4,5}`, `SUP_NEGATIVE = {6,11,14}`, `SUP_ENEMY = {7,16}` — conjunctions over
+the nine-question quiz that §P8.4 superseded with the counter. **Fixing the code parsing would
+give a working path to the wrong mechanism.** The field ruled today is where the counter goes;
+the arithmetic that fills it is not in the writer yet.
+
+### So the writer join is three pieces, not two
+
+1. **`AAO_PairCommit`** — upheld pairs to Claims to Answers, with the Contact-or-shadow create
+   at projection per today's ruling. Ordinary work now that both keys are ruled.
+2. **`AAO_Project.derive` re-aimed at `people-p8-v1`** — the code parsing, the Political
+   ceiling over the one-way halves, the Buyer Role set, and criteria. **This was believed
+   built and is not.**
+3. **The counter's arithmetic** — each verified establishment moves one, net sum per call,
+   clamped ±3, ceilinged by the strongest state voiced, written to the field ruled today.
+
+**Named rather than half-built, and the reason is the specific one:** a silently-empty
+derivation is exactly the failure mode the map read sheet cannot catch. Matthew's sheet reads
+the map and grades what is on it; a blank map from a run that reported success would read as a
+recall catastrophe rather than as a writer defect. **The run should not be handed over until
+projection can write, or the read grades the wrong thing.**
+
+### Owed, not blocking, recorded
+
+The internal-domain list's home: from the demo static resource to org-overridable seed
+metadata at packaging, the role-map pattern. The value stands correct for this run.

@@ -84,7 +84,15 @@ public class AAO_SpeakerRule {
      *
      * It is cheap here and would be expensive anywhere else, because the People handed unit
      * is a person crossed with a dimension, so the gate already knows who the finding is
-     * about. `subjectContactId` is null on every other charter and the branch never fires.
+     * about. Both subject arguments are null on every other charter and the branch never fires.
+     *
+     * **THE SUBJECT IS TESTED BY ROSTER KEY FIRST, AND THAT IS ADDENDUM 18 REACHING THE GATE.**
+     * Comparing the speaker's Contact against the subject's Contact asks whether two
+     * RESOLUTION OUTCOMES match, which fails in the one direction that matters: a person with
+     * no Contact can speak, can be identified, and could never satisfy a requirement that they
+     * said it themselves - they would be silently downgraded to UNVERIFIED forever. The roster
+     * key is the identity the artifact itself carries, so it is what the comparison uses; the
+     * Contact comparison stays as the fallback for rows keyed before the ruling.
      */
     public static Verdict evaluate(
         String requirement,
@@ -92,6 +100,17 @@ public class AAO_SpeakerRule {
         Set<String> internalDomains,
         Map<Id, String> roleByContact,
         Id subjectContactId
+    ) {
+        return evaluate(requirement, sp, internalDomains, roleByContact, subjectContactId, null);
+    }
+
+    public static Verdict evaluate(
+        String requirement,
+        AAO_Model.Speaker sp,
+        Set<String> internalDomains,
+        Map<Id, String> roleByContact,
+        Id subjectContactId,
+        String subjectRosterKey
     ) {
         if (String.isBlank(requirement)) {
             return new Verdict(false, 'no speaker requirement was supplied');
@@ -114,7 +133,7 @@ public class AAO_SpeakerRule {
             internalDomains.contains(domain);
 
         if (requirement == 'Subject_Person') {
-            if (subjectContactId == null) {
+            if (subjectContactId == null && String.isBlank(subjectRosterKey)) {
                 // Refusing rather than passing. A requirement that the speaker BE the
                 // subject cannot be checked without a subject, and a check that cannot run
                 // has not been met.
@@ -123,6 +142,17 @@ public class AAO_SpeakerRule {
                     'this requires the subject of the finding to have said it, and no ' +
                     'subject was supplied to check against'
                 );
+            }
+            if (String.isNotBlank(subjectRosterKey)) {
+                return subjectRosterKey == sp.key
+                    ? new Verdict(true, sp.display + ' said it themselves')
+                    : new Verdict(
+                          false,
+                          sp.display +
+                          ' said it, but this proposition is about someone else and asks ' +
+                          'what that person told you. Somebody vouching for a colleague does ' +
+                          'not establish it.'
+                      );
             }
             Id spoke = String.isBlank(sp.contactId) ? null : (Id) sp.contactId;
             if (spoke == subjectContactId) {

@@ -8871,3 +8871,138 @@ and the counter arithmetic writing `AAO_Support_Counter__c`. The guard above tra
 
 **The run still holds until projection can write**, so Matthew's map read grades the writer's
 output rather than a silent blank.
+
+---
+
+## 2026-08-05 · session 76 · the writer join, all three pieces
+
+319 tests, 100% pass, same one pre-existing unrelated failure.
+
+The join is built. Pairs reach Claims reach Answers, `derive()` is aimed at the rubric the
+pass actually emits, and the counter is the arithmetic §P8.4 ruled rather than a promise about
+one. Four defects surfaced on the way and each one is recorded below with what it cost.
+
+### 1 · The Answer keys the Participant, because its claims do
+
+Addendum 18 put the Claim onto `AAO_Participant__c`. The Answer had to follow, and the
+argument is the replay invariant rather than symmetry: **claims in evidence-occurred order must
+reconstruct every answer exactly**, and an answer keyed on a Contact cannot be reconstructed
+from claims keyed on a person who has no Contact. Jefferson Vargas is the specimen at both
+ends — identified on the 17 June fixture, no Contact record at all, and under the old key his
+evidence had nowhere to land at all.
+
+Additive, not a migration: `Participant` is a seventh subject type wired to a new lookup on
+Answer and Candidate, and no key already in the org changes shape because none carries it.
+
+**One exception is deliberate and it is the only one.** A Contact beside a Participant is not a
+stray — it is the resolved identity riding along, which is what projection reads to find the
+map row. The reverse still throws: a Participant on a Contact-keyed row is two identities on
+one answer and only one can be the key.
+
+### 2 · `AAO_P8Codes` · the placement map, and the test that would have caught v3.9
+
+`tokenOf` did string surgery on a `#` the seventeen §P8 codes do not carry. The replacement is
+a literal map of seventeen keys, and `assertCovers` holds it against
+`AAO_PassContracts.specs()` **symmetrically**: a contract with no placement is an answer the
+writer skips in silence, and a placement with no contract is a rule for a question nobody asks.
+That test is the one that would have failed the build in place of the run.
+
+An unrecognised code is now **counted and named** rather than skipped — `answers unplaced` on
+its own line with the codes listed. A zero because nothing was establishable and a zero because
+the writer recognised nothing are different facts, and the totals alone cannot tell them apart.
+
+### 3 · `derive()`, re-aimed
+
+- **Political reads TRUE only.** The weak sides are their own contracts now (PS1, PS2 are the
+  halves the old two-sided rows could not record), so nothing on the dimension is read for its
+  falseness anywhere. The guard against inferring a weak side from a missing TRUE is not
+  relaxed — it is **retired, because the thing it guarded against can no longer be expressed.**
+- **Support comes off the counter**, not off a nine-question conjunction tree. The quiz was
+  retired from extraction at §P8.4 and the derivation that consumed it goes with it.
+- **Buyer Role: one role or none, and several is a refusal.** The vendor's field is
+  single-select and the pass can establish two — §P8.9 ruled that behaviour establishes, and a
+  person can plainly evaluate and use the same product. Unlike Political Status, which the
+  methodology declares as a ceiling, **the five Buyer Role values are an unordered set**, so
+  ranking them would be the machine deciding what outranks what. This applies the law already
+  in the class one line up — two map rows raise a flag and write nothing, never pick — to two
+  roles for one field. It costs under-writing rather than mis-writing, the note says so on the
+  seller's own surface, and it produces the number a ruling would need: how often several roles
+  actually stand together. **Stated as an assumption, not a settled rule.** If Matthew rules an
+  ordering it replaces one method and nothing else moves.
+- **Criteria are derived, counted, and do not reach the map row.** They are
+  `ALTF__Decision_Criteria__c` records with holder junctions, which is a separate write.
+- **`unresolved` is its own action.** A person identified with no resolved Contact cannot reach
+  a map row at all, because `ALTF__Contact__c` is required there. The derivation succeeded and
+  the write could not land, which is a different fact from the evidence establishing nothing,
+  and folding them together is how a person disappears out of a run that reports success.
+
+### 4 · The counter, as §P8.4 ruled it
+
+Rungs at their positions, each establishment moving one, a call's movement the net sum, two
+caps: the clamp at ±3 and **the reach of the strongest state the evidence actually voices.**
+The reach cap is directional and **never pulls anyone down** — a person at +3 meeting a call of
+supporter-grade words is not demoted for being liked. Nine supporter-grade quotes do not make a
+Mentor; three mentor-grade ones do, in a single call, because **terminals are proof-gated and
+never time-gated.**
+
+`rebuild` replays it from claims in evidence-occurred order, grouped by source-event. The field
+is the standing value and the ledger is the record, so rebuilding rather than incrementing
+makes drift **unexpressible** instead of merely forbidden.
+
+The charter's own specimen is a test: Matthew's grades on the first fixture, three
+supporter-grade reads on one call, land at +2, the top of Supporter — which is exactly where he
+put the person. The grading prices the quote; the arithmetic only adds.
+
+### 5 · `AAO_PairCommit` goes through the writer, not around it
+
+A second writer for answers would mean a second copy of human precedence, the
+`DUPLICATE_VALUE`-as-merge path, the speaker gate, reinforcement and flag reconciliation — and
+two copies of a rule diverge, always. So the join does exactly one thing the writer cannot do
+for itself: it turns a verified pair into the candidate shape the writer already knows.
+
+**Coverage decides the verdict.** `Full` proposes TRUE, `Partial` proposes UNVERIFIED, because
+§P8 makes partial the instructed default under doubt and says a partial accrues safely and
+places nobody. Encoding it that way is what makes both halves true at once.
+
+### The four defects this build surfaced
+
+**a · `Subject_Person` refused every time it ever ran.** `AAO_Commit` called the four-argument
+`evaluate`, which passes a null subject, and the gate honestly refuses a check it cannot run.
+`AAO_PS_1` is the one §P8 contract carrying that requirement — sentiment asks how *this person*
+stands, so the person must have said it — so **every sentiment establishment was downgraded to
+UNVERIFIED**, and the counter would have read a ledger of claims that established nothing and
+stood at zero for everyone, forever. Found by running the join, not by reading the gate.
+
+**b · The gate compared two resolution outcomes.** The fix in (a) exposed the deeper one:
+matching the speaker's Contact against the subject's Contact fails in the one direction that
+matters, because a person with no Contact can speak, can be identified, and could never satisfy
+a requirement that they said it themselves. **The comparison is now the roster key**, which is
+the identity the artifact itself carries; the Contact comparison stays as the fallback for rows
+keyed before the ruling. Addendum 18 reaching the gate.
+
+**c · The join re-read pairs it had already committed.** A second run wrote a second
+`Reinforced` claim from the *same words*. Reinforcement is a count guidance orders by, so an
+inflated one is a lie about how often somebody pressed something — and two claims sharing one
+source-event net two counter steps, which is how it was found. Fixed with **the evidence
+watermark at the pair grain**: a pair carrying a claim is not read again.
+
+**d · `List.add(index, element)` refuses an index equal to the size**, including 0 on an empty
+list, so the replay sort threw on its first element. Appending is its own branch now.
+
+### Owed, named rather than half-built
+
+- **The criteria write.** A person naming three criteria produces three criteria and **one
+  answer per contract**, because the answer key is subject plus contract and the subject is the
+  person. The criteria path needs its answers subjected to the *criterion* — the fifth subject
+  type, unwired — and that is a placement question rather than ordinary work. Derivation and
+  counting are built; the `ALTF__Decision_Criteria__c` write is not.
+- **The jump rule has a mechanism and no feed.** `apply` takes a declared state and sets the
+  position outright, with polarity reversal reported for the contention flag. Call 1 emits no
+  declaration marker, so nothing feeds it. Built, unfed, and said so rather than quietly
+  dropping a ruled rule.
+- The run receipt object (§P8.0), unchanged.
+
+### Next
+
+Addendum 17's run, now unblocked: fresh sweep with the fixes in, regression report before
+projection, project the upheld, hand Matthew the run id for the map read sheet v0.2 procedure.

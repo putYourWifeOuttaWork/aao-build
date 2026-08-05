@@ -41,6 +41,7 @@ public class AAO_Commit {
                 AAO_Account__c,
                 AAO_Subject_Type__c,
                 AAO_Subject_Contact__c,
+                AAO_Participant__c,
                 AAO_Proposed_Verdict__c,
                 AAO_Spans__c,
                 AAO_Element_Coverage__c,
@@ -51,6 +52,8 @@ public class AAO_Commit {
                 AAO_Evidence_Contract__r.AAO_Speaker_Requirement__c,
                 AAO_Evidence_Contract__r.AAO_Elements__c,
                 AAO_Evidence_Contract__r.AAO_Rubric_Version__c,
+                AAO_Participant__r.AAO_Roster_Key__c,
+                AAO_Participant__r.AAO_Contact__c,
                 AAO_Source__r.AAO_Evidence_Occurred__c,
                 AAO_Source__r.AAO_Speaker_Roster__c,
                 AAO_Source__r.AAO_Diarization__c
@@ -165,13 +168,29 @@ public class AAO_Commit {
             );
         }
 
+        // THE SUBJECT WAS NEVER SUPPLIED, and Subject_Person therefore refused every time it
+        // ran. `AAO_PS_1` is the one §P8 contract that carries the requirement - sentiment
+        // asks how THIS PERSON stands, so the person has to have said it - and with no
+        // subject to check against, the gate's own honest refusal downgraded every sentiment
+        // establishment to UNVERIFIED. The counter would then have read a ledger of claims
+        // that established nothing and stood at zero for everyone, forever. Found by running
+        // the join rather than by reading the gate.
+        Id subjectContact = cand.AAO_Subject_Contact__c != null
+            ? cand.AAO_Subject_Contact__c
+            : (cand.AAO_Participant__r == null ? null : cand.AAO_Participant__r.AAO_Contact__c);
+        String subjectRosterKey = cand.AAO_Participant__r == null
+            ? null
+            : cand.AAO_Participant__r.AAO_Roster_Key__c;
+
         for (Integer i = 0; i < spans.size(); i++) {
             String key = sv.speakerByIndex.get(i);
             AAO_SpeakerRule.Verdict v = AAO_SpeakerRule.evaluate(
                 requirement,
                 key == null ? null : roster.get(key),
                 internalDomains,
-                roleByContact
+                roleByContact,
+                subjectContact,
+                subjectRosterKey
             );
             speakerReasons.add(v.reason);
             if (v.satisfied) {
@@ -298,6 +317,7 @@ public class AAO_Commit {
                 AAO_Evidence_Occurred__c,
                 AAO_Subject_Type__c,
                 AAO_Subject_Contact__c,
+                AAO_Participant__c,
                 AAO_Evidence_Contract__c,
                 AAO_Opportunity__c,
                 AAO_Account__c,
@@ -316,6 +336,7 @@ public class AAO_Commit {
             AAO_Account__c = cand.AAO_Account__c,
             AAO_Subject_Type__c = cand.AAO_Subject_Type__c,
             AAO_Subject_Contact__c = cand.AAO_Subject_Contact__c,
+            AAO_Participant__c = cand.AAO_Participant__c,
             AAO_Publication_State__c = 'Live'
         );
     }
@@ -335,6 +356,9 @@ public class AAO_Commit {
             AAO_Account__c = cand.AAO_Account__c,
             AAO_Subject_Type__c = cand.AAO_Subject_Type__c,
             AAO_Subject_Contact__c = cand.AAO_Subject_Contact__c,
+            // THE CLAIM KEYS THE PARTICIPANT (addendum 18). The Contact beside it is the
+            // resolution outcome where one exists, and null is a legitimate answer.
+            AAO_Participant__c = cand.AAO_Participant__c,
             AAO_External_Person__c = cand.AAO_Subject_Contact__c,
             AAO_Internal_Person__c = internalPerson,
             AAO_Verdict_Before__c = verdictBefore,

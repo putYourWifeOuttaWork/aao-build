@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Participant__c</fullName>
+    <description>Written by: the pairs-to-writer join, from the identified pair&apos;s own person. Read by: Commit, which carries it onto both the claim and the answer. The candidate has to be able to express the subject its claim will key on, or the join would have to resolve a Contact before the writer sees the row - which is the resolution outcome standing in for the identity, the thing addendum 18 ruled against.</description>
+    <label>Participant</label>
+    <type>Lookup</type>
+    <referenceTo>AAO_Participant__c</referenceTo>
+    <relationshipName>AAO_Candidates</relationshipName>
+    <relationshipLabel>AAO Candidates</relationshipLabel>
+    <deleteConstraint>Restrict</deleteConstraint>
+    <required>false</required>
+</CustomField>

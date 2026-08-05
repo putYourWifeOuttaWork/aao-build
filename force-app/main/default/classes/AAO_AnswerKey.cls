@@ -21,15 +21,23 @@ public class AAO_AnswerKey {
     public static final String SEP = '|';
 
     /**
-     * The six subject types, and which typed lookup carries the subject for each.
+     * The seven subject types, and which typed lookup carries the subject for each.
      * Four are unwired: AAO_Shadow_Person__c is Wave 2, and Insight Card, Qualifier and
      * Decision Criterion are managed objects whose API names have not been read from
      * altify--aossb2. Guessing them would violate evidence over inference about schema,
      * so they throw by name instead.
+     *
+     * PARTICIPANT ENTERS AT ADDENDUM 18, and it is additive rather than a migration: no
+     * key already in the org changes shape, because no key already in the org carries this
+     * type. The ruling put the Claim on the Participant; the Answer follows because the
+     * replay invariant is that claims in evidence-occurred order reconstruct the answer
+     * EXACTLY, and an answer keyed on a Contact cannot be reconstructed from claims keyed
+     * on a person who has no Contact. Jefferson Vargas is the specimen in both directions.
      */
     private static final Map<String, String> SUBJECT_LOOKUP = new Map<String, String>{
         'Opportunity' => 'AAO_Opportunity__c',
         'Contact' => 'AAO_Subject_Contact__c',
+        'Participant' => 'AAO_Participant__c',
         'Shadow_Person' => null,
         'Insight_Card' => null,
         'Qualifier' => null,
@@ -81,7 +89,8 @@ public class AAO_AnswerKey {
             a.AAO_Subject_Type__c,
             a.AAO_Evidence_Contract__c,
             a.AAO_Opportunity__c,
-            a.AAO_Subject_Contact__c
+            a.AAO_Subject_Contact__c,
+            a.AAO_Participant__c
         );
     }
 
@@ -90,7 +99,8 @@ public class AAO_AnswerKey {
             c.AAO_Subject_Type__c,
             c.AAO_Evidence_Contract__c,
             c.AAO_Opportunity__c,
-            c.AAO_Subject_Contact__c
+            c.AAO_Subject_Contact__c,
+            c.AAO_Participant__c
         );
     }
 
@@ -99,7 +109,8 @@ public class AAO_AnswerKey {
             c.AAO_Subject_Type__c,
             c.AAO_Evidence_Contract__c,
             c.AAO_Opportunity__c,
-            c.AAO_Subject_Contact__c
+            c.AAO_Subject_Contact__c,
+            c.AAO_Participant__c
         );
     }
 
@@ -107,7 +118,8 @@ public class AAO_AnswerKey {
         String subjectType,
         Id contractId,
         Id opportunityId,
-        Id subjectContactId
+        Id subjectContactId,
+        Id participantId
     ) {
         if (String.isBlank(subjectType)) {
             throw new KeyException('Cannot compose an answer key with no subject type.');
@@ -132,14 +144,43 @@ public class AAO_AnswerKey {
         // Exactly one subject may be expressed on a row. A stray lookup means the row
         // is ambiguous about what it is an answer to, and a key that ignored the stray
         // would hide that.
-        Id resolved = subjectType == 'Opportunity' ? opportunityId : subjectContactId;
-        Boolean strayContact = subjectType != 'Contact' && subjectContactId != null;
+        //
+        // **A CONTACT BESIDE A PARTICIPANT IS NOT A STRAY, and it is the one exception.**
+        // Addendum 18 kept AAO_Subject_Contact__c on a participant-keyed row deliberately,
+        // to carry the resolved Contact where one exists - a Contact is a resolution
+        // outcome of that person, not a second subject. Refusing it here would force the
+        // join to choose between recording the resolution and composing a key, and the
+        // resolution is what projection reads to find the map row. The reverse stray still
+        // throws: a Participant on a Contact-keyed row means two identities on one answer.
+        Id resolved;
+        if (subjectType == 'Opportunity') {
+            resolved = opportunityId;
+        } else if (subjectType == 'Participant') {
+            resolved = participantId;
+        } else {
+            resolved = subjectContactId;
+        }
+
+        Boolean strayContact =
+            subjectType != 'Contact' &&
+            subjectType != 'Participant' &&
+            subjectContactId != null;
         if (strayContact) {
             throw new KeyException(
                 'A row with subject type "' +
                 subjectType +
                 '" must express exactly one subject, but AAO_Subject_Contact__c is also ' +
                 'populated.'
+            );
+        }
+        if (subjectType != 'Participant' && participantId != null) {
+            throw new KeyException(
+                'A row with subject type "' +
+                subjectType +
+                '" must express exactly one subject, but AAO_Participant__c is also ' +
+                'populated. A participant-keyed row may carry its resolved Contact; a ' +
+                'Contact-keyed row may not carry a participant, because that is two ' +
+                'identities on one answer and only one of them can be the key.'
             );
         }
         return compose(subjectType, resolved, contractId);

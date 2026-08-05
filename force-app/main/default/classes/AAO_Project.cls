@@ -6,14 +6,14 @@
  * managed object, and it is allowed to: data rows on managed objects are the product's output
  * surface. Fields, metadata, triggers and logic on them remain forbidden.
  *
- * **Upsert is query-then-branch, ratified, and NOT platform upsert** — there is no external id
+ * **Upsert is query-then-branch, ratified, and NOT platform upsert** - there is no external id
  * on Altify's object to upsert against. Read before write on the `(contact, opportunity)` pair:
  *
- * - **row exists** → populate only the dimensions establishment moved, leaving the rest alone.
+ * - **row exists** -> populate only the dimensions establishment moved, leaving the rest alone.
  *   Honest under the native per-dimension `_Last_Modified` stamps, which the step 0 probe
  *   proved the package maintains by itself on API writes.
- * - **row absent** → create it, established dimensions populated, everything else null.
- * - **two rows for one pair** → raise a flag and write nothing. Never pick.
+ * - **row absent** -> create it, established dimensions populated, everything else null.
+ * - **two rows for one pair** -> raise a flag and write nothing. Never pick.
  *
  * **The two legs are not equally normal, and the difference is Matthew's correction to session
  * 57.** The empty skeletons this sandbox has came from contact-role sync, which is a customer
@@ -21,8 +21,24 @@
  * create leg is mandatory product behaviour**, because a person who appears in evidence and
  * holds no contact role has no row and must still be mapped.
  *
- * Read the derivation tables in `docs/aao-charters.md`, not here: Support at §P7 and Political
- * Status at charters v2.1. This class implements them and is not their source.
+ * ============================================================================
+ * RE-AIMED AT `people-p8-v1`, Architecture v3.9. **This class was reported built and proven
+ * and was neither.** Its eighteen passing tests proved it against `people-om-v1`-shaped codes
+ * (`S2#003WD...`); against the §P8 contract set `tokenOf` split on a `#` the seventeen do not
+ * carry, every answer was skipped, `derive()` returned empty, and projection wrote nothing
+ * while reporting success. A suite can be green and irrelevant at the same time.
+ *
+ * What changed with the re-aim:
+ * - **Code parsing is a lookup, not string surgery** - `AAO_P8Codes`, one literal map, held
+ *   against the declared set by a test rather than by hope.
+ * - **The Political ceiling reads TRUE only.** The weak sides are their own contracts now, so
+ *   no verdict is read for its falseness anywhere.
+ * - **Support comes off the counter**, not off a nine-question conjunction tree. The quiz was
+ *   retired from extraction at §P8.4 and the derivation that consumed it goes with it.
+ * - **Buyer Role and criteria enter** as dimensions the stage arithmetic counts.
+ *
+ * Read the derivation tables in `docs/aao-charters.md`, not here: sentiment and the counter at
+ * §P8.4, Political Status at charters v2.1. This class implements them and is not their source.
  */
 public with sharing class AAO_Project {
     public class ProjectException extends Exception {
@@ -30,48 +46,14 @@ public with sharing class AAO_Project {
 
     /** Our writer's identity, stamped so a projected value is attributable. */
     public static final String WRITER = 'AAO_People_Projection';
-    public static final String WRITER_VERSION = '1.0.0';
-
-    // ------------------------------------------------------------------ the ontology
-
-    // Family tokens as `AAO_PeopleContracts` mints them: `S2#<contact>`, `PO1#<contact>`,
-    // `PS4#<contact>`. The writer reads the token half; the person comes off the answer's own
-    // subject lookup, which the commit path already carries.
-    private static final String SUP = AAO_PeopleContracts.T_SUPPORT;
-    private static final String POL_SHARED = AAO_PeopleContracts.T_POL_SHARED;
-    private static final String POL_OM = AAO_PeopleContracts.T_POL_OM;
 
     /**
-     * Support, from the authored table. Q1 opens the reading and places nobody.
-     *
-     * Mentor needs Q2 and Q4 and Q5; Supporter needs Q2; Non-Supporter is any of 6, 11, 14;
-     * Enemy is 7 or 16. Neutral is the state of not knowing and is never computed as a balance.
+     * 2.0.0 at the re-aim. The version moves because the writer's INPUT rubric moved: a value
+     * written by 1.0.0 was derived from `people-om-v1` codes and a value written by this one
+     * was not, and a watermark that could not tell them apart would compare two different
+     * derivations as though they were one.
      */
-    private static final Set<String> SUP_MENTOR = new Set<String>{ '2', '4', '5' };
-    private static final Set<String> SUP_NEGATIVE = new Set<String>{ '6', '11', '14' };
-    private static final Set<String> SUP_ENEMY = new Set<String>{ '7', '16' };
-
-    /**
-     * Political Status, the ceiling model. Placement is the highest value the standing
-     * establishments support; a lesser property never downgrades.
-     *
-     * **TRUE-as-strong, FALSE-as-weak is RATIFIED**, with one guard that has to hold.
-     *
-     * **A FALSE places somebody on the weak side only where words affirmatively support the
-     * weak side** — *he executes what others approve* — and **never as the absence of
-     * strong-side evidence.** Absence is `UNVERIFIED`, and UNVERIFIED places nobody, which is
-     * why this derivation consults the FALSE sets for the weak side and never infers a weak
-     * side from a missing TRUE.
-     *
-     * That is coextension doing the work the runtime-closed enums were designed for: the blind
-     * reader enforces the affirmative-weak-side reading as an ordinary coverage check, so a
-     * FALSE with no words behind it cannot reach here as an establishment. The enums become a
-     * later refinement rather than a blocker.
-     */
-    private static final Set<String> POL_STRONG_OM = new Set<String>{ '1', '2' }; // define, approve
-    private static final Set<String> POL_STRONG_SHARED = new Set<String>{ '4' }; // controls outcomes
-    private static final Set<String> POL_WEAK_SHARED = new Set<String>{ '3', '6' }; // advice, delivery
-    private static final String POL_BROKER = '7'; // information brokering, shared family
+    public static final String WRITER_VERSION = '2.0.0';
 
     // ===================================================================== the outcome
 
@@ -79,14 +61,22 @@ public with sharing class AAO_Project {
         @AuraEnabled
         public Id contactId;
         @AuraEnabled
+        public Id participantId;
+        @AuraEnabled
         public String personName;
         @AuraEnabled
         public String support;
         @AuraEnabled
+        public Integer supportCounter;
+        @AuraEnabled
         public String political;
         @AuraEnabled
+        public String buyerRole;
+        @AuraEnabled
+        public Integer criteriaNamed;
+        @AuraEnabled
         public String note;
-        /** created | populated | blocked | unchanged */
+        /** created | populated | blocked | unchanged | unresolved */
         @AuraEnabled
         public String action;
         @AuraEnabled
@@ -102,7 +92,12 @@ public with sharing class AAO_Project {
             return personName +
                 ': ' + action +
                 ' support=' + support +
+                (supportCounter == null ? '' : '(' + supportCounter + ')') +
                 ' political=' + political +
+                ' role=' + buyerRole +
+                (criteriaNamed == null || criteriaNamed == 0
+                    ? ''
+                    : ' criteria=' + criteriaNamed) +
                 (dimensionsWritten.isEmpty() ? '' : ' wrote' + dimensionsWritten) +
                 (heldBack.isEmpty() ? '' : ' held' + heldBack) +
                 (reason == null ? '' : ' :: ' + reason);
@@ -116,11 +111,13 @@ public with sharing class AAO_Project {
         public Integer populated = 0;
         public Integer blocked = 0;
         public Integer unchanged = 0;
+        /** People whose identity resolves to no Contact, so no map row can be reached. */
+        public Integer unresolved = 0;
 
         /**
          * THE STAGE ARITHMETIC EXTENDED THROUGH PROJECTION, the fourth stage. Architecture
          * v3.9, from a defect: `derive()` was proven against the retired EBV path and, run
-         * against the §P8 contract set, skipped every answer and returned empty — so
+         * against the §P8 contract set, skipped every answer and returned empty - so
          * **projection wrote nothing and reported success**, and the map would have come back
          * blank from a run that looked like it worked.
          *
@@ -131,10 +128,17 @@ public with sharing class AAO_Project {
          * thought to assert, while a printed pair of counters is read by whoever reads the run.
          */
         public Integer answersRead = 0;
-        public Map<String, Integer> writesByDimension = new Map<String, Integer>{
-            'support' => 0,
-            'political' => 0
-        };
+        public Map<String, Integer> writesByDimension = freshDimensionCounts();
+
+        /**
+         * Answers whose proposition code this writer has no placement for. **Separate from a
+         * zero on purpose.** A derivation that produced nothing because nothing was
+         * establishable is a recall result; a derivation that produced nothing because the
+         * writer did not recognise a single code is the v3.9 defect, and the two are
+         * indistinguishable from the totals alone.
+         */
+        public Integer answersUnplaced = 0;
+        public Set<String> unplacedCodes = new Set<String>();
 
         public Integer dimensionWrites() {
             Integer n = 0;
@@ -151,14 +155,22 @@ public with sharing class AAO_Project {
 
         public override String toString() {
             String s = 'projection: ' + created + ' created, ' + populated + ' populated, ' +
-                blocked + ' blocked, ' + unchanged + ' unchanged' +
+                blocked + ' blocked, ' + unchanged + ' unchanged, ' +
+                unresolved + ' unresolved' +
                 '\n  answers read             ' + answersRead + ' (unit: answers)' +
+                '\n  answers unplaced         ' + answersUnplaced + ' (unit: answers)' +
                 '\n  dimension values written ' + dimensionWrites() + ' (unit: values)';
-            List<String> dims = new List<String>(writesByDimension.keySet());
-            dims.sort();
-            for (String d : dims) {
+            for (String d : AAO_P8Codes.dimensions()) {
                 s += '\n    ' + d.rightPad(22) + ' ' + writesByDimension.get(d) +
                     ' (unit: values)';
+            }
+            if (answersUnplaced > 0) {
+                List<String> codes = new List<String>(unplacedCodes);
+                codes.sort();
+                s += '\n  UNPLACED CODES: ' + String.join(codes, ', ') +
+                    '. This writer has no placement for them, so their answers moved ' +
+                    'nothing. Either the contract set and the placement map have drifted ' +
+                    'apart, or these answers belong to a superseded rubric.';
             }
             if (derivedNothing()) {
                 s += '\n  DERIVED NOTHING. ' + answersRead + ' answers produced no value on ' +
@@ -170,6 +182,14 @@ public with sharing class AAO_Project {
             }
             return s;
         }
+    }
+
+    private static Map<String, Integer> freshDimensionCounts() {
+        Map<String, Integer> m = new Map<String, Integer>();
+        for (String d : AAO_P8Codes.dimensions()) {
+            m.put(d, 0);
+        }
+        return m;
     }
 
     // ======================================================================== the run
@@ -188,24 +208,27 @@ public with sharing class AAO_Project {
         Outcome o = new Outcome();
         o.opportunityId = opportunityId;
 
-        Map<Id, List<AAO_Answer__c>> byPerson = standingByPerson(opportunityId);
+        Map<String, List<AAO_Answer__c>> byPerson = standingByPerson(opportunityId);
         if (byPerson.isEmpty()) {
             return o;
         }
 
         Id accountId = [SELECT AccountId FROM Opportunity WHERE Id = :opportunityId].AccountId;
 
-        for (Id contactId : byPerson.keySet()) {
-            List<AAO_Answer__c> answers = byPerson.get(contactId);
+        List<String> personKeys = new List<String>(byPerson.keySet());
+        personKeys.sort();
+        for (String personKey : personKeys) {
+            List<AAO_Answer__c> answers = byPerson.get(personKey);
             o.answersRead += answers.size();
+
             Derivation d = derive(answers);
-            if (String.isNotBlank(d.support)) {
-                o.writesByDimension.put('support', o.writesByDimension.get('support') + 1);
+            o.answersUnplaced += d.unplaced;
+            o.unplacedCodes.addAll(d.unplacedCodes);
+            for (String dim : d.valuesDerived()) {
+                o.writesByDimension.put(dim, o.writesByDimension.get(dim) + 1);
             }
-            if (String.isNotBlank(d.political)) {
-                o.writesByDimension.put('political', o.writesByDimension.get('political') + 1);
-            }
-            PersonResult r = project(opportunityId, accountId, contactId, answers);
+
+            PersonResult r = project(opportunityId, accountId, answers, d);
             o.people.add(r);
             if (r.action == 'created') {
                 o.created++;
@@ -213,6 +236,8 @@ public with sharing class AAO_Project {
                 o.populated++;
             } else if (r.action == 'blocked') {
                 o.blocked++;
+            } else if (r.action == 'unresolved') {
+                o.unresolved++;
             } else {
                 o.unchanged++;
             }
@@ -223,15 +248,25 @@ public with sharing class AAO_Project {
     /**
      * Standing answers about people on this deal, newest establishment last so the note and
      * the recency arbitration both read the same order.
+     *
+     * **KEYED ON THE PERSON, WHICH IS THE PARTICIPANT WHERE ONE IS CARRIED.** Addendum 18 put
+     * the claim onto the Participant, so answers written since carry it; answers written
+     * before still key on the Contact. Grouping on whichever is present keeps one person's
+     * pre-ruling and post-ruling answers on one map row instead of projecting them twice.
      */
-    private static Map<Id, List<AAO_Answer__c>> standingByPerson(Id opportunityId) {
-        Map<Id, List<AAO_Answer__c>> out = new Map<Id, List<AAO_Answer__c>>();
+    private static Map<String, List<AAO_Answer__c>> standingByPerson(Id opportunityId) {
+        Map<String, List<AAO_Answer__c>> out = new Map<String, List<AAO_Answer__c>>();
         for (AAO_Answer__c a : [
             SELECT
                 Id,
                 AAO_Subject_Contact__c,
                 AAO_Subject_Contact__r.Name,
+                AAO_Participant__c,
+                AAO_Participant__r.AAO_Display_Name__c,
+                AAO_Participant__r.AAO_Contact__c,
                 AAO_Verdict__c,
+                AAO_Interpretation__c,
+                AAO_Support_Counter__c,
                 AAO_Evidence_Occurred__c,
                 AAO_Spans__c,
                 AAO_Publication_State__c,
@@ -240,18 +275,49 @@ public with sharing class AAO_Project {
             FROM AAO_Answer__c
             WHERE
                 AAO_Opportunity__c = :opportunityId
-                AND AAO_Subject_Type__c = 'Contact'
-                AND AAO_Subject_Contact__c != NULL
+                AND AAO_Subject_Type__c IN ('Contact', 'Participant')
+                AND (AAO_Subject_Contact__c != NULL OR AAO_Participant__c != NULL)
                 // Held is live for nothing. A held answer never reaches a customer record.
                 AND AAO_Publication_State__c = 'Live'
             ORDER BY AAO_Evidence_Occurred__c ASC NULLS FIRST, Id ASC
         ]) {
-            if (!out.containsKey(a.AAO_Subject_Contact__c)) {
-                out.put(a.AAO_Subject_Contact__c, new List<AAO_Answer__c>());
+            String key = personKeyOf(a);
+            if (!out.containsKey(key)) {
+                out.put(key, new List<AAO_Answer__c>());
             }
-            out.get(a.AAO_Subject_Contact__c).add(a);
+            out.get(key).add(a);
         }
         return out;
+    }
+
+    private static String personKeyOf(AAO_Answer__c a) {
+        return a.AAO_Participant__c != null
+            ? String.valueOf(a.AAO_Participant__c)
+            : String.valueOf(a.AAO_Subject_Contact__c);
+    }
+
+    /**
+     * The Contact this person's map row hangs off, resolved through the Participant where the
+     * answer keys on one. `ALTF__Contact_Map_Details__c.ALTF__Contact__c` is required, so a
+     * person with no resolved Contact cannot reach the map at all.
+     */
+    private static Id contactOf(AAO_Answer__c a) {
+        if (a.AAO_Subject_Contact__c != null) {
+            return a.AAO_Subject_Contact__c;
+        }
+        return a.AAO_Participant__r == null ? null : a.AAO_Participant__r.AAO_Contact__c;
+    }
+
+    private static String nameOf(AAO_Answer__c a) {
+        if (a.AAO_Participant__r != null &&
+            String.isNotBlank(a.AAO_Participant__r.AAO_Display_Name__c)) {
+            return a.AAO_Participant__r.AAO_Display_Name__c;
+        }
+        if (a.AAO_Subject_Contact__r != null &&
+            String.isNotBlank(a.AAO_Subject_Contact__r.Name)) {
+            return a.AAO_Subject_Contact__r.Name;
+        }
+        return String.valueOf(personKeyOf(a));
     }
 
     // ------------------------------------------------------------------ one person
@@ -259,23 +325,42 @@ public with sharing class AAO_Project {
     private static PersonResult project(
         Id opportunityId,
         Id accountId,
-        Id contactId,
-        List<AAO_Answer__c> answers
+        List<AAO_Answer__c> answers,
+        Derivation d
     ) {
         PersonResult r = new PersonResult();
+        Id contactId = contactOf(answers[0]);
         r.contactId = contactId;
-        r.personName = answers[0].AAO_Subject_Contact__r == null
-            ? String.valueOf(contactId)
-            : answers[0].AAO_Subject_Contact__r.Name;
-
-        Derivation d = derive(answers);
+        r.participantId = answers[0].AAO_Participant__c;
+        r.personName = nameOf(answers[0]);
         r.support = d.support;
+        r.supportCounter = d.supportCounter;
         r.political = d.political;
+        r.buyerRole = d.buyerRole;
+        r.criteriaNamed = d.criteria.size();
         r.note = d.note;
 
-        if (d.support == null && d.political == null) {
+        if (!d.buyerRoleCollision.isEmpty()) {
+            r.heldBack.add('Buyer Role');
+        }
+
+        if (!d.placesAnybody()) {
             r.action = 'unchanged';
-            r.reason = 'Nothing established for this person on either dimension.';
+            r.reason = 'Nothing established for this person on any map dimension.';
+            return r;
+        }
+
+        // THE MAP NEEDS A CONTACT AND THIS PERSON HAS NONE. Reported as its own action rather
+        // than folded into `unchanged`: the derivation succeeded and the write could not
+        // land, which is a different fact from the evidence establishing nothing. This is the
+        // create-the-Contact-or-shadow leg's queue, and Jefferson Vargas is the standing
+        // specimen - identified on the 17 June fixture, no Contact record at all.
+        if (contactId == null) {
+            r.action = 'unresolved';
+            r.reason =
+                'Identified, and no Contact resolves for this person, so no map row can be ' +
+                'reached: ALTF__Contact_Map_Details__c.ALTF__Contact__c is required. The ' +
+                'derivation stands on our own rows and projects the moment identity resolves.';
             return r;
         }
 
@@ -285,9 +370,11 @@ public with sharing class AAO_Project {
                 Id,
                 ALTF__Status__c,
                 ALTF__Political__c,
+                ALTF__Buyer_Role__c,
                 ALTF__Note__c,
                 ALTF__Status_Last_Modified__c,
-                ALTF__Political_Last_Modified__c
+                ALTF__Political_Last_Modified__c,
+                ALTF__Buyer_Role_Last_Modified__c
             FROM ALTF__Contact_Map_Details__c
             WHERE ALTF__Contact__c = :contactId AND ALTF__Opportunity__c = :opportunityId
             ORDER BY CreatedDate ASC
@@ -301,7 +388,7 @@ public with sharing class AAO_Project {
             r.reason =
                 rows.size() + ' map rows exist for this person on this deal. The writer ' +
                 'refuses to choose between them; nothing was written.';
-            raiseDuplicateFlag(opportunityId, accountId, contactId, rows.size());
+            raiseDuplicateFlag(opportunityId, accountId, contactId, rows.size(), 'map rows');
             return r;
         }
 
@@ -321,6 +408,10 @@ public with sharing class AAO_Project {
             if (d.political != null) {
                 fresh.ALTF__Political__c = d.political;
                 r.dimensionsWritten.add('Political');
+            }
+            if (d.buyerRole != null) {
+                fresh.ALTF__Buyer_Role__c = d.buyerRole;
+                r.dimensionsWritten.add('Buyer Role');
             }
             fresh.ALTF__Note__c = d.note;
             insert fresh;
@@ -343,16 +434,15 @@ public with sharing class AAO_Project {
         // changed write stamped, the 3 August rows would stay unprotected forever and the
         // no-watermark alarm could never reach zero. Stamping here cannot weaken the human
         // guard: a hand edit changes the value, so it lands in the heldBack branch instead.
-        Boolean matched = false;
-        if (d.support != null && row.ALTF__Status__c == d.support) {
-            matched = true;
-        }
-        if (d.political != null && row.ALTF__Political__c == d.political) {
-            matched = true;
-        }
+        Boolean matched =
+            (d.support != null && row.ALTF__Status__c == d.support) ||
+            (d.political != null && row.ALTF__Political__c == d.political) ||
+            (d.buyerRole != null && row.ALTF__Buyer_Role__c == d.buyerRole);
+
+        Datetime ours = lastProjected(answers);
 
         if (d.support != null) {
-            if (humanEdited(row.ALTF__Status_Last_Modified__c, lastProjected(answers))) {
+            if (humanEdited(row.ALTF__Status_Last_Modified__c, ours)) {
                 r.heldBack.add('Support');
             } else if (row.ALTF__Status__c != d.support) {
                 patch.ALTF__Status__c = d.support;
@@ -361,11 +451,20 @@ public with sharing class AAO_Project {
             }
         }
         if (d.political != null) {
-            if (humanEdited(row.ALTF__Political_Last_Modified__c, lastProjected(answers))) {
+            if (humanEdited(row.ALTF__Political_Last_Modified__c, ours)) {
                 r.heldBack.add('Political');
             } else if (row.ALTF__Political__c != d.political) {
                 patch.ALTF__Political__c = d.political;
                 r.dimensionsWritten.add('Political');
+                wrote = true;
+            }
+        }
+        if (d.buyerRole != null) {
+            if (humanEdited(row.ALTF__Buyer_Role_Last_Modified__c, ours)) {
+                r.heldBack.add('Buyer Role');
+            } else if (row.ALTF__Buyer_Role__c != d.buyerRole) {
+                patch.ALTF__Buyer_Role__c = d.buyerRole;
+                r.dimensionsWritten.add('Buyer Role');
                 wrote = true;
             }
         }
@@ -416,7 +515,7 @@ public with sharing class AAO_Project {
      *
      * Ruled 4 August, and it generalizes past this row: **a watermark is written by the writer
      * or it does not exist.** No watermark is ever inferred, reconstructed, or backfilled from
-     * a native stamp, however sound the chain looks — the 3 August run's chain was provably
+     * a native stamp, however sound the chain looks - the 3 August run's chain was provably
      * deterministic and the backfill was still refused, because the precedent costs more than
      * the row. Replay over claims re-projects for real, so refusing costs nothing.
      *
@@ -445,20 +544,18 @@ public with sharing class AAO_Project {
 
     /** The value this answer's own dimension contributed, or null if it contributed none. */
     private static String projectedValueFor(AAO_Answer__c a, Derivation d) {
-        String code = a.AAO_Evidence_Contract__r == null
-            ? null
-            : a.AAO_Evidence_Contract__r.AAO_Proposition_Code__c;
-        String token = String.isBlank(code) ? null : AAO_PeopleContracts.tokenOf(code);
-        String family = token == null ? null : familyOf(token);
-        if (family == null) {
-            return null;
-        }
-        if (family == SUP) {
+        String dim = AAO_P8Codes.dimensionOf(codeOf(a));
+        if (dim == AAO_P8Codes.DIM_SUPPORT) {
             return d.support;
         }
-        if (family == POL_SHARED || family == POL_OM) {
+        if (dim == AAO_P8Codes.DIM_POLITICAL) {
             return d.political;
         }
+        if (dim == AAO_P8Codes.DIM_BUYER_ROLE) {
+            return d.buyerRole;
+        }
+        // Criteria do not project onto the map row, so there is no map value for one of their
+        // answers to have contributed and nothing to watermark against.
         return null;
     }
 
@@ -475,160 +572,202 @@ public with sharing class AAO_Project {
         return latest;
     }
 
+    private static String codeOf(AAO_Answer__c a) {
+        return a.AAO_Evidence_Contract__r == null
+            ? null
+            : a.AAO_Evidence_Contract__r.AAO_Proposition_Code__c;
+    }
+
     // =================================================================== the derivation
+
+    /** One criterion this person named, with its typing and its gate. */
+    public class CriterionRead {
+        @AuraEnabled
+        public String subject;
+        @AuraEnabled
+        public String criterionType = 'Informal';
+        @AuraEnabled
+        public Boolean required = false;
+        @AuraEnabled
+        public Datetime asOf;
+    }
 
     public class Derivation {
         public String support;
+        /** The standing counter, carried so a report can show momentum beside standing. */
+        public Integer supportCounter;
         public String political;
+        public String buyerRole;
+        /**
+         * The roles that stood when more than one did. **Empty is the normal case and a
+         * populated list is a refusal, not a value** - see `buyerRoleFrom`.
+         */
+        public List<String> buyerRoleCollision = new List<String>();
+        public List<CriterionRead> criteria = new List<CriterionRead>();
         public String note;
-        /** Support only: the side that lost the recency arbitration, for the contention flag. */
-        public String displacedSide;
+        /** True where this call's movement reversed the standing polarity. */
+        public Boolean supportPolarityReversed = false;
+        /** Answers whose code this writer has no placement for. */
+        public Integer unplaced = 0;
+        public Set<String> unplacedCodes = new Set<String>();
         public Datetime supportAsOf;
         public Datetime politicalAsOf;
+
+        /** The dimensions that produced a value. What the stage arithmetic counts. */
+        public List<String> valuesDerived() {
+            List<String> out = new List<String>();
+            if (support != null) {
+                out.add(AAO_P8Codes.DIM_SUPPORT);
+            }
+            if (political != null) {
+                out.add(AAO_P8Codes.DIM_POLITICAL);
+            }
+            if (buyerRole != null) {
+                out.add(AAO_P8Codes.DIM_BUYER_ROLE);
+            }
+            if (!criteria.isEmpty()) {
+                out.add(AAO_P8Codes.DIM_CRITERIA);
+            }
+            return out;
+        }
+
+        /** Whether anything derived reaches the map row. Criteria do not; they are records. */
+        public Boolean placesAnybody() {
+            return support != null || political != null || buyerRole != null;
+        }
     }
 
     /** Exposed for the harness assertions: derive without writing anything. */
     public static Derivation derive(List<AAO_Answer__c> answers) {
         Derivation d = new Derivation();
 
-        // Standing TRUE and standing FALSE, by question number within family.
-        Set<String> supTrue = new Set<String>();
-        Set<String> polTrueShared = new Set<String>();
-        Set<String> polTrueOm = new Set<String>();
-        Set<String> polFalseShared = new Set<String>();
-        Set<String> polFalseOm = new Set<String>();
-        Datetime newestPositive;
-        Datetime newestNegative;
+        Set<String> politicalPlacements = new Set<String>();
+        Set<String> rolesEstablished = new Set<String>();
         List<String> supportCitations = new List<String>();
         List<String> politicalCitations = new List<String>();
+        List<AAO_Answer__c> criteriaAnswers = new List<AAO_Answer__c>();
 
         for (AAO_Answer__c a : answers) {
-            String code = a.AAO_Evidence_Contract__r == null
-                ? null
-                : a.AAO_Evidence_Contract__r.AAO_Proposition_Code__c;
+            String code = codeOf(a);
             if (String.isBlank(code)) {
                 continue;
             }
-            String token = AAO_PeopleContracts.tokenOf(code);
-            if (token == null) {
+            String dim = AAO_P8Codes.dimensionOf(code);
+            if (dim == null) {
+                // Named, never skipped in silence. This is the v3.9 defect's own shape.
+                d.unplaced++;
+                d.unplacedCodes.add(code);
                 continue;
-            }
-            String family = familyOf(token);
-            String num = numberOf(token);
-            if (family == null || num == null) {
-                continue;
-            }
-            Boolean isTrue = a.AAO_Verdict__c == 'TRUE';
-            Boolean isFalse = a.AAO_Verdict__c == 'FALSE';
-            if (!isTrue && !isFalse) {
-                continue; // UNVERIFIED establishes nothing and places nobody.
             }
 
-            if (family == SUP) {
-                if (isTrue) {
-                    supTrue.add(num);
-                    if (SUP_NEGATIVE.contains(num) || SUP_ENEMY.contains(num)) {
-                        newestNegative = later(newestNegative, a.AAO_Evidence_Occurred__c);
-                    } else {
-                        newestPositive = later(newestPositive, a.AAO_Evidence_Occurred__c);
-                    }
-                    supportCitations.add(citation(a));
+            // TRUE-OR-NOTHING. Every §P8 question points one way, so an establishment is a
+            // TRUE and nothing else places anybody. UNVERIFIED is a real finding with real
+            // receipts and it satisfies no condition; FALSE no longer exists in the pass, and
+            // the weak Political sides that used to be read off one are their own contracts.
+            if (a.AAO_Verdict__c != 'TRUE') {
+                continue;
+            }
+
+            if (dim == AAO_P8Codes.DIM_SUPPORT) {
+                // The counter is the mechanism; this answer's job is to carry it and to
+                // supply the citation the note shows.
+                if (a.AAO_Support_Counter__c != null) {
+                    d.supportCounter = Integer.valueOf(a.AAO_Support_Counter__c);
                 }
-            } else if (family == POL_SHARED) {
-                if (isTrue) {
-                    polTrueShared.add(num);
-                    politicalCitations.add(citation(a));
-                } else {
-                    polFalseShared.add(num);
-                }
-            } else if (family == POL_OM) {
-                if (isTrue) {
-                    polTrueOm.add(num);
-                    politicalCitations.add(citation(a));
-                } else {
-                    polFalseOm.add(num);
-                }
+                d.supportAsOf = later(d.supportAsOf, a.AAO_Evidence_Occurred__c);
+                supportCitations.add(citation(a));
+            } else if (dim == AAO_P8Codes.DIM_POLITICAL) {
+                politicalPlacements.add(AAO_P8Codes.politicalPlacement(code));
+                d.politicalAsOf = later(d.politicalAsOf, a.AAO_Evidence_Occurred__c);
+                politicalCitations.add(citation(a));
+            } else if (dim == AAO_P8Codes.DIM_BUYER_ROLE) {
+                rolesEstablished.add(AAO_P8Codes.buyerRole(code));
+            } else if (dim == AAO_P8Codes.DIM_CRITERIA) {
+                criteriaAnswers.add(a);
             }
         }
 
-        d.support = supportRung(supTrue, newestPositive, newestNegative, d);
-        d.political = politicalCeiling(polTrueOm, polTrueShared, polFalseOm, polFalseShared);
-        d.note = composeNote(d.support, d.political, supportCitations, politicalCitations);
+        d.support = AAO_SupportCounter.rungFor(d.supportCounter);
+        d.political = AAO_P8Codes.politicalCeiling(politicalPlacements);
+        buyerRoleFrom(rolesEstablished, d);
+        d.criteria = criteriaFrom(criteriaAnswers);
+        d.note = composeNote(d, supportCitations, politicalCitations);
         return d;
     }
 
     /**
-     * Support. Recency owns the rung when both sides stand; nothing averages, and Neutral is
-     * never the resolution of a conflict.
+     * Buyer Role. **One role or none, and several is a refusal.**
+     *
+     * `ALTF__Buyer_Role__c` is a single-select picklist and the pass can establish more than
+     * one - §P8.9 ruled that behaviour on the call establishes, and one person can plainly
+     * evaluate and use the same product. There is no authored ordering among the five: unlike
+     * Political Status, which the methodology declares as a ceiling, the vendor's Buyer Role
+     * values are an unordered set, and inventing a ranking here would be **the machine
+     * deciding what outranks what**, which is the line that keeps a discovered criterion from
+     * raising a flag.
+     *
+     * So this applies the law already in this class one line up - two map rows for one pair
+     * raise a flag and write nothing, never pick - to two roles for one field. It costs
+     * under-writing rather than mis-writing, which is the safe direction, and it produces the
+     * measurement the ruling needs: how often several roles actually stand together.
+     *
+     * **OPEN, and stated as an assumption rather than a settled rule.** If Matthew rules an
+     * ordering, it replaces this method and nothing else in the class moves.
      */
-    private static String supportRung(
-        Set<String> t,
-        Datetime newestPositive,
-        Datetime newestNegative,
-        Derivation d
-    ) {
-        Boolean enemy = !intersects(t, SUP_ENEMY).isEmpty();
-        Boolean negative = !intersects(t, SUP_NEGATIVE).isEmpty();
-        Boolean mentor = t.containsAll(SUP_MENTOR);
-        Boolean supporter = t.contains('2');
-
-        Boolean darkSide = enemy || negative;
-        Boolean lightSide = mentor || supporter;
-
-        if (!darkSide && !lightSide) {
-            return null; // Nothing established in either direction. Not a computed Neutral.
+    private static void buyerRoleFrom(Set<String> established, Derivation d) {
+        if (established.isEmpty()) {
+            return;
         }
-        if (darkSide && lightSide) {
-            // Both sides stand. The most recent establishment on the evidence-occurred clock
-            // governs, and the loser becomes a contention flag of the opposite polarity.
-            Boolean positiveWins =
-                newestPositive != null &&
-                (newestNegative == null || newestPositive > newestNegative);
-            d.displacedSide = positiveWins ? 'negative' : 'positive';
-            return positiveWins
-                ? (mentor ? 'Mentor' : 'Supporter')
-                : (enemy ? 'Enemy' : 'Non-Supporter');
+        if (established.size() == 1) {
+            d.buyerRole = new List<String>(established)[0];
+            return;
         }
-        if (darkSide) {
-            return enemy ? 'Enemy' : 'Non-Supporter';
-        }
-        return mentor ? 'Mentor' : 'Supporter';
+        List<String> several = new List<String>(established);
+        several.sort();
+        d.buyerRoleCollision = several;
     }
 
     /**
-     * Political Status, the ceiling. The highest placement the standing establishments
-     * support; one establishment suffices at every level; a lesser property never downgrades.
+     * The criteria this person named, typed by provenance and gated by their own words.
      *
-     * Exit happens only inside a two-sided question, which is why the weak sides read from the
-     * FALSE sets rather than from absence. Q9 places nobody and is not consulted.
+     * **Criteria do not reach the map row.** They are `ALTF__Decision_Criteria__c` records
+     * with holder junctions, which is a different write with its own mechanics, so this
+     * derives and reports them and writes nothing. What that write still needs is named in
+     * BUILD_JOURNAL and is not invented here: a person naming three criteria produces three
+     * criteria and ONE answer per contract, because the answer key is subject plus contract
+     * and the subject is the person - so the criteria path needs its answers subjected to the
+     * criterion, which is the fifth subject type and is not wired.
      */
-    private static String politicalCeiling(
-        Set<String> trueOm,
-        Set<String> trueShared,
-        Set<String> falseOm,
-        Set<String> falseShared
-    ) {
-        Boolean strong =
-            !intersects(trueOm, POL_STRONG_OM).isEmpty() ||
-            !intersects(trueShared, POL_STRONG_SHARED).isEmpty();
-        if (strong) {
-            return 'Inner Circle';
+    private static List<CriterionRead> criteriaFrom(List<AAO_Answer__c> answers) {
+        List<CriterionRead> out = new List<CriterionRead>();
+        Boolean formal = false;
+        Boolean required = false;
+        for (AAO_Answer__c a : answers) {
+            String code = codeOf(a);
+            if (code == AAO_P8Codes.CRITERION_FORMAL) {
+                formal = true;
+            } else if (code == AAO_P8Codes.CRITERION_REQUIRED) {
+                required = true;
+            }
         }
-        // Weak side of a two-sided question is the FALSE verdict on that question; the plain
-        // one-sided questions (advice, delivery) count on their TRUE.
-        Boolean weak =
-            falseOm.contains('2') ||
-            falseShared.contains('4') ||
-            !intersects(trueShared, POL_WEAK_SHARED).isEmpty();
-        if (weak) {
-            return 'Political Structure';
+        for (AAO_Answer__c a : answers) {
+            if (codeOf(a) != AAO_P8Codes.CRITERION_NAMING) {
+                continue;
+            }
+            if (String.isBlank(a.AAO_Interpretation__c)) {
+                continue;
+            }
+            CriterionRead c = new CriterionRead();
+            c.subject = a.AAO_Interpretation__c;
+            // Typing is by PROVENANCE (Matthew's ruling): organizational standing spoken
+            // makes it Formal, else Informal and upgradeable. A naming with no attribution
+            // defaults Informal and is not a failure.
+            c.criterionType = formal ? 'Formal' : 'Informal';
+            c.required = required;
+            c.asOf = a.AAO_Evidence_Occurred__c;
+            out.add(c);
         }
-        if (trueShared.contains(POL_BROKER)) {
-            return 'Outside Political Structure';
-        }
-        // Unset. Nobody is placed outside the structure by absence of evidence, so this
-        // returns null and the field is left alone rather than written 'Unknown'.
-        return null;
+        return out;
     }
 
     // ------------------------------------------------------------------- the note
@@ -643,26 +782,36 @@ public with sharing class AAO_Project {
     private static final Integer NOTE_MAX = 1024;
 
     private static String composeNote(
-        String support,
-        String political,
+        Derivation d,
         List<String> supportCitations,
         List<String> politicalCitations
     ) {
         List<String> parts = new List<String>();
-        if (support != null) {
+        if (d.support != null) {
             parts.add(
-                'Support: ' + support +
+                'Support: ' + d.support +
                 (supportCitations.isEmpty()
                     ? ''
-                    : ' — ' + supportCitations[supportCitations.size() - 1])
+                    : ' - ' + supportCitations[supportCitations.size() - 1])
             );
         }
-        if (political != null) {
+        if (d.political != null) {
             parts.add(
-                'Political: ' + political +
+                'Political: ' + d.political +
                 (politicalCitations.isEmpty()
                     ? ''
-                    : ' — ' + politicalCitations[politicalCitations.size() - 1])
+                    : ' - ' + politicalCitations[politicalCitations.size() - 1])
+            );
+        }
+        if (d.buyerRole != null) {
+            parts.add('Buyer Role: ' + d.buyerRole);
+        } else if (!d.buyerRoleCollision.isEmpty()) {
+            // The refusal says so on the surface the seller reads, because a blank field
+            // beside three established roles is the silence this whole design exists to end.
+            parts.add(
+                'Buyer Role: not written. The evidence establishes ' +
+                String.join(d.buyerRoleCollision, ', ') +
+                ' and the field holds one.'
             );
         }
         if (parts.isEmpty()) {
@@ -674,11 +823,14 @@ public with sharing class AAO_Project {
         }
         // Degrade to Option B behaviour rather than clip a quote.
         List<String> plain = new List<String>();
-        if (support != null) {
-            plain.add('Support: ' + support);
+        if (d.support != null) {
+            plain.add('Support: ' + d.support);
         }
-        if (political != null) {
-            plain.add('Political: ' + political);
+        if (d.political != null) {
+            plain.add('Political: ' + d.political);
+        }
+        if (d.buyerRole != null) {
+            plain.add('Buyer Role: ' + d.buyerRole);
         }
         plain.add('Full citations on the AAO answer rows for this person.');
         return String.join(plain, '\n').abbreviate(NOTE_MAX);
@@ -708,7 +860,8 @@ public with sharing class AAO_Project {
         Id opportunityId,
         Id accountId,
         Id contactId,
-        Integer howMany
+        Integer howMany,
+        String unit
     ) {
         insert new AAO_Flag__c(
             AAO_Opportunity__c = opportunityId,
@@ -722,37 +875,6 @@ public with sharing class AAO_Project {
             AAO_Ceiling__c = 1,
             AAO_Synthetic__c = AAO_Synthetic.MARK
         );
-    }
-
-    /** `S2` -> `S`, `PO1` -> `PO`, `PS4` -> `PS`. The letters are the family. */
-    private static String familyOf(String token) {
-        String letters = '';
-        for (Integer i = 0; i < token.length(); i++) {
-            String ch = token.substring(i, i + 1);
-            if (ch.isNumeric()) {
-                break;
-            }
-            letters += ch;
-        }
-        return String.isBlank(letters) ? null : letters;
-    }
-
-    /** `S2` -> `2`. The digits are the question number within the family. */
-    private static String numberOf(String token) {
-        String digits = '';
-        for (Integer i = 0; i < token.length(); i++) {
-            String ch = token.substring(i, i + 1);
-            if (ch.isNumeric()) {
-                digits += ch;
-            }
-        }
-        return String.isBlank(digits) ? null : digits;
-    }
-
-    private static Set<String> intersects(Set<String> a, Set<String> b) {
-        Set<String> out = new Set<String>(a);
-        out.retainAll(b);
-        return out;
     }
 
     private static Datetime later(Datetime a, Datetime b) {

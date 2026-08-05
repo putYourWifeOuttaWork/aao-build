@@ -20,6 +20,11 @@
                 <label>Contact</label>
             </value>
             <value>
+                <fullName>Participant</fullName>
+                <default>false</default>
+                <label>Participant</label>
+            </value>
+            <value>
                 <fullName>Shadow_Person</fullName>
                 <default>false</default>
                 <label>Shadow_Person</label>

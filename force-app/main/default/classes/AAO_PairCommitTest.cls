@@ -169,6 +169,65 @@ private class AAO_PairCommitTest {
         );
     }
 
+    @IsTest
+    static void aPartialNeverDisplacesAnEstablishmentItArrivesAfter() {
+        // THE a20 DEFECT, from the rows. `buq4` arrived Partial and Upheld after `buq1` had
+        // established Jefferson's Evaluator answer TRUE from Full evidence, and the answer
+        // went TRUE to UNVERIFIED. `poq5` did the same to his Political Structure half, and
+        // that demotion flowed through the ceiling and changed his placement on the map.
+        Fixture f = fixture();
+        pair(f, 'p1', 'AAO_BR_EVAL', 'EVALUATOR', 'Full', 'Identified', 'Upheld', f.participantId);
+        pair(f, 'p2', 'AAO_BR_EVAL', 'EVALUATOR', 'Partial', 'Identified', 'Upheld', f.participantId);
+
+        Test.startTest();
+        AAO_PairCommit.Outcome o = AAO_PairCommit.run(RUN, new Set<String>());
+        Test.stopTest();
+
+        System.assertEquals(2, o.claimsWritten, o.toString());
+        AAO_Answer__c a = [
+            SELECT AAO_Verdict__c, AAO_Spans__c
+            FROM AAO_Answer__c
+            WHERE AAO_Opportunity__c = :f.oppId
+        ];
+        System.assertEquals(
+            'TRUE',
+            a.AAO_Verdict__c,
+            'Partial accrues, places nobody, and DISPLACES NOTHING. An answer verdict is ' +
+            'monotone over evidence strength, never last-write-wins.'
+        );
+        System.assertEquals(
+            2,
+            [SELECT COUNT() FROM AAO_Claim__c WHERE AAO_Opportunity__c = :f.oppId],
+            'And the accrual is not discarded: it writes its claim and merges its spans. ' +
+            'What it may not do is take a standing establishment down with it.'
+        );
+    }
+
+    @IsTest
+    static void theReplayLandsOnTheSameVerdictWhicheverOrderThePairsCommittedIn() {
+        // The write-time guard depends on arrival order; the replay does not. Both exist so
+        // that a run committing its pairs in any sequence lands on the same verdict, which is
+        // the replay invariant made executable rather than asserted.
+        Fixture f = fixture();
+        pair(f, 'p1', 'AAO_BR_EVAL', 'EVALUATOR', 'Partial', 'Identified', 'Upheld', f.participantId);
+        pair(f, 'p2', 'AAO_BR_EVAL', 'EVALUATOR', 'Full', 'Identified', 'Upheld', f.participantId);
+
+        Test.startTest();
+        AAO_PairCommit.Outcome o = AAO_PairCommit.run(RUN, new Set<String>());
+        Test.stopTest();
+
+        System.assertEquals(
+            'TRUE',
+            [SELECT AAO_Verdict__c FROM AAO_Answer__c WHERE AAO_Opportunity__c = :f.oppId]
+                .AAO_Verdict__c,
+            'Partial first, Full second: the establishment stands either way.'
+        );
+        System.assert(
+            o.toString().contains('verdicts rebuilt'),
+            'And the replay reports what it corrected, on its own line. Got: ' + o.toString()
+        );
+    }
+
     // ================================================== a person with no Contact still lands
 
     @IsTest

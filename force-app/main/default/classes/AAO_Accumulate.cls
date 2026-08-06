@@ -54,7 +54,18 @@ public class AAO_Accumulate {
             mergeCoverage(answer.AAO_Element_Coverage__c, claim.AAO_Element_Coverage__c)
         );
 
-        if (claim.AAO_Outcome__c != 'Reinforced') {
+        // THE VERDICT IS MONOTONE OVER EVIDENCE STRENGTH, never last-write-wins. Ruled
+        // 6 August from the a20 rows, and the defect it closes is precise: `buq4` arrived
+        // Partial and Upheld after `buq1` had established Jefferson's Evaluator answer TRUE
+        // from Full evidence, and this line wrote TRUE back down to UNVERIFIED. `poq5` did
+        // the same to his Political Structure half, and that demotion flowed through the
+        // ceiling and changed his placement on the map.
+        //
+        // **Partial accrues, places nobody, and DISPLACES NOTHING.** The accrual is not
+        // discarded: its spans and its coverage merge above, its claim is written, and it is
+        // on the record as evidence considered. What it may not do is take a standing
+        // establishment down with it.
+        if (claim.AAO_Outcome__c != 'Reinforced' && !weakens(answer, claim)) {
             answer.AAO_Verdict__c = claim.AAO_Verdict_After__c;
             answer.AAO_Interpretation__c = claim.AAO_Interpretation__c;
             answer.AAO_Established_By__c = claim.AAO_Actor__c;
@@ -72,6 +83,53 @@ public class AAO_Accumulate {
         ) {
             answer.AAO_Evidence_Occurred__c = claim.AAO_Evidence_Occurred__c;
         }
+    }
+
+    /**
+     * THE STRENGTH ORDER, and it is deliberately short. `TRUE` is an establishment; anything
+     * else is not. Nothing here ranks UNVERIFIED against null, because a claim always carries
+     * a verdict and the empty state writes no claim at all.
+     *
+     * **This is not "newer never wins".** An establishment REPLACING an establishment is
+     * ordinary and must still happen - reinforcement, supersession, a later call moving a
+     * value. What is forbidden is an accrual pulling an establishment down, which is a
+     * different thing wearing the same shape.
+     *
+     * **Human precedence sits above this and is enforced earlier**, in Commit's own read: a
+     * human-established answer is never reached by a machine claim at all. So this rule only
+     * ever arbitrates between two machine claims about one proposition.
+     */
+    @TestVisible
+    private static Boolean weakens(AAO_Answer__c answer, AAO_Claim__c claim) {
+        return answer.AAO_Verdict__c == 'TRUE' && claim.AAO_Verdict_After__c != 'TRUE';
+    }
+
+    /**
+     * REBUILD AN ANSWER'S VERDICT FROM ITS CLAIMS, the counter's own pattern, ruled 6 August.
+     *
+     * The guard above stops the clobber at write time; this proves it afterwards, and the two
+     * are not redundant. The guard depends on the order claims arrive in; the rebuild does
+     * not, so a run that committed its pairs in a different order lands on the same verdict.
+     * That is the replay invariant made executable for the verdict rather than only asserted:
+     * **replaying claims in evidence-occurred order must reconstruct every answer exactly.**
+     *
+     * Monotone over strength: an establishment anywhere in the ledger is an establishment.
+     * Returns null where the claims carry nothing, which the caller reads as leave-alone.
+     */
+    public static String verdictFromClaims(List<AAO_Claim__c> claims) {
+        if (claims == null || claims.isEmpty()) {
+            return null;
+        }
+        String strongest;
+        for (AAO_Claim__c c : claims) {
+            if (c.AAO_Verdict_After__c == 'TRUE') {
+                return 'TRUE';
+            }
+            if (strongest == null) {
+                strongest = c.AAO_Verdict_After__c;
+            }
+        }
+        return strongest;
     }
 
     /**

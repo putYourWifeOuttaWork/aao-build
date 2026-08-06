@@ -9379,3 +9379,197 @@ number of declared families. Twice this transcript, or a fifth family, is at or 
 **Named rather than rounded:** call 3's per-batch figures are wall-clock from the driving shell,
 not per-callout, because `AAO_Pass.verify` keeps only the last `StageResult`. The run receipt
 (§P8.0) is what would carry per-callout timings across transactions and is still owed.
+
+---
+
+## 2026-08-06 · session 76 · the midday fold · clobber, accounting, and four answers owed
+
+351 tests: **350 AAO tests pass, one org-resident test fails and is named below.** The
+self-contradictory phrasing stops here.
+
+### The four owed answers
+
+**1 · `ALTF__Contact__c` IS REQUIRED AT THE SCHEMA LEVEL.** Read from the runtime, not from
+ruling text: `nillable = false`, `createable = true`, `updateable = true`. `ALTF__Account__c`
+is required too; `ALTF__Opportunity__c` is nillable. **The ratified narrower shadow reading
+stands on a verified fact now rather than on a carried sentence** - a shadow person cannot
+reach the vendor map, and no map row is faked for one.
+
+**2 · THE FAILING TEST IS `ConvertToOpportunityTest.testgetOppCreationDetails`**, and the
+evidence of its irrelevance is four-fold rather than an assurance:
+
+- **It is not ours and not in our repo.** No `AAO_` prefix, 813 characters, no namespace, and
+  `grep` across `force-app` finds it nowhere. It is org-resident metadata from this sandbox's
+  own history.
+- **It fails on a validation rule on a native object** - *AE Summary is required when no
+  opportunity is created* on `Task.AE_Summary__c` - which is the customer org's rule, not a
+  code path of ours.
+- **It fails at line 18, `insert objTask`, which is before `Test.startTest()`.** The fixture
+  never reaches `ConvertToOpportunity.getOppCreationDetails`, so the failure is in the setup
+  and the class under test is never exercised.
+- **It touches no AAO object, class or trigger.**
+
+It is not ours to fix and it is not ours to hide. Reports from here say *350 AAO tests pass;
+one org-resident test fails, named*.
+
+**3 · GATE ASSERTION 2 PASSES. B&V 24 June reads ACCOUNT.** First time run. Six candidate
+deals on the account, opportunity `NONE`, dispatch empty, the account half routed and logged
+as backburnered. The resolver did the thing it was built to do on the fixture that was never
+tried.
+
+**A defect travelled with it, and it is worth more than the pass.** The verdict's
+`scopeBecause` came back as the literal string **`placeholder`**. Nothing in our charter emits
+that word - the model wrote it. **A required reason field satisfied by a non-reason is a field
+that looks answered**, which is the same shape as the coverage-defaulted counter and the same
+shape as the unnamed failing test. The schema requires the field; nothing requires it to carry
+a reason. Named, not yet fixed.
+
+**4 · THE EMERSON DUAL ADJUDICATION, and it is not a blindness.** The scope read was asked what
+it saw on the account-grain stretches. It saw them and ruled on them explicitly:
+
+> Content is entirely pre-purchase: pricing tiers/discounts, approvers' scrutiny of annual
+> total, draft SOW, MSA to legal, InfoSec questionnaires, weekly cadence to manage gates
+> before October 2026 go-live; **services/training talk is scoping inside the still-open deal,
+> not adoption of something owned.**
+
+And it surfaced Travis Hill as a mention - *"VP of professional services who scoped the
+managed-services hours and will provide train-the-trainer quote"* - which is precisely the
+enablement content the gate expects to read as account grain.
+
+**So this is a substantive disagreement, not the collapse-to-majority-scope the riskiest
+assumption predicted.** The read did not fail to notice the account material; it named it and
+gave a stated ground for placing it opportunity-side. The open question is therefore a rule
+rather than a wording fix: **is pre-purchase scoping of services that will be owned after the
+purchase opportunity-grain, or dual?** Matthew's five account-grain rows say one thing and this
+read says another, and nothing in the charter arbitrates between them. **No wording moves until
+that is ruled**, per the instruction.
+
+### DEFECT 1 · Partial clobbers full, fixed twice over
+
+The law: **partial accrues, places nobody, and DISPLACES NOTHING; an answer verdict is monotone
+over evidence strength, never last-write-wins.**
+
+**The write-time guard** is in `AAO_Accumulate.apply`: a claim that would move a standing `TRUE`
+to anything else does not move the verdict. The accrual is not discarded - its spans and its
+coverage still merge, its claim is still written, it is still on the record as evidence
+considered. What it may not do is take an establishment down with it.
+
+**The replay** is in the join, and it is not a duplicate. The guard depends on the order claims
+arrive in; **the replay does not**, so a run that committed its pairs in any sequence lands on
+the same verdict. That is the counter's own pattern - drift unexpressible rather than merely
+forbidden - applied to the field the counter does not cover, and it reports what it corrected
+on its own line.
+
+Two things the rule deliberately does not do. It does not mean *newer never wins*: an
+establishment replacing an establishment is ordinary and still happens. And it never reaches
+across human precedence, which is enforced earlier and separately.
+
+### The regression accounting, and the universe check earning itself immediately
+
+**The three unaccounted dispositions were the three unreachable ones**, and the cause was
+mechanical: `checked++` sat *after* the correct-refusal and unreachable branches had already
+`continue`d, so a20 reported 24 checked against a 27-assertion seed and the totals summed
+against a denominator nobody could see.
+
+Every branch now writes one disposition line, and the report prints a universe check. **It
+found two more things on its first run**, which is the argument for printing it rather than
+asserting it:
+
+- **The seed is 36 assertions, not 27.** Every report since the seeding has said 27.
+- **Five fell through every branch** - assertions seeded against the B&V fixture, silently
+  skipped on an Emerson run *and counted in the denominator anyway*.
+
+Not-applicable is now its own disposition and sits **outside** the denominator, because a run
+against one artifact cannot hold or lose another artifact's assertions and counting them makes
+the universe a number that means nothing. The a20 report reconciles exactly:
+
+```
+assertions in the seed   36 (unit: assertions)
+  other fixture, skipped  5 (unit: assertions)
+assertions checked       31 (unit: assertions)
+dispositions listed      31 of 31 (unit: assertions)
+```
+
+### RULING BUILT · The sweep splits caller-side
+
+`AAO_Pass.locateFamily(source, run, family)` is the production path, one family read per
+transaction, driven by `sweepFamilies()`. The whole-sweep entry point stays for tests and short
+artifacts and says its cumulative number so nobody has to remember which one they called.
+
+**The call count is still `families.size()` and still a function of nothing else** - not roster,
+not length, not density. The cost law is untouched; only the transaction boundary moved. And the
+binding number moves with it: a20's worst single read was 15,580 ms, 13% of the ceiling, against
+57,054 ms and 48% for the four together.
+
+### PROPOSAL · Defect 2, answer and projection diverge
+
+**Retract is not an alternative to re-run; it is what re-run does when the derivation empties.**
+Projection already writes the current derivation. The gap is that it only ever writes a value
+and never clears one, so an answer that falls from TRUE to UNVERIFIED leaves its old projected
+value standing on the map under our own watermark.
+
+**Proposed rule: projection writes the current derivation including null, and only where the
+standing value is provably ours and unmodified.** The watermark pair already answers *provably
+ours*: `AAO_Projected_Value__c` equal to what the field now reads, and the native
+`_Last_Modified` no newer than `AAO_Projected_Modstamp__c`. Where either fails, the value is the
+human's, it is held back exactly as today, and the divergence becomes contention rather than a
+retraction.
+
+**One cost, named rather than discovered.** The vendor field cannot express *we established this
+and the evidence no longer supports it*; blanked, it reads identically to *never established*.
+That is the null-versus-UNVERIFIED distinction arriving at the projection layer, where the
+schema has no room for it. **The note carries what the field cannot** - the retraction and its
+reason - which is the same division of labour as everywhere else in this design: the vendor row
+holds the answer, our rows hold the proof.
+
+Ruling wanted before building: whether a retraction should also raise a flag. It is a real
+change in what the deal knows, and today nothing tells the seller their map got smaller.
+
+### PROPOSAL · Coverage
+
+**The law is settled and none of it is in question**: coverage is computed, never extracted;
+presence establishes it; the participant junction is its evidence; no model call anywhere.
+
+**The vendor's values, read from the org rather than assumed** -
+`ALTF__Contact_Map_Details__c.ALTF__Coverage__c` is a picklist of exactly five:
+
+```
+In-depth · Multiple contacts · Brief contact · No Contact · Unknown
+```
+
+There is also `ALTF__Coverage_Answer__c` (string) and `ALTF__Coverage_Last_Modified__c`, so the
+per-dimension watermark this projection needs already exists on their side.
+
+**The derivation, proposed.** Count distinct artifact hashes on `AAO_Participant__c` for that
+person on that opportunity - **hashes, not rows**, because a ninety-minute call arriving as
+three Source rows is one occasion, which is the same source-event definition the sentiment
+counter uses:
+
+| occasions | value | why |
+|---|---|---|
+| 0 | **not written** | Absence establishes nothing. `No Contact` is a claim, and we have no evidence for it: the person may have been met on a call nobody recorded. Leaving it alone is the honest state, and `Unknown` is already the vendor's own default |
+| 1 | `Brief contact` | One occasion is one occasion |
+| 2 or more | `Multiple contacts` | The vendor's own word for the plural |
+| — | `In-depth` **never written** | See below |
+
+**`In-depth` is not derivable and I propose we never write it.** Coverage's third guided
+question asks about *meaningful* and *high quality* contact, and those are not counts. The
+material to separate a real conversation from a calendar collision exists on Source -
+`AAO_Substantive_Offset__c` and `AAO_Duration_Seconds__c` - but **the threshold is a measurement
+and no document carries one.** Writing `In-depth` off a count would be inference wearing
+arithmetic's clothes, upstream of every rule built to prevent exactly that. The ladder therefore
+tops out one rung below its own ceiling until the threshold is measured, and **coverage
+understates rather than overstates**, which is the safe direction for a dimension that feeds a
+flag.
+
+**Where it surfaces:** `ALTF__Coverage__c` on the same map row as Support, Political and Buyer
+Role, through the same query-then-branch, the same per-dimension human-precedence check against
+`ALTF__Coverage_Last_Modified__c`, and the same watermark. It is a fourth dimension in
+`derive()`'s output and a fourth line in the stage arithmetic - **and it is the first one that
+never consults a contract**, so the writer must not count it as an answer read.
+
+**The one thing to rule before building:** zero occasions writes nothing under this proposal.
+The alternative is writing `No Contact`, which is a real and useful signal for a person on the
+map who has never been in a room with us. It is also an assertion from absence, which is
+forbidden everywhere else in this design. I recommend not writing it and surfacing the gap as
+guidance instead; the call is Matthew's.

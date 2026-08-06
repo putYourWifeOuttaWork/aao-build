@@ -254,6 +254,15 @@ public with sharing class AAO_Regression {
         public String runKey;
         public Integer checked = 0;
         public Integer held = 0;
+        /**
+         * EVERY ASSERTION'S DISPOSITION, one line each. Owed twice and now built, because a
+         * harness whose categories do not sum to its universe can silently drop assertions
+         * and nobody reading the totals would know. The a20 report accounted 16 held plus 8
+         * regressed of 27, which is three short even counting q13's CHANGED line.
+         */
+        public List<String> dispositions = new List<String>();
+        /** Seeded against a different fixture, so outside this run's universe entirely. */
+        public Integer notApplicable = 0;
         /** A graded PASS that this run lost. The line this class exists to print. */
         public List<String> regressions = new List<String>();
         /** A trap this run reproduced. */
@@ -272,6 +281,8 @@ public with sharing class AAO_Regression {
 
         public override String toString() {
             List<String> o = new List<String>{
+                'assertions in the seed   ' + (checked + notApplicable) + ' (unit: assertions)',
+                '  other fixture, skipped ' + notApplicable + ' (unit: assertions)',
                 'assertions checked       ' + checked + ' (unit: assertions)',
                 '  held                   ' + held + ' (unit: assertions)',
                 'REGRESSIONS              ' + regressions.size() + ' (unit: graded findings)',
@@ -284,6 +295,16 @@ public with sharing class AAO_Regression {
                     ' (unit: findings, diagnostic only)',
                 'REGRESSION SET           ' + (clean() ? 'HELD' : 'BROKEN')
             };
+            // THE UNIVERSE CHECK, printed rather than assumed. If these disagree, an
+            // assertion fell through every branch and the totals above are a lie of omission.
+            o.add(
+                'dispositions listed      ' + dispositions.size() + ' of ' + checked +
+                ' (unit: assertions)' +
+                (dispositions.size() == checked
+                    ? ''
+                    : '  ** UNACCOUNTED: ' + (checked - dispositions.size()) +
+                      ' assertion(s) fell through every branch **')
+            );
             for (String r : regressions) { o.add('  LOST      ' + r); }
             for (String r : trapsFired) { o.add('  TRAP      ' + r); }
             for (String r : verdictChanged) { o.add('  VERDICT   ' + r); }
@@ -291,6 +312,11 @@ public with sharing class AAO_Regression {
             for (String r : missesStillMissed) { o.add('  still missed ' + r); }
             for (String r : changedUndiagnosed) { o.add('  CHANGED, undiagnosed  ' + r); }
             for (String r : unreachable) { o.add('  unreachable  ' + r); }
+            o.add('');
+            o.add('--- every assertion, one line ---');
+            List<String> lines = new List<String>(dispositions);
+            lines.sort();
+            o.addAll(lines);
             return String.join(o, '\n');
         }
     }
@@ -322,9 +348,22 @@ public with sharing class AAO_Regression {
         Report rep = new Report();
         rep.runKey = runKey;
         for (Assertion x : assertions()) {
+            // THE UNIVERSE IS EVERY ASSERTION, counted here rather than three branches down.
+            // This is the accounting hole design's audit found: `checked` used to increment
+            // only after the correct-refusal and unreachable branches had already `continue`d,
+            // so a20's 27 assertions reported as 24 checked, and 16 held plus 8 regressed
+            // summed correctly against a denominator nobody could see. The three that looked
+            // unaccounted were the three unreachable ones, outside the count by construction.
+            // NOT APPLICABLE TO THIS ARTIFACT IS ITS OWN DISPOSITION, and it is outside the
+            // denominator rather than inside it. The seed spans two fixtures; a run against
+            // one of them cannot hold or lose the other's assertions, and counting them would
+            // make the universe a number that means nothing. Reported so the total is still
+            // reconcilable to the seed's own size.
             if (x.fixture != sha && x.fixture != ref) {
+                rep.notApplicable++;
                 continue;
             }
+            rep.checked++;
             if (x.kind == CORRECT_REFUSAL) {
                 List<Integer> w = AAO_RecallGate.ranges(artifact, x.quote);
                 Boolean found = false;
@@ -340,20 +379,29 @@ public with sharing class AAO_Regression {
                         break;
                     }
                 }
-                if (!found) {
+                if (found) {
+                    rep.dispositions.add(
+                        'HELD       ' + x.key + ' [' + x.kind + '] refusal still made'
+                    );
+                } else {
                     rep.changedUndiagnosed.add(
                         x.key + ' [' + x.contractCode + '] no longer emitted. Not a loss: ' +
                         'the read stopped making a mistake. Undiagnosed because nothing here ' +
                         'distinguishes that from having stopped looking.'
+                    );
+                    rep.dispositions.add(
+                        'CHANGED    ' + x.key + ' [' + x.kind + '] refusal no longer emitted'
                     );
                 }
                 continue;
             }
             if (x.kind == UNREACHABLE) {
                 rep.unreachable.add(x.key + ' [' + x.contractCode + '] ' + x.why);
+                rep.dispositions.add(
+                    'UNREACHABLE ' + x.key + ' [' + x.kind + '] undeclared family'
+                );
                 continue;
             }
-            rep.checked++;
             List<Integer> want = AAO_RecallGate.ranges(artifact, x.quote);
             if (want.isEmpty()) {
                 throw new RegressionException(
@@ -381,21 +429,34 @@ public with sharing class AAO_Regression {
             }
 
             if (x.kind == MUST_NOT_APPEAR) {
-                if (hit == null) { rep.held++; } else { rep.trapsFired.add(x.key + ': ' + x.why); }
+                if (hit == null) {
+                    rep.held++;
+                    rep.dispositions.add('HELD       ' + x.key + ' [' + x.kind + '] trap absent');
+                } else {
+                    rep.trapsFired.add(x.key + ': ' + x.why);
+                    rep.dispositions.add('TRAP       ' + x.key + ' [' + x.kind + '] reproduced');
+                }
                 continue;
             }
             if (x.kind == GRADED_MISS) {
                 if (hit == null) {
                     rep.missesStillMissed.add(x.key + ' [' + x.contractCode + ']');
+                    rep.dispositions.add(
+                        'STILL MISSED ' + x.key + ' [' + x.kind + '] never found'
+                    );
                 } else {
                     rep.held++;
                     rep.missesNowFound.add(x.key + ' [' + x.contractCode + ']');
+                    rep.dispositions.add(
+                        'RECOVERED  ' + x.key + ' [' + x.kind + '] graded miss now found'
+                    );
                 }
                 continue;
             }
             // MUST_APPEAR
             if (hit == null) {
                 rep.regressions.add(x.key + ' [' + x.contractCode + '] ' + x.why);
+                rep.dispositions.add('LOST       ' + x.key + ' [' + x.kind + '] not found');
                 continue;
             }
             if (String.isNotBlank(x.expectedVerdict) &&
@@ -405,9 +466,14 @@ public with sharing class AAO_Regression {
                     x.key + ': graded ' + x.expectedVerdict + ', this run ' +
                     hit.AAO_Verification__c
                 );
+                rep.dispositions.add(
+                    'VERDICT    ' + x.key + ' [' + x.kind + '] ' + x.expectedVerdict +
+                    ' -> ' + hit.AAO_Verification__c
+                );
                 continue;
             }
             rep.held++;
+            rep.dispositions.add('HELD       ' + x.key + ' [' + x.kind + '] found as graded');
         }
         return rep;
     }

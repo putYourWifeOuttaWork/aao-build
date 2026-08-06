@@ -274,7 +274,7 @@ public with sharing class AAO_Pass {
                 'discarded, crosses turns ' + discardedCrossesTurns + ' (unit: pairs)',
                 'coverage defaulted       ' + coverageDefaulted + ' (unit: pairs)',
                 'blank retries           ' + blankRetries + ' (unit: reads)',
-                'wall clock, SERIAL       ' + serialMs + ' ms'
+                'wall clock, THIS TRANSACTION ' + serialMs + ' ms of the 120,000 ms ceiling'
             };
             if (!blankRecovered.isEmpty()) {
                 o.add('  retry RECOVERED        ' + String.join(blankRecovered, ', '));
@@ -304,7 +304,47 @@ public with sharing class AAO_Pass {
      * different families is the INTENDED behaviour of this shape and is never deduplicated:
      * that is precisely the multi-establishment the sweep exists to make structural.
      */
+    /**
+     * THE SWEEP SPLITS CALLER-SIDE, one family read per transaction. Ruled 6 August from the
+     * a20 timings, and it is the call 3 pattern applied one stage earlier.
+     *
+     * **The ceiling binds at the transaction, not the callout.** a20's worst single family
+     * read was 15,580 ms, 13% of the 120-second budget and comfortable; the four of them in
+     * one transaction were 57,054 ms, 48%, and the wall scales with transcript length AND
+     * with the number of declared families. Twice this transcript, or a fifth family, breaches
+     * it. Split, the binding number becomes the worst single read and the account grain's
+     * future families cost nothing.
+     *
+     * `families()` names the reads and the caller drives them, so the call count is still
+     * exactly `families.size()` and is still a function of nothing else - not roster, not
+     * length, not density. The cost law is untouched; only the transaction boundary moved.
+     *
+     * The whole-sweep entry point below stays for tests and for a short artifact where four
+     * reads are provably inside the budget. **It is not the production path**, and its own
+     * report says the cumulative number so nobody has to remember which one they called.
+     */
+    public static List<String> sweepFamilies() {
+        List<String> names = new List<String>(
+            AAO_LocateCharter.families(AAO_RecallGate.declaredSet()).keySet()
+        );
+        names.sort();
+        return names;
+    }
+
+    /** ONE family read, one transaction, one bounded callout. The production path. */
+    public static SweepRun locateFamily(Id sourceId, String runKey, String family) {
+        return sweep(sourceId, runKey, new List<String>{ family });
+    }
+
+    /**
+     * Every family in one transaction. Kept for tests and short artifacts; see the note on
+     * `locateFamily` for why it is not what a run should call.
+     */
     public static SweepRun locateSweep(Id sourceId, String runKey) {
+        return sweep(sourceId, runKey, null);
+    }
+
+    private static SweepRun sweep(Id sourceId, String runKey, List<String> only) {
         AAO_Source__c src = source(sourceId);
         List<AAO_Evidence_Contract__c> declared = AAO_RecallGate.declaredSet();
         Map<String, Id> idByCode = new Map<String, Id>();
@@ -319,6 +359,20 @@ public with sharing class AAO_Pass {
         List<AAO_Pair__c> all = new List<AAO_Pair__c>();
         List<String> famNames = new List<String>(fams.keySet());
         famNames.sort();
+        if (only != null) {
+            List<String> wanted = new List<String>();
+            for (String f : famNames) {
+                if (only.contains(f)) {
+                    wanted.add(f);
+                }
+            }
+            if (wanted.isEmpty()) {
+                throw new PassException(
+                    'No declared family named ' + only + '. Declared: ' + famNames + '.'
+                );
+            }
+            famNames = wanted;
+        }
 
         for (String fam : famNames) {
             List<AAO_Evidence_Contract__c> block = fams.get(fam);

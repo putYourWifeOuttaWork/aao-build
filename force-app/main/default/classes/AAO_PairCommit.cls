@@ -49,6 +49,8 @@ public with sharing class AAO_PairCommit {
         public Integer criteriaMinted = 0;
         /** Typing or gating pairs whose span overlaps no naming, so they type nothing. */
         public Integer criteriaUnattached = 0;
+        /** Answers whose verdict the replay disagreed with, and corrected. */
+        public Integer verdictsRebuilt = 0;
         public List<String> refusals = new List<String>();
 
         /**
@@ -72,7 +74,8 @@ public with sharing class AAO_PairCommit {
                     'answers written          ' + answersWritten + ' (unit: answers)',
                     'support counters rebuilt ' + countersRebuilt + ' (unit: people)',
                     'criteria minted          ' + criteriaMinted + ' (unit: criteria)',
-                    '  typing unattached      ' + criteriaUnattached + ' (unit: pairs)'
+                    '  typing unattached      ' + criteriaUnattached + ' (unit: pairs)',
+                    'verdicts rebuilt         ' + verdictsRebuilt + ' (unit: answers)'
                 },
                 '\n'
             );
@@ -182,6 +185,7 @@ public with sharing class AAO_PairCommit {
         insert candidates;
 
         List<AAO_Pair__c> committed = new List<AAO_Pair__c>();
+        Set<Id> touchedAnswers = new Set<Id>();
         Map<String, Id> sentimentPeople = new Map<String, Id>();
 
         for (Integer i = 0; i < candidates.size(); i++) {
@@ -196,6 +200,7 @@ public with sharing class AAO_PairCommit {
             }
             if (r.answer != null) {
                 o.answersWritten++;
+                touchedAnswers.add(r.answer.Id);
             }
             if (r.claim == null) {
                 o.refusals.add(
@@ -217,6 +222,7 @@ public with sharing class AAO_PairCommit {
         if (!committed.isEmpty()) {
             update committed;
         }
+        o.verdictsRebuilt = rebuildVerdicts(touchedAnswers);
         o.countersRebuilt = rebuildCounters(sentimentPeople.keySet());
         return o;
     }
@@ -400,6 +406,57 @@ public with sharing class AAO_PairCommit {
             AAO_Outcome__c = 'Pending',
             AAO_Synthetic__c = AAO_Synthetic.MARK
         );
+    }
+
+    /**
+     * REPLAY EVERY TOUCHED ANSWER'S VERDICT FROM ITS OWN CLAIMS. Ruled 6 August with the
+     * clobber fix, and it is the second half rather than a duplicate of the first.
+     *
+     * The write-time guard in `AAO_Accumulate` depends on the order claims arrive in: it can
+     * only refuse to weaken something already standing. **The replay does not depend on
+     * order at all**, so a run that committed its pairs in any sequence lands on the same
+     * verdict, and a disagreement between the two is reported rather than hidden. That is the
+     * counter's own pattern - drift unexpressible rather than merely forbidden - applied to
+     * the field the counter does not cover.
+     */
+    private static Integer rebuildVerdicts(Set<Id> answerIds) {
+        if (answerIds.isEmpty()) {
+            return 0;
+        }
+        Map<Id, List<AAO_Claim__c>> byAnswer = new Map<Id, List<AAO_Claim__c>>();
+        for (AAO_Claim__c c : [
+            SELECT AAO_Answer__c, AAO_Verdict_After__c, AAO_Evidence_Occurred__c
+            FROM AAO_Claim__c
+            WHERE AAO_Answer__c IN :answerIds
+            ORDER BY AAO_Evidence_Occurred__c ASC NULLS FIRST, Id ASC
+        ]) {
+            if (!byAnswer.containsKey(c.AAO_Answer__c)) {
+                byAnswer.put(c.AAO_Answer__c, new List<AAO_Claim__c>());
+            }
+            byAnswer.get(c.AAO_Answer__c).add(c);
+        }
+
+        List<AAO_Answer__c> moved = new List<AAO_Answer__c>();
+        for (AAO_Answer__c a : [
+            SELECT Id, AAO_Verdict__c, AAO_Established_By__c
+            FROM AAO_Answer__c
+            WHERE Id IN :answerIds
+        ]) {
+            // A human-established answer is theirs. The replay reads machine claims and must
+            // never reach across that line.
+            if (a.AAO_Established_By__c == 'HUMAN') {
+                continue;
+            }
+            String replayed = AAO_Accumulate.verdictFromClaims(byAnswer.get(a.Id));
+            if (replayed == null || replayed == a.AAO_Verdict__c) {
+                continue;
+            }
+            moved.add(new AAO_Answer__c(Id = a.Id, AAO_Verdict__c = replayed));
+        }
+        if (!moved.isEmpty()) {
+            update moved;
+        }
+        return moved.size();
     }
 
     // ---------------------------------------------------------------- the counter

@@ -9104,3 +9104,69 @@ projection: 0 created, 0 populated, 0 blocked, 2 unchanged, 1 unresolved
 **Zero unplaced codes** — every answer the run produced was one this writer recognises, which is
 the v3.9 defect measured at zero on live data rather than asserted in a test. And a run that
 wrote 4 values off 6 answers is not `DERIVED NOTHING`, so the alarm correctly stayed silent.
+
+---
+
+## 2026-08-05 · session 76 · Jefferson, answered · the create leg is unwired
+
+**Design's question: did the identity gate hold him deliberately, or is the create leg unwired?
+UNWIRED. No gate was consulted, because there is no gate here to consult.**
+
+And a correction to my own run report, which called `unresolved` "the new action doing its job."
+It is doing an honest thing — reporting a write that could not land instead of counting it as
+`unchanged` — but it is **not** what addendum 18 ruled, and describing it approvingly read as
+though the ruling had been satisfied. It has not been.
+
+### What the code actually does
+
+`AAO_Project.project()` calls `contactOf(...)`, finds null, and **returns before it reaches any
+resolution path at all**. There is no ladder call at projection, no toggle read, no create
+attempt, no refusal. The person is reported and dropped.
+
+Verified rather than asserted, three ways:
+
+- **Nothing in product code ever creates a Contact.** The only insert against anything
+  native-adjacent is `AAO_MapRoute`'s map-detail row.
+- **No toggle exists.** Addendum 18's "the Contact where the toggle is on, the shadow where it
+  is off" has no switch to read, in any object, metadata type or setting.
+- **`AAO_Shadow_Person__c` does not exist as an object.** It is a picklist value on the three
+  subject-type fields with a null lookup in `AAO_AnswerKey`, marked Wave 2 since it was written.
+
+So of the three things the ruling names — resolve, create the Contact or the shadow, write the
+map row either way — **none of the three is built.**
+
+### The ladder would have resolved nothing here, and that is the ruling's own case
+
+Worth recording, because it is the difference between a resolution bug and a missing leg. The
+roster for this artifact:
+
+| person | email | Contact |
+|---|---|---|
+| Neeraja Chimata | neeraja.chimata@emerson.com | resolved |
+| Ryan Couture | *(none)* | resolved |
+| **Vargas, Jefferson [EMR/SYSS/AT/MEDI]** | **(none)** | **none** |
+| Renee Martin, Wendy Higley | @altify.com | internal, not mapped |
+
+**Jefferson carries no email**, so a wired ladder would have had only a display name to match
+on — and that name is the ECI-mangled `Vargas, Jefferson [EMR/SYSS/AT/MEDI]`, which is the
+identity hazard already recorded against this fixture. **No Vargas Contact exists anywhere in
+the org**, so there was nothing to match to. A correct ladder resolves nothing and holds him at
+shadow stage, which is precisely the state addendum 18 wrote the mandatory create leg for. He is
+not a resolution failure. He is the case.
+
+### What building it needs, split by what it costs
+
+**Ordinary work, no ruling:** the create leg itself in `AAO_Project` — attempt the resolution
+ladder, then create, then write the map row and the ContactMapDetail either way, with the
+failure legible rather than silent. The `unresolved` counter stays as the honest report of what
+the leg could not do.
+
+**Needs a call, and it is design's:**
+1. **The toggle's home and its default.** Contact writes are toggleable by standing ruling and
+   the switch does not exist. Default on or off decides what an unconfigured org does on install
+   day with a person like Jefferson.
+2. **`AAO_Shadow_Person__c`, the object.** Toggle-off is not a transitional state — architecture
+   v3.0 records shadow persons as **permanent** for toggle-off customers — so this is a real
+   entity with a key, a promotion path, and a wiring into `AAO_AnswerKey`, not a placeholder.
+
+**Named and not started**, rather than half-built into something that looks like it works.

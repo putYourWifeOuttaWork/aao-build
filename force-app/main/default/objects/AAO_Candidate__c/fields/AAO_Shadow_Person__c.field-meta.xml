@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Shadow_Person__c</fullName>
+    <description>The shadow person this row is about, where the subject type is Shadow_Person. WIRED AT ADDENDUM 19 so the type is no longer a picklist value with nothing behind it. Read the narrowing with it: addendum 18 put the live person key on AAO_Participant__c, which covers the same people and covers them earlier, because participation is written at ingest before any projection decision has been made. So this lookup exists, composes a key, and is not what the pass writes; the shadow row&apos;s real job is projection-side, carrying a person into the customer&apos;s org where a Contact cannot be made.</description>
+    <label>Shadow Person</label>
+    <type>Lookup</type>
+    <referenceTo>AAO_Shadow_Person__c</referenceTo>
+    <relationshipName>AAO_Shadow_Candidates</relationshipName>
+    <relationshipLabel>AAO AAO_Candidate Shadow Subjects</relationshipLabel>
+    <deleteConstraint>Restrict</deleteConstraint>
+    <required>false</required>
+</CustomField>

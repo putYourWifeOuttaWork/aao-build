@@ -9170,3 +9170,121 @@ the leg could not do.
    entity with a key, a promotion path, and a wiring into `AAO_AnswerKey`, not a placeholder.
 
 **Named and not started**, rather than half-built into something that looks like it works.
+
+---
+
+## 2026-08-05 · session 76 · addendum 19 · the criteria measurement, and the create leg
+
+336 tests, 100% pass, same one pre-existing unrelated failure.
+
+### 1 · The criteria instrument, ruled before any fix — and it says something else entirely
+
+Two repeat sweeps on the frozen artifact `ec8e7170`, on the same code `em0617-a17` ran on.
+Nothing was allowed to move first, so the stamps could not drift underneath the measurement.
+
+| run | Sentiment | Political | Buyer Role | Criteria | total (unit: pairs) |
+|---|---|---|---|---|---|
+| `em0617-a17` | 8 | 11 | 10 | **0** | 29 |
+| `em0617-a19r1` | 10 | 11 | 10 | **10** | 41 |
+| `em0617-a19r2` | **0** | 10 | 12 | 8 | 30 |
+
+**Every stamp is identical across all four families and all three runs:
+`AAO_LocateCharter@locate-3.0.0+d314a73c`.** Same charter prose, same contract text, same
+composed hash. Nothing about the instructions changed between a run that read ten criteria and
+a run that read none.
+
+**Criteria came back, so it is the recall flicker at family scale and the partitioning lever
+comes forward — and the measurement says more than the ruling asked for.** The zero is not a
+criteria property. **Sentiment went to zero on r2**, having read eight and ten on the other two.
+Two families blanked out completely on different runs while **Political and Buyer Role stayed
+within two pairs across all three** (11/11/10 and 10/10/12).
+
+So the shape is: **a family read either works or returns nothing, and which family it happens
+to is not stable.** That is a different and worse finding than "criteria are hard", and it is
+not addressable by charter text, because the charter text was byte-identical on the run that
+worked and the run that did not.
+
+One measurable signature, recorded for whoever builds the lever: **the blank read is cheap.**
+r2's sentiment call finished in 6,587 ms at 307 output tokens; r1's read ten pairs in 16,453 ms
+at 959. A family read that returns nothing does not labour and fail, it returns early.
+
+### 2 · Sentiment is whole by construction — and the defect was mine, not the charter's
+
+**The charter side was already correct.** `AAO_LocateCharter.takesCoverage` already excludes
+`AAO_PS_1`, and the family read's schema carries no `coverage` property at all, so the model
+could not have offered one. The a17 sentiment pairs came back with coverage **null**, exactly as
+they should.
+
+**`AAO_PairCommit` then read null as "not Full" and downgraded every sentiment establishment to
+UNVERIFIED.** That is why the counter stood at zero for everyone and the map carried no Support
+value. A category error asked as a question gets a wrong answer; asked as an if-else, it gets a
+silent one. The join now asks `takesCoverage` — the one place that knows — rather than
+repeating the rule and drifting from it.
+
+### 3 · The toggle exists and ships ON
+
+`AAO_Setting__mdt`, the seed-metadata shape the ontology already uses: shipped default plus
+`SubscriberControlled` override, so an upgrade never reaches across and changes what a customer
+set. **Matthew ruled ON; design recommended OFF; both are recorded in `AAO_Settings`.**
+
+**The override is a picklist rather than a checkbox, and that is load-bearing: a checkbox cannot
+express "untouched".** With a shipped default of ON and a checkbox override, an admin who had
+never opened the record would be indistinguishable from one who had deliberately unticked it,
+and the customer could never turn it off. Blank means untouched; On and Off both mean somebody
+decided. **A missing row reads OFF** — absence is never permission for a write into a customer's
+own records.
+
+### 4 · `AAO_Shadow_Person__c`, a real object
+
+Key (account plus email, or account plus roster key — **per account, not per participation**,
+because a participant row is per SOURCE and keying on it would make one person a new shadow on
+every call they attend), promotion path, and `AAO_AnswerKey` wiring.
+
+**Permanent rather than transitional**, per architecture v3.0: promotion exists and is a path,
+never an expectation. And `AAO_Reason__c` separates the two causes that are not the same fact —
+`Toggle_Off` is configuration and expected-unavailable; `Create_Failed` is a real refusal by the
+org and belongs in the admin error log.
+
+Recorded with the wiring: Shadow_Person composes a key and **is not what the pass writes.**
+Addendum 18 put the live person key on the Participant, which covers the same people and covers
+them earlier, because participation is written at ingest and a shadow is made at projection.
+
+### 5 · The create leg, and Jefferson landed
+
+Ladder, then create where allowed, then shadow — failure legible at every step. The ladder runs
+again at projection deliberately: a seller may have made the Contact by hand since ingest, and
+two queries are cheaper than a duplicate person. **Never pick survives**: a name matching two
+Contacts on one account resolves to neither.
+
+**`AAO_PersonName` is deterministic, and that is the whole licence to parse a name in code.** No
+model reads a name. Shapes are recognised by structure — the bracketed org path stripped first,
+then `Last, First`, then `First Last`, then a bare surname — and an unrecognised string
+**refuses** rather than guessing, which holds the person at shadow stage instead of inventing
+one. The source form is kept on the shadow row per the stored-form law, for the law's reason and
+two practical ones: this parse is ours and can be wrong, and ASR mangles names in the roster
+itself.
+
+**The run:**
+
+```
+projection: 1 created, 0 populated, 0 blocked, 2 unchanged, 0 unresolved
+  contacts created         1 (unit: contacts)
+  people held at shadow    0 (unit: people)
+  Vargas, Jefferson [EMR/SYSS/AT/MEDI]: created political=Outside Political Structure
+    role=Evaluator wrote(Political, Buyer Role)
+    :: No Contact existed for this person. Created as "Jefferson Vargas" from the source
+       form "Vargas, Jefferson [EMR/SYSS/AT/MEDI]" (Last, First).
+```
+
+`003WD00001QJ5hMYAT` — **FirstName Jefferson, LastName Vargas.** No bracket, no routing code.
+The map now carries three people, and Jefferson's row reads Outside Political Structure and
+Evaluator with the note citing his own turn on 17 June.
+
+### Named, and not invented
+
+**Addendum 19 says "the map row and the ContactMapDetail either way", and one reading of "either
+way" is impossible.** Across the create leg and the populate leg, yes, and that is built. Across
+Contact-and-shadow, no: `ALTF__Contact_Map_Details__c.ALTF__Contact__c` is required, so a
+toggle-off org's shadow person has no map row to write and none is faked. Architecture v3.0
+states this directly — shadow persons "cannot reach the Altify map" — so the architecture is
+taken as the authority on its own conflict, and the narrower reading is what is built.

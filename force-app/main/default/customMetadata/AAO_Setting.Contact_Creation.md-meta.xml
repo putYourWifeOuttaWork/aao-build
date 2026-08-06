@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <label>Contact Creation</label>
+    <protected>false</protected>
+    <values>
+        <field>AAO_Shipped_Default__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>AAO_Note__c</field>
+        <value xsi:type="xsd:string">May the system create a Contact for a person who appears in your evidence and has none? Default ON, ruled by Matthew 5 August. Turn it OFF and those people persist as shadow persons on our own objects, keep their claims and their answers, and cannot reach the Altify relationship map, because that map row requires a Contact. Shadow persons are permanent for a toggle-off org, not a staging area.</value>
+    </values>
+</CustomMetadata>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  THE ORG-OVERRIDABLE SETTINGS, in the lawful seed-metadata shape.
+
+  Same pattern as AAO_People_Question, and for the same reasons: configuration deploys with
+  the code, is readable without a query against data the running user may not have access to,
+  and carries a SHIPPED DEFAULT plus a PER-ORG OVERRIDE in one row. An untouched org silently
+  gets the default; a configured org silently gets its own answer; an upgrade never reaches
+  across and changes what a customer set.
+
+  Why a type of its own rather than more fields on AAO_Model_Config: that type is the model
+  gateway's configuration and is read on the callout path. A toggle governing whether we may
+  create a Contact is a different question with a different owner, and putting it there would
+  make "is the model active" and "may we write to your CRM" one row to get wrong.
+
+  Owed here at packaging and named rather than assumed: the internal-domain list, which is the
+  right value in the wrong home (a demo static resource) per architecture v3.8 item 4.
+-->
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>AAO Setting</label>
+    <pluralLabel>AAO Settings</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

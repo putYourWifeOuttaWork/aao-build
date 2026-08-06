@@ -63,6 +63,11 @@ public with sharing class AAO_Project {
         @AuraEnabled
         public Id participantId;
         @AuraEnabled
+        public Id shadowPersonId;
+        /** resolved | created | shadowed, from the identity ladder. */
+        @AuraEnabled
+        public String identity;
+        @AuraEnabled
         public String personName;
         @AuraEnabled
         public String support;
@@ -113,6 +118,10 @@ public with sharing class AAO_Project {
         public Integer unchanged = 0;
         /** People whose identity resolves to no Contact, so no map row can be reached. */
         public Integer unresolved = 0;
+        /** Contacts the create leg made for people the org had none for. */
+        public Integer contactsCreated = 0;
+        /** People held at shadow stage, which is a real and often permanent state. */
+        public Integer shadowed = 0;
 
         /**
          * THE STAGE ARITHMETIC EXTENDED THROUGH PROJECTION, the fourth stage. Architecture
@@ -157,6 +166,8 @@ public with sharing class AAO_Project {
             String s = 'projection: ' + created + ' created, ' + populated + ' populated, ' +
                 blocked + ' blocked, ' + unchanged + ' unchanged, ' +
                 unresolved + ' unresolved' +
+                '\n  contacts created         ' + contactsCreated + ' (unit: contacts)' +
+                '\n  people held at shadow    ' + shadowed + ' (unit: people)' +
                 '\n  answers read             ' + answersRead + ' (unit: answers)' +
                 '\n  answers unplaced         ' + answersUnplaced + ' (unit: answers)' +
                 '\n  dimension values written ' + dimensionWrites() + ' (unit: values)';
@@ -230,6 +241,11 @@ public with sharing class AAO_Project {
 
             PersonResult r = project(opportunityId, accountId, answers, d);
             o.people.add(r);
+            if (r.identity == 'created') {
+                o.contactsCreated++;
+            } else if (r.identity == 'shadowed') {
+                o.shadowed++;
+            }
             if (r.action == 'created') {
                 o.created++;
             } else if (r.action == 'populated') {
@@ -308,6 +324,25 @@ public with sharing class AAO_Project {
         return a.AAO_Participant__r == null ? null : a.AAO_Participant__r.AAO_Contact__c;
     }
 
+    /**
+     * The participation row behind this answer, with what the ladder needs selected. Read
+     * per person rather than bulked because the create leg only ever runs for the few people
+     * a deal has no Contact for, and paying a query for each of those is cheaper than paying
+     * one for everybody.
+     */
+    private static AAO_Participant__c participantOf(AAO_Answer__c a) {
+        if (a.AAO_Participant__c == null) {
+            return null;
+        }
+        List<AAO_Participant__c> found = [
+            SELECT Id, AAO_Contact__c, AAO_Email__c, AAO_Roster_Key__c, AAO_Display_Name__c
+            FROM AAO_Participant__c
+            WHERE Id = :a.AAO_Participant__c
+            LIMIT 1
+        ];
+        return found.isEmpty() ? null : found[0];
+    }
+
     private static String nameOf(AAO_Answer__c a) {
         if (a.AAO_Participant__r != null &&
             String.isNotBlank(a.AAO_Participant__r.AAO_Display_Name__c)) {
@@ -350,18 +385,43 @@ public with sharing class AAO_Project {
             return r;
         }
 
-        // THE MAP NEEDS A CONTACT AND THIS PERSON HAS NONE. Reported as its own action rather
-        // than folded into `unchanged`: the derivation succeeded and the write could not
-        // land, which is a different fact from the evidence establishing nothing. This is the
-        // create-the-Contact-or-shadow leg's queue, and Jefferson Vargas is the standing
-        // specimen - identified on the 17 June fixture, no Contact record at all.
+        // THE MAP NEEDS A CONTACT AND THIS PERSON HAS NONE, so the create leg runs: the
+        // ladder again, then a create where the toggle allows it, then a shadow. Addendum 19,
+        // ruling 3. Before this the writer reported the gap and stopped, which was honest and
+        // was not the ruling.
+        //
+        // `unresolved` STAYS, as the honest report of what the leg could not do. It is now
+        // the narrow case rather than the whole case: the person is held at shadow stage,
+        // which is a real and for a toggle-off org a PERMANENT state, and the map is the one
+        // surface they cannot reach - `ALTF__Contact_Map_Details__c.ALTF__Contact__c` is
+        // required, so there is no map row to write without a Contact and none is faked.
         if (contactId == null) {
-            r.action = 'unresolved';
-            r.reason =
-                'Identified, and no Contact resolves for this person, so no map row can be ' +
-                'reached: ALTF__Contact_Map_Details__c.ALTF__Contact__c is required. The ' +
-                'derivation stands on our own rows and projects the moment identity resolves.';
-            return r;
+            AAO_Participant__c person = participantOf(answers[0]);
+            if (person == null) {
+                r.action = 'unresolved';
+                r.reason =
+                    'No Contact and no participation row, so there is nothing to resolve ' +
+                    'from. A pre-ruling answer keyed on a Contact that has since been ' +
+                    'deleted lands here.';
+                return r;
+            }
+            AAO_Identity.Resolution res = AAO_Identity.resolve(person, accountId);
+            r.identity = res.action;
+            r.shadowPersonId = res.shadowPersonId;
+            if (res.reachesTheMap()) {
+                contactId = res.contactId;
+                r.contactId = contactId;
+                r.reason = res.reason;
+            } else {
+                r.action = 'unresolved';
+                r.reason =
+                    'Held at shadow stage, so no map row can be reached: ' +
+                    'ALTF__Contact_Map_Details__c.ALTF__Contact__c is required and no ' +
+                    'Contact exists. ' + res.reason +
+                    ' The derivation stands on our own rows and projects the moment identity ' +
+                    'resolves.';
+                return r;
+            }
         }
 
         // ---- read before write, on the pair

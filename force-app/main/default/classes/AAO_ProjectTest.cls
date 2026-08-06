@@ -484,13 +484,45 @@ private class AAO_ProjectTest {
     }
 
     @IsTest
-    static void anIdentifiedPersonWithNoContactIsReportedUnresolvedAndNeverAsSilence() {
+    static void theCreateLegLandsAPersonTheOrgHasNoContactFor() {
         // Jefferson Vargas, the standing specimen: identified on the 17 June fixture, no
-        // Contact record at all. The derivation succeeds and the write cannot land, because
-        // ALTF__Contact_Map_Details__c.ALTF__Contact__c is required. That is a different fact
-        // from the evidence establishing nothing, and folding the two together is how a
-        // person disappears out of a run that reports success.
+        // Contact record at all. Addendum 19 ruled the create leg, so he now reaches the map
+        // rather than being reported and dropped - and the name written is the PARSED one,
+        // never the mangled roster string he arrives under.
         Fixture f = fixture();
+        AAO_Settings.overrideForTest.put(AAO_Settings.CONTACT_CREATION, true);
+        AAO_Participant__c unlinked = participantWithNoContact(f);
+        establishFor(f, AAO_P8Codes.SENTIMENT, 'TRUE', 2, unlinked.Id);
+
+        Test.startTest();
+        AAO_Project.Outcome o = AAO_Project.run(f.oppId);
+        Test.stopTest();
+
+        System.assertEquals(1, o.contactsCreated, o.toString());
+        System.assertEquals(0, o.unresolved, o.toString());
+        System.assertEquals(1, o.created, 'And the map row follows the Contact.');
+        AAO_Project.PersonResult r = o.people[0];
+        System.assertEquals('created', r.identity);
+        System.assertEquals('Supporter', r.support);
+        Contact made = [SELECT FirstName, LastName FROM Contact WHERE Id = :r.contactId];
+        System.assertEquals('Jefferson', made.FirstName);
+        System.assertEquals('Vargas', made.LastName);
+        System.assertEquals(
+            'Supporter',
+            [
+                SELECT ALTF__Status__c FROM ALTF__Contact_Map_Details__c WHERE Id = :r.mapRowId
+            ].ALTF__Status__c
+        );
+    }
+
+    @IsTest
+    static void withCreationOffTheSamePersonIsShadowedAndReportedUnresolved() {
+        // The other half of the toggle, and the state architecture v3.0 calls PERMANENT for a
+        // toggle-off customer rather than transitional. The derivation still succeeds and the
+        // map is the one surface they cannot reach: ALTF__Contact__c is required there, so
+        // there is no row to write and none is faked.
+        Fixture f = fixture();
+        AAO_Settings.overrideForTest.put(AAO_Settings.CONTACT_CREATION, false);
         AAO_Participant__c unlinked = participantWithNoContact(f);
         establishFor(f, AAO_P8Codes.SENTIMENT, 'TRUE', 2, unlinked.Id);
 
@@ -499,9 +531,12 @@ private class AAO_ProjectTest {
         Test.stopTest();
 
         System.assertEquals(1, o.unresolved, o.toString());
-        System.assertEquals(0, o.created);
+        System.assertEquals(1, o.shadowed, o.toString());
+        System.assertEquals(0, o.contactsCreated);
         AAO_Project.PersonResult r = o.people[0];
         System.assertEquals('unresolved', r.action);
+        System.assertEquals('shadowed', r.identity);
+        System.assertNotEquals(null, r.shadowPersonId, 'The person persists on our objects.');
         System.assertEquals('Supporter', r.support, 'The derivation stands on our own rows.');
         System.assert(r.reason.contains('no map row can be reached'), r.reason);
         System.assertEquals(

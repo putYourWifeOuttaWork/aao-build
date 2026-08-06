@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Participant__c</fullName>
+    <description>Written by: the create leg. The participation row this shadow was made from. Restrict on delete: participation is the evidence that this person exists at all, and a shadow whose participant vanished is a person nothing accounts for.</description>
+    <label>Participant</label>
+    <type>Lookup</type>
+    <referenceTo>AAO_Participant__c</referenceTo>
+    <relationshipName>AAO_Shadow_Persons</relationshipName>
+    <relationshipLabel>AAO Shadow Persons</relationshipLabel>
+    <deleteConstraint>Restrict</deleteConstraint>
+    <required>false</required>
+</CustomField>

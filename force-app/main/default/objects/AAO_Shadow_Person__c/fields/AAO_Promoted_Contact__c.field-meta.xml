@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Promoted_Contact__c</fullName>
+    <description>THE PROMOTION PATH. Set when this person later resolves to, or is created as, a Contact. The shadow row is never deleted on promotion: it is what the claims written before the promotion were keyed against, and deleting it would break the trail that says who they were when we only knew them from a call.</description>
+    <label>Promoted Contact</label>
+    <type>Lookup</type>
+    <referenceTo>Contact</referenceTo>
+    <relationshipName>AAO_Shadow_Persons</relationshipName>
+    <relationshipLabel>AAO Shadow Persons</relationshipLabel>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <required>false</required>
+</CustomField>

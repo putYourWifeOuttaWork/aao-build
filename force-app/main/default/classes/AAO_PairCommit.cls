@@ -248,11 +248,31 @@ public with sharing class AAO_PairCommit {
         cov.covered = new List<String>(elements);
         cov.missing = new List<String>();
 
-        // COVERAGE DECIDES THE VERDICT. Full carries every element the proposition names and
-        // proposes TRUE; Partial carries some, is the instructed default under doubt, and
-        // proposes UNVERIFIED - a finding with its receipts that satisfies no condition and
-        // places nobody. True-or-nothing means FALSE is never proposed from this path at all.
-        String proposed = located.AAO_Coverage__c == 'Full' ? 'TRUE' : 'UNVERIFIED';
+        // COVERAGE DECIDES THE VERDICT WHERE THE QUESTION TAKES COVERAGE, and **sentiment
+        // does not** (§P8.4, and Addendum 19's first ruling). A sentiment read is whole: the
+        // words voice one of four states or they produce no pair, and accumulation is the
+        // counter's job rather than a coverage grade. `AAO_LocateCharter.takesCoverage` is
+        // the single place that knows which questions those are, so this asks it rather than
+        // repeating the list.
+        //
+        // **THIS WAS A DEFECT AND IT WAS MINE.** The charter side was already correct - the
+        // sentiment family read's schema carries no `coverage` property at all, so the model
+        // could not have offered one, and the a17 pairs came back with coverage null exactly
+        // as they should. This line then read null as "not Full" and downgraded every
+        // sentiment establishment to UNVERIFIED, which is why the counter stood at zero for
+        // everyone and the map carried no Support value. A category error asked as a question
+        // gets a wrong answer; asked as an if-else, it gets a silent one.
+        String code = p.AAO_Evidence_Contract__r.AAO_Proposition_Code__c;
+        String proposed;
+        if (!AAO_LocateCharter.takesCoverage(code)) {
+            proposed = 'TRUE';
+        } else {
+            // Full carries every element the proposition names and proposes TRUE; Partial
+            // carries some, is the instructed default under doubt, and proposes UNVERIFIED -
+            // a finding with its receipts that satisfies no condition and places nobody.
+            // True-or-nothing means FALSE is never proposed from this path at all.
+            proposed = located.AAO_Coverage__c == 'Full' ? 'TRUE' : 'UNVERIFIED';
+        }
 
         return new AAO_Candidate__c(
             AAO_Evidence_Contract__c = p.AAO_Evidence_Contract__c,

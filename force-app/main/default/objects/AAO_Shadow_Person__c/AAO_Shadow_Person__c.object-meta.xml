@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>A person in the evidence who is not a Contact, or whom the org will not let a package create as one. Pulled forward from Wave 2 by Matthew&apos;s ruling, Addendum 19. PERMANENT RATHER THAN TRANSITIONAL: architecture v3.0 states that shadow persons persist for a toggle-off customer and cannot reach the Altify map, because that map row requires a Contact. Every earlier framing treated promotion as this row&apos;s destiny; for most of the orgs that will hold one, it is not. Promotion exists and is a path, never an expectation.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <label>AAO Shadow Person</label>
+    <nameField>
+        <displayFormat>SP-{00000000}</displayFormat>
+        <label>AAO Shadow Person Name</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>AAO Shadow Persons</pluralLabel>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

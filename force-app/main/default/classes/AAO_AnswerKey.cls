@@ -22,10 +22,14 @@ public class AAO_AnswerKey {
 
     /**
      * The seven subject types, and which typed lookup carries the subject for each.
-     * Four are unwired: AAO_Shadow_Person__c is Wave 2, and Insight Card, Qualifier and
-     * Decision Criterion are managed objects whose API names have not been read from
-     * altify--aossb2. Guessing them would violate evidence over inference about schema,
-     * so they throw by name instead.
+     * Three are unwired: Insight Card, Qualifier and Decision Criterion are managed objects
+     * whose API names have not been read from altify--aossb2. Guessing them would violate
+     * evidence over inference about schema, so they throw by name instead.
+     *
+     * SHADOW_PERSON IS WIRED AT ADDENDUM 19, pulled forward from Wave 2. Read the narrowing
+     * with it: addendum 18 put the live person key on the Participant, which covers the same
+     * people and covers them EARLIER, because participation is written at ingest and a shadow
+     * is made at projection. So this type composes a key and is not what the pass writes.
      *
      * PARTICIPANT ENTERS AT ADDENDUM 18, and it is additive rather than a migration: no
      * key already in the org changes shape, because no key already in the org carries this
@@ -38,7 +42,7 @@ public class AAO_AnswerKey {
         'Opportunity' => 'AAO_Opportunity__c',
         'Contact' => 'AAO_Subject_Contact__c',
         'Participant' => 'AAO_Participant__c',
-        'Shadow_Person' => null,
+        'Shadow_Person' => 'AAO_Shadow_Person__c',
         'Insight_Card' => null,
         'Qualifier' => null,
         'Decision_Criterion' => null
@@ -90,7 +94,8 @@ public class AAO_AnswerKey {
             a.AAO_Evidence_Contract__c,
             a.AAO_Opportunity__c,
             a.AAO_Subject_Contact__c,
-            a.AAO_Participant__c
+            a.AAO_Participant__c,
+            a.AAO_Shadow_Person__c
         );
     }
 
@@ -100,7 +105,8 @@ public class AAO_AnswerKey {
             c.AAO_Evidence_Contract__c,
             c.AAO_Opportunity__c,
             c.AAO_Subject_Contact__c,
-            c.AAO_Participant__c
+            c.AAO_Participant__c,
+            c.AAO_Shadow_Person__c
         );
     }
 
@@ -110,7 +116,8 @@ public class AAO_AnswerKey {
             c.AAO_Evidence_Contract__c,
             c.AAO_Opportunity__c,
             c.AAO_Subject_Contact__c,
-            c.AAO_Participant__c
+            c.AAO_Participant__c,
+            c.AAO_Shadow_Person__c
         );
     }
 
@@ -119,7 +126,8 @@ public class AAO_AnswerKey {
         Id contractId,
         Id opportunityId,
         Id subjectContactId,
-        Id participantId
+        Id participantId,
+        Id shadowPersonId
     ) {
         if (String.isBlank(subjectType)) {
             throw new KeyException('Cannot compose an answer key with no subject type.');
@@ -157,6 +165,8 @@ public class AAO_AnswerKey {
             resolved = opportunityId;
         } else if (subjectType == 'Participant') {
             resolved = participantId;
+        } else if (subjectType == 'Shadow_Person') {
+            resolved = shadowPersonId;
         } else {
             resolved = subjectContactId;
         }
@@ -165,6 +175,14 @@ public class AAO_AnswerKey {
             subjectType != 'Contact' &&
             subjectType != 'Participant' &&
             subjectContactId != null;
+        if (subjectType != 'Shadow_Person' && shadowPersonId != null) {
+            throw new KeyException(
+                'A row with subject type "' +
+                subjectType +
+                '" must express exactly one subject, but AAO_Shadow_Person__c is also ' +
+                'populated.'
+            );
+        }
         if (strayContact) {
             throw new KeyException(
                 'A row with subject type "' +

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Note__c</fullName>
+    <description>What this setting governs and what turning it off costs, in the admin&apos;s own reading. Ours, upgradeable.</description>
+    <label>Note</label>
+    <type>LongTextArea</type>
+    <length>1024</length>
+    <visibleLines>3</visibleLines>
+</CustomField>

@@ -134,6 +134,41 @@ private class AAO_PairCommitTest {
         );
     }
 
+    @IsTest
+    static void sentimentIsWholeByConstructionAndNeverGradedPartial() {
+        // Addendum 19's first ruling, and the defect behind it was MINE rather than the
+        // charter's: the sentiment family read's schema carries no `coverage` property at
+        // all, so the a17 pairs came back with coverage null exactly as they should, and
+        // this class read null as "not Full" and downgraded every sentiment establishment to
+        // UNVERIFIED. The counter then stood at zero for everyone and the map carried no
+        // Support value at all.
+        Fixture f = fixture();
+        pair(f, 'p1', AAO_P8Codes.SENTIMENT, 'SUPPORTER', null, 'Identified', 'Upheld', f.participantId);
+
+        Test.startTest();
+        AAO_PairCommit.run(RUN, new Set<String>());
+        Test.stopTest();
+
+        AAO_Answer__c a = [
+            SELECT AAO_Verdict__c, AAO_Support_Counter__c
+            FROM AAO_Answer__c
+            WHERE AAO_Opportunity__c = :f.oppId
+        ];
+        System.assertEquals(
+            'TRUE',
+            a.AAO_Verdict__c,
+            'A sentiment read is whole: the words voice one of four states or they produce ' +
+            'no pair. There is no partial supportiveness to grade.'
+        );
+        System.assertEquals(1, a.AAO_Support_Counter__c, 'unit: counter steps');
+        System.assertEquals(
+            false,
+            AAO_LocateCharter.takesCoverage(AAO_P8Codes.SENTIMENT),
+            'And the one place that knows which questions take coverage says so, rather ' +
+            'than this rule being written out twice and drifting.'
+        );
+    }
+
     // ================================================== a person with no Contact still lands
 
     @IsTest

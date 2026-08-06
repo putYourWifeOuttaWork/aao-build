@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Reason__c</fullName>
+    <description>WHY THIS ROW EXISTS RATHER THAN A CONTACT, and the two causes are not the same fact. Toggle_Off is the customer&apos;s configuration and is expected-unavailable rather than an error; Create_Failed is a real refusal by the org and belongs in the admin error log. Unresolvable means the ladder found nothing to match and no name could be parsed.</description>
+    <label>Reason</label>
+    <type>Picklist</type>
+    <required>true</required>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Toggle_Off</fullName>
+                <default>false</default>
+                <label>Toggle_Off</label>
+            </value>
+            <value>
+                <fullName>Create_Failed</fullName>
+                <default>false</default>
+                <label>Create_Failed</label>
+            </value>
+            <value>
+                <fullName>Unresolvable</fullName>
+                <default>false</default>
+                <label>Unresolvable</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

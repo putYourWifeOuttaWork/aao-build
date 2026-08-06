@@ -120,6 +120,11 @@ public with sharing class AAO_Project {
         public Integer unresolved = 0;
         /** Contacts the create leg made for people the org had none for. */
         public Integer contactsCreated = 0;
+        /** Criteria written into the vendor's own object, with their holder junctions. */
+        public Integer criteriaProjected = 0;
+        public Integer criteriaHeldPartial = 0;
+        public Integer criteriaAlreadyProjected = 0;
+        public Integer criteriaHolderless = 0;
         /** People held at shadow stage, which is a real and often permanent state. */
         public Integer shadowed = 0;
 
@@ -167,6 +172,10 @@ public with sharing class AAO_Project {
                 blocked + ' blocked, ' + unchanged + ' unchanged, ' +
                 unresolved + ' unresolved' +
                 '\n  contacts created         ' + contactsCreated + ' (unit: contacts)' +
+                '\n  criteria projected       ' + criteriaProjected + ' (unit: criteria)' +
+                '\n    held, partial          ' + criteriaHeldPartial + ' (unit: criteria)' +
+                '\n    already projected      ' + criteriaAlreadyProjected + ' (unit: criteria)' +
+                '\n    no holder link         ' + criteriaHolderless + ' (unit: criteria)' +
                 '\n  people held at shadow    ' + shadowed + ' (unit: people)' +
                 '\n  answers read             ' + answersRead + ' (unit: answers)' +
                 '\n  answers unplaced         ' + answersUnplaced + ' (unit: answers)' +
@@ -219,12 +228,17 @@ public with sharing class AAO_Project {
         Outcome o = new Outcome();
         o.opportunityId = opportunityId;
 
+        Id accountId = [SELECT AccountId FROM Opportunity WHERE Id = :opportunityId].AccountId;
+
         Map<String, List<AAO_Answer__c>> byPerson = standingByPerson(opportunityId);
         if (byPerson.isEmpty()) {
+            // No person-subject answers is not the same as nothing to project: criteria are
+            // subjected to the criterion, so a deal whose only harvest was criteria has an
+            // empty roster here and a full one below. Returning early would have made the
+            // criteria write unreachable on exactly the run that is all criteria.
+            projectCriteria(opportunityId, accountId, o);
             return o;
         }
-
-        Id accountId = [SELECT AccountId FROM Opportunity WHERE Id = :opportunityId].AccountId;
 
         List<String> personKeys = new List<String>(byPerson.keySet());
         personKeys.sort();
@@ -258,7 +272,118 @@ public with sharing class AAO_Project {
                 o.unchanged++;
             }
         }
+
+        projectCriteria(opportunityId, accountId, o);
         return o;
+    }
+
+    /**
+     * THE CRITERIA WRITE. Addendum 20: it flows from criterion-subject answers.
+     *
+     * **Only whole criteria project**, under the standing partial law. A criterion whose
+     * naming came back Partial stands as UNVERIFIED with its receipts on our own rows, is
+     * visible to anyone reading them, and does not reach the customer's map - because a
+     * partial accrues safely and PLACES NOBODY, and a vendor row is a placement. Whether
+     * partials survive at all is Matthew's after the criteria measurement, so they are held
+     * and counted rather than dropped.
+     *
+     * Three DML per pass and not per criterion, which is the ruled shape: insert the criteria,
+     * update them to stamp `Name` with each record's own fifteen-character Id (the convention
+     * on every existing row, and not a label), insert the holder junctions. Bulkified, the
+     * count does not grow with volume.
+     *
+     * **The two conventions that are invisible from the schema and each silently break a
+     * record**: `Name` holds the record's own Id, and `ALTF__Subject__c` holds the criterion
+     * text and is what the interface displays. A criterion written without Subject renders
+     * blank; written without the opportunity it never reaches the deal's map at all.
+     * `ALTF__AltifyId__c` is stamped by something on their side and we do not write it.
+     */
+    private static void projectCriteria(Id opportunityId, Id accountId, Outcome o) {
+        Map<Id, AAO_Criterion__c> byId = new Map<Id, AAO_Criterion__c>([
+            SELECT Id, AAO_Subject__c, AAO_Type__c, AAO_Required__c, AAO_Voiced_By__c,
+                AAO_Voiced_By__r.AAO_Contact__c, AAO_Projected_Criterion_Id__c
+            FROM AAO_Criterion__c
+            WHERE AAO_Opportunity__c = :opportunityId
+        ]);
+        if (byId.isEmpty()) {
+            return;
+        }
+
+        // WHOLE ONLY, and the verdict on the naming answer is what says so.
+        Map<Id, String> verdictByCriterion = new Map<Id, String>();
+        for (AAO_Answer__c a : [
+            SELECT AAO_Criterion__c, AAO_Verdict__c
+            FROM AAO_Answer__c
+            WHERE AAO_Criterion__c IN :byId.keySet()
+                AND AAO_Subject_Type__c = 'Decision_Criterion'
+                AND AAO_Publication_State__c = 'Live'
+                AND AAO_Evidence_Contract__r.AAO_Proposition_Code__c = :AAO_P8Codes.CRITERION_NAMING
+        ]) {
+            verdictByCriterion.put(a.AAO_Criterion__c, a.AAO_Verdict__c);
+        }
+
+        List<AAO_Criterion__c> toWrite = new List<AAO_Criterion__c>();
+        for (AAO_Criterion__c c : byId.values()) {
+            if (String.isNotBlank(c.AAO_Projected_Criterion_Id__c)) {
+                // The watermark, and the only record that we already wrote this one: the
+                // vendor object carries no external id to upsert against.
+                o.criteriaAlreadyProjected++;
+                continue;
+            }
+            if (verdictByCriterion.get(c.Id) != 'TRUE') {
+                o.criteriaHeldPartial++;
+                continue;
+            }
+            toWrite.add(c);
+        }
+        if (toWrite.isEmpty()) {
+            return;
+        }
+
+        List<ALTF__Decision_Criteria__c> rows = new List<ALTF__Decision_Criteria__c>();
+        for (AAO_Criterion__c c : toWrite) {
+            rows.add(new ALTF__Decision_Criteria__c(
+                ALTF__Account__c = accountId,
+                ALTF__Opportunity__c = opportunityId,
+                ALTF__Subject__c = c.AAO_Subject__c,
+                ALTF__Type__c = String.isBlank(c.AAO_Type__c) ? 'Informal' : c.AAO_Type__c,
+                ALTF__Required__c = c.AAO_Required__c == true
+            ));
+        }
+        insert rows;
+
+        List<ALTF__Decision_Criteria__c> named = new List<ALTF__Decision_Criteria__c>();
+        List<ALTF__Decision_Criteria_Contact__c> holders =
+            new List<ALTF__Decision_Criteria_Contact__c>();
+        Datetime now = Datetime.now();
+        for (Integer i = 0; i < rows.size(); i++) {
+            named.add(new ALTF__Decision_Criteria__c(
+                Id = rows[i].Id,
+                Name = String.valueOf(rows[i].Id).substring(0, 15)
+            ));
+            AAO_Criterion__c c = toWrite[i];
+            c.AAO_Projected_Criterion_Id__c = String.valueOf(rows[i].Id);
+            c.AAO_Projected_Modstamp__c = now;
+            Id holder = c.AAO_Voiced_By__r == null ? null : c.AAO_Voiced_By__r.AAO_Contact__c;
+            if (holder == null) {
+                // Attribution is the one thing a recorded call hands us free, and this is the
+                // case where it cannot land: the junction requires a Contact and this voicer
+                // holds at shadow stage. The criterion still projects, because the criterion
+                // is true whether or not we can name its holder in their schema.
+                o.criteriaHolderless++;
+            } else {
+                holders.add(new ALTF__Decision_Criteria_Contact__c(
+                    ALTF__Decision_Criteria__c = rows[i].Id,
+                    ALTF__Contact__c = holder
+                ));
+            }
+            o.criteriaProjected++;
+        }
+        update named;
+        if (!holders.isEmpty()) {
+            insert holders;
+        }
+        update toWrite;
     }
 
     /**

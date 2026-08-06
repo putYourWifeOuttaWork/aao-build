@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>A decision criterion, OURS. The subject of a criteria answer, per addendum 20.
+
+WHY THIS IS OURS AND NOT ALTF__Decision_Criteria__c, which is the obvious reading of "the fifth subject type" and is unbuildable. LAW #1: the system runs with Altify absent, so a subject lookup at a managed object would make the entire criteria path require a package we are forbidden to depend on. And "Where the truth lives": claims land on our objects first and Altify receives a projection, so a subject that IS the Altify row inverts the write order - the criterion would have to exist in their org before we could write the claim that establishes it. Architecture v2.1 adopted criteria "adding a fifth Claim subject type and no new entity"; that sentence was written when the subject was assumed to be the vendor row, and it does not survive LAW #1. One entity is the price.
+
+The vendor row is the PROJECTION of this one, and AAO_Projected_Criterion_Id__c is where that lands.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <label>AAO Criterion</label>
+    <nameField>
+        <displayFormat>CR-{00000000}</displayFormat>
+        <label>AAO Criterion Name</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>AAO Criteria</pluralLabel>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

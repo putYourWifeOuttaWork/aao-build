@@ -22,9 +22,17 @@ public class AAO_AnswerKey {
 
     /**
      * The seven subject types, and which typed lookup carries the subject for each.
-     * Three are unwired: Insight Card, Qualifier and Decision Criterion are managed objects
-     * whose API names have not been read from altify--aossb2. Guessing them would violate
-     * evidence over inference about schema, so they throw by name instead.
+     * Two are unwired: Insight Card and Qualifier are managed objects whose API names have
+     * not been read from altify--aossb2. Guessing them would violate evidence over inference
+     * about schema, so they throw by name instead.
+     *
+     * DECISION_CRITERION IS WIRED AT ADDENDUM 20, and it points at OUR criterion ledger
+     * rather than at ALTF__Decision_Criteria__c. Two reasons, both standing law: the system
+     * runs with Altify absent, so a subject at a managed object would make the whole criteria
+     * path require a package; and claims land on our objects before anything is projected, so
+     * a subject that IS the vendor row would need that row to exist before the claim that
+     * establishes it. **The person stays on the row as owner, never as key** - the exception
+     * below.
      *
      * SHADOW_PERSON IS WIRED AT ADDENDUM 19, pulled forward from Wave 2. Read the narrowing
      * with it: addendum 18 put the live person key on the Participant, which covers the same
@@ -43,9 +51,9 @@ public class AAO_AnswerKey {
         'Contact' => 'AAO_Subject_Contact__c',
         'Participant' => 'AAO_Participant__c',
         'Shadow_Person' => 'AAO_Shadow_Person__c',
+        'Decision_Criterion' => 'AAO_Criterion__c',
         'Insight_Card' => null,
-        'Qualifier' => null,
-        'Decision_Criterion' => null
+        'Qualifier' => null
     };
 
     // ------------------------------------------------------------------ pure core
@@ -95,7 +103,8 @@ public class AAO_AnswerKey {
             a.AAO_Opportunity__c,
             a.AAO_Subject_Contact__c,
             a.AAO_Participant__c,
-            a.AAO_Shadow_Person__c
+            a.AAO_Shadow_Person__c,
+            a.AAO_Criterion__c
         );
     }
 
@@ -106,7 +115,8 @@ public class AAO_AnswerKey {
             c.AAO_Opportunity__c,
             c.AAO_Subject_Contact__c,
             c.AAO_Participant__c,
-            c.AAO_Shadow_Person__c
+            c.AAO_Shadow_Person__c,
+            c.AAO_Criterion__c
         );
     }
 
@@ -117,7 +127,8 @@ public class AAO_AnswerKey {
             c.AAO_Opportunity__c,
             c.AAO_Subject_Contact__c,
             c.AAO_Participant__c,
-            c.AAO_Shadow_Person__c
+            c.AAO_Shadow_Person__c,
+            c.AAO_Criterion__c
         );
     }
 
@@ -127,7 +138,8 @@ public class AAO_AnswerKey {
         Id opportunityId,
         Id subjectContactId,
         Id participantId,
-        Id shadowPersonId
+        Id shadowPersonId,
+        Id criterionId
     ) {
         if (String.isBlank(subjectType)) {
             throw new KeyException('Cannot compose an answer key with no subject type.');
@@ -167,20 +179,35 @@ public class AAO_AnswerKey {
             resolved = participantId;
         } else if (subjectType == 'Shadow_Person') {
             resolved = shadowPersonId;
+        } else if (subjectType == 'Decision_Criterion') {
+            resolved = criterionId;
         } else {
             resolved = subjectContactId;
         }
 
+        // **A PARTICIPANT ON A CRITERION ROW IS THE OWNER, NOT A SECOND SUBJECT.** Addendum
+        // 20 states it directly: the criterion is the key and the person stays on the row as
+        // owner. A criteria answer without its voicer would lose the one thing that makes a
+        // criterion actionable - whose criterion it is - and the holder junction at
+        // projection is written from exactly that field.
+        Boolean ownerNotSubject =
+            subjectType == 'Decision_Criterion' || subjectType == 'Participant';
+
         Boolean strayContact =
-            subjectType != 'Contact' &&
-            subjectType != 'Participant' &&
-            subjectContactId != null;
+            subjectType != 'Contact' && !ownerNotSubject && subjectContactId != null;
         if (subjectType != 'Shadow_Person' && shadowPersonId != null) {
             throw new KeyException(
                 'A row with subject type "' +
                 subjectType +
                 '" must express exactly one subject, but AAO_Shadow_Person__c is also ' +
                 'populated.'
+            );
+        }
+        if (subjectType != 'Decision_Criterion' && criterionId != null) {
+            throw new KeyException(
+                'A row with subject type "' +
+                subjectType +
+                '" must express exactly one subject, but AAO_Criterion__c is also populated.'
             );
         }
         if (strayContact) {
@@ -191,7 +218,7 @@ public class AAO_AnswerKey {
                 'populated.'
             );
         }
-        if (subjectType != 'Participant' && participantId != null) {
+        if (!ownerNotSubject && participantId != null) {
             throw new KeyException(
                 'A row with subject type "' +
                 subjectType +

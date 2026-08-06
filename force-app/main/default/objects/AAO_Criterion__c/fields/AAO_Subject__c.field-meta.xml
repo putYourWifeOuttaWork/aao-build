@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Subject__c</fullName>
+    <description>THE CRITERION ITSELF, in the buyer&apos;s own voiced meaning. 255 to match ALTF__Subject__c, which is what this projects into and which is what the vendor&apos;s interface displays: a criterion written without Subject renders blank. Truncating at projection would leave the two disagreeing, so the bound is carried here where it can refuse instead.</description>
+    <label>Subject</label>
+    <type>Text</type>
+    <length>255</length>
+    <required>true</required>
+</CustomField>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Criterion__c</fullName>
+    <description>The criterion this row is about, where the subject type is Decision_Criterion. Addendum 20: THE CRITERIA ANSWER&apos;S SUBJECT IS THE CRITERION, one answer row per criterion, and the person stays on the row as OWNER rather than as key. Before this, a person naming three criteria produced one answer per contract, because the key was subject plus contract and the subject was the person - so two of the three vanished. Points at our own criterion ledger and not at ALTF__Decision_Criteria__c, because the system runs with Altify absent and claims land on our objects before anything is projected.</description>
+    <label>Criterion</label>
+    <type>Lookup</type>
+    <referenceTo>AAO_Criterion__c</referenceTo>
+    <relationshipName>AAO_Criterion_Candidates</relationshipName>
+    <relationshipLabel>AAO Criterion Subjects</relationshipLabel>
+    <deleteConstraint>Restrict</deleteConstraint>
+    <required>false</required>
+</CustomField>

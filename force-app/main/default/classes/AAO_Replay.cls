@@ -27,6 +27,7 @@ public class AAO_Replay {
                 AAO_Subject_Contact__c,
                 AAO_Participant__c,
                 AAO_Shadow_Person__c,
+                AAO_Criterion__c,
                 AAO_Verdict_Before__c,
                 AAO_Verdict_After__c,
                 AAO_Spans__c,
@@ -114,7 +115,8 @@ public class AAO_Replay {
                 AAO_Account__c,
                 AAO_Subject_Contact__c,
                 AAO_Participant__c,
-                AAO_Shadow_Person__c
+                AAO_Shadow_Person__c,
+                AAO_Criterion__c
             FROM AAO_Answer__c
             WHERE AAO_Opportunity__c = :opportunityId
         ];

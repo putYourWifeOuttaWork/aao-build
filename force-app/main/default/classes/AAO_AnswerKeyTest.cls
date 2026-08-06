@@ -123,13 +123,13 @@ private class AAO_AnswerKeyTest {
      */
     @IsTest
     static void unwiredSubjectTypesThrowNamed() {
-        // SHADOW_PERSON LEFT THIS LIST AT ADDENDUM 19, pulled forward from Wave 2 and wired
-        // to a real object. The three that remain are managed objects whose API names have
-        // not been read from altify--aossb2, and guessing one would be inference about schema.
+        // SHADOW_PERSON LEFT THIS LIST AT ADDENDUM 19 and DECISION_CRITERION AT ADDENDUM 20,
+        // both pulled forward and wired to objects of OURS. The two that remain are managed
+        // objects whose API names have not been read from altify--aossb2, and guessing one
+        // would be inference about schema.
         for (String t : new List<String>{
             'Insight_Card',
-            'Qualifier',
-            'Decision_Criterion'
+            'Qualifier'
         }) {
             AAO_Answer__c a = new AAO_Answer__c(
                 AAO_Subject_Type__c = t,

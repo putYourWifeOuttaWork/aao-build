@@ -43,6 +43,7 @@ public class AAO_Commit {
                 AAO_Subject_Contact__c,
                 AAO_Participant__c,
                 AAO_Shadow_Person__c,
+                AAO_Criterion__c,
                 AAO_Proposed_Verdict__c,
                 AAO_Spans__c,
                 AAO_Element_Coverage__c,
@@ -320,6 +321,7 @@ public class AAO_Commit {
                 AAO_Subject_Contact__c,
                 AAO_Participant__c,
                 AAO_Shadow_Person__c,
+                AAO_Criterion__c,
                 AAO_Evidence_Contract__c,
                 AAO_Opportunity__c,
                 AAO_Account__c,
@@ -340,6 +342,7 @@ public class AAO_Commit {
             AAO_Subject_Contact__c = cand.AAO_Subject_Contact__c,
             AAO_Participant__c = cand.AAO_Participant__c,
             AAO_Shadow_Person__c = cand.AAO_Shadow_Person__c,
+            AAO_Criterion__c = cand.AAO_Criterion__c,
             AAO_Publication_State__c = 'Live'
         );
     }
@@ -363,6 +366,7 @@ public class AAO_Commit {
             // resolution outcome where one exists, and null is a legitimate answer.
             AAO_Participant__c = cand.AAO_Participant__c,
             AAO_Shadow_Person__c = cand.AAO_Shadow_Person__c,
+            AAO_Criterion__c = cand.AAO_Criterion__c,
             AAO_External_Person__c = cand.AAO_Subject_Contact__c,
             AAO_Internal_Person__c = internalPerson,
             AAO_Verdict_Before__c = verdictBefore,

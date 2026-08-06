@@ -256,6 +256,12 @@ public with sharing class AAO_Pass {
         public Integer coverageDefaulted = 0;
         public List<String> rejected = new List<String>();
         public List<String> discardNotes = new List<String>();
+        /** Family reads re-invoked because the first look came back a cheap blank. */
+        public Integer blankRetries = 0;
+        /** Families that came back blank twice. The second zero stands. */
+        public List<String> blankTwice = new List<String>();
+        /** Families a retry recovered, which is the guard earning its callout. */
+        public List<String> blankRecovered = new List<String>();
         /** Serial wall clock. Concurrency is a separate question and is reported separately. */
         public Long serialMs = 0;
 
@@ -267,8 +273,15 @@ public with sharing class AAO_Pass {
                 'discarded, no match      ' + discardedNoMatch + ' (unit: pairs)',
                 'discarded, crosses turns ' + discardedCrossesTurns + ' (unit: pairs)',
                 'coverage defaulted       ' + coverageDefaulted + ' (unit: pairs)',
+                'blank retries           ' + blankRetries + ' (unit: reads)',
                 'wall clock, SERIAL       ' + serialMs + ' ms'
             };
+            if (!blankRecovered.isEmpty()) {
+                o.add('  retry RECOVERED        ' + String.join(blankRecovered, ', '));
+            }
+            if (!blankTwice.isEmpty()) {
+                o.add('  blank TWICE, stands    ' + String.join(blankTwice, ', '));
+            }
             List<String> fams = new List<String>(pairsByFamily.keySet());
             fams.sort();
             for (String f : fams) {
@@ -319,19 +332,57 @@ public with sharing class AAO_Pass {
             spec.charter = 'AAO_LocateCharter';
             spec.charterVersion = version;
 
+            List<String> body = new List<String>{
+                AAO_LocateCharter.rubricBlock(block),
+                '# The transcript\n\n' + src.AAO_Normalized_Text__c
+            };
+            Map<String, Object> schema = AAO_LocateCharter.schema(codes);
+
             AAO_Extract.StageResult sr = AAO_Extract.callStage(
-                spec,
-                AAO_LocateCharter.systemPrompt(),
-                new List<String>{
-                    AAO_LocateCharter.rubricBlock(block),
-                    '# The transcript\n\n' + src.AAO_Normalized_Text__c
-                },
-                AAO_LocateCharter.schema(codes)
+                spec, AAO_LocateCharter.systemPrompt(), body, schema
             );
             sweep.calls.add(sr);
             sweep.serialMs += sr.elapsedMs;
 
             AAO_LocateCharter.Result parsed = AAO_LocateCharter.parse(sr.rawText, codes);
+
+            // THE BLANK-RETRY GUARD, ruled 6 August from this build's own measurement.
+            //
+            // Two repeat sweeps on one frozen artifact under a byte-identical stamp returned
+            // criteria 0 / 10 / 8 and sentiment 8 / 10 / 0. A family read either works or
+            // comes back with nothing, and WHICH family it happens to is not stable - so the
+            // zero is not a property of the questions and cannot be fixed by rewording them.
+            //
+            // The blank has a signature: it is CHEAP. The blank sentiment read finished in
+            // 6,587 ms at 307 output tokens against 16,453 ms at 959 on the read that found
+            // ten. It does not labour and fail; it returns early. So one re-invocation, once,
+            // on that signature only.
+            //
+            // **It never forces pairs.** A second zero stands and is journalled, because a
+            // family with genuinely nothing in it is a real and common answer - §P8.5 says
+            // criteria are sparse and a rich harvest is a calibration alarm. What the guard
+            // refuses is accepting a single cheap blank as a family's ONLY look. Both
+            // invocations are on the record either way.
+            //
+            // Partitioning stays behind this, unbuilt, for the OTHER mode: the within-read
+            // miss, where the family answers and one establishment goes missing. That is
+            // q9's shape and this guard cannot see it. The two are never conflated again.
+            if (parsed.pairs.isEmpty() && looksLikeACheapBlank(sr)) {
+                sweep.blankRetries++;
+                AAO_Extract.StageResult retry = AAO_Extract.callStage(
+                    spec, AAO_LocateCharter.systemPrompt(), body, schema
+                );
+                sweep.calls.add(retry);
+                sweep.serialMs += retry.elapsedMs;
+                AAO_LocateCharter.Result second = AAO_LocateCharter.parse(retry.rawText, codes);
+                if (second.pairs.isEmpty()) {
+                    sweep.blankTwice.add(fam);
+                } else {
+                    sweep.blankRecovered.add(fam);
+                    sr = retry;
+                    parsed = second;
+                }
+            }
             sweep.parsed += parsed.pairs.size();
             sweep.coverageDefaulted += AAO_LocateCharter.coverageDefaulted;
             sweep.rejected.addAll(parsed.rejected);
@@ -359,6 +410,32 @@ public with sharing class AAO_Pass {
             insert all;
         }
         return sweep;
+    }
+
+    /**
+     * THE CHEAP-BLANK SIGNATURE, measured rather than guessed.
+     *
+     * A working family read on the 17 June artifact spends 16 to 21 seconds and 950 to 1,900
+     * output tokens. The blank spends 6.6 seconds and 307. The threshold sits between them
+     * with room on both sides, and it is deliberately generous toward NOT retrying: a read
+     * that laboured and honestly found nothing is a real answer and must not be second-guessed
+     * into producing something.
+     *
+     * The numbers live here rather than in a document, per the standing rule that measurements
+     * live in BUILD_JOURNAL and code, never in the architecture.
+     */
+    @TestVisible
+    private static Integer BLANK_MAX_OUTPUT_TOKENS = 600;
+    @TestVisible
+    private static Long BLANK_MAX_MS = 12000;
+
+    private static Boolean looksLikeACheapBlank(AAO_Extract.StageResult sr) {
+        if (sr == null || sr.usage == null) {
+            return false;
+        }
+        Integer out = sr.usage.outputTokens == null ? 0 : sr.usage.outputTokens;
+        Long ms = sr.elapsedMs == null ? 0 : sr.elapsedMs;
+        return out <= BLANK_MAX_OUTPUT_TOKENS && ms <= BLANK_MAX_MS;
     }
 
     // ====================================================================== call 3 · verify

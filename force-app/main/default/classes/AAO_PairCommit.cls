@@ -46,6 +46,9 @@ public with sharing class AAO_PairCommit {
         public Integer claimsWritten = 0;
         public Integer answersWritten = 0;
         public Integer countersRebuilt = 0;
+        public Integer criteriaMinted = 0;
+        /** Typing or gating pairs whose span overlaps no naming, so they type nothing. */
+        public Integer criteriaUnattached = 0;
         public List<String> refusals = new List<String>();
 
         /**
@@ -67,7 +70,9 @@ public with sharing class AAO_PairCommit {
                     '  already committed      ' + pairsAlreadyCommitted + ' (unit: pairs)',
                     'claims written           ' + claimsWritten + ' (unit: claims)',
                     'answers written          ' + answersWritten + ' (unit: answers)',
-                    'support counters rebuilt ' + countersRebuilt + ' (unit: people)'
+                    'support counters rebuilt ' + countersRebuilt + ' (unit: people)',
+                    'criteria minted          ' + criteriaMinted + ' (unit: criteria)',
+                    '  typing unattached      ' + criteriaUnattached + ' (unit: pairs)'
                 },
                 '\n'
             );
@@ -122,6 +127,7 @@ public with sharing class AAO_PairCommit {
                 AAO_Located_Pair__r.AAO_Source__c,
                 AAO_Located_Pair__r.AAO_Source__r.AAO_Opportunity__c,
                 AAO_Located_Pair__r.AAO_Source__r.AAO_Account__c,
+                AAO_Located_Pair__r.AAO_Source__r.AAO_Evidence_Occurred__c,
                 AAO_Located_Pair__r.AAO_Source__r.AAO_Part_Index__c,
                 AAO_Evidence_Contract__c,
                 AAO_Evidence_Contract__r.AAO_Elements__c,
@@ -165,9 +171,13 @@ public with sharing class AAO_PairCommit {
             return o;
         }
 
+        // THE CRITERIA PASS RUNS FIRST, because a criteria answer's subject is a criterion
+        // and the criterion has to exist before the row that points at it. Addendum 20.
+        Map<Id, AAO_Criterion__c> criterionByPair = mintCriteria(eligible, o);
+
         List<AAO_Candidate__c> candidates = new List<AAO_Candidate__c>();
         for (AAO_Pair__c p : eligible) {
-            candidates.add(candidateFor(p));
+            candidates.add(candidateFor(p, criterionByPair.get(p.Id)));
         }
         insert candidates;
 
@@ -213,7 +223,91 @@ public with sharing class AAO_PairCommit {
 
     // ------------------------------------------------------------------ one candidate
 
-    private static AAO_Candidate__c candidateFor(AAO_Pair__c p) {
+    /**
+     * Mint one criterion per naming pair, then attach every typing and gating pair to the
+     * naming its located span overlaps. Returns the criterion each criteria pair belongs to,
+     * so the candidate that follows can subject it.
+     *
+     * **A naming that is not upheld mints nothing**, which is why a typing pair overlapping it
+     * comes back unattached rather than typing a criterion nothing established. That is two
+     * stages disagreeing about one sentence, and it is counted rather than swallowed.
+     */
+    private static Map<Id, AAO_Criterion__c> mintCriteria(
+        List<AAO_Pair__c> eligible,
+        Outcome o
+    ) {
+        Map<Id, AAO_Criterion__c> out = new Map<Id, AAO_Criterion__c>();
+        List<AAO_Pair__c> namings = new List<AAO_Pair__c>();
+        List<AAO_Pair__c> typings = new List<AAO_Pair__c>();
+        for (AAO_Pair__c p : eligible) {
+            String code = p.AAO_Evidence_Contract__r.AAO_Proposition_Code__c;
+            if (code == AAO_P8Codes.CRITERION_NAMING) {
+                namings.add(p);
+            } else if (code == AAO_P8Codes.CRITERION_FORMAL ||
+                       code == AAO_P8Codes.CRITERION_REQUIRED) {
+                typings.add(p);
+            }
+        }
+        if (namings.isEmpty() && typings.isEmpty()) {
+            return out;
+        }
+
+        List<AAO_Criteria.Span> namedSpans = new List<AAO_Criteria.Span>();
+        for (AAO_Pair__c p : namings) {
+            AAO_Pair__c loc = p.AAO_Located_Pair__r;
+            AAO_Criterion__c c = AAO_Criteria.mint(
+                loc.AAO_Meaning__c,
+                loc.AAO_Source__r.AAO_Opportunity__c,
+                loc.AAO_Source__r.AAO_Account__c,
+                p.AAO_Person__c,
+                loc.AAO_Source__c,
+                loc.AAO_Source__r.AAO_Evidence_Occurred__c
+            );
+            out.put(p.Id, c);
+            namedSpans.add(new AAO_Criteria.Span(
+                loc.AAO_Source__c, loc.AAO_Start_Offset__c, loc.AAO_End_Offset__c
+            ));
+            o.criteriaMinted++;
+        }
+
+        // Keyed by Id rather than listed: DC_F and DC_R on one criterion are two pairs and
+        // one row, and Apex refuses a duplicate Id in an update list.
+        Map<Id, AAO_Criterion__c> typed = new Map<Id, AAO_Criterion__c>();
+        for (AAO_Pair__c p : typings) {
+            AAO_Pair__c loc = p.AAO_Located_Pair__r;
+            Integer at = AAO_Criteria.namingFor(
+                new AAO_Criteria.Span(
+                    loc.AAO_Source__c, loc.AAO_Start_Offset__c, loc.AAO_End_Offset__c
+                ),
+                namedSpans
+            );
+            if (at == null) {
+                o.criteriaUnattached++;
+                o.refusals.add(
+                    p.AAO_Pair_Ref__c + ' (' +
+                    p.AAO_Evidence_Contract__r.AAO_Proposition_Code__c +
+                    '): types no criterion, because its span overlaps no upheld naming on ' +
+                    'this run.'
+                );
+                continue;
+            }
+            AAO_Criterion__c c = out.get(namings[at].Id);
+            out.put(p.Id, c);
+            if (p.AAO_Evidence_Contract__r.AAO_Proposition_Code__c ==
+                AAO_P8Codes.CRITERION_FORMAL) {
+                c.AAO_Type__c = 'Formal';
+            } else {
+                c.AAO_Required__c = true;
+            }
+            typed.put(c.Id, c);
+        }
+        if (!typed.isEmpty()) {
+            update typed.values();
+        }
+        return out;
+    }
+
+    private static AAO_Candidate__c candidateFor(AAO_Pair__c p, AAO_Criterion__c criterion) {
         AAO_Pair__c located = p.AAO_Located_Pair__r;
         if (located == null) {
             throw new JoinException(
@@ -283,11 +377,17 @@ public with sharing class AAO_PairCommit {
             // The subject is the person, and the person is the Participant. The resolved
             // Contact rides beside it where identity has produced one; where it has not, the
             // row is still fully expressible, which is the entire point of the ruling.
-            AAO_Subject_Type__c = 'Participant',
+            // THE SUBJECT IS THE CRITERION ON THE CRITERIA PATH and the person on every
+            // other, with the person carried as OWNER either way. Addendum 20. A criteria
+            // pair with no criterion is a typing that attached to nothing; it still becomes a
+            // candidate so its evidence is on the record, and it types nothing because there
+            // is nothing to type.
+            AAO_Subject_Type__c = criterion == null ? 'Participant' : 'Decision_Criterion',
+            AAO_Criterion__c = criterion == null ? null : criterion.Id,
             AAO_Participant__c = p.AAO_Person__c,
-            AAO_Subject_Contact__c = p.AAO_Person__r == null
+            AAO_Subject_Contact__c = criterion != null
                 ? null
-                : p.AAO_Person__r.AAO_Contact__c,
+                : (p.AAO_Person__r == null ? null : p.AAO_Person__r.AAO_Contact__c),
             AAO_Proposed_Verdict__c = proposed,
             AAO_Spans__c = AAO_Model.serializeSpans(new List<AAO_Model.Span>{ span }),
             AAO_Element_Coverage__c = AAO_Model.serializeCoverage(cov),

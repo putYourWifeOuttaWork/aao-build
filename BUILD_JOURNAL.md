@@ -9288,3 +9288,94 @@ Contact-and-shadow, no: `ALTF__Contact_Map_Details__c.ALTF__Contact__c` is requi
 toggle-off org's shadow person has no map row to write and none is faked. Architecture v3.0
 states this directly — shadow persons "cannot reach the Altify map" — so the architecture is
 taken as the authority on its own conflict, and the narrower reading is what is built.
+
+---
+
+## 2026-08-06 · session 76 · addendum 20 and the inbox · run `em0806-a20`
+
+349 tests, 100% pass, same one pre-existing unrelated failure. Row export and timings shipped
+beside this entry at `review/em0806-a20/`.
+
+### The fifth subject, and the call it forced
+
+**`AAO_Criterion__c` is OURS, not `ALTF__Decision_Criteria__c`, and that is a decision rather
+than a detail.** The obvious reading of "the fifth subject type" points at the vendor row, and
+it is unbuildable twice over: LAW #1 says the system runs with Altify absent, so a subject at a
+managed object makes the whole criteria path require a package we may not depend on; and claims
+land on our objects before anything is projected, so a subject that IS the vendor row needs
+that row to exist before the claim that establishes it. **Architecture v2.1 adopted criteria
+"adding a fifth Claim subject type and no new entity"** — written under the other assumption,
+and it does not survive LAW #1. One entity is the price and the vendor row is its projection.
+
+**The three contracts join by byte range.** `AAO_DC_N` names, `AAO_DC_F` types, `AAO_DC_R`
+gates, and call 1 emits them with no pointer between them — so a typing clause belongs to the
+naming whose located span it overlaps. Same mechanism the regression set already keys on,
+deterministic, and checkable against the frozen artifact rather than against anything the model
+asserted. The a17 grading is the specimen: `deq1` and `deq2` are one quote at offset 14315
+under two contracts. **A typing overlapping no upheld naming types nothing and is counted** —
+that is two stages disagreeing about one sentence, which a count should surface.
+
+The defect this closes, stated plainly: the answer key is subject plus contract, so with the
+person as subject **a buyer naming three criteria produced one answer and two vanished** with
+nothing reporting it.
+
+### The blank-retry guard
+
+Built from this build's own measurement and nothing else. A family read returning zero pairs
+that matches the cheap-blank signature — `<= 600` output tokens and `<= 12,000` ms, against 950
+to 1,900 tokens and 16 to 21 seconds on a working read — is re-invoked **once**. A second zero
+stands. Both invocations are journalled either way.
+
+**It never forces pairs**, and the threshold is deliberately generous toward not retrying: a
+read that laboured and honestly found nothing is a real answer, and §P8.5 says criteria are
+sparse by nature. What the guard refuses is accepting a single cheap blank as a family's only
+look.
+
+**Partitioning stays behind it, unbuilt, for the other mode** — the within-read miss, where the
+family answers and one establishment goes missing. That is q9's shape and this guard cannot see
+it. The two modes are named separately and never conflated again.
+
+### The run
+
+**`em0806-a20`, projected to `006WD00000TJmJZYA1`.** Call 0 resolved on content again.
+
+| stage | result |
+|---|---|
+| call 1 sweep | 4 reads, **all four families answered**, 33 located (unit: pairs) |
+| | Sentiment 9, Political 10, Buyer Role 9, Criteria 5 |
+| blank guard | **live and did not fire** — reported as a zero, not as silence |
+| call 2 | 33 to a person, 0 None, 0 Ambiguous |
+| call 3 | 33 verdicts, 11 upheld, 22 refused, three caller-driven batches |
+| ledger | one-for-one-for-one holds: 33 / 33 / 33 |
+| regression | 27 assertions, **16 held** (was 14), 8 regressions, 0 traps, 0 verdicts changed |
+| join | 11 claims, 11 answers, 2 counters, 1 criterion minted, 0 typings unattached |
+| projection | 2 populated, 5 dimension values |
+
+**Support reached the map for the first time.** Neeraja Chimata at counter +1, Supporter.
+Jefferson Vargas at **+2, Supporter** — which is §P8.4's own worked specimen arriving on live
+data: Matthew's grades through this arithmetic produce exactly his answer, the top of Supporter.
+
+Three graded misses recovered (`under-1`, `under-5`, `under-8`) against two on a17. Criteria
+are back at five located, and one criterion minted and held Partial — so it stands as
+UNVERIFIED with its receipts and does not reach the vendor object, per the standing partial law
+with partials' fate still Matthew's.
+
+One new report line worth naming: **`emerson-q13` CHANGED, undiagnosed.** The read stopped
+emitting a trap it used to emit, which is not a loss — but nothing in the instrument
+distinguishes *stopped making a mistake* from *stopped looking*, and it says so rather than
+scoring it either way.
+
+### Timings, now standing on every report
+
+**Worst single callout 15,580 ms, 13% of the ceiling. Worst transaction 57,054 ms — the
+sweep's four reads in one transaction — 48%.**
+
+The second is the one that binds: the 120-second ceiling is cumulative per transaction,
+unraiseable, and shared across certified managed namespaces. **The sweep is what breaks first,
+not call 3.** Call 3 is already caller-driven and stays inside by construction; call 1 is four
+whole-artifact reads in one transaction and its wall scales with transcript length and with the
+number of declared families. Twice this transcript, or a fifth family, is at or past the limit.
+
+**Named rather than rounded:** call 3's per-batch figures are wall-clock from the driving shell,
+not per-callout, because `AAO_Pass.verify` keeps only the last `StageResult`. The run receipt
+(§P8.0) is what would carry per-callout timings across transactions and is still owed.

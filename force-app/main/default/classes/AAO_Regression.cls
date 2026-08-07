@@ -248,6 +248,60 @@ public with sharing class AAO_Regression {
         return x;
     }
 
+    // ====================================================== the never-projected rule
+
+    /**
+     * WHICH OF THESE PAIRS REPRODUCE A GRADED TRAP, keyed pair id to trap key.
+     *
+     * **Addendum 17: a trap that reappears is REPORTED AND NEVER PROJECTED, and until now
+     * only the first half was built.** The a21 run is the proof: `trap-seq11-courtesy` fired,
+     * call 3 upheld it, the join wrote it as an ordinary `AAO_PS_1` claim, the counter moved
+     * Ryan Couture to +1 and projection wrote Supporter onto his map row. The regression
+     * report said the trap fired in the same run that put it on the map, which is a report
+     * that watches a thing happen and calls it a finding.
+     *
+     * **The refusal lives at the join rather than at projection**, one stage earlier than the
+     * word "projected" suggests, and deliberately: a claim is what moves the counter, and a
+     * counter rebuilt from claims would reintroduce the trap on the next replay no matter
+     * what projection refused. Refusing the claim is what makes the rule hold under replay.
+     *
+     * The pair still exists, still carries its call 3 verdict, and is still counted and
+     * reported. **Nothing is deleted and no silence is written**: the ledger records that the
+     * pass found this and that a standing grading refused it.
+     */
+    public static Map<Id, String> trapped(
+        List<AAO_Pair__c> pairs, String artifact, String sha, String ref
+    ) {
+        Map<Id, String> out = new Map<Id, String>();
+        if (pairs == null || pairs.isEmpty() || String.isBlank(artifact)) {
+            return out;
+        }
+        for (Assertion x : assertions()) {
+            if (x.kind != MUST_NOT_APPEAR || (x.fixture != sha && x.fixture != ref)) {
+                continue;
+            }
+            List<Integer> want = AAO_RecallGate.ranges(artifact, x.quote);
+            if (want.isEmpty()) {
+                continue;
+            }
+            for (AAO_Pair__c p : pairs) {
+                String code = p.AAO_Evidence_Contract__r == null
+                    ? null
+                    : p.AAO_Evidence_Contract__r.AAO_Proposition_Code__c;
+                if (!codeMatches(x.contractCode, code)) {
+                    continue;
+                }
+                String words = p.AAO_Located_Pair__r == null
+                    ? p.AAO_Answer_Text__c
+                    : p.AAO_Located_Pair__r.AAO_Answer_Text__c;
+                if (AAO_RecallGate.overlaps(artifact, want, words)) {
+                    out.put(p.Id, x.key);
+                }
+            }
+        }
+        return out;
+    }
+
     // ============================================================================ report
 
     public class Report {

@@ -28,6 +28,11 @@ public with sharing class AAO_ResolverCharter {
     public static final String OPPORTUNITY = 'OPPORTUNITY';
     public static final String ACCOUNT = 'ACCOUNT';
     public static final String DUAL = 'DUAL';
+    /**
+     * Both sides answered no. Not a scope: the absence of one, and it dispatches nothing.
+     * Unreachable under the retired two-sided question, which forced a pick among three.
+     */
+    public static final String NEITHER = 'NEITHER';
     public static final String NO_DEAL = 'NONE';
     public static final String AMBIGUOUS = 'AMBIGUOUS';
 
@@ -117,12 +122,40 @@ public with sharing class AAO_ResolverCharter {
         public String why;
     }
 
+    /** One side's independent answer. Two of these derive the scope; neither outranks. */
+    public class Side {
+        public String name;
+        public Boolean carries;
+        public String quote;
+        public String because;
+        /** Byte offset in the frozen artifact, or null where it was never located. */
+        public Integer offset;
+
+        public Boolean located() {
+            return offset != null;
+        }
+    }
+
     public class Result {
+        /** DERIVED from the two sides in Apex. The model never answers this. */
         public String scope;
+        /** COMPOSED from the two sides. No longer a field the model fills. */
         public String scopeBecause;
+        public Side opportunitySide = new Side();
+        public Side accountSide = new Side();
         public String opportunity;
         public String opportunityBecause;
         public List<Mention> mentions = new List<Mention>();
+
+        /**
+         * **BOTH SIDES NO.** The split makes this expressible where the two-sided question
+         * could not say it, so it is surfaced rather than coerced into one of the three. A
+         * call carrying no chartered content on either side dispatches nothing, which is the
+         * silence law's own answer: we write what happened, and nothing did.
+         */
+        public Boolean carriesNothing() {
+            return scope == NEITHER;
+        }
     }
 
     // ======================================================================= the schema
@@ -136,17 +169,44 @@ public with sharing class AAO_ResolverCharter {
         return new Map<String, Object>{
             'type' => 'object',
             'properties' => new Map<String, Object>{
-                'scope' => new Map<String, Object>{
-                    'type' => 'string',
-                    'enum' => new List<String>{ OPPORTUNITY, ACCOUNT, DUAL },
-                    'description' => 'What this call is about. ' + DUAL +
-                        ' where it genuinely serves both, which is a real and ordinary case ' +
-                        'rather than an escape hatch.'
+                // TWO ONE-WAY QUESTIONS, ANSWERED INDEPENDENTLY. Charters v3.4. There is no
+                // `scope` field for the model to fill any more: the verdict is DERIVED from
+                // these two answers in Apex, so a majority cannot eat a minority scope
+                // because NO QUESTION ASKS FOR A MAJORITY.
+                'carries_opportunity_content' => new Map<String, Object>{
+                    'type' => 'boolean',
+                    'description' => 'Does this call carry opportunity content AT ALL? Not ' +
+                        'mostly, not primarily - at all. Answer this without reference to ' +
+                        'how much account content there is.'
                 },
-                'scope_because' => new Map<String, Object>{
+                'opportunity_content_quote' => new Map<String, Object>{
                     'type' => 'string',
-                    'description' => 'One or two sentences naming the content that decided ' +
-                        'it. On ' + DUAL + ', name a specimen from EACH side.'
+                    'description' => 'VERBATIM words from the transcript, character for ' +
+                        'character, that carry opportunity content. Empty string where the ' +
+                        'answer above is false. This is checked against the stored artifact.'
+                },
+                'opportunity_content_because' => new Map<String, Object>{
+                    'type' => 'string',
+                    'description' => 'One sentence: what makes those words opportunity ' +
+                        'content. Empty string where the answer above is false.'
+                },
+                'carries_account_content' => new Map<String, Object>{
+                    'type' => 'boolean',
+                    'description' => 'Does this call carry account content AT ALL? Not ' +
+                        'mostly, not primarily - at all. **Answer this on its own merits. ' +
+                        'The previous answer is not evidence about this one, and a call ' +
+                        'that is mostly about a purchase can still carry account content.**'
+                },
+                'account_content_quote' => new Map<String, Object>{
+                    'type' => 'string',
+                    'description' => 'VERBATIM words from the transcript, character for ' +
+                        'character, that carry account content. Empty string where the ' +
+                        'answer above is false. This is checked against the stored artifact.'
+                },
+                'account_content_because' => new Map<String, Object>{
+                    'type' => 'string',
+                    'description' => 'One sentence: what makes those words account content. ' +
+                        'Empty string where the answer above is false.'
                 },
                 'opportunity' => new Map<String, Object>{
                     'type' => 'string',
@@ -180,7 +240,13 @@ public with sharing class AAO_ResolverCharter {
                 }
             },
             'required' => new List<String>{
-                'scope', 'scope_because', 'opportunity', 'opportunity_because', 'mentions'
+                'carries_opportunity_content',
+                'opportunity_content_quote',
+                'opportunity_content_because',
+                'carries_account_content',
+                'account_content_quote',
+                'account_content_because',
+                'opportunity', 'opportunity_because', 'mentions'
             },
             'additionalProperties' => false
         };
@@ -212,12 +278,24 @@ public with sharing class AAO_ResolverCharter {
                 'call is about a relationship that already exists: what they own and whether ' +
                 'they use it, how it is going, what happens next in the partnership.',
                 '',
-                'DUAL IS REAL AND IS NOT A HEDGE. Many calls genuinely serve both — a renewal ' +
-                'conversation that turns to how the current deployment is going, an adoption ' +
-                'review where somebody floats an expansion. **Answer DUAL when both sides are ' +
-                'substantively present, and name a specimen from each when you do.** Do not ' +
-                'answer DUAL because you are unsure which one it is; that is what the reasons ' +
-                'field is for.',
+                'YOU ARE ASKED ABOUT EACH SIDE SEPARATELY, AND THE TWO ANSWERS DO NOT ' +
+                'COMPETE. There is no question here asking which side wins, which side is ' +
+                'primary, or what the call is MOSTLY about. **Answer each side as if the ' +
+                'other had not been asked.** A call that is ninety percent purchase ' +
+                'mechanics and carries one real stretch of account content is a yes on both, ' +
+                'and saying so is correct rather than a hedge.',
+                '',
+                'A YES MUST BRING WORDS. Where you answer yes, quote the transcript verbatim, ' +
+                'character for character. **The quote is checked against the stored ' +
+                'transcript and a yes whose words cannot be found there is thrown out.** ' +
+                'Where you answer no, leave the quote empty; a no needs no evidence, because ' +
+                'it asserts nothing.',
+                '',
+                'THE SMALLER SIDE IS THE ONE THAT GETS LOST. Whichever side is the minority ' +
+                'of the call is the side that has to survive your reading of it, so read for ' +
+                'it deliberately: a single sustained stretch about what they already own, ' +
+                'how a rollout will run, or where the relationship goes next is account ' +
+                'content whether or not the rest of the call is a negotiation.',
                 '',
                 'THE DEAL LIST IS CLOSED. Answer with a listed deal, or NONE, or AMBIGUOUS. ' +
                 'The list was built as of the day this call happened, not today, so a deal ' +
@@ -283,6 +361,110 @@ public with sharing class AAO_ResolverCharter {
         }
     }
 
+    /**
+     * Read one side. A `carries` of true must bring words with it: the quote is what the
+     * byte check locates and the reason is what a human reads, and neither substitutes.
+     */
+    private static Side side(Map<String, Object> root, String prefix, String label) {
+        Side s = new Side();
+        s.name = label;
+        Object raw = root.get('carries_' + prefix + '_content');
+        if (!(raw instanceof Boolean)) {
+            throw new CharterException(
+                'Call 0 did not answer carries_' + prefix + '_content with a boolean. The ' +
+                'two sides are independent answers and a missing one is not a no: it is a ' +
+                'question that never got asked. Our bug, per the parse law.'
+            );
+        }
+        s.carries = (Boolean) raw;
+        s.quote = trimmed(root.get(prefix + '_content_quote'));
+        s.because = trimmed(root.get(prefix + '_content_because'));
+        if (!s.carries) {
+            return s;
+        }
+        if (String.isBlank(s.quote)) {
+            throw new CharterException(
+                'Call 0 answered yes to ' + label + ' content and quoted nothing. A yes ' +
+                'without words is the shape this split exists to kill: an unquoted side ' +
+                'cannot be checked, and an unchecked side is how a scope read gets graded ' +
+                'right for the wrong reason.'
+            );
+        }
+        requireReason(prefix + '_content_because', s.because);
+        return s;
+    }
+
+    private static String trimmed(Object o) {
+        return o == null ? '' : String.valueOf(o).trim();
+    }
+
+    /**
+     * DUAL IS ARITHMETIC. Both yes, and no weighing happens anywhere: not in the model, which
+     * never saw the other answer, and not here, which only counts.
+     */
+    // The parameters are NOT named `opportunity` and `account`: Apex identifiers are
+    // case-insensitive, so those names shadow the OPPORTUNITY and ACCOUNT string constants
+    // this method returns, and the compiler reports it as a Boolean-to-String conversion.
+    public static String deriveScope(Boolean oppSide, Boolean acctSide) {
+        Boolean o = oppSide == true;
+        Boolean a = acctSide == true;
+        if (o && a) {
+            return DUAL;
+        }
+        if (o) {
+            return OPPORTUNITY;
+        }
+        if (a) {
+            return ACCOUNT;
+        }
+        return NEITHER;
+    }
+
+    /**
+     * The composed reason. Downstream readers and every run report still want one sentence
+     * for the verdict, and under the split there is no single authored one - so it is built
+     * from the halves that produced it, each naming itself.
+     */
+    private static String composeBecause(Side opp, Side acct) {
+        List<String> parts = new List<String>();
+        for (Side s : new List<Side>{ opp, acct }) {
+            parts.add(
+                s.name + ' content: ' + (s.carries ? 'YES. ' + s.because : 'no.')
+            );
+        }
+        return String.join(parts, ' ');
+    }
+
+    /**
+     * LOCATE EACH SIDE'S EVIDENCE IN THE FROZEN ARTIFACT. Call 0 routes and never establishes,
+     * so these quotes are not claims and no pair is built from them - but a reason nobody can
+     * find is the `placeholder` defect wearing a quotation mark, and the guard that fixed one
+     * has no principled reason to miss the other.
+     *
+     * **A yes whose words are not in the transcript is refused**, because that answer is
+     * strictly worse than a no: it routes reads at content that was never said.
+     */
+    public static void locate(Result r, String artifact) {
+        if (r == null || String.isBlank(artifact)) {
+            return;
+        }
+        for (Side s : new List<Side>{ r.opportunitySide, r.accountSide }) {
+            if (!s.carries) {
+                continue;
+            }
+            Integer at = artifact.indexOf(s.quote);
+            if (at < 0) {
+                throw new CharterException(
+                    'Call 0 answered yes to ' + s.name + ' content on words that are not in ' +
+                    'the artifact: "' + s.quote.abbreviate(120) + '". A quote that does not ' +
+                    'locate is worse than no quote at all, because it routes family reads at ' +
+                    'content nobody said.'
+                );
+            }
+            s.offset = at;
+        }
+    }
+
     public static Result parse(String jsonText, List<String> oppHandles) {
         Map<String, Object> root;
         try {
@@ -294,16 +476,24 @@ public with sharing class AAO_ResolverCharter {
             );
         }
         Result r = new Result();
-        r.scope = (String) root.get('scope');
-        r.scopeBecause = (String) root.get('scope_because');
         r.opportunity = (String) root.get('opportunity');
         r.opportunityBecause = (String) root.get('opportunity_because');
-        if (!new Set<String>{ OPPORTUNITY, ACCOUNT, DUAL }.contains(r.scope)) {
-            throw new CharterException(
-                'Call 0 returned a scope outside the closed set: ' + r.scope +
-                '. Our bug, per the parse law.'
-            );
-        }
+
+        // THE SCOPE VERDICT IS DERIVED, NEVER READ. Charters v3.4, earned by the failed-twice
+        // law after two majority collapses on the same fixture (a17 returned OPPORTUNITY
+        // against the gate's DUAL; a21 re-read the services scoping correctly under Matthew's
+        // split ruling and still left the two account-grain stretches unmentioned).
+        //
+        // **The defect was never the wording, which is why two wording-era fixes did not
+        // reach it.** One question asking "opportunity, account, or both" invites a reader to
+        // weigh the sides against each other, and weighing is what produces a majority. So the
+        // question that asks for a comparison is GONE. Two questions ask about one side each,
+        // neither knows the other's answer, and DUAL is an arithmetic result rather than a
+        // third option competing with two stronger-sounding ones.
+        r.opportunitySide = side(root, 'opportunity', OPPORTUNITY);
+        r.accountSide = side(root, 'account', ACCOUNT);
+        r.scope = deriveScope(r.opportunitySide.carries, r.accountSide.carries);
+        r.scopeBecause = composeBecause(r.opportunitySide, r.accountSide);
         Set<String> allowed = new Set<String>(oppHandles);
         allowed.add(NO_DEAL);
         allowed.add(AMBIGUOUS);

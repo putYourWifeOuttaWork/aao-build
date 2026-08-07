@@ -43,6 +43,8 @@ public with sharing class AAO_PairCommit {
         public Integer pairsNotUpheld = 0;
         public Integer pairsNotIdentified = 0;
         public Integer pairsAlreadyCommitted = 0;
+        /** Upheld, identified, and refused by a standing graded trap. Addendum 17. */
+        public Integer pairsTrapped = 0;
         public Integer claimsWritten = 0;
         public Integer answersWritten = 0;
         public Integer countersRebuilt = 0;
@@ -70,6 +72,7 @@ public with sharing class AAO_PairCommit {
                     '  verification refused   ' + pairsNotUpheld + ' (unit: pairs)',
                     '  no identification      ' + pairsNotIdentified + ' (unit: pairs)',
                     '  already committed      ' + pairsAlreadyCommitted + ' (unit: pairs)',
+                    '  refused, graded trap   ' + pairsTrapped + ' (unit: pairs)',
                     'claims written           ' + claimsWritten + ' (unit: claims)',
                     'answers written          ' + answersWritten + ' (unit: answers)',
                     'support counters rebuilt ' + countersRebuilt + ' (unit: people)',
@@ -128,6 +131,9 @@ public with sharing class AAO_PairCommit {
                 AAO_Located_Pair__r.AAO_End_Offset__c,
                 AAO_Located_Pair__r.AAO_Speaker_Key__c,
                 AAO_Located_Pair__r.AAO_Source__c,
+                AAO_Located_Pair__r.AAO_Source__r.AAO_Normalized_Text__c,
+                AAO_Located_Pair__r.AAO_Source__r.AAO_SHA256__c,
+                AAO_Located_Pair__r.AAO_Source__r.AAO_Source_Ref__c,
                 AAO_Located_Pair__r.AAO_Source__r.AAO_Opportunity__c,
                 AAO_Located_Pair__r.AAO_Source__r.AAO_Account__c,
                 AAO_Located_Pair__r.AAO_Source__r.AAO_Evidence_Occurred__c,
@@ -169,6 +175,48 @@ public with sharing class AAO_PairCommit {
             }
             eligible.add(p);
         }
+
+        // THE NEVER-PROJECTED RULE, Addendum 17, wired here at last. A pair whose words and
+        // contract reproduce a standing graded trap is refused BEFORE it becomes a claim.
+        //
+        // **Reported and never projected is one rule and only the reporting half existed.**
+        // a21 is the proof: the regression report named `trap-seq11-courtesy` as reproduced in
+        // the same run whose join wrote it as an ordinary claim, moved Ryan Couture's counter
+        // to +1 and put Supporter on his map row. A report that watches the thing happen is
+        // not an enforcement of anything.
+        //
+        // It refuses at the CLAIM rather than at the write, because the counter rebuilds from
+        // claims: a projection-side refusal would be undone by the next replay.
+        AAO_Source__c artifactSource = eligible.isEmpty()
+            ? null
+            : eligible[0].AAO_Located_Pair__r.AAO_Source__r;
+        if (artifactSource != null) {
+            Map<Id, String> traps = AAO_Regression.trapped(
+                eligible,
+                artifactSource.AAO_Normalized_Text__c,
+                artifactSource.AAO_SHA256__c,
+                artifactSource.AAO_Source_Ref__c
+            );
+            if (!traps.isEmpty()) {
+                List<AAO_Pair__c> survivors = new List<AAO_Pair__c>();
+                for (AAO_Pair__c p : eligible) {
+                    if (traps.containsKey(p.Id)) {
+                        o.pairsTrapped++;
+                        o.refusals.add(
+                            p.AAO_Pair_Ref__c + ' (' +
+                            p.AAO_Evidence_Contract__r.AAO_Proposition_Code__c +
+                            '): REFUSED by the standing grading "' + traps.get(p.Id) +
+                            '". The pass found it and call 3 upheld it; a graded trap is ' +
+                            'reported and never projected.'
+                        );
+                    } else {
+                        survivors.add(p);
+                    }
+                }
+                eligible = survivors;
+            }
+        }
+
         o.pairsEligible = eligible.size();
         if (eligible.isEmpty()) {
             return o;
@@ -183,6 +231,9 @@ public with sharing class AAO_PairCommit {
             candidates.add(candidateFor(p, criterionByPair.get(p.Id)));
         }
         insert candidates;
+        // One read for the whole batch instead of one per pair. Ruled 6 August; the branch
+        // logic inside the writer is untouched, only where its rows come from.
+        AAO_Commit.primeCandidates(new List<Id>(new Map<Id, AAO_Candidate__c>(candidates).keySet()));
 
         List<AAO_Pair__c> committed = new List<AAO_Pair__c>();
         Set<Id> touchedAnswers = new Set<Id>();

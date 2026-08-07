@@ -150,8 +150,20 @@ public with sharing class AAO_Pass {
             AAO_ResolverCharter.schema(handles)
         );
         r.verdict = AAO_ResolverCharter.parse(r.call.rawText, handles);
+        // The two sides' quotes are checked against the frozen artifact here rather than in
+        // the parse, because the parse holds the model's answer and this holds it against the
+        // bytes - the same separation the pairs law makes one stage later.
+        AAO_ResolverCharter.locate(r.verdict, src.AAO_Normalized_Text__c);
 
         // v3.2 dispatch. One grain, and the other is logged rather than silently dropped.
+        if (r.verdict.carriesNothing()) {
+            r.routedNotDispatched.add(
+                'NEITHER side answered yes. Nothing dispatches. This state is reachable only ' +
+                'under the v3.4 split - the retired two-sided question forced a pick among ' +
+                'three - and it is surfaced rather than coerced, per the silence law.'
+            );
+            return r;
+        }
         if (r.verdict.scope == AAO_ResolverCharter.OPPORTUNITY ||
             r.verdict.scope == AAO_ResolverCharter.DUAL) {
             r.dispatchedGrains.add('opportunity');

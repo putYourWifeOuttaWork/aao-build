@@ -30,8 +30,54 @@ public class AAO_Commit {
      * @param internalDomains email domains on the selling side. Owed: this belongs in org
      *                        configuration, not an argument. See BUILD_JOURNAL.
      */
-    public static Result commitCandidate(Id candidateId, Set<String> internalDomains) {
-        AAO_Candidate__c cand = [
+    // =================================================== the batch caches · ruled 6 August
+    //
+    // **BULKIFICATION WITHOUT A SECOND WRITER.** The join finished at SOQL 100 of 100 on
+    // seventeen pairs and would have broken at about twenty-five - before the callout ceiling,
+    // and with a different fix. The reason it costs so much is structural and correct: this
+    // method is a read-then-branch decision against standing state, called once per candidate
+    // so that one person's refusal never stops another's write.
+    //
+    // **So the branch logic does not move.** Rewriting it to operate on lists would put a
+    // second copy of the human-precedence read, the merge path, the speaker gate and the
+    // reinforcement rule in the world, and two copies of a rule diverge, always - which is the
+    // whole reason `AAO_PairCommit` goes THROUGH this class rather than around it. What moves
+    // is where three of the four reads get their rows: the candidate, the Source, and the map
+    // rows are all batch-invariant within one run, so they are fetched once and served from a
+    // map. Same rows, same branches, a fraction of the governor.
+    //
+    // **THE ANSWER READ IS DELIBERATELY NOT CACHED, and that is the load-bearing exclusion.**
+    // `readExisting` is the current-state check the whole write law rests on: the answer this
+    // candidate reads may have been written by a candidate three iterations earlier in this
+    // same loop. Cache it and reinforcement, monotonicity and the counter all read a stale
+    // world. It stays one live query per candidate, which is what a read-then-branch costs.
+
+    private static Map<Id, AAO_Candidate__c> candidateCache = new Map<Id, AAO_Candidate__c>();
+    private static Map<Id, AAO_Source__c> sourceCache = new Map<Id, AAO_Source__c>();
+    private static Map<Id, Map<Id, String>> roleCache = new Map<Id, Map<Id, String>>();
+
+    /** Between runs in one transaction, and in tests. */
+    public static void clearCaches() {
+        candidateCache.clear();
+        sourceCache.clear();
+        roleCache.clear();
+    }
+
+    /**
+     * Fetch a whole batch's candidates in one query. Optional: an unprimed id falls through to
+     * its own read, so a single-candidate caller behaves exactly as it always has.
+     */
+    public static void primeCandidates(List<Id> candidateIds) {
+        if (candidateIds == null || candidateIds.isEmpty()) {
+            return;
+        }
+        for (AAO_Candidate__c c : candidateQuery(candidateIds)) {
+            candidateCache.put(c.Id, c);
+        }
+    }
+
+    private static List<AAO_Candidate__c> candidateQuery(List<Id> ids) {
+        return [
             SELECT
                 Id,
                 AAO_Evidence_Contract__c,
@@ -60,9 +106,73 @@ public class AAO_Commit {
                 AAO_Source__r.AAO_Speaker_Roster__c,
                 AAO_Source__r.AAO_Diarization__c
             FROM AAO_Candidate__c
-            WHERE Id = :candidateId
+            WHERE Id IN :ids
         ];
+    }
 
+    /** Frozen bytes. Read once per Source per transaction. */
+    private static Map<Id, AAO_Source__c> sourcesFor(Set<Id> ids) {
+        Set<Id> missing = new Set<Id>();
+        for (Id i : ids) {
+            if (!sourceCache.containsKey(i)) {
+                missing.add(i);
+            }
+        }
+        if (!missing.isEmpty()) {
+            for (AAO_Source__c s : [
+                SELECT Id, AAO_Normalized_Text__c, AAO_Diarization__c
+                FROM AAO_Source__c
+                WHERE Id IN :missing
+            ]) {
+                sourceCache.put(s.Id, s);
+            }
+        }
+        Map<Id, AAO_Source__c> out = new Map<Id, AAO_Source__c>();
+        for (Id i : ids) {
+            if (sourceCache.containsKey(i)) {
+                out.put(i, sourceCache.get(i));
+            }
+        }
+        return out;
+    }
+
+    /**
+     * The org's own map rows for one deal. Cached because **nothing in this transaction writes
+     * them** - projection is what writes map rows, and it runs later and separately. If that
+     * ever stops being true, this cache is the thing that breaks, so it is stated rather than
+     * assumed.
+     */
+    private static Map<Id, String> rolesFor(Id opportunityId) {
+        if (opportunityId == null) {
+            return new Map<Id, String>();
+        }
+        if (roleCache.containsKey(opportunityId)) {
+            return roleCache.get(opportunityId);
+        }
+        Map<Id, String> byContact = new Map<Id, String>();
+        for (ALTF__Contact_Map_Details__c row : [
+            SELECT ALTF__Contact__c, ALTF__Buyer_Role__c
+            FROM ALTF__Contact_Map_Details__c
+            WHERE ALTF__Opportunity__c = :opportunityId
+        ]) {
+            if (row.ALTF__Contact__c != null) {
+                byContact.put(row.ALTF__Contact__c, row.ALTF__Buyer_Role__c);
+            }
+        }
+        roleCache.put(opportunityId, byContact);
+        return byContact;
+    }
+
+    public static Result commitCandidate(Id candidateId, Set<String> internalDomains) {
+        AAO_Candidate__c cand = candidateCache.containsKey(candidateId)
+            ? candidateCache.get(candidateId)
+            : candidateQuery(new List<Id>{ candidateId })[0];
+        return commitCandidate(cand, internalDomains);
+    }
+
+    private static Result commitCandidate(
+        AAO_Candidate__c cand, Set<String> internalDomains
+    ) {
         Result r = new Result();
 
         // Held candidates stay on Candidate and never queue on the mirror.
@@ -83,13 +193,9 @@ public class AAO_Commit {
 
         // 1 -------------------------------------------------------- verify the spans
         List<AAO_Model.Span> spans = AAO_Model.parseSpans(cand.AAO_Spans__c).spans;
-        Map<Id, AAO_Source__c> sourceById = new Map<Id, AAO_Source__c>(
-            [
-                SELECT Id, AAO_Normalized_Text__c, AAO_Diarization__c
-                FROM AAO_Source__c
-                WHERE Id IN :AAO_SpanVerifier.sourceIds(spans)
-            ]
-        );
+        // The artifact is frozen, so a Source read once in this transaction is the same Source
+        // for every candidate after it. One run's pairs all point at one Source.
+        Map<Id, AAO_Source__c> sourceById = sourcesFor(AAO_SpanVerifier.sourceIds(spans));
         AAO_SpanVerifier.Result sv = AAO_SpanVerifier.verify(spans, sourceById);
         if (!sv.isOk()) {
             r.candidateStage = 'Span_Checked';
@@ -133,16 +239,7 @@ public class AAO_Commit {
             : AAO_Model.parseRoster(cand.AAO_Source__r.AAO_Speaker_Roster__c);
         // The org's own relationship map, where it has one. Preferred over the roster,
         // because standing is not something a transcript gets to declare.
-        Map<Id, String> roleByContact = new Map<Id, String>();
-        for (ALTF__Contact_Map_Details__c row : [
-            SELECT ALTF__Contact__c, ALTF__Buyer_Role__c
-            FROM ALTF__Contact_Map_Details__c
-            WHERE ALTF__Opportunity__c = :cand.AAO_Opportunity__c
-        ]) {
-            if (row.ALTF__Contact__c != null) {
-                roleByContact.put(row.ALTF__Contact__c, row.ALTF__Buyer_Role__c);
-            }
-        }
+        Map<Id, String> roleByContact = rolesFor(cand.AAO_Opportunity__c);
 
         String requirement = cand.AAO_Evidence_Contract__r.AAO_Speaker_Requirement__c;
         Boolean speakerOk = false;

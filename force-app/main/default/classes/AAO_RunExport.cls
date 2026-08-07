@@ -215,6 +215,41 @@ public with sharing class AAO_RunExport {
     /** The platform's own number, measured and primary-doc-verified. Never raised. */
     public static final Long CEILING_MS = 120000;
 
+    /**
+     * GOVERNOR CONSUMPTION, PRINTED PER STAGE. Standing obligation, ruled 6 August.
+     *
+     * **A ceiling we do not print is a ceiling we discover at twenty-five.** The a21 join
+     * finished at SOQL 100 of 100 on seventeen pairs and nothing in the run report said so;
+     * it was found by reading the debug log's limit block by hand. The callout ceiling has
+     * been watched for weeks because it had a number in a document. This one did not.
+     *
+     * Called at the END of a stage, in the same transaction as the work it measures. A limit
+     * reading taken from another transaction is a reading of nothing.
+     */
+    public static String governors(String stage) {
+        return String.join(
+            new List<String>{
+                stage + ':',
+                '  SOQL   ' + Limits.getQueries() + ' of ' + Limits.getLimitQueries() +
+                    pct(Limits.getQueries(), Limits.getLimitQueries()),
+                '  DML    ' + Limits.getDmlStatements() + ' of ' +
+                    Limits.getLimitDmlStatements() +
+                    pct(Limits.getDmlStatements(), Limits.getLimitDmlStatements()),
+                '  rows   ' + Limits.getDmlRows() + ' of ' + Limits.getLimitDmlRows(),
+                '  CPU    ' + Limits.getCpuTime() + ' of ' + Limits.getLimitCpuTime() + ' ms'
+            },
+            '\n'
+        );
+    }
+
+    private static String pct(Integer used, Integer cap) {
+        if (cap == null || cap == 0) {
+            return '';
+        }
+        Integer p = (Integer) ((Decimal) used / cap * 100).round();
+        return '  (' + p + '%)' + (p >= 80 ? '  ** APPROACHING THE CEILING **' : '');
+    }
+
     public static String timingReport(List<Timings> stages) {
         List<String> out = new List<String>{
             'stage timings (unit: ms, wall per callout)'

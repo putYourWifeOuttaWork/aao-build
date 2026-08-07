@@ -9664,3 +9664,109 @@ pairs consumed the entire governor. **This breaks before the callout ceiling doe
 transcript, and it is a different limit with a different fix - bulkify the join's reads, or
 split it caller-side the way call 1 and call 3 already are. Named at seventeen pairs rather than
 discovered at twenty-five.
+
+---
+
+## 2026-08-06 · session 76 · the evening fold · the trap answered, two structures built
+
+**367 tests: 366 AAO pass**, plus `ConvertToOpportunityTest.testgetOppCreationDetails`, the
+org-resident failure named and evidenced in the midday fold. Twelve of the new tests are the
+first this build has ever had on call 0.
+
+### The question, answered from the rows: YES, THE TRAP PROJECTED
+
+`review/em0806-a21/pairs.csv` and `claims.csv` answer it and there is no ambiguity in the
+answer. **Pair `seq9`, `AAO_PS_1`, offset 35425, meaning SUPPORTER, call 3 UPHELD.** It became
+claim `a1VWD000008aP0L2AU`, which is **Ryan Couture's only sentiment claim on the deal.** His
+answer reads TRUE with `support_counter` 1 and projection wrote **Support = Supporter** onto
+his map row.
+
+**So the exclusion lived nowhere.** `AAO_Regression` reported `TRAP trap-seq11-courtesy
+reproduced` in the same run whose join wrote it, moved the counter and put it on the map.
+Addendum 17 is one rule with two halves and only the reporting half was ever built; **a report
+that watches the thing happen and calls it a finding is not an enforcement of anything.**
+
+**The fix refuses at the CLAIM, one stage earlier than the word "projected" suggests, and that
+placement is the whole point.** The counter rebuilds from claims and `rebuildVerdicts` replays
+from claims, so a projection-side refusal would be undone by the next replay. `AAO_Regression
+.trapped` keys on contract plus byte-range intersection - the regression set's own matcher, not
+a second copy - and the join refuses the pair before it becomes a candidate. The pair still
+exists, still carries its call 3 verdict, is counted on its own line (`refused, graded trap`)
+and journals its reason. **Nothing is deleted and no silence is written.**
+
+Verified from the calling runtime against the real a21 rows: 17 upheld pairs in, **1 trapped,
+`seq9` by `trap-seq11-courtesy`**, 16 surviving.
+
+**What this does NOT do, stated plainly: the a21 map row still reads Supporter.** The rule is
+live for every future run and it does not reach backwards, because correcting the standing
+value means retiring a claim that already exists, and **deleting evidence is not a thing this
+build does on its own initiative.** Matthew's call, named here rather than quietly done.
+
+### The scope read splits · Charters v3.4 · earned twice
+
+**The defect was never the wording, which is why two wording-era fixes did not reach it.** One
+question offering "opportunity, account, or both" invites a reader to weigh the sides against
+each other, and weighing is what produces a majority. So **the question that asks for a
+comparison is gone from the schema entirely** - there is no `scope` field and no `scope_because`
+field for a model to fill.
+
+Two booleans, each with a verbatim quote and a one-sentence reason, answered without reference
+to the other. **The verdict is derived in Apex**, so DUAL is arithmetic rather than a third
+option competing with two stronger-sounding ones, and **no proportion is an input to the
+derivation at all.**
+
+Three things the build added past the ruling:
+
+**A yes must bring words, and the words are byte-checked against the frozen artifact.** Call 0
+routes and never establishes, so these quotes are not claims - but a reason nobody can find is
+the `placeholder` defect wearing a quotation mark, and **a yes whose words are not in the
+transcript is strictly worse than a no, because it routes family reads at content nobody
+said.** The guard that fixed one had no principled reason to miss the other.
+
+**A missing side throws rather than defaulting to no.** Absence of an answer is not an answer,
+and reading it as a no would silently reproduce the exact under-call being repaired.
+
+**BOTH SIDES NO is a real state now.** The split makes it expressible where three-way pick could
+not say it. It is surfaced as `NEITHER`, dispatches nothing, and is journalled rather than
+coerced into a scope.
+
+### The call 0 test class did not exist
+
+**And that is the finding, not a footnote.** The scope read had failed twice on one fixture,
+earned two structural changes, and carried **zero unit tests through both of them** - so a
+355-test suite going green said nothing whatever about it. The capability law names this
+exactly: a claim about our own code is unverified until tried from the calling runtime.
+
+Twelve tests now, and the split is what made them possible: the verdict used to be a string the
+model wrote, and there was nothing to assert about it that was not really an assertion about
+the model.
+
+### The join bulkifies, and the branch logic does not move
+
+SOQL 100 of 100 at seventeen pairs, which breaks at about twenty-five and **before the callout
+ceiling does**. Four reads per candidate: the candidate, the Source, the deal's map rows, and
+the standing answer.
+
+**Three are batch-invariant and one is not, and the exclusion is the load-bearing half.** The
+candidate is prefetched for the whole batch; the Source is frozen bytes; the map rows are not
+written by anything in this transaction (projection writes those, later and separately, and if
+that ever stops being true this cache is what breaks, so it is stated rather than assumed).
+**`readExisting` stays one live query per candidate**, because the answer a candidate reads may
+have been written by a candidate three iterations earlier in the same loop - cache it and
+reinforcement, monotonicity and the counter all read a stale world.
+
+**Rewriting the writer to operate on lists was refused.** That would put a second copy of the
+human-precedence read, the merge path, the speaker gate and the reinforcement rule in the
+world, and two copies of a rule diverge - which is the whole reason the join goes THROUGH
+`AAO_Commit` rather than around it. Same branches, same rows, a fraction of the governor.
+
+**And every report ships governor consumption per stage from here on**, `AAO_RunExport
+.governors`, SOQL and DML against their limits with an explicit marker past 80 percent. A
+ceiling we do not print is a ceiling we discover at twenty-five: the callout ceiling had been
+watched for weeks because it had a number in a document, and this one did not.
+
+### Held, not built
+
+**The occasion-versus-solution target conjunct** for the twice-failed courtesy shape is design's
+proposal and waits for Matthew's veto at his read. Nothing was written toward it. **Jefferson at
++3 Mentor** is his to grade; the export's sentiment rows carry the quotes he grades against.

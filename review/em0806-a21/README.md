@@ -31,8 +31,17 @@ Projected to `006WD00000TJmJZYA1`.
 | person | Support | Political | Buyer Role | Coverage |
 |---|---|---|---|---|
 | Neeraja Chimata | Supporter (+1) | — | Evaluator | written |
-| Ryan Couture | Supporter (+1) | — | Evaluator | written |
+| Ryan Couture | **none, retracted** | — | Evaluator | written |
 | Vargas, Jefferson | **Mentor (+3)** | Political Structure | Evaluator | written |
 
-**Two things to grade rather than accept**, both in the report: the trap that fired, and
-Jefferson's +3.
+## The correction, 6 August evening
+
+**Ryan's Supporter came from the trap and is gone**, through the lawful path rather than a
+delete. Claim `CLM-00000073` (pair `seq9`, `AAO_PS_1`) is marked **retired** with its reason and
+is still in `claims.csv`, still carrying its quote and its call 3 verdict. The replay skipped
+it, his answer fell to UNVERIFIED with counter 0, and projection **retracted** the map value.
+
+**The rows to read for it**: `claims.csv` carries the retired claim; `answers.csv` shows the
+`AAO_PS_1` row for Ryan at UNVERIFIED / 0 with an empty projected value.
+
+**One thing left to grade**: Jefferson's +3.

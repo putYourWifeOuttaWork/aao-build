@@ -470,7 +470,13 @@ public with sharing class AAO_PairCommit {
      * counter's own pattern - drift unexpressible rather than merely forbidden - applied to
      * the field the counter does not cover.
      */
-    private static Integer rebuildVerdicts(Set<Id> answerIds) {
+    /**
+     * Public because RETIREMENT NEEDS IT. The join reaches this on its own runs, but a
+     * retirement changes what the ledger says without any pair being joined, and an answer
+     * that still reads TRUE over a retired claim is exactly the divergence retirement exists
+     * to close. `AAO_Retire` calls it directly.
+     */
+    public static Integer rebuildVerdicts(Set<Id> answerIds) {
         if (answerIds.isEmpty()) {
             return 0;
         }
@@ -479,6 +485,11 @@ public with sharing class AAO_PairCommit {
             SELECT AAO_Answer__c, AAO_Verdict_After__c, AAO_Evidence_Occurred__c
             FROM AAO_Claim__c
             WHERE AAO_Answer__c IN :answerIds
+                // RETIRED CLAIMS ESTABLISH NOTHING. Ruled 6 August: a claim that should never
+                // have established anything is marked rather than deleted, and this is where
+                // the marking does its work - the verdict replays from what is left, which is
+                // the same mechanism that made the clobber fix order-independent.
+                AND AAO_Retired__c = FALSE
             ORDER BY AAO_Evidence_Occurred__c ASC NULLS FIRST, Id ASC
         ]) {
             if (!byAnswer.containsKey(c.AAO_Answer__c)) {
@@ -498,7 +509,22 @@ public with sharing class AAO_PairCommit {
             if (a.AAO_Established_By__c == 'HUMAN') {
                 continue;
             }
-            String replayed = AAO_Accumulate.verdictFromClaims(byAnswer.get(a.Id));
+            // **AN ANSWER WHOSE EVERY CLAIM IS RETIRED ESTABLISHES NOTHING**, and that state
+            // was unreachable until retirement existed. `verdictFromClaims` returns null for
+            // an empty list, and the guard below reads null as "I was not handed this answer's
+            // claims" and leaves the standing verdict alone - which was right when the only
+            // way to see zero claims was to not have queried them. Retirement makes zero LIVE
+            // claims a real and meaningful answer to a question we did ask, and reading it as
+            // silence would leave an answer standing TRUE on receipts that were all withdrawn.
+            //
+            // It lands UNVERIFIED rather than null or FALSE: the proposition WAS addressed, the
+            // retired claims still carry their receipts and are still readable, and UNVERIFIED
+            // is the state that places nobody - so projection retracts, which is the ratified
+            // behaviour and the reason retirement is a lawful correction rather than a delete.
+            Boolean noLiveClaims = !byAnswer.containsKey(a.Id);
+            String replayed = noLiveClaims
+                ? 'UNVERIFIED'
+                : AAO_Accumulate.verdictFromClaims(byAnswer.get(a.Id));
             if (replayed == null || replayed == a.AAO_Verdict__c) {
                 continue;
             }
@@ -526,7 +552,8 @@ public with sharing class AAO_PairCommit {
      *                     stance is per scope and a counter per person global would be wrong
      *                     the day the account grain returns.
      */
-    private static Integer rebuildCounters(Set<String> personScopes) {
+    /** Public for the same reason as `rebuildVerdicts`. Key shape: participantId + '|' + oppId. */
+    public static Integer rebuildCounters(Set<String> personScopes) {
         if (personScopes.isEmpty()) {
             return 0;
         }
@@ -555,6 +582,8 @@ public with sharing class AAO_PairCommit {
                 // A downgraded claim carries real receipts and established nothing, so it
                 // moves the counter by nothing. Only what established may accumulate.
                 AND AAO_Verdict_After__c = 'TRUE'
+                // And a retired claim moves the counter by nothing, for the same reason.
+                AND AAO_Retired__c = FALSE
         ]) {
             String key = String.valueOf(c.AAO_Participant__c) + '|' + c.AAO_Opportunity__c;
             if (!personScopes.contains(key)) {

@@ -445,6 +445,21 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>AAO_Claim__c.AAO_Retired__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>AAO_Claim__c.AAO_Retired_At__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>AAO_Claim__c.AAO_Retired_Because__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>AAO_Claim_Basis__c.AAO_Cited_Answer__c</field>
         <readable>true</readable>
     </fieldPermissions>

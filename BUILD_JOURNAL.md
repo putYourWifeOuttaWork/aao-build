@@ -9770,3 +9770,80 @@ watched for weeks because it had a number in a document, and this one did not.
 **The occasion-versus-solution target conjunct** for the twice-failed courtesy shape is design's
 proposal and waits for Matthew's veto at his read. Nothing was written toward it. **Jefferson at
 +3 Mentor** is his to grade; the export's sentiment rows carry the quotes he grades against.
+
+---
+
+## 2026-08-06 · session 76 · night · claims retire, and the correction travels the lawful path
+
+**374 tests: 373 AAO pass**, plus the named org-resident failure. Seven of the new tests are
+retirement's own, written the same day as the thing they test.
+
+### The ruling, built
+
+**CLAIMS RETIRE, NEVER DELETE.** Three fields, a one-way trigger exception, and a replay that
+skips what is retired. The claim is marked in place: **its verdict, its spans and its receipts
+are untouched**, because retirement says one narrow thing and only that thing - *this
+establishment should not have moved anything*. It does not say the words were misquoted.
+
+**The trigger exception is as narrow as the ruling.** Only the three retirement fields may
+move, checked against the describe rather than a hand-kept list so a field added next month is
+immutable by default instead of by somebody remembering. And it is **one-way**: a retired claim
+is never un-retired, because a ledger that can be edited back into a state it was never in is
+not a ledger.
+
+### The correction, end to end
+
+`CLM-00000073`, pair `seq9`, `AAO_PS_1` - retired. Then, in the same transaction:
+
+| | before | after |
+|---|---|---|
+| Ryan's sentiment answer | TRUE | **UNVERIFIED** |
+| his counter | 1 | **0** |
+| his map row | Supporter | **blank, RETRACTED(Support)** |
+
+Projection reported `values retracted 1` and `Ryan Couture: populated support=null
+RETRACTED(Support)`. **The map now carries no known-wrong value.**
+
+### Three defects the ruling surfaced, each found by building it
+
+**1 · Retirement would have been only a label.** Marking the claim is half of it; nothing else
+in the system would ever have run the replay afterwards, because the join reaches its rebuilds
+only on its own runs and a retirement joins no pairs. **An answer still reading TRUE over a
+retired claim is exactly the divergence retirement exists to close**, so it is closed in the
+same transaction. The reconcile runs over every claim READ rather than only the ones newly
+marked, because a correction path whose safe response to an uncertain state is "do not run it"
+is not a correction path.
+
+**2 · `verdictFromClaims` conflated two different zeros.** It returns null for an empty list,
+and the replay read null as *I was not handed this answer's claims* and left the standing
+verdict alone - correct while the only way to see zero claims was to not have queried them.
+**Retirement makes zero LIVE claims a real answer to a question we did ask.** It lands
+UNVERIFIED rather than null or FALSE: the proposition was addressed, the retired receipts are
+still readable, and UNVERIFIED is the state that places nobody, so projection retracts.
+
+**3 · A RETRACTION IS A WRITE, AND IT WAS NOT STAMPING ITS WATERMARK.** Found by reading the
+corrected export rather than by reasoning: the map read blank and the watermark still said
+`Supporter`. `stampProjected` skipped whenever the derived value came back null, and a
+retraction's derived value is null by definition.
+
+**Left alone that would have frozen the field it fixed.** On the next pass the writer reads a
+blank field against a watermark saying `Supporter`, sees they differ, and concludes A HUMAN
+CLEARED IT - so Ryan's Support becomes human-owned forever and the machine never writes it
+again. **The one write that exists to correct a mistake would have permanently disabled the
+dimension it corrected.** The distinction the skip actually wanted is between a dimension we
+did not write and one we wrote AS NULL; only the first must not claim projection.
+
+**And the a21 row needed a one-time repair, named rather than slipped in.** The stale watermark
+predates the fix and the retraction will not re-fire, since the field is already blank. The
+repair sets the watermark to what we actually wrote. **This is not the refused backfill**: the
+value is known rather than inferred - we wrote null, the map reads null, the retirement is
+journalled - and what is being completed is the stamping half of a write that really happened.
+The repair refuses itself if the map is not blank.
+
+### Owed and not built
+
+**A retraction currently writes no flag**, per the ratification (journalled always, flag
+deferred to the Flags and Guidance fold). Worth carrying there with a specimen now: this
+retraction is the first one, and the thing a seller would want told is not that a field went
+blank but that **we established something and then withdrew it**, which the vendor field
+cannot say and the note does.

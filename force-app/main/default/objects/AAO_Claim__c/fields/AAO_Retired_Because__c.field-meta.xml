@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Retired_Because__c</fullName>
+    <description>Why this claim was retired, required at retirement and never blank. A retirement with no stated reason is indistinguishable from a deletion that happened to leave a row behind, and the whole point of retiring rather than deleting is that somebody later can read what we got wrong and why we decided so.</description>
+    <label>Retired Because</label>
+    <type>LongTextArea</type>
+    <length>4096</length>
+    <visibleLines>4</visibleLines>
+</CustomField>

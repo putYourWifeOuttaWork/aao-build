@@ -640,7 +640,7 @@ public with sharing class AAO_Project {
             insert fresh;
             r.mapRowId = fresh.Id;
             r.action = 'created';
-            stampProjected(answers, d);
+            stampProjected(answers, d, null);
             // Everything else stays null on purpose: we establish what evidence establishes
             // and we do not fill a row out to look complete.
             return r;
@@ -718,9 +718,11 @@ public with sharing class AAO_Project {
         // identically to *never established* - the null-versus-UNVERIFIED distinction arriving
         // at a schema with no room for it. The note carries what the field cannot. No flag
         // today, journalled always; revisited at the Flags and Guidance fold.
+        Set<String> retractedCodes = new Set<String>();
         for (Retraction rt : retractions(row, d, answers, ours)) {
             patch.put(rt.field, null);
             r.retracted.add(rt.dimension);
+            retractedCodes.add(rt.dimensionCode);
             wrote = true;
         }
         if (!r.retracted.isEmpty()) {
@@ -737,7 +739,7 @@ public with sharing class AAO_Project {
             update patch;
         }
         if (wrote || matched) {
-            stampProjected(answers, d);
+            stampProjected(answers, d, retractedCodes);
         }
 
         r.action = wrote ? 'populated' : 'unchanged';
@@ -751,10 +753,14 @@ public with sharing class AAO_Project {
 
     private class Retraction {
         String field;
+        /** The human label, for the note a seller reads. */
         String dimension;
-        Retraction(String field, String dimension) {
+        /** The `AAO_P8Codes` dimension, for matching the answers that carried it. */
+        String dimensionCode;
+        Retraction(String field, String dimension, String dimensionCode) {
             this.field = field;
             this.dimension = dimension;
+            this.dimensionCode = dimensionCode;
         }
     }
 
@@ -793,6 +799,12 @@ public with sharing class AAO_Project {
             'ALTF__Buyer_Role__c' => 'Buyer Role',
             'ALTF__Coverage__c' => 'Coverage'
         };
+        Map<String, String> dimensionCodes = new Map<String, String>{
+            'ALTF__Status__c' => AAO_P8Codes.DIM_SUPPORT,
+            'ALTF__Political__c' => AAO_P8Codes.DIM_POLITICAL,
+            'ALTF__Buyer_Role__c' => AAO_P8Codes.DIM_BUYER_ROLE,
+            'ALTF__Coverage__c' => AAO_P8Codes.DIM_COVERAGE
+        };
 
         Set<String> weWrote = ourProjectedValues(answers);
         for (String field : standing.keySet()) {
@@ -808,7 +820,7 @@ public with sharing class AAO_Project {
             if (humanEdited((Datetime) row.get(stamps.get(field)), ours)) {
                 continue;
             }
-            out.add(new Retraction(field, labels.get(field)));
+            out.add(new Retraction(field, labels.get(field), dimensionCodes.get(field)));
         }
         return out;
     }
@@ -859,12 +871,34 @@ public with sharing class AAO_Project {
      * the dimension that moved: an answer whose dimension was held back for a human edit has
      * not been projected and must not claim it has.
      */
-    private static void stampProjected(List<AAO_Answer__c> answers, Derivation d) {
+    private static void stampProjected(
+        List<AAO_Answer__c> answers, Derivation d, Set<String> retractedDimensions
+    ) {
         Datetime now = Datetime.now();
         List<AAO_Answer__c> touched = new List<AAO_Answer__c>();
+        Set<String> retracted = retractedDimensions == null
+            ? new Set<String>()
+            : retractedDimensions;
         for (AAO_Answer__c a : answers) {
             String value = projectedValueFor(a, d);
-            if (value == null) {
+            // **A RETRACTION IS A WRITE, AND A WRITE STAMPS ITS WATERMARK.** Found 6 August by
+            // reading the corrected export: retraction cleared Ryan Couture's Support on the
+            // map and left the watermark reading `Supporter`, because the skip below tested
+            // only whether a value came back non-null.
+            //
+            // That is the compare-and-swap hazard firing from our own correction. On the next
+            // pass the writer reads a blank field against a watermark saying `Supporter`, sees
+            // they differ, and concludes A HUMAN CLEARED IT - so the dimension becomes
+            // human-owned forever and the machine stops writing it. The one write that exists
+            // to fix a mistake would have permanently frozen the field it fixed.
+            //
+            // The distinction the skip actually wants is between a dimension we DID NOT WRITE
+            // (held back for a human, or simply not derived) and one we wrote AS NULL. Only
+            // the first must not claim projection.
+            Boolean wasRetracted = retracted.contains(
+                AAO_P8Codes.dimensionOf(codeOf(a))
+            );
+            if (value == null && !wasRetracted) {
                 continue;
             }
             touched.add(new AAO_Answer__c(

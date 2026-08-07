@@ -41,6 +41,11 @@ public class AAO_Replay {
                 AAO_Recorded_At__c
             FROM AAO_Claim__c
             WHERE AAO_Opportunity__c = :opportunityId
+                // Retired claims establish nothing, so the replay invariant is stated against
+                // the live ledger: replaying the LIVE claims in evidence-occurred order must
+                // reconstruct every answer exactly. A retired row is still readable, still
+                // carries its receipts, and is deliberately outside the arithmetic.
+                AND AAO_Retired__c = FALSE
             ORDER BY AAO_Evidence_Occurred__c ASC, AAO_Recorded_At__c ASC, Id ASC
         ]) {
             String key = AAO_AnswerKey.compose(c);

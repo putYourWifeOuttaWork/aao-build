@@ -7,7 +7,11 @@
  * and then asks whether a claim and an answer exist on the other side.
  */
 @IsTest
-private class AAO_PairCommitTest {
+public class AAO_PairCommitTest {
+    // PUBLIC so `AAO_RetireTest` can build a claim the pass actually produced rather than a
+    // row shaped like one. A hand-built fixture is a row the product never emits, and that
+    // mistake has already been made twice on this build - duplicating this one to keep the
+    // class private would be making it a third time on purpose.
     private static final String RUN = 'testrun0001';
 
     // ============================================================== what crosses, and what does not
@@ -333,17 +337,17 @@ private class AAO_PairCommitTest {
     private static final String QUOTE = 'We would need this to escalate cleanly.';
     private static final String TEXT = 'buyer\t' + QUOTE;
 
-    private class Fixture {
-        Id oppId;
-        Id acctId;
-        Id contactId;
-        Id sourceId;
-        Id participantId;
-        Id unlinkedId;
-        Map<String, Id> contracts = new Map<String, Id>();
+    public class Fixture {
+        public Id oppId;
+        public Id acctId;
+        public Id contactId;
+        public Id sourceId;
+        public Id participantId;
+        public Id unlinkedId;
+        public Map<String, Id> contracts = new Map<String, Id>();
     }
 
-    private static Fixture fixture() {
+    public static Fixture fixture() {
         AAO_Ingest.AUTO = false;
         AAO_Synthetic.MARK = true;
         Fixture f = new Fixture();
@@ -428,7 +432,7 @@ private class AAO_PairCommitTest {
     }
 
     /** The pass's own output shape: a located row, and the identified row that binds to it. */
-    private static void pair(
+    public static void pair(
         Fixture f,
         String ref,
         String code,

@@ -10071,3 +10071,38 @@ is the distinction this build spends its time on.
 The corpus freeze waits, per the ruling and for the reason the stop was made: freezing before
 the dedup bakes the defect into the measuring stick. The 29 July fixture is one of the named
 fixtures and was the double-seeded one. Both fixes are live, so the freeze is unblocked.
+
+---
+
+## 2026-08-07 · session 77 · B&V runs, and its correct output is nothing
+
+### Side-yes with deal-NONE does not dispatch
+
+Built as ruled. The opportunity grain dispatches only where call 0 named a deal; a yes with
+NONE or AMBIGUOUS is routed-not-dispatched and journalled **with the yes-quote as its reason**,
+symmetrical with the backburnered account grain.
+
+**NONE is treated as honest rather than as a stuck resolver**, and B&V is why: the call scopes
+and prices an MCP project that no open opportunity yet represents. Expansion talk routinely
+precedes any deal record, so the resolver naming no deal is it being right.
+
+### The B&V fixture · DUAL, NONE, nothing dispatched
+
+| | |
+|---|---|
+| scope | **DUAL**, both sides byte-located |
+| deal | **NONE** |
+| dispatched | **none** |
+| establishments | **0** |
+
+**Gate assertion 2 is re-adjudicated to DUAL**, and this is the split's second earned save on
+its second live fixture. The prior ACCOUNT pass under the retired two-sided question was the
+majority eating the minority, the Emerson failure mirrored.
+
+**No row export ships for this fixture, deliberately.** Nothing was extracted, so there are no
+pairs, claims or answers. Empty CSVs would read as a pipeline that ran and found nothing, which
+is a different fact from a pipeline that correctly declined to run.
+
+**What it tested: the resolver, and it passed. What it did not test: extraction.** No family
+read ran, so this fixture contributes nothing to recall or precision on unseen speech. The
+29 July fixture is the extraction test and gate 3's real numbers come from it.

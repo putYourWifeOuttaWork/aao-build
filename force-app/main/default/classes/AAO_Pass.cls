@@ -166,7 +166,33 @@ public with sharing class AAO_Pass {
         }
         if (r.verdict.scope == AAO_ResolverCharter.OPPORTUNITY ||
             r.verdict.scope == AAO_ResolverCharter.DUAL) {
-            r.dispatchedGrains.add('opportunity');
+            // **SIDE-YES WITH DEAL-NONE DOES NOT DISPATCH.** Ruled 7 August, the silence law
+            // reaching dispatch: the resolver abstains where it cannot decide, and nothing
+            // writes. Opportunity-grain family reads against a deal that resolved to NONE
+            // would locate pairs with no opportunity to land them on.
+            //
+            // **NONE is treated as honest rather than as a failure**, because expansion talk
+            // routinely precedes any deal record: the B&V call scopes and prices an MCP
+            // project that no open opportunity yet represents. That is the resolver being
+            // right, not the resolver being stuck.
+            //
+            // Symmetrical with the backburnered account grain: routed, journalled with the
+            // yes-quote as its reason, dispatching nothing. CARRIED to the Flags fold as the
+            // expansion-detection specimen - a yes with NONE is an expansion detected before
+            // its opportunity exists.
+            Boolean namedADeal =
+                r.verdict.opportunity != AAO_ResolverCharter.NO_DEAL &&
+                r.verdict.opportunity != AAO_ResolverCharter.AMBIGUOUS;
+            if (namedADeal) {
+                r.dispatchedGrains.add('opportunity');
+            } else {
+                r.routedNotDispatched.add(
+                    'opportunity grain: the call carries opportunity content and no candidate ' +
+                    'deal fits (' + r.verdict.opportunity + '), so nothing dispatches and ' +
+                    'nothing writes. The yes stands on its own words: "' +
+                    r.verdict.opportunitySide.quote.abbreviate(160) + '"'
+                );
+            }
         }
         if (r.verdict.scope == AAO_ResolverCharter.ACCOUNT ||
             r.verdict.scope == AAO_ResolverCharter.DUAL) {

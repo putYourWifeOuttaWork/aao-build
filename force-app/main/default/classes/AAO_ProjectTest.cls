@@ -660,6 +660,53 @@ private class AAO_ProjectTest {
         );
     }
 
+    @IsTest
+    static void aHumanValueOnARowWeHaveNeverWrittenIsNeverOverwritten() {
+        // FATEMA CHOUDRAY'S SHAPE, 7 August. Matthew set a Political Status by hand on a
+        // person we hold no answer, no participation row and no watermark for. Under the
+        // stamp test alone this read as first contact - `ourLastWrite` null, so `humanEdited`
+        // false - and the first run to establish anything about her would have overwritten a
+        // deliberate human judgment.
+        //
+        // **Absence of our watermark plus presence of a value IS evidence of a human edit.**
+        // Nobody else could have put it there.
+        // The map row is built by projection rather than by hand, because the vendor's own
+        // BeforeInsert trigger refuses a row assembled in a test - and a hand-built row would
+        // be a shape the product never produces, which is the fixture mistake this build has
+        // already made twice.
+        Fixture f = fixture();
+        AAO_Answer__c a = establish(f, AAO_P8Codes.SENTIMENT, 'TRUE', 2);
+        AAO_Project.Outcome first = AAO_Project.run(f.oppId);
+        Id rowId = first.people[0].mapRowId;
+
+        // Now Fatema's condition exactly: a value on the row, and NOTHING OF OURS CLAIMING IT.
+        // Both halves of the watermark are cleared, so the stamp test cannot save the human -
+        // `ourLastWrite` is null, `humanEdited` returns false, and the row reads as first
+        // contact. Only the presence of a value we cannot prove we wrote stands between the
+        // derivation and a deliberate human judgment.
+        update new ALTF__Contact_Map_Details__c(Id = rowId, ALTF__Status__c = 'Mentor');
+        update new AAO_Answer__c(
+            Id = a.Id, AAO_Projected_Value__c = null, AAO_Projected_Modstamp__c = null
+        );
+
+        Test.startTest();
+        AAO_Project.Outcome o = AAO_Project.run(f.oppId);
+        Test.stopTest();
+
+        System.assertEquals(
+            'Mentor',
+            [SELECT ALTF__Status__c FROM ALTF__Contact_Map_Details__c WHERE Id = :rowId]
+                .ALTF__Status__c,
+            'The human value stands. The derivation says Supporter and it must not land: a ' +
+            'value we cannot prove we wrote is somebody else\'s, and first contact is ours ' +
+            'to write only where the field is EMPTY.'
+        );
+        System.assert(
+            o.people[0].heldBack.contains('Support'),
+            'And it is held back visibly rather than silently skipped. Got: ' + o
+        );
+    }
+
     // ---------------------------------------------------------------------- the fixture
 
     private class Fixture {

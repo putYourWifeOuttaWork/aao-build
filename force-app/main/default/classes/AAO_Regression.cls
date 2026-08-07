@@ -204,6 +204,48 @@ public with sharing class AAO_Regression {
             null,
             's1 graded True by Matthew, 5 August. Neeraja Chimata, offset 34748. Partial: accrues UNVERIFIED with receipts, places nobody, and projects nothing until later evidence completes the elements.'));
 
+        // ---- 7 AUGUST · THE MAP READ GRADES ------------------------------------------
+        //
+        // Matthew read the map as a user and graded four things. Three of them are PASSes and
+        // enter the standing set by the set's own law: every establishment he has graded PASS
+        // is asserted on every run.
+        //
+        // **These are the first assertions seeded from a map read rather than from a review
+        // CSV**, and they are worth more per row than the sweep grades: he graded the value he
+        // would act on, at the surface he would act on it, after the writer had composed it.
+        // Anything that moves them has changed what a seller sees.
+        //
+        // JEFFERSON AT MENTOR IS TRUE, so the over-read flag CODE raised on 6 August closes.
+        // The +3 was the flag's whole worry - mentor-grade evidence crossing to the terminal
+        // rung on one call - and his grade settles it: these are mentoring, and the counter's
+        // arithmetic over them produces exactly his answer. Two quotes carry it.
+        out.add(a(EMERSON, MUST_APPEAR, 'map-jefferson-mentor-approvers', 'AAO_PS_1',
+            'I want to make sure that we\'re presenting a compelling story to those approvers.',
+            null,
+            'Graded MENTOR by Matthew at the map read, 7 August. Coaching us through his own ' +
+            'organization\'s approval process, which is §P8.4\'s mentoring line exactly.'));
+        out.add(a(EMERSON, MUST_APPEAR, 'map-jefferson-mentor-material', 'AAO_PS_1',
+            'honestly, it\'s helpful for you to send that material anyways, because it might help to, you know, answer some of those questions before they\'re asked.',
+            null,
+            'Graded MENTOR by Matthew at the map read, 7 August. Telling us what his ' +
+            'approvers need to see before they ask for it.'));
+
+        // JEFFERSON'S POLITICAL STRUCTURE IS TRUE, and it SUPERSEDES the earlier agreement
+        // specimen. §P8.9 recorded Jefferson at Outside Political Structure as a point of
+        // agreement between design's read and Matthew's; the map read moves him inside it.
+        // The earlier specimen is history rather than a standing assertion, so nothing is
+        // retracted here - what changes is which reading the set now defends.
+        //
+        // Keyed on the bytes and NOT on the pair ref: `poq5` names Jefferson's PS2 on a20 and
+        // Neeraja's OPS1 on a21, because refs are per-run and the set keys on contract plus
+        // byte-range intersection for exactly this reason.
+        out.add(a(EMERSON, MUST_APPEAR, 'map-jefferson-ps2-forward', 'AAO_POL_PS2',
+            'So as long as I have the person, I\'ll make sure they have that and then they can forward that on.',
+            null,
+            'Graded True by Matthew at the map read, 7 August (a20 poq5, offset 7903). ' +
+            'Brokering to the compliance team is Political Structure, and this supersedes ' +
+            'the Outside Political Structure agreement specimen recorded at §P8.9.'));
+
         // seq11 · the first courtesy read to survive v2.9's label fix. Ryan Couture,
         // "Looking forward to it." **Courtesy is not stance**, and §P8.4 already says so:
         // ENGAGEMENT IS NOT STANCE, and a warm sentence producing no pair is correct

@@ -602,9 +602,13 @@ public with sharing class AAO_Pass {
                 batch.add(claims[i]);
             }
             List<String> refs = new List<String>();
+            // The contract code travels with the ref so call 3's schema can carry the
+            // occasion-versus-solution conjunct on sentiment and on nothing else.
+            List<String> codes = new List<String>();
             List<String> block = new List<String>{ '# The claims', '' };
             for (AAO_Pair__c c : batch) {
                 refs.add(c.AAO_Pair_Ref__c);
+                codes.add(c.AAO_Evidence_Contract__r.AAO_Proposition_Code__c);
                 block.add('## ' + c.AAO_Pair_Ref__c);
                 block.add('Question: ' + c.AAO_Evidence_Contract__r.AAO_Proposition_Text__c);
                 // THE PLACEMENT NEVER REACHES THE BLIND READER. Ruled 5 August from the
@@ -635,7 +639,7 @@ public with sharing class AAO_Pass {
                 AAO_VerifyPairsCharter.systemPrompt(),
                 new List<String>{ String.join(block, '\n') },
                 refs.size() == 1
-                    ? AAO_VerifyPairsCharter.schemaOne()
+                    ? AAO_VerifyPairsCharter.schemaOne(codes[0])
                     : AAO_VerifyPairsCharter.schema(refs)
             );
             if (r.call == null) {
@@ -648,7 +652,7 @@ public with sharing class AAO_Pass {
             }
             r.batches++;
             if (refs.size() == 1) {
-                r.verdicts.add(AAO_VerifyPairsCharter.parseOne(sr.rawText, refs[0]));
+                r.verdicts.add(AAO_VerifyPairsCharter.parseOne(sr.rawText, refs[0], codes[0]));
             } else {
                 r.verdicts.addAll(AAO_VerifyPairsCharter.parse(sr.rawText, refs));
             }

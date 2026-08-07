@@ -28,6 +28,8 @@ public with sharing class AAO_VerifyPairsCharter {
         public String pairRef;
         public Boolean carries;
         public String reason;
+        /** What the feeling points at. Sentiment only; null everywhere else. */
+        public String target;
     }
 
     public static Map<String, Object> schema(List<String> pairRefs) {
@@ -104,6 +106,45 @@ public with sharing class AAO_VerifyPairsCharter {
     }
 
 
+    // ================================================ the occasion-versus-solution conjunct
+    //
+    // **RULED by Matthew at the map read, 7 August, after courtesy-as-stance failed twice.**
+    // seq11 (24 June) and seq9 (a21) are the same shape: "Looking forward to it" upheld as
+    // SUPPORTER. The blind reader read positive anticipation toward the MEETING as a stance
+    // toward US.
+    //
+    // **The prompt already told it not to.** "FOR A CLAIM ABOUT HOW SOMEONE STANDS TOWARD US,
+    // CHECK WHAT THE FEELING POINTS AT" has been in the system prompt the whole time, and both
+    // failures happened under it. So a third wording fix is not the answer: per the
+    // failed-twice law the STRUCTURE changes so the wrong answer cannot be expressed.
+    //
+    // **The target becomes its own required question, and the verdict becomes arithmetic.**
+    // The reader no longer renders one holistic judgment in which a warm sentence can carry
+    // the day; it answers what the words voice and, separately, WHAT THE FEELING POINTS AT.
+    // Apex conjoins them. A courtesy read now has to name the occasion as its target, and
+    // naming it is what refuses it - the same move as the scope split, where DUAL became
+    // arithmetic over two one-way answers rather than a third option competing with two.
+
+    public static final String TARGET_US = 'US_OR_OUR_SOLUTION';
+    public static final String TARGET_OCCASION = 'THE_MEETING_OR_OCCASION';
+    public static final String TARGET_THEIR_OWN = 'THEIR_OWN_WORK_OR_PLAN';
+    public static final String TARGET_OTHER = 'SOMETHING_ELSE';
+
+    /** Only a stance pointed at us or our solution establishes on this dimension. */
+    public static Boolean targetEstablishes(String target) {
+        return target == TARGET_US;
+    }
+
+    /**
+     * The conjunct binds SENTIMENT and nothing else. "What does the feeling point at" is not a
+     * question about a Buyer Role or a decision criterion, and asking it there would be a
+     * field with no meaning that a reader must still fill - which is the defaulted-coverage
+     * shape this build has already been bitten by twice.
+     */
+    public static Boolean takesTarget(String contractCode) {
+        return contractCode == AAO_P8Codes.SENTIMENT;
+    }
+
     /**
      * THE SINGLE-CLAIM SHAPE, and it exists because the reference field was an invitation to
      * error with no information in it.
@@ -119,27 +160,54 @@ public with sharing class AAO_VerifyPairsCharter {
      * instructed against.
      */
     public static Map<String, Object> schemaOne() {
+        return schemaOne(null);
+    }
+
+    public static Map<String, Object> schemaOne(String contractCode) {
+        Map<String, Object> props = new Map<String, Object>{
+            'carries' => new Map<String, Object>{
+                'type' => 'boolean',
+                'description' => 'true only if the quoted words assert the claim. false ' +
+                    'if they merely mention it, discuss it, imply it, or say something ' +
+                    'adjacent to it.'
+            },
+            'reason' => new Map<String, Object>{
+                'type' => 'string',
+                'description' => 'One sentence. On a false, name what is missing or say ' +
+                    'what the quote actually asserts instead.'
+            }
+        };
+        List<String> required = new List<String>{ 'carries', 'reason' };
+        if (takesTarget(contractCode)) {
+            props.put('target', new Map<String, Object>{
+                'type' => 'string',
+                'enum' => new List<String>{
+                    TARGET_US, TARGET_OCCASION, TARGET_THEIR_OWN, TARGET_OTHER
+                },
+                'description' => 'WHAT THE FEELING POINTS AT, answered on its own and not ' +
+                    'as part of the verdict above. ' + TARGET_US + ' only where the warmth ' +
+                    'is toward us, our company, or what we are selling. ' + TARGET_OCCASION +
+                    ' where it is toward the meeting, the conversation, the next call, or ' +
+                    'working together as an event - "looking forward to it", "good to meet ' +
+                    'you", "thanks for your time". ' + TARGET_THEIR_OWN + ' where it is ' +
+                    'about their own project, plan or progress. ' + TARGET_OTHER +
+                    ' for anything else. Answer this even when you answered carries false.'
+            });
+            required.add('target');
+        }
         return new Map<String, Object>{
             'type' => 'object',
-            'properties' => new Map<String, Object>{
-                'carries' => new Map<String, Object>{
-                    'type' => 'boolean',
-                    'description' => 'true only if the quoted words assert the claim. false ' +
-                        'if they merely mention it, discuss it, imply it, or say something ' +
-                        'adjacent to it.'
-                },
-                'reason' => new Map<String, Object>{
-                    'type' => 'string',
-                    'description' => 'One sentence. On a false, name what is missing or say ' +
-                        'what the quote actually asserts instead.'
-                }
-            },
-            'required' => new List<String>{ 'carries', 'reason' },
+            'properties' => props,
+            'required' => required,
             'additionalProperties' => false
         };
     }
 
     public static Verdict parseOne(String jsonText, String pairRef) {
+        return parseOne(jsonText, pairRef, null);
+    }
+
+    public static Verdict parseOne(String jsonText, String pairRef, String contractCode) {
         Map<String, Object> root;
         try {
             root = (Map<String, Object>) JSON.deserializeUntyped(jsonText);
@@ -160,6 +228,26 @@ public with sharing class AAO_VerifyPairsCharter {
         v.pairRef = pairRef;
         v.carries = (Boolean) root.get('carries');
         v.reason = (String) root.get('reason');
+        if (takesTarget(contractCode)) {
+            v.target = (String) root.get('target');
+            if (String.isBlank(v.target)) {
+                throw new CharterException(
+                    'Call 3 answered the stance for ' + pairRef + ' and did not answer what ' +
+                    'the feeling points at. The target is half the proposition, not a ' +
+                    'qualifier on it, and a missing half is our bug per the parse law.'
+                );
+            }
+            // THE CONJUNCTION, IN APEX. A courtesy read can no longer arrive as an upheld
+            // stance, because upholding one now requires naming us as its target.
+            if (v.carries == true && !targetEstablishes(v.target)) {
+                v.carries = false;
+                v.reason =
+                    'Refused by the occasion-versus-solution conjunct: the words were read ' +
+                    'as voicing the stance, but the feeling points at ' + v.target +
+                    ' rather than at us or our solution. Courtesy is not stance. Reader\'s ' +
+                    'own reason: ' + v.reason;
+            }
+        }
         return v;
     }
 

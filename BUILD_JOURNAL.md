@@ -9847,3 +9847,86 @@ deferred to the Flags and Guidance fold). Worth carrying there with a specimen n
 retraction is the first one, and the thing a seller would want told is not that a field went
 blank but that **we established something and then withdrew it**, which the vendor field
 cannot say and the note does.
+
+---
+
+## 2026-08-07 · session 77 · the map read passes, and the check it asked for found a defect
+
+**383 tests: 382 AAO pass**, plus the named org-resident failure. Eight of the new tests are
+call 3's first ever.
+
+### The watermark check on Matthew's edit · IT DID NOT HOLD
+
+He set Fatema Choudray's Political Status to Inner Circle. The check asked whether the human
+edit registered and whether anything of ours could move it again. **The answer to the second is
+that it could have, on the first run that established anything about her.**
+
+What we hold for Fatema: **no answer, no participation row, no watermark.** Nothing. Her map row
+carries `Inner Circle` at `2026-08-07 20:41:54` and nothing of ours has ever touched it.
+
+`humanEdited` compares two stamps and returns false when ours is null, because **first contact
+was deliberately carved out as ours to write**. That carve-out was correct while the only way to
+hold no watermark was to have never met the row. **A human authoring a value on a row we have
+never touched breaks exactly that assumption**, and Fatema is that case: under the stamp test
+alone, the first run to derive a Political Status for her would have overwritten a deliberate
+human judgment, which is the one outcome this system exists to prevent.
+
+**The repair is the test retraction already uses, moved one stage earlier**: a non-blank value
+our own watermark does not claim was put there by somebody else, because nobody else could
+have. **Absence of our watermark plus presence of a value IS the evidence of a human edit; it
+is not the absence of evidence.** Per dimension rather than one flat set, because the four
+vendor vocabularies being disjoint is an accident of the picklists and a guard that holds a
+human edit back is not a place to spend an accident.
+
+The test reproduces her condition exactly - both halves of the watermark cleared, so the stamp
+test cannot save the human and only the value test can. The map row is built by projection
+rather than by hand, because the vendor's own BeforeInsert trigger refuses an assembled row and
+a hand-built one is a shape the product never emits.
+
+### The occasion-versus-solution conjunct · built as ruled
+
+**Courtesy-as-stance failed twice on the same shape** (seq11 at 24 June, seq9 at a21), and both
+failures happened **under a prompt that already told the reader not to do it**: "FOR A CLAIM
+ABOUT HOW SOMEONE STANDS TOWARD US, CHECK WHAT THE FEELING POINTS AT" has been in the system
+prompt the whole time. So a third wording fix was not the answer.
+
+**The target becomes its own required question and the verdict becomes arithmetic.** The reader
+no longer renders one holistic judgment in which a warm sentence can carry the day; it answers
+what the words voice and, separately, what the feeling points at. Apex conjoins them. **A
+courtesy read now has to name the occasion as its target, and naming it is what refuses it** -
+the same move as the scope split, where DUAL became arithmetic over two one-way answers.
+
+The conjunct binds sentiment and nothing else: "what does the feeling point at" is not a
+question about a Buyer Role, and asking it there would be a field with no meaning that a reader
+must still fill. The reader's own reason survives underneath the refusal, because what it
+thought is the evidence for whether the conjunct is calibrated.
+
+**Call 3 had no test class**, which is the second component in two days found carrying zero
+tests through a structural change. The lesson stands: a suite that cannot see a component is
+green about nothing.
+
+### The regression set grows to 39
+
+Three map-read grades enter as standing assertions, and all three **HELD on the a21 pairs**:
+Jefferson MENTOR on two quotes, and his PS2 on the forwarding quote. Seed 36 to 39, checked 31
+to 34, held 16 to 19; nothing else moved.
+
+**These are the first assertions seeded from a map read rather than a review CSV**, and they are
+worth more per row: he graded the value he would act on, at the surface he would act on it,
+after the writer composed it.
+
+**Keyed on bytes and not on the pair ref, and this run proved why.** `poq5` names Jefferson's
+PS2 on a20 and Neeraja's OPS1 on a21 - refs are per-run, and the set keys on contract plus
+byte-range intersection for exactly this reason. Reading the ref out of the grading note would
+have asserted the wrong pair.
+
+**Jefferson's Political Structure supersedes the Outside Political Structure agreement specimen
+at §P8.9.** Nothing is retracted; what changes is which reading the set defends.
+
+### Named, because the next report will show it
+
+**The regression report still reads `traps reproduced 1`, and that is correct rather than
+stale.** The report grades the stored a21 pairs, which were verified before the conjunct
+existed. The conjunct refuses that shape from the next run forward and reaches nothing already
+verified - the same boundary the never-projected rule had, and the reason retirement exists
+beside it.

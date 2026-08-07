@@ -664,8 +664,28 @@ public with sharing class AAO_Project {
 
         Datetime ours = lastProjected(answers);
 
+        // **A POPULATED VALUE WE CANNOT PROVE IS OURS IS THE HUMAN'S.** Found 7 August by the
+        // watermark check on Matthew's own map edit: he set Fatema Choudray's Political Status
+        // to Inner Circle, and we hold no answer, no participation row and no watermark for
+        // her at all.
+        //
+        // `humanEdited` compares stamps and returns false when `ourLastWrite` is null, because
+        // first contact was deliberately carved out as ours to write. That carve-out was
+        // correct while the only way to hold no watermark was to have never met the row - and
+        // a human authoring a value on a row we have never touched breaks exactly that
+        // assumption. Under the stamp test alone, the first run that established any Political
+        // Status for Fatema would have overwritten a deliberate human judgment, which is the
+        // one outcome this system exists to prevent.
+        //
+        // The repair is the test retraction already uses, applied one stage earlier: a
+        // non-blank value that our own watermark does not claim was put there by somebody
+        // else, because nobody else could have. Absence of our watermark plus presence of a
+        // value IS the evidence of a human edit; it is not the absence of evidence.
+        Map<String, Set<String>> ourValues = ourValuesByDimension(answers);
+
         if (d.support != null) {
-            if (humanEdited(row.ALTF__Status_Last_Modified__c, ours)) {
+            if (humanEdited(row.ALTF__Status_Last_Modified__c, ours) ||
+                humanAuthored(row.ALTF__Status__c, ourValues.get(AAO_P8Codes.DIM_SUPPORT))) {
                 r.heldBack.add('Support');
             } else if (row.ALTF__Status__c != d.support) {
                 patch.ALTF__Status__c = d.support;
@@ -674,7 +694,8 @@ public with sharing class AAO_Project {
             }
         }
         if (d.political != null) {
-            if (humanEdited(row.ALTF__Political_Last_Modified__c, ours)) {
+            if (humanEdited(row.ALTF__Political_Last_Modified__c, ours) ||
+                humanAuthored(row.ALTF__Political__c, ourValues.get(AAO_P8Codes.DIM_POLITICAL))) {
                 r.heldBack.add('Political');
             } else if (row.ALTF__Political__c != d.political) {
                 patch.ALTF__Political__c = d.political;
@@ -683,7 +704,8 @@ public with sharing class AAO_Project {
             }
         }
         if (d.buyerRole != null) {
-            if (humanEdited(row.ALTF__Buyer_Role_Last_Modified__c, ours)) {
+            if (humanEdited(row.ALTF__Buyer_Role_Last_Modified__c, ours) ||
+                humanAuthored(row.ALTF__Buyer_Role__c, ourValues.get(AAO_P8Codes.DIM_BUYER_ROLE))) {
                 r.heldBack.add('Buyer Role');
             } else if (row.ALTF__Buyer_Role__c != d.buyerRole) {
                 patch.ALTF__Buyer_Role__c = d.buyerRole;
@@ -692,7 +714,8 @@ public with sharing class AAO_Project {
             }
         }
         if (d.coverage != null) {
-            if (humanEdited(row.ALTF__Coverage_Last_Modified__c, ours)) {
+            if (humanEdited(row.ALTF__Coverage_Last_Modified__c, ours) ||
+                humanAuthored(row.ALTF__Coverage__c, ourValues.get(AAO_P8Codes.DIM_COVERAGE))) {
                 r.heldBack.add('Coverage');
             } else if (row.ALTF__Coverage__c != d.coverage) {
                 patch.ALTF__Coverage__c = d.coverage;
@@ -844,6 +867,43 @@ public with sharing class AAO_Project {
      * A row we have never written carries a stamp from whatever created it, so first contact
      * is deliberately treated as ours to write: `ourLastWrite == null` means no prior claim.
      */
+    /**
+     * A live value nobody can prove we wrote. Blank is not authored by anyone, and a value our
+     * own watermark names is ours to move.
+     */
+    private static Boolean humanAuthored(String liveValue, Set<String> ourValuesForDimension) {
+        if (String.isBlank(liveValue)) {
+            return false;
+        }
+        return ourValuesForDimension == null || !ourValuesForDimension.contains(liveValue);
+    }
+
+    /**
+     * What our watermark says we put on this person's row, per dimension.
+     *
+     * Per dimension rather than one flat set, even though the four vendor vocabularies happen
+     * to be disjoint today: that disjointness is an accident of the picklists rather than a
+     * property anyone guaranteed, and a guard that holds a human edit back is not a place to
+     * spend an accident.
+     */
+    private static Map<String, Set<String>> ourValuesByDimension(List<AAO_Answer__c> answers) {
+        Map<String, Set<String>> out = new Map<String, Set<String>>();
+        for (AAO_Answer__c a : answers) {
+            if (String.isBlank(a.AAO_Projected_Value__c)) {
+                continue;
+            }
+            String dim = AAO_P8Codes.dimensionOf(codeOf(a));
+            if (dim == null) {
+                continue;
+            }
+            if (!out.containsKey(dim)) {
+                out.put(dim, new Set<String>());
+            }
+            out.get(dim).add(a.AAO_Projected_Value__c);
+        }
+        return out;
+    }
+
     private static Boolean humanEdited(Datetime nativeStamp, Datetime ourLastWrite) {
         if (nativeStamp == null || ourLastWrite == null) {
             return false;

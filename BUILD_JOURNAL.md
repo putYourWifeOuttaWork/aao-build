@@ -9930,3 +9930,87 @@ stale.** The report grades the stored a21 pairs, which were verified before the 
 existed. The conjunct refuses that shape from the next run forward and reaches nothing already
 verified - the same boundary the never-projected rule had, and the reason retirement exists
 beside it.
+
+---
+
+## 2026-08-07 · session 77 · the two answers owed, and a proposal
+
+### 1 · The caveat diagnostic · PRESENT AND IGNORED
+
+`AAO_ResolverCharter.CAVEATS` carries all four authored caveats, first among them verbatim:
+
+> Late-stage onboarding discussion inside a still-open deal reads account-shaped and is not.
+
+`ontologyText()` emits them under `# Caveats, authored into the ontology`, `AAO_Pass.resolve`
+passes that block to call 0 as its second input, and `effectiveVersion()` hashes it, so the
+stamp covers it. **The text was in front of the reader and the read violated it.**
+
+So the diagnostic's second branch applies: **the new structure's failure count starts at one.**
+Nothing is added, because there is nothing absent to add. Recorded rather than repaired, per
+the failed-twice law: one failure is one failure.
+
+**What the failure actually looks like matters for whoever rules the second one.** The read did
+not miss the caveat; its own `because` PARAPHRASED it - "but note it sits inside a still-open
+deal" - and answered yes anyway. It knew the rule, said the rule, and did not apply it. A
+wording fix has nothing to grip here, which is the same shape as the courtesy conjunct's two
+failures under an instruction that named the failure exactly.
+
+### 2 · Ryan's three artifact hashes, named · AND THE THIRD IS A DEFECT
+
+Three Sources hang off the deal:
+
+| ref | artifact sha | occurred | origin |
+|---|---|---|---|
+| `emerson/aspentech-2026-06-17-nf1` | `ec8e7170` | 17 Jun 20:29:36 | ingest |
+| `emerson/aspentech-2026-07-29` | `d0606eac` | **29 Jul 20:00:55** | ECI |
+| `emerson/aspentech-2026-07-29-nf1` | `9e974006` | **29 Jul 20:00:55** | ECI |
+
+**The 29 July call is seeded twice**, raw and NF1-normalized, same conversation, same
+occurred-time to the second, and **two different artifact hashes**. None is synthetic; no
+harness or test artifact is involved, so that suspicion is cleared and replaced by a worse one.
+
+**The occasion count is wrong and coverage's scoping is wrong with it.** Ryan's honest count is
+two occasions, not three. `Multiple contacts` is right at two as well, so the map value is
+accidentally correct and the derivation that produced it is not - which is exactly the shape
+this build calls a lucky answer.
+
+**The law it breaks is its own.** The artifact hash was chosen so that one call arriving as
+three Source rows reads as ONE occasion. That holds for parts of one normalization and fails
+for two normalizations of one call, because the hash is of the normalized bytes rather than of
+the conversation. **The dedup fails precisely where it was designed to work.**
+
+Coverage grading waits on this, correctly.
+
+### 3 · One human, one participant · PROPOSED, not built
+
+Jefferson is two participant identities: `Jefferson Vargas`, unlinked, 2 occasions, and
+`Vargas, Jefferson [EMR/SYSS/AT/MEDI]`, linked to a Contact, 1 occasion. One human, three
+occasions, summed nowhere and shown on the map as one.
+
+**Two mechanisms, and they are not alternatives.**
+
+**A · Alias at read time, keyed on the resolved Contact.** `AAO_Identity` already resolves a
+participation row to a Contact by ladder; coverage regroups by identity and today that identity
+is the Contact where one exists and the roster key otherwise. **The narrow fix is that a
+participation row which HAS resolved contributes its occasions under the Contact**, so two rows
+resolving to one Contact sum. Cheap, reversible, writes nothing, and it fixes exactly the case
+in front of us.
+
+**B · Merge the participant rows.** Heavier, destroys nothing (claims key the Participant, so
+a merge has to re-point them), and it is the only thing that makes a person one row for every
+future reader rather than for coverage alone.
+
+**Recommended: A now, B never on its own.** The reason is the retirement law's reason - claims
+key the Participant, so merging rows rewrites what claims point at, and rewriting a ledger's
+foreign keys is a deletion wearing a merge's clothes. **Aliasing leaves both rows readable and
+makes the derivation correct**, and if B is ever wanted it wants the promotion path rather than
+a merge: the unlinked row resolves later, and the alias is what makes the sum right in the
+meantime.
+
+**The unresolved half is named rather than hidden.** Aliasing sums rows that resolved to one
+Contact. Two UNRESOLVED rows for one human (two roster spellings, no Contact either side) still
+read as two people, and nothing in the ladder can join them without guessing at names, which is
+the never-pick law. That case stays split, visibly, and is the honest cost.
+
+**Both wait on the hash defect above**, because summing occasions correctly over a
+double-counted artifact just produces a different wrong number.

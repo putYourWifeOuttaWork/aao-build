@@ -50,8 +50,12 @@ public class AAO_SourceTriggerHandler {
             // stays; the condition cannot recur, because omitting the value is no longer
             // something a caller is able to do.
             s.AAO_SHA256__c = AAO_NormalForm.sha256(s.AAO_Normalized_Text__c);
-            if (String.isBlank(s.AAO_Normalizer_Version__c)) {
-                s.AAO_Normalizer_Version__c = AAO_NormalForm.VERSION;
+            // The stamp composes, so two different byte outputs can never carry the same
+            // one. Computed after the output hash above, because it is one of its halves.
+            if (String.isBlank(s.AAO_Normalizer_Version__c) ||
+                !s.AAO_Normalizer_Version__c.contains('+')) {
+                s.AAO_Normalizer_Version__c =
+                    AAO_NormalForm.stamp(s.AAO_Raw_SHA256__c, s.AAO_SHA256__c);
             }
         }
     }

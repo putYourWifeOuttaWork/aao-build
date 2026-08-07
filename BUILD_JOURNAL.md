@@ -10106,3 +10106,52 @@ is a different fact from a pipeline that correctly declined to run.
 **What it tested: the resolver, and it passed. What it did not test: extraction.** No family
 read ran, so this fixture contributes nothing to recall or precision on unseen speech. The
 29 July fixture is the extraction test and gate 3's real numbers come from it.
+
+---
+
+## 2026-08-07 · session 77 · the normalizer stamp composes, and the repair is refused by law
+
+### The stamp
+
+`AAO_NormalForm.stamp(rawSha, outputSha)`, written in the Source before-insert after the output
+hash it is composed from. **Two different byte outputs can no longer carry identical stamps**,
+because the hash is part of the stamp.
+
+**The prefix says which half answered**, the same shape as the occasion key. `NF1+raw:` is the
+ruled form, composed from what we normalized FROM, and it is the one that can tell two
+normalizations of one input apart. `NF1+out:` is the fallback where the raw input was never
+recorded: it still cannot collide across different outputs, and it cannot tell you two rows came
+from one raw input, which is precisely the weaker claim the prefix exists to make.
+
+`AAO_Source__c.AAO_Raw_SHA256__c` is new, so the ruled form is reachable the moment ingest
+records what it normalized from. Without it the fallback would quietly BE the stamp.
+
+### THE NAMED REPAIR IS REFUSED, AND THE REFUSAL IS RIGHT
+
+The restamp of existing rows failed on a validation rule that already existed:
+
+> `AAO_Normalizer_Version__c` is immutable on `AAO_Source__c`. Every span already stored was
+> byte-verified against this record; editing it breaks the citation chain without anything
+> appearing to fail. Re-ingest as a new Source instead.
+
+**I did not force it, and the ruling's repair clause is answered by declining it.** The law is
+correct and the handler's own comment already said so: *no immutability exception exists or
+will*. A stamp is provenance, and a provenance field a later process can rewrite is not
+provenance. Restamping would have improved a label by editing the record every stored span was
+verified against, which is the citation chain paying for a cosmetic gain.
+
+**So the honest outcome is a split ledger, stated rather than hidden.** Rows normalized before
+today keep their uncomposed `NF1` permanently; everything from here composes. The two 29 July
+rows therefore stay indistinguishable BY STAMP, and the freeze list keeps doing that work by
+naming `9e974006` explicitly, which is why it names it.
+
+**This is the third time the schema has refused a correction and been right** - after the
+immutable `AAO_Raised_At__c` and the claim ledger's own insert-only rule. The pattern is worth
+its own line: **a law that only permits corrections it can prove safe will sometimes refuse a
+correction that IS safe, and paying that cost is what makes the law worth having.**
+
+### Handing off
+
+The 29 July extraction run goes to a fresh session per the ruling, on my own context flag.
+Everything it needs is frozen: the fixture `9e974006`, the corpus list, and the standing
+obligations.

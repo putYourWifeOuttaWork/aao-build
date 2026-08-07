@@ -26,6 +26,35 @@
 public class AAO_NormalForm {
     public static final String VERSION = 'NF1';
 
+    /**
+     * THE NORMALIZER STAMP COMPOSES. Ruled 7 August, the two-halves provenance law reaching
+     * normalization: a version string that does not cover an input which changes the output is
+     * decoration.
+     *
+     * **The defect it closes, from the freeze list:** both 29 July rows carried
+     * `AAO_Normalizer_Version__c = NF1` with different artifact hashes. One version, two byte
+     * outputs, and the stamp could not tell the fixture from its predecessor.
+     *
+     * **The composed stamp guarantees what the ruling asks structurally**: two different byte
+     * outputs cannot carry identical stamps, because the hash is part of the stamp.
+     *
+     * **The prefix says which half answered**, the same anti-silent-default shape as the
+     * occasion key. `NF1+raw:` is the ruled form, composed from what we normalized FROM, and it
+     * is the one that distinguishes two normalizations of one input. `NF1+out:` is the fallback
+     * for rows whose raw input we never recorded, composed from the output's own bytes: it
+     * still cannot collide across different outputs, and it cannot tell you that two rows came
+     * from one raw input, which is exactly the weaker claim the prefix is there to make.
+     */
+    public static String stamp(String rawSha, String outputSha) {
+        if (String.isNotBlank(rawSha)) {
+            return VERSION + '+raw:' + rawSha.left(8);
+        }
+        if (String.isNotBlank(outputSha)) {
+            return VERSION + '+out:' + outputSha.left(8);
+        }
+        return VERSION;
+    }
+
     public class Turn {
         public String speakerKey;
         /** Region of the utterance itself, excluding the speaker prefix and the tab. */

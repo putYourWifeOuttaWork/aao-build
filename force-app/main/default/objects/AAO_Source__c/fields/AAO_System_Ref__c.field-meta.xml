@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_System_Ref__c</fullName>
+    <description>THE CONVERSATION'S IDENTITY IN THE SYSTEM IT CAME FROM: the ECI VideoCall id, the Gong call id, whatever the origin system calls this one conversation. Written at ingest, never derived from our own bytes. Ruled 7 August: OCCASION IDENTITY IS THE CONVERSATION, source-system reference plus occurred time, because the artifact hash is a byte-provenance key and two normalizations of one call carry two hashes. Coverage counts conversations and spans are checked against the hash; two keys for two jobs. Null on rows ingested before this field existed, where the occasion key falls back to account plus occurred time and says so.</description>
+    <label>System Ref</label>
+    <type>Text</type>
+    <length>255</length>
+</CustomField>

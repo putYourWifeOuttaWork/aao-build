@@ -10014,3 +10014,60 @@ the never-pick law. That case stays split, visibly, and is the honest cost.
 
 **Both wait on the hash defect above**, because summing occasions correctly over a
 double-counted artifact just produces a different wrong number.
+
+---
+
+## 2026-08-07 · session 77 · occasion identity splits from the hash, and the alias lands
+
+**383 tests: 382 AAO pass**, plus the named org-resident failure.
+
+### Two keys for two jobs
+
+**The artifact hash is untouched** and stays what spans are byte-checked against. **Occasion
+identity is now the conversation**: source-system reference plus occurred time, deterministic,
+never our own normalized bytes.
+
+**`AAO_Source__c.AAO_System_Ref__c` is new**, because the ruled key named a thing our schema did
+not have. Writing the fallback without the field would have let account-plus-occurred quietly
+BE the key rather than stand in for one, which is the silent-default shape this build keeps
+catching. Ingest populates it going forward; rows older than the field fall back and **the key
+says which answered** (`sys:` against `acct:`), so a reader can tell them apart rather than
+trust that they are the same thing.
+
+**The fallback's own weakness is stated rather than discovered**: two genuinely different calls
+on one account starting in the same second collide. No calendar produces that, and the system
+reference removes it entirely the moment ingest writes one.
+
+### The alias, ratified and built
+
+A participation row that has not linked contributes its occasions under the Contact the ladder
+resolves it to. **Aliases, never merges** - claims key the Participant, so a merge rewrites what
+claims point at.
+
+**It is read-only by construction**, which the coverage read forces: no link-back, no create,
+none of the ladder's writing rungs. Two cheap read rungs, email then name-within-the-account,
+and **never pick** - two matches resolve to neither.
+
+**The gap stays named**: two unresolved rows for one human still read as two people, because
+joining them means guessing that two spellings are one person. That case stays split and stays
+visible.
+
+### What the two fixes did to the numbers
+
+| person | before | after | why |
+|---|---|---|---|
+| Ryan Couture | 3 | **2** | the 29 July call stopped counting twice |
+| Vargas, Jefferson (linked) | 1 | **2** | his unlinked row's occasions sum under his Contact |
+
+**Derived and on-map now agree on every row**, and Jefferson's map value moved Brief contact to
+Multiple contacts on the re-projection. His counter, political and role are unchanged: the
+alias touches the coverage derivation and nothing else.
+
+**Ryan's `Multiple contacts` was accidentally right before and is correctly right now**, which
+is the distinction this build spends its time on.
+
+### Gate 3, not started, and deliberately
+
+The corpus freeze waits, per the ruling and for the reason the stop was made: freezing before
+the dedup bakes the defect into the measuring stick. The 29 July fixture is one of the named
+fixtures and was the double-seeded one. Both fixes are live, so the freeze is unblocked.

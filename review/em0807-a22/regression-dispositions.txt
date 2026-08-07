@@ -1,0 +1,35 @@
+--- every assertion, one line ---
+CHANGED    emerson-q13 [CORRECT_REFUSAL] refusal no longer emitted
+HELD       buq2 [MUST_APPEAR] found as graded
+HELD       buq3 [MUST_APPEAR] found as graded
+HELD       buq4 [MUST_APPEAR] found as graded
+HELD       buq5 [MUST_APPEAR] found as graded
+HELD       buq6 [MUST_APPEAR] found as graded
+HELD       buq7 [MUST_APPEAR] found as graded
+HELD       buq8 [MUST_APPEAR] found as graded
+HELD       deq1 [MUST_APPEAR] found as graded
+HELD       deq2 [MUST_APPEAR] found as graded
+HELD       deq5 [MUST_APPEAR] found as graded
+HELD       deq6 [MUST_APPEAR] found as graded
+HELD       emerson-q1 [MUST_APPEAR] found as graded
+HELD       emerson-q9 [MUST_APPEAR] found as graded
+HELD       map-jefferson-mentor-approvers [MUST_APPEAR] found as graded
+HELD       map-jefferson-mentor-material [MUST_APPEAR] found as graded
+HELD       map-jefferson-ps2-forward [MUST_APPEAR] found as graded
+HELD       poq7 [MUST_APPEAR] found as graded
+HELD       seq2 [MUST_APPEAR] found as graded
+HELD       seq4 [MUST_APPEAR] found as graded
+HELD       seq6 [MUST_APPEAR] found as graded
+HELD       trap-seq11-courtesy [MUST_NOT_APPEAR] trap absent
+LOST       deq3 [MUST_APPEAR] not found
+LOST       deq4 [MUST_APPEAR] not found
+LOST       poq1 [MUST_APPEAR] not found
+RECOVERED  under-1-neeraja-supporter [GRADED_MISS] graded miss now found
+RECOVERED  under-8-jefferson-supporter [GRADED_MISS] graded miss now found
+STILL MISSED under-2-neeraja-political [GRADED_MISS] never found
+STILL MISSED under-3-neeraja-approver [GRADED_MISS] never found
+STILL MISSED under-5-neeraja-political [GRADED_MISS] never found
+STILL MISSED under-6-neeraja-supporter [GRADED_MISS] never found
+UNREACHABLE under-4-neeraja-orientation [UNREACHABLE] undeclared family
+UNREACHABLE under-7-neeraja-orientation [UNREACHABLE] undeclared family
+UNREACHABLE under-8-jefferson-orientation [UNREACHABLE] undeclared family

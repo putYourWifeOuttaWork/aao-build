@@ -596,11 +596,39 @@ public with sharing class AAO_Pass {
         r.verdicts = new List<AAO_VerifyPairsCharter.Verdict>();
         List<AAO_Pair__c> stamp = new List<AAO_Pair__c>();
 
-        for (Integer start = 0; start < claims.size(); start += VERIFY_BATCH) {
+        // **BATCHES ARE HOMOGENEOUS BY FAMILY**, so one contract code governs the whole
+        // schema. That is what lets the occasion-versus-solution conjunct ride the batch shape
+        // and stay absent where it would be meaningless: a mixed batch would force the target
+        // field onto Buyer Role claims that have no feeling to point anywhere, which is the
+        // defaulted-coverage shape this build has been bitten by twice.
+        Integer lastBatchSize = VERIFY_BATCH;
+        Map<String, List<AAO_Pair__c>> byCode = new Map<String, List<AAO_Pair__c>>();
+        for (AAO_Pair__c c : claims) {
+            String code = c.AAO_Evidence_Contract__r.AAO_Proposition_Code__c;
+            if (!byCode.containsKey(code)) {
+                byCode.put(code, new List<AAO_Pair__c>());
+            }
+            byCode.get(code).add(c);
+        }
+        List<AAO_Pair__c> ordered = new List<AAO_Pair__c>();
+        List<String> codeOrder = new List<String>(byCode.keySet());
+        codeOrder.sort();
+        for (String code : codeOrder) {
+            ordered.addAll(byCode.get(code));
+        }
+        claims = ordered;
+
+        for (Integer start = 0; start < claims.size(); start += lastBatchSize) {
             List<AAO_Pair__c> batch = new List<AAO_Pair__c>();
+            String batchCode =
+                claims[start].AAO_Evidence_Contract__r.AAO_Proposition_Code__c;
             for (Integer i = start; i < Math.min(start + VERIFY_BATCH, claims.size()); i++) {
+                if (claims[i].AAO_Evidence_Contract__r.AAO_Proposition_Code__c != batchCode) {
+                    break;
+                }
                 batch.add(claims[i]);
             }
+            lastBatchSize = batch.size();
             List<String> refs = new List<String>();
             // The contract code travels with the ref so call 3's schema can carry the
             // occasion-versus-solution conjunct on sentiment and on nothing else.
@@ -640,7 +668,7 @@ public with sharing class AAO_Pass {
                 new List<String>{ String.join(block, '\n') },
                 refs.size() == 1
                     ? AAO_VerifyPairsCharter.schemaOne(codes[0])
-                    : AAO_VerifyPairsCharter.schema(refs)
+                    : AAO_VerifyPairsCharter.schema(refs, codes[0])
             );
             if (r.call == null) {
                 r.call = sr;
@@ -654,7 +682,7 @@ public with sharing class AAO_Pass {
             if (refs.size() == 1) {
                 r.verdicts.add(AAO_VerifyPairsCharter.parseOne(sr.rawText, refs[0], codes[0]));
             } else {
-                r.verdicts.addAll(AAO_VerifyPairsCharter.parse(sr.rawText, refs));
+                r.verdicts.addAll(AAO_VerifyPairsCharter.parse(sr.rawText, refs, codes[0]));
             }
         }
 

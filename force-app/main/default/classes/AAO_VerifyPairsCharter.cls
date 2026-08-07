@@ -33,6 +33,45 @@ public with sharing class AAO_VerifyPairsCharter {
     }
 
     public static Map<String, Object> schema(List<String> pairRefs) {
+        return schema(pairRefs, null);
+    }
+
+    /**
+     * The batch shape, and it carries the conjunct too.
+     *
+     * **Found the same day the conjunct was built, by running it: the conjunct rode only the
+     * single-claim path.** Call 3 batches by default and narrows to one claim only at the tail,
+     * so in ordinary operation every sentiment claim would have gone through this schema and
+     * skipped the target question entirely. A structural guard reachable only on a code path
+     * that rarely executes is a guard that is not there.
+     *
+     * The batch is homogeneous by contract because `AAO_Pass` groups by family before
+     * batching, so one code governs the whole schema and the field stays absent everywhere it
+     * would be meaningless.
+     */
+    public static Map<String, Object> schema(List<String> pairRefs, String contractCode) {
+        Map<String, Object> item = new Map<String, Object>{
+            'ref' => new Map<String, Object>{
+                'type' => 'string',
+                'enum' => pairRefs
+            },
+            'carries' => new Map<String, Object>{
+                'type' => 'boolean',
+                'description' => 'true only if the quoted words assert the ' +
+                    'claim. false if they merely mention it, discuss it, ' +
+                    'imply it, or say something adjacent to it.'
+            },
+            'reason' => new Map<String, Object>{
+                'type' => 'string',
+                'description' => 'One sentence. On a false, name what is ' +
+                    'missing or say what the quote actually asserts instead.'
+            }
+        };
+        List<String> itemRequired = new List<String>{ 'ref', 'carries', 'reason' };
+        if (takesTarget(contractCode)) {
+            item.put('target', targetProperty());
+            itemRequired.add('target');
+        }
         return new Map<String, Object>{
             'type' => 'object',
             'properties' => new Map<String, Object>{
@@ -42,24 +81,8 @@ public with sharing class AAO_VerifyPairsCharter {
                         'omitting one. There are ' + pairRefs.size() + ' claims.',
                     'items' => new Map<String, Object>{
                         'type' => 'object',
-                        'properties' => new Map<String, Object>{
-                            'ref' => new Map<String, Object>{
-                                'type' => 'string',
-                                'enum' => pairRefs
-                            },
-                            'carries' => new Map<String, Object>{
-                                'type' => 'boolean',
-                                'description' => 'true only if the quoted words assert the ' +
-                                    'claim. false if they merely mention it, discuss it, ' +
-                                    'imply it, or say something adjacent to it.'
-                            },
-                            'reason' => new Map<String, Object>{
-                                'type' => 'string',
-                                'description' => 'One sentence. On a false, name what is ' +
-                                    'missing or say what the quote actually asserts instead.'
-                            }
-                        },
-                        'required' => new List<String>{ 'ref', 'carries', 'reason' },
+                        'properties' => item,
+                        'required' => itemRequired,
                         'additionalProperties' => false
                     }
                 }
@@ -159,6 +182,24 @@ public with sharing class AAO_VerifyPairsCharter {
      * same move as call 1 having no person field: the failure is removed rather than
      * instructed against.
      */
+    /** One definition, so the two shapes cannot drift apart in what they ask. */
+    private static Map<String, Object> targetProperty() {
+        return new Map<String, Object>{
+            'type' => 'string',
+            'enum' => new List<String>{
+                TARGET_US, TARGET_OCCASION, TARGET_THEIR_OWN, TARGET_OTHER
+            },
+            'description' => 'WHAT THE FEELING POINTS AT, answered on its own and not ' +
+                'as part of the verdict above. ' + TARGET_US + ' only where the warmth ' +
+                'is toward us, our company, or what we are selling. ' + TARGET_OCCASION +
+                ' where it is toward the meeting, the conversation, the next call, or ' +
+                'working together as an event - "looking forward to it", "good to meet ' +
+                'you", "thanks for your time". ' + TARGET_THEIR_OWN + ' where it is ' +
+                'about their own project, plan or progress. ' + TARGET_OTHER +
+                ' for anything else. Answer this even when you answered carries false.'
+        };
+    }
+
     public static Map<String, Object> schemaOne() {
         return schemaOne(null);
     }
@@ -179,20 +220,7 @@ public with sharing class AAO_VerifyPairsCharter {
         };
         List<String> required = new List<String>{ 'carries', 'reason' };
         if (takesTarget(contractCode)) {
-            props.put('target', new Map<String, Object>{
-                'type' => 'string',
-                'enum' => new List<String>{
-                    TARGET_US, TARGET_OCCASION, TARGET_THEIR_OWN, TARGET_OTHER
-                },
-                'description' => 'WHAT THE FEELING POINTS AT, answered on its own and not ' +
-                    'as part of the verdict above. ' + TARGET_US + ' only where the warmth ' +
-                    'is toward us, our company, or what we are selling. ' + TARGET_OCCASION +
-                    ' where it is toward the meeting, the conversation, the next call, or ' +
-                    'working together as an event - "looking forward to it", "good to meet ' +
-                    'you", "thanks for your time". ' + TARGET_THEIR_OWN + ' where it is ' +
-                    'about their own project, plan or progress. ' + TARGET_OTHER +
-                    ' for anything else. Answer this even when you answered carries false.'
-            });
+            props.put('target', targetProperty());
             required.add('target');
         }
         return new Map<String, Object>{
@@ -228,30 +256,44 @@ public with sharing class AAO_VerifyPairsCharter {
         v.pairRef = pairRef;
         v.carries = (Boolean) root.get('carries');
         v.reason = (String) root.get('reason');
-        if (takesTarget(contractCode)) {
-            v.target = (String) root.get('target');
-            if (String.isBlank(v.target)) {
-                throw new CharterException(
-                    'Call 3 answered the stance for ' + pairRef + ' and did not answer what ' +
-                    'the feeling points at. The target is half the proposition, not a ' +
-                    'qualifier on it, and a missing half is our bug per the parse law.'
-                );
-            }
-            // THE CONJUNCTION, IN APEX. A courtesy read can no longer arrive as an upheld
-            // stance, because upholding one now requires naming us as its target.
-            if (v.carries == true && !targetEstablishes(v.target)) {
-                v.carries = false;
-                v.reason =
-                    'Refused by the occasion-versus-solution conjunct: the words were read ' +
-                    'as voicing the stance, but the feeling points at ' + v.target +
-                    ' rather than at us or our solution. Courtesy is not stance. Reader\'s ' +
-                    'own reason: ' + v.reason;
-            }
-        }
+        v.target = (String) root.get('target');
+        applyConjunct(v, contractCode);
         return v;
     }
 
+    /**
+     * THE CONJUNCTION, IN APEX, and it runs on both shapes. A courtesy read cannot arrive as
+     * an upheld stance, because upholding one requires naming us as its target.
+     */
+    private static void applyConjunct(Verdict v, String contractCode) {
+        if (!takesTarget(contractCode)) {
+            v.target = null;
+            return;
+        }
+        if (String.isBlank(v.target)) {
+            throw new CharterException(
+                'Call 3 answered the stance for ' + v.pairRef + ' and did not answer what ' +
+                'the feeling points at. The target is half the proposition, not a ' +
+                'qualifier on it, and a missing half is our bug per the parse law.'
+            );
+        }
+        if (v.carries == true && !targetEstablishes(v.target)) {
+            v.carries = false;
+            v.reason =
+                'Refused by the occasion-versus-solution conjunct: the words were read ' +
+                'as voicing the stance, but the feeling points at ' + v.target +
+                ' rather than at us or our solution. Courtesy is not stance. Reader\'s ' +
+                'own reason: ' + v.reason;
+        }
+    }
+
     public static List<Verdict> parse(String jsonText, List<String> handedRefs) {
+        return parse(jsonText, handedRefs, null);
+    }
+
+    public static List<Verdict> parse(
+        String jsonText, List<String> handedRefs, String contractCode
+    ) {
         Map<String, Object> root;
         try {
             root = (Map<String, Object>) JSON.deserializeUntyped(jsonText);
@@ -276,6 +318,7 @@ public with sharing class AAO_VerifyPairsCharter {
             v.pairRef = (String) m.get('ref');
             v.carries = (Boolean) m.get('carries');
             v.reason = (String) m.get('reason');
+            applyConjunct(v, contractCode);
             if (!handed.contains(v.pairRef) || seen.contains(v.pairRef)) {
                 throw new CharterException(
                     'Call 3 returned a verdict for ' + v.pairRef +

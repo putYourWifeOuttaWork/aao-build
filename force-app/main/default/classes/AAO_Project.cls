@@ -682,10 +682,13 @@ public with sharing class AAO_Project {
         // else, because nobody else could have. Absence of our watermark plus presence of a
         // value IS the evidence of a human edit; it is not the absence of evidence.
         Map<String, Set<String>> ourValues = ourValuesByDimension(answers);
+        // Have we ever written anything to this person's row? Our own watermark is the only
+        // honest answer, and it is per person rather than per dimension.
+        Boolean touched = !ourValues.isEmpty();
 
         if (d.support != null) {
             if (humanEdited(row.ALTF__Status_Last_Modified__c, ours) ||
-                humanAuthored(row.ALTF__Status__c, ourValues.get(AAO_P8Codes.DIM_SUPPORT))) {
+                humanAuthored(row.ALTF__Status__c, ourValues.get(AAO_P8Codes.DIM_SUPPORT), touched)) {
                 r.heldBack.add('Support');
             } else if (row.ALTF__Status__c != d.support) {
                 patch.ALTF__Status__c = d.support;
@@ -695,7 +698,7 @@ public with sharing class AAO_Project {
         }
         if (d.political != null) {
             if (humanEdited(row.ALTF__Political_Last_Modified__c, ours) ||
-                humanAuthored(row.ALTF__Political__c, ourValues.get(AAO_P8Codes.DIM_POLITICAL))) {
+                humanAuthored(row.ALTF__Political__c, ourValues.get(AAO_P8Codes.DIM_POLITICAL), touched)) {
                 r.heldBack.add('Political');
             } else if (row.ALTF__Political__c != d.political) {
                 patch.ALTF__Political__c = d.political;
@@ -705,7 +708,7 @@ public with sharing class AAO_Project {
         }
         if (d.buyerRole != null) {
             if (humanEdited(row.ALTF__Buyer_Role_Last_Modified__c, ours) ||
-                humanAuthored(row.ALTF__Buyer_Role__c, ourValues.get(AAO_P8Codes.DIM_BUYER_ROLE))) {
+                humanAuthored(row.ALTF__Buyer_Role__c, ourValues.get(AAO_P8Codes.DIM_BUYER_ROLE), touched)) {
                 r.heldBack.add('Buyer Role');
             } else if (row.ALTF__Buyer_Role__c != d.buyerRole) {
                 patch.ALTF__Buyer_Role__c = d.buyerRole;
@@ -715,7 +718,7 @@ public with sharing class AAO_Project {
         }
         if (d.coverage != null) {
             if (humanEdited(row.ALTF__Coverage_Last_Modified__c, ours) ||
-                humanAuthored(row.ALTF__Coverage__c, ourValues.get(AAO_P8Codes.DIM_COVERAGE))) {
+                humanAuthored(row.ALTF__Coverage__c, ourValues.get(AAO_P8Codes.DIM_COVERAGE), touched)) {
                 r.heldBack.add('Coverage');
             } else if (row.ALTF__Coverage__c != d.coverage) {
                 patch.ALTF__Coverage__c = d.coverage;
@@ -871,11 +874,27 @@ public with sharing class AAO_Project {
      * A live value nobody can prove we wrote. Blank is not authored by anyone, and a value our
      * own watermark names is ours to move.
      */
-    private static Boolean humanAuthored(String liveValue, Set<String> ourValuesForDimension) {
+    private static Boolean humanAuthored(
+        String liveValue, Set<String> ourValuesForDimension, Boolean weHaveTouchedThisRow
+    ) {
         if (String.isBlank(liveValue)) {
             return false;
         }
-        return ourValuesForDimension == null || !ourValuesForDimension.contains(liveValue);
+        // **A DIMENSION THAT CANNOT CARRY A WATERMARK IS NOT THEREBY THE HUMAN'S.** Found by
+        // running a22: Coverage is COMPUTED rather than extracted, so it has no Answer row and
+        // therefore no `AAO_Projected_Value__c` of its own. The first cut of this guard read
+        // that absence as evidence of a human edit and held back every coverage value we had
+        // written ourselves - the correction freezing the thing it corrected, which is the
+        // exact hazard the retraction watermark fix was about.
+        //
+        // The distinction the guard actually wants is between a row WE HAVE NEVER TOUCHED,
+        // where a value can only be somebody else's (Fatema Choudray), and a row we demonstrably
+        // wrote where one dimension keeps no watermark. On the second, the stamp test is the
+        // whole guard, which is what it was before today and is unchanged for it.
+        if (!weHaveTouchedThisRow) {
+            return true;
+        }
+        return ourValuesForDimension != null && !ourValuesForDimension.contains(liveValue);
     }
 
     /**

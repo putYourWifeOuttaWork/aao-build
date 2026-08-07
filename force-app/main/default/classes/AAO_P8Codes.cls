@@ -28,10 +28,18 @@ public with sharing class AAO_P8Codes {
     public static final String DIM_POLITICAL = 'political';
     public static final String DIM_BUYER_ROLE = 'buyer role';
     public static final String DIM_CRITERIA = 'criteria';
+    /**
+     * COVERAGE IS COMPUTED, NEVER EXTRACTED, so it has a dimension and no contract. Presence
+     * establishes it and the participant junction is its evidence; no model call anywhere.
+     * It is the one dimension the writer must not count as an answer read.
+     */
+    public static final String DIM_COVERAGE = 'coverage';
 
     /** The dimension order the run report prints in. Support and Political lead (§P8.9). */
     public static List<String> dimensions() {
-        return new List<String>{ DIM_SUPPORT, DIM_POLITICAL, DIM_BUYER_ROLE, DIM_CRITERIA };
+        return new List<String>{
+            DIM_SUPPORT, DIM_POLITICAL, DIM_BUYER_ROLE, DIM_CRITERIA, DIM_COVERAGE
+        };
     }
 
     // ------------------------------------------------------------------ the placements

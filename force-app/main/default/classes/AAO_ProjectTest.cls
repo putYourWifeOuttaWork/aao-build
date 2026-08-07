@@ -546,6 +546,120 @@ private class AAO_ProjectTest {
         );
     }
 
+    // ==================================================== Coverage, and the retraction
+
+    @IsTest
+    static void coverageCountsOccasionsAndStopsBelowItsOwnCeiling() {
+        System.assertEquals(
+            null,
+            AAO_Coverage.valueFor(0),
+            'ZERO OCCASIONS WRITES NOTHING. "No Contact" is a claim and we have no evidence ' +
+            'for it: the person may have been met on a call nobody recorded. The silence ' +
+            'law - the system journals what happened, never what did not.'
+        );
+        System.assertEquals(null, AAO_Coverage.valueFor(null));
+        System.assertEquals(AAO_Coverage.BRIEF, AAO_Coverage.valueFor(1));
+        System.assertEquals(AAO_Coverage.MULTIPLE, AAO_Coverage.valueFor(2));
+        System.assertEquals(
+            AAO_Coverage.MULTIPLE,
+            AAO_Coverage.valueFor(97),
+            'And it never reaches In-depth, however many occasions there are. MEANINGFUL and ' +
+            'HIGH QUALITY are not counts, the threshold that would separate them is a ' +
+            'measurement nobody has taken, and writing it off a count would be inference ' +
+            'wearing arithmetic\'s clothes.'
+        );
+    }
+
+    @IsTest
+    static void coverageIsNotAnAnswerAndIsNeverCountedAsOne() {
+        Fixture f = fixture();
+        AAO_Settings.overrideForTest.put(AAO_Settings.CONTACT_CREATION, true);
+        AAO_Participant__c unlinked = participantWithNoContact(f);
+
+        Test.startTest();
+        AAO_Project.Outcome o = AAO_Project.run(f.oppId);
+        Test.stopTest();
+
+        System.assertEquals(
+            0,
+            o.answersRead,
+            'Coverage consults no contract and no claim, so a deal whose only dimension is ' +
+            'coverage still reports zero answers read. Counting it would make the stage ' +
+            'arithmetic lie in the one direction it exists to catch.'
+        );
+        System.assertEquals(false, o.derivedNothing(), o.toString());
+    }
+
+    @IsTest
+    static void aValueWeWroteIsRetractedWhenTheEvidenceStopsSupportingIt() {
+        // The a20 defect's surface: two answers stood UNVERIFIED while the map carried their
+        // old projected values. Projection writes the current derivation INCLUDING NULL.
+        Fixture f = fixture();
+        AAO_Answer__c a = establish(f, AAO_P8Codes.SENTIMENT, 'TRUE', 2);
+
+        Test.startTest();
+        AAO_Project.Outcome first = AAO_Project.run(f.oppId);
+        System.assertEquals(1, first.created, first.toString());
+        System.assertEquals(
+            'Supporter',
+            [SELECT ALTF__Status__c FROM ALTF__Contact_Map_Details__c WHERE Id = :first.people[0].mapRowId]
+                .ALTF__Status__c
+        );
+
+        // The evidence stops supporting it - the clobber fix means this is now a real state
+        // rather than an accident, reached by a supersession or a human retraction upstream.
+        a.AAO_Verdict__c = 'UNVERIFIED';
+        update a;
+
+        AAO_Project.Outcome second = AAO_Project.run(f.oppId);
+        Test.stopTest();
+
+        System.assertEquals(1, second.valuesRetracted, second.toString());
+        System.assertEquals(
+            null,
+            [SELECT ALTF__Status__c FROM ALTF__Contact_Map_Details__c WHERE Id = :first.people[0].mapRowId]
+                .ALTF__Status__c,
+            'The map no longer asserts what no answer supports.'
+        );
+        String note = [
+            SELECT ALTF__Note__c FROM ALTF__Contact_Map_Details__c
+            WHERE Id = :first.people[0].mapRowId
+        ].ALTF__Note__c;
+        System.assert(
+            note != null && note.contains('Retracted Support'),
+            'A blank field reads identically to never-established, so the note carries what ' +
+            'the vendor field cannot. Got: ' + note
+        );
+    }
+
+    @IsTest
+    static void aHumanEditIsNeverRetracted() {
+        Fixture f = fixture();
+        AAO_Answer__c a = establish(f, AAO_P8Codes.SENTIMENT, 'TRUE', 2);
+        AAO_Project.Outcome first = AAO_Project.run(f.oppId);
+
+        // The seller moves it by hand, then the evidence weakens.
+        update new ALTF__Contact_Map_Details__c(
+            Id = first.people[0].mapRowId, ALTF__Status__c = 'Mentor'
+        );
+        a.AAO_Verdict__c = 'UNVERIFIED';
+        update a;
+
+        Test.startTest();
+        AAO_Project.Outcome second = AAO_Project.run(f.oppId);
+        Test.stopTest();
+
+        System.assertEquals(0, second.valuesRetracted, second.toString());
+        System.assertEquals(
+            'Mentor',
+            [SELECT ALTF__Status__c FROM ALTF__Contact_Map_Details__c WHERE Id = :first.people[0].mapRowId]
+                .ALTF__Status__c,
+            'Retraction clears only what the watermark proves is OURS and unmodified. A value ' +
+            'a human wrote is theirs, and clearing it would be the one outcome this system ' +
+            'exists to prevent.'
+        );
+    }
+
     // ---------------------------------------------------------------------- the fixture
 
     private class Fixture {
@@ -736,7 +850,12 @@ private class AAO_ProjectTest {
         for (String d : AAO_P8Codes.dimensions()) {
             o.writesByDimension.put(d, 1);
         }
-        System.assertEquals(4, o.dimensionWrites(), 'unit: values');
+        System.assertEquals(
+            AAO_P8Codes.dimensions().size(),
+            o.dimensionWrites(),
+            'unit: values. Reads the dimension list rather than a literal, so adding a ' +
+            'dimension does not silently leave this test asserting the old count.'
+        );
         String s = o.toString();
         for (String d : AAO_P8Codes.dimensions()) {
             System.assert(s.contains(d), 'Every dimension prints its own line. Got: ' + s);

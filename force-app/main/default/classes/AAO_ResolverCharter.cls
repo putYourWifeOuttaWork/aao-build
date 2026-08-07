@@ -238,6 +238,51 @@ public with sharing class AAO_ResolverCharter {
 
     // ========================================================================= parsing
 
+    /**
+     * Strings that satisfy a required field and answer nothing. Deliberately short: a long
+     * list starts judging prose quality, and this check only ever catches the case where the
+     * model filled a slot rather than answered it.
+     */
+    private static final Set<String> NON_REASONS = new Set<String>{
+        'placeholder', 'n/a', 'na', 'none', 'tbd', 'unknown', 'null', 'reason',
+        'because', 'see above', 'as above', 'no reason', 'not applicable', '-', '.'
+    };
+
+    /**
+     * The floor is characters rather than words, and it is set where a real reason cannot
+     * fall below it: the shortest honest scope reason on any run to date is a clause naming
+     * what the content was about.
+     */
+    @TestVisible
+    private static Integer REASON_MIN_CHARS = 25;
+
+    private static void requireReason(String field, String value) {
+        String v = value == null ? '' : value.trim();
+        if (String.isBlank(v)) {
+            throw new CharterException(
+                'Call 0 returned no ' + field + '. A verdict without a reason is a verdict ' +
+                'nobody can check, and the schema requiring the field is not the same as the ' +
+                'field carrying an answer. Our bug or the model\'s, per the parse law.'
+            );
+        }
+        if (NON_REASONS.contains(v.toLowerCase().replaceAll('[.!]$', ''))) {
+            throw new CharterException(
+                'Call 0 filled ' + field + ' with the non-reason "' + v + '". A required ' +
+                'field satisfied by a placeholder is a field that looks answered, and every ' +
+                'reader downstream treats it as one.'
+            );
+        }
+        if (v.length() < REASON_MIN_CHARS) {
+            throw new CharterException(
+                'Call 0 returned a ' + field + ' of ' + v.length() + ' characters ("' + v +
+                '"), below the ' + REASON_MIN_CHARS + '-character floor. The floor is ' +
+                'mechanical on purpose: judging whether prose is GOOD would be the ' +
+                'judgment this design keeps out of the loop, and judging whether it EXISTS ' +
+                'is a length.'
+            );
+        }
+    }
+
     public static Result parse(String jsonText, List<String> oppHandles) {
         Map<String, Object> root;
         try {
@@ -267,6 +312,27 @@ public with sharing class AAO_ResolverCharter {
                 'Call 0 named a deal outside the closed candidate set: ' + r.opportunity
             );
         }
+        // A VERDICT WITHOUT A REAL REASON FAILS LOUDLY AND NEVER FILLS. Ruled 6 August from
+        // the B&V run, where `scope_because` came back as the literal string `placeholder`.
+        //
+        // **The schema required the field and nothing required it to carry a reason**, which
+        // is the defaulted-coverage shape again: a required field satisfied by a non-reason
+        // is a field that looks answered, and every downstream reader treats it as one. The
+        // B&V verdict was correct - ACCOUNT, the gate's own expectation - and its reasoning
+        // was unreadable, so nobody could have told a right answer from a lucky one.
+        //
+        // Structural rather than a nudge, per the failed-twice law: this is checked at the
+        // parse, so a filled reason cannot reach a run report at all. Deterministic and
+        // mechanical - a length floor and a short filler set - because a rule that judged
+        // whether prose was *good* would be the thing this design keeps out of the loop.
+        requireReason('scope_because', r.scopeBecause);
+        // The opportunity reason is required only where a deal was actually named. NO_DEAL
+        // and AMBIGUOUS are refusals, and demanding a reason for one is demanding prose about
+        // an absence.
+        if (r.opportunity != NO_DEAL && r.opportunity != AMBIGUOUS) {
+            requireReason('opportunity_because', r.opportunityBecause);
+        }
+
         if (root.get('mentions') instanceof List<Object>) {
             for (Object o : (List<Object>) root.get('mentions')) {
                 Map<String, Object> m = (Map<String, Object>) o;

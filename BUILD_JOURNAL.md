@@ -9573,3 +9573,94 @@ The alternative is writing `No Contact`, which is a real and useful signal for a
 map who has never been in a room with us. It is also an assertion from absence, which is
 forbidden everywhere else in this design. I recommend not writing it and surfacing the gap as
 guidance instead; the call is Matthew's.
+
+---
+
+## 2026-08-06 · session 76 · the afternoon fold · run `em0806-a21`
+
+**355 tests: 354 AAO pass, plus `ConvertToOpportunityTest.testgetOppCreationDetails`**, the
+org-resident failure named and evidenced in the midday fold.
+
+### The three builds, in the ruled order
+
+**1 · The `placeholder` defect, fixed structurally.** `AAO_ResolverCharter.parse` now refuses a
+verdict whose reason is absent, is a known non-reason, or falls under a character floor. The
+check is at the parse rather than in the prompt, per the failed-twice law: **a filled reason
+cannot reach a run report at all.** Mechanical on purpose - a floor and a short filler set -
+because a rule judging whether prose is *good* would be the judgment this design keeps out of
+the loop, while judging whether it *exists* is a length. The B&V verdict was correct and its
+reasoning was unreadable, so nobody could have told a right answer from a lucky one.
+
+**2 · Coverage, exactly as ratified.** `AAO_Coverage` counts **distinct artifact hashes, never
+rows** - the sentiment counter's own source-event definition, so a ninety-minute call arriving
+as three Source rows is one occasion. One occasion is `Brief contact`, two or more is `Multiple
+contacts`, **zero writes nothing**, and **`In-depth` is never written at all**.
+
+One thing the build found that the proposal had not stated: **occasions belong to the person,
+not to the participation row.** Participation is per Source, so a person on three calls has
+three rows on one deal; grouping by row would have given everybody exactly one occasion and the
+dimension would have measured nothing. Regrouped by resolved identity before counting.
+
+Coverage is also **the one dimension the writer must not count as an answer read**, so it joins
+the derivation after the answer walk. `answersRead` stays honest and a coverage-only deal still
+reports zero answers read.
+
+**3 · Retraction, exactly as ratified.** Projection writes the current derivation **including
+null**, only where the watermark proves the value is ours and unmodified - the field still reads
+what we wrote and the native per-dimension stamp has not moved. Either half failing means the
+value is the human's and it is held back. No flag today; journalled always.
+
+**The build found the case that would have made it unreachable.** `project()` returned early
+when the derivation placed nobody, and **an empty derivation is exactly when retraction must
+run.** The early return now fires only where there is also no map row to retract from.
+
+### The run
+
+**`em0806-a21`.** Row export, full 31-line disposition and timings at `review/em0806-a21/`.
+
+| | a20 | a21 |
+|---|---|---|
+| located | 33 | **36** |
+| upheld | 11 | **17** |
+| regressions | 8 | **5** |
+| dimension values written | 5 | **10** |
+| worst transaction | 57,054 ms · 48% | **16,626 ms · 14%** |
+
+**The split did what the ruling predicted.** Four transactions instead of one; the binding
+number is now the worst single read, and a fifth family costs nothing.
+
+**The map carries Support for all three people and Coverage for all three.** `verdicts rebuilt`
+came back **zero**, which is the right answer rather than a null result: the write-time clobber
+guard held, so the order-independent replay found nothing to correct.
+
+### Three things to grade rather than accept
+
+**a · A TRAP FIRED.** `trap-seq11-courtesy`, graded 5 August as a trap because courtesy is not
+stance. **Call 3 upheld it**, which is the serious half: the blind reader read positive
+anticipation as a supportive stance toward us and our solution. First trap reproduction in the
+regression set's life, and it is the control failing rather than the extractor.
+
+**b · Jefferson stands at +3, Mentor.** §P8.4's own specimen graded his 17 June evidence as
+supporter-grade and landed him at +2, the top of Supporter. **Mentor-grade evidence is what
+crosses to +3, and a cheap MENTOR makes terminals cheap** - the exact stakes the v2.9 label fix
+was made for. Recorded as a candidate over-read, not as a result.
+
+**c · Scope is OPPORTUNITY, second occurrence.** The reason is real this time and it quotes
+Matthew's own caveat back:
+
+> implementation/training discussion is late-stage onboarding inside a still-open deal, not
+> account work.
+
+**That half is now correct** under the split ruling - rollout, training, enablement and CSM are
+in-deal scoping. What the read still did not surface is the other half: **enterprise AI strategy
+and account-level business-case control**, which stay account-grain and which nothing in the
+verdict mentions. Gate assertion 1 stands at DUAL on those two stretches and this is the second
+miss on them. **Per the inbox, a second miss earns structure**; no wording has moved.
+
+### A ceiling that is not the callout ceiling
+
+**The join finished at SOQL 100 of 100.** It reads per pair by design, and seventeen eligible
+pairs consumed the entire governor. **This breaks before the callout ceiling does** on a denser
+transcript, and it is a different limit with a different fix - bulkify the join's reads, or
+split it caller-side the way call 1 and call 3 already are. Named at seventeen pairs rather than
+discovered at twenty-five.

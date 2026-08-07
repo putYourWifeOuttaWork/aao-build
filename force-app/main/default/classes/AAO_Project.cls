@@ -90,6 +90,9 @@ public with sharing class AAO_Project {
         public List<String> dimensionsWritten = new List<String>();
         @AuraEnabled
         public List<String> heldBack = new List<String>();
+        /** Dimensions cleared because the evidence no longer supports what we wrote. */
+        @AuraEnabled
+        public List<String> retracted = new List<String>();
         @AuraEnabled
         public String reason;
 
@@ -105,6 +108,7 @@ public with sharing class AAO_Project {
                     : ' criteria=' + criteriaNamed) +
                 (dimensionsWritten.isEmpty() ? '' : ' wrote' + dimensionsWritten) +
                 (heldBack.isEmpty() ? '' : ' held' + heldBack) +
+                (retracted.isEmpty() ? '' : ' RETRACTED' + retracted) +
                 (reason == null ? '' : ' :: ' + reason);
         }
     }
@@ -125,6 +129,8 @@ public with sharing class AAO_Project {
         public Integer criteriaHeldPartial = 0;
         public Integer criteriaAlreadyProjected = 0;
         public Integer criteriaHolderless = 0;
+        /** Values cleared from the map because the evidence no longer supports them. */
+        public Integer valuesRetracted = 0;
         /** People held at shadow stage, which is a real and often permanent state. */
         public Integer shadowed = 0;
 
@@ -177,6 +183,7 @@ public with sharing class AAO_Project {
                 '\n    already projected      ' + criteriaAlreadyProjected + ' (unit: criteria)' +
                 '\n    no holder link         ' + criteriaHolderless + ' (unit: criteria)' +
                 '\n  people held at shadow    ' + shadowed + ' (unit: people)' +
+                '\n  values retracted         ' + valuesRetracted + ' (unit: values)' +
                 '\n  answers read             ' + answersRead + ' (unit: answers)' +
                 '\n  answers unplaced         ' + answersUnplaced + ' (unit: answers)' +
                 '\n  dimension values written ' + dimensionWrites() + ' (unit: values)';
@@ -230,6 +237,10 @@ public with sharing class AAO_Project {
 
         Id accountId = [SELECT AccountId FROM Opportunity WHERE Id = :opportunityId].AccountId;
 
+        // COVERAGE IS COMPUTED, so it is read once for the deal rather than per person and
+        // it consults no contract, no claim and no model.
+        Map<Id, Integer> occasions = AAO_Coverage.occasionsByPerson(opportunityId);
+
         Map<String, List<AAO_Answer__c>> byPerson = standingByPerson(opportunityId);
         if (byPerson.isEmpty()) {
             // No person-subject answers is not the same as nothing to project: criteria are
@@ -247,6 +258,11 @@ public with sharing class AAO_Project {
             o.answersRead += answers.size();
 
             Derivation d = derive(answers);
+            // Coverage joins the derivation AFTER the answer walk, deliberately: it is not an
+            // answer and must never be counted as one. `answersRead` stays honest, and a deal
+            // whose only dimension is coverage still reports zero answers read.
+            d.occasions = occasions.get(answers[0].AAO_Participant__c);
+            d.coverage = AAO_Coverage.valueFor(d.occasions);
             o.answersUnplaced += d.unplaced;
             o.unplacedCodes.addAll(d.unplacedCodes);
             for (String dim : d.valuesDerived()) {
@@ -255,6 +271,7 @@ public with sharing class AAO_Project {
 
             PersonResult r = project(opportunityId, accountId, answers, d);
             o.people.add(r);
+            o.valuesRetracted += r.retracted.size();
             if (r.identity == 'created') {
                 o.contactsCreated++;
             } else if (r.identity == 'shadowed') {
@@ -411,6 +428,7 @@ public with sharing class AAO_Project {
                 AAO_Evidence_Occurred__c,
                 AAO_Spans__c,
                 AAO_Publication_State__c,
+                AAO_Projected_Value__c,
                 AAO_Projected_Modstamp__c,
                 AAO_Evidence_Contract__r.AAO_Proposition_Code__c
             FROM AAO_Answer__c
@@ -504,11 +522,13 @@ public with sharing class AAO_Project {
             r.heldBack.add('Buyer Role');
         }
 
-        if (!d.placesAnybody()) {
-            r.action = 'unchanged';
-            r.reason = 'Nothing established for this person on any map dimension.';
-            return r;
-        }
+        // **A DERIVATION THAT PLACES NOBODY IS EXACTLY WHEN RETRACTION MUST RUN**, so this no
+        // longer returns early. It used to, and that would have made the ratified retraction
+        // unreachable in the one case it exists for: an answer falling to UNVERIFIED leaves
+        // the derivation empty and the map still carrying what we wrote.
+        //
+        // What the empty derivation still skips is the CREATE leg, below - making a map row
+        // to write nothing into is a row asserting a person we established nothing about.
 
         // THE MAP NEEDS A CONTACT AND THIS PERSON HAS NONE, so the create leg runs: the
         // ladder again, then a create where the toggle allows it, then a shadow. Addendum 19,
@@ -520,6 +540,11 @@ public with sharing class AAO_Project {
         // which is a real and for a toggle-off org a PERMANENT state, and the map is the one
         // surface they cannot reach - `ALTF__Contact_Map_Details__c.ALTF__Contact__c` is
         // required, so there is no map row to write without a Contact and none is faked.
+        if (contactId == null && !d.placesAnybody()) {
+            r.action = 'unchanged';
+            r.reason = 'Nothing established for this person on any map dimension.';
+            return r;
+        }
         if (contactId == null) {
             AAO_Participant__c person = participantOf(answers[0]);
             if (person == null) {
@@ -556,10 +581,12 @@ public with sharing class AAO_Project {
                 ALTF__Status__c,
                 ALTF__Political__c,
                 ALTF__Buyer_Role__c,
+                ALTF__Coverage__c,
                 ALTF__Note__c,
                 ALTF__Status_Last_Modified__c,
                 ALTF__Political_Last_Modified__c,
-                ALTF__Buyer_Role_Last_Modified__c
+                ALTF__Buyer_Role_Last_Modified__c,
+                ALTF__Coverage_Last_Modified__c
             FROM ALTF__Contact_Map_Details__c
             WHERE ALTF__Contact__c = :contactId AND ALTF__Opportunity__c = :opportunityId
             ORDER BY CreatedDate ASC
@@ -574,6 +601,13 @@ public with sharing class AAO_Project {
                 rows.size() + ' map rows exist for this person on this deal. The writer ' +
                 'refuses to choose between them; nothing was written.';
             raiseDuplicateFlag(opportunityId, accountId, contactId, rows.size(), 'map rows');
+            return r;
+        }
+
+        if (rows.isEmpty() && !d.placesAnybody()) {
+            r.action = 'unchanged';
+            r.reason = 'Nothing established for this person on any map dimension, and no ' +
+                'map row exists to retract from.';
             return r;
         }
 
@@ -597,6 +631,10 @@ public with sharing class AAO_Project {
             if (d.buyerRole != null) {
                 fresh.ALTF__Buyer_Role__c = d.buyerRole;
                 r.dimensionsWritten.add('Buyer Role');
+            }
+            if (d.coverage != null) {
+                fresh.ALTF__Coverage__c = d.coverage;
+                r.dimensionsWritten.add('Coverage');
             }
             fresh.ALTF__Note__c = d.note;
             insert fresh;
@@ -653,11 +691,49 @@ public with sharing class AAO_Project {
                 wrote = true;
             }
         }
+        if (d.coverage != null) {
+            if (humanEdited(row.ALTF__Coverage_Last_Modified__c, ours)) {
+                r.heldBack.add('Coverage');
+            } else if (row.ALTF__Coverage__c != d.coverage) {
+                patch.ALTF__Coverage__c = d.coverage;
+                r.dimensionsWritten.add('Coverage');
+                wrote = true;
+            }
+        }
+
+        // RETRACTION IS WHAT RE-RUN DOES WHEN THE DERIVATION EMPTIES. Ratified 6 August.
+        //
+        // Projection writes the current derivation INCLUDING NULL, and only where the
+        // watermark proves the value is ours and unmodified. The defect it closes: two answers
+        // stood UNVERIFIED on a20 while the map carried their old projected values, because
+        // the writer only ever wrote a value and never cleared one.
+        //
+        // **The guard is the watermark pair doing exactly what it was built for.** Ours means
+        // the field still reads what we last wrote AND the native per-dimension stamp has not
+        // moved since. Either half failing means the value is the human's, and it is held back
+        // exactly as an ordinary write would be.
+        //
+        // **The cost, named rather than discovered**: the vendor field cannot express *we
+        // established this and the evidence no longer supports it*. Blanked, it reads
+        // identically to *never established* - the null-versus-UNVERIFIED distinction arriving
+        // at a schema with no room for it. The note carries what the field cannot. No flag
+        // today, journalled always; revisited at the Flags and Guidance fold.
+        for (Retraction rt : retractions(row, d, answers, ours)) {
+            patch.put(rt.field, null);
+            r.retracted.add(rt.dimension);
+            wrote = true;
+        }
+        if (!r.retracted.isEmpty()) {
+            d.retractedNote =
+                'Retracted ' + String.join(r.retracted, ', ') +
+                ': we established these and the evidence no longer supports them. A blank ' +
+                'field cannot say that, so it is said here.';
+        }
         if (wrote) {
             // Option C: the note explains the values currently showing, and is overwritten
             // freely. Overwriting it never touches evidence, because the receipts live on our
             // Answer rows and the note was always a projection of them.
-            patch.ALTF__Note__c = d.note;
+            patch.ALTF__Note__c = composeWithRetraction(d);
             update patch;
         }
         if (wrote || matched) {
@@ -671,6 +747,81 @@ public with sharing class AAO_Project {
             r.reason = 'Every established dimension is human-owned on this row.';
         }
         return r;
+    }
+
+    private class Retraction {
+        String field;
+        String dimension;
+        Retraction(String field, String dimension) {
+            this.field = field;
+            this.dimension = dimension;
+        }
+    }
+
+    /**
+     * Every dimension the map still carries our value for and the derivation no longer
+     * supports. Empty is the normal case.
+     */
+    private static List<Retraction> retractions(
+        ALTF__Contact_Map_Details__c row,
+        Derivation d,
+        List<AAO_Answer__c> answers,
+        Datetime ours
+    ) {
+        List<Retraction> out = new List<Retraction>();
+        Map<String, String> standing = new Map<String, String>{
+            'ALTF__Status__c' => (String) row.get('ALTF__Status__c'),
+            'ALTF__Political__c' => (String) row.get('ALTF__Political__c'),
+            'ALTF__Buyer_Role__c' => (String) row.get('ALTF__Buyer_Role__c'),
+            'ALTF__Coverage__c' => (String) row.get('ALTF__Coverage__c')
+        };
+        Map<String, String> derived = new Map<String, String>{
+            'ALTF__Status__c' => d.support,
+            'ALTF__Political__c' => d.political,
+            'ALTF__Buyer_Role__c' => d.buyerRole,
+            'ALTF__Coverage__c' => d.coverage
+        };
+        Map<String, String> stamps = new Map<String, String>{
+            'ALTF__Status__c' => 'ALTF__Status_Last_Modified__c',
+            'ALTF__Political__c' => 'ALTF__Political_Last_Modified__c',
+            'ALTF__Buyer_Role__c' => 'ALTF__Buyer_Role_Last_Modified__c',
+            'ALTF__Coverage__c' => 'ALTF__Coverage_Last_Modified__c'
+        };
+        Map<String, String> labels = new Map<String, String>{
+            'ALTF__Status__c' => 'Support',
+            'ALTF__Political__c' => 'Political',
+            'ALTF__Buyer_Role__c' => 'Buyer Role',
+            'ALTF__Coverage__c' => 'Coverage'
+        };
+
+        Set<String> weWrote = ourProjectedValues(answers);
+        for (String field : standing.keySet()) {
+            String live = standing.get(field);
+            if (String.isBlank(live) || derived.get(field) != null) {
+                continue;
+            }
+            // PROVABLY OURS, both halves. The value still reads what we last wrote, and the
+            // native stamp has not moved since we wrote it.
+            if (!weWrote.contains(live)) {
+                continue;
+            }
+            if (humanEdited((Datetime) row.get(stamps.get(field)), ours)) {
+                continue;
+            }
+            out.add(new Retraction(field, labels.get(field)));
+        }
+        return out;
+    }
+
+    /** The values our own watermark says we put on this person's row. */
+    private static Set<String> ourProjectedValues(List<AAO_Answer__c> answers) {
+        Set<String> out = new Set<String>();
+        for (AAO_Answer__c a : answers) {
+            if (String.isNotBlank(a.AAO_Projected_Value__c)) {
+                out.add(a.AAO_Projected_Value__c);
+            }
+        }
+        return out;
     }
 
     /**
@@ -789,6 +940,11 @@ public with sharing class AAO_Project {
          */
         public List<String> buyerRoleCollision = new List<String>();
         public List<CriterionRead> criteria = new List<CriterionRead>();
+        /** Computed, never extracted. Null is leave-alone, which is the silence law. */
+        public String coverage;
+        public Integer occasions;
+        /** What the vendor field cannot express, carried to the note. */
+        public String retractedNote;
         public String note;
         /** True where this call's movement reversed the standing polarity. */
         public Boolean supportPolarityReversed = false;
@@ -813,12 +969,16 @@ public with sharing class AAO_Project {
             if (!criteria.isEmpty()) {
                 out.add(AAO_P8Codes.DIM_CRITERIA);
             }
+            if (coverage != null) {
+                out.add(AAO_P8Codes.DIM_COVERAGE);
+            }
             return out;
         }
 
         /** Whether anything derived reaches the map row. Criteria do not; they are records. */
         public Boolean placesAnybody() {
-            return support != null || political != null || buyerRole != null;
+            return support != null || political != null || buyerRole != null ||
+                coverage != null;
         }
     }
 
@@ -953,6 +1113,14 @@ public with sharing class AAO_Project {
             out.add(c);
         }
         return out;
+    }
+
+    private static String composeWithRetraction(Derivation d) {
+        if (String.isBlank(d.retractedNote)) {
+            return d.note;
+        }
+        String base = String.isBlank(d.note) ? '' : d.note + '\n';
+        return (base + d.retractedNote).abbreviate(NOTE_MAX);
     }
 
     // ------------------------------------------------------------------- the note

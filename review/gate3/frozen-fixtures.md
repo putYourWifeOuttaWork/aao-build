@@ -5,6 +5,13 @@ nothing against any other bytes. Raw rows stay as provenance and are listed nowh
 
 **Nothing runs until this list is confirmed.**
 
+> **TAKE THE FIXTURE FROM THIS LIST, NEVER FROM THE ORG.** Ruled 7 August. The two 29 July
+> rows are permanently indistinguishable by stamp - both carry the uncomposed `NF1`, because
+> the composed stamp arrived after them and the restamp was refused by the immutability rule
+> that protects every span already verified against those records. **This list is the only
+> thing that disambiguates them.** A query against the org picks whichever row sorts first,
+> and half the time that is the wrong artifact with byte offsets that mean nothing.
+
 ## Frozen and ready · 2 unseen fixtures
 
 | # | ref | artifact sha256 | occurred | duration | speakers | account | deal / stage | shape |

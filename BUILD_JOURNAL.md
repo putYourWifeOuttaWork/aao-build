@@ -10538,3 +10538,98 @@ twice.
    Coverage value is still on the customer's map as this is written.
 2. **The creation boundary**, which blocks item 4.
 3. The Contact's disposition, which blocks nothing.
+
+---
+
+## 2026-08-08 · session 78 · the retraction repair · the constraint was right and its consequence was not what design expected
+
+**388 tests, 387 AAO pass, one org-resident failure.**
+
+Built as ordinary work under the twenty-first stamp's binding constraint. The constraint held.
+**Two things behind it did not, and both were found by running the repair rather than by reading
+it.**
+
+### The constraint, and my proposal being wrong
+
+My §3 proposal pointed `touched` at the dimension stamps. Design overruled it: the native
+`ALTF__*_Last_Modified__c` stamps are non-null **precisely for the rows a human edited**, so
+reading them as ours would have declared Fatema's row touched, handed her deliberate judgment
+back to the derivation, and undone the session-77 repair from inside the correction meant to
+complete it. That is right and my proposal was wrong. The ruled reading is built: `touched` means
+**our own recorded projection watermark for that dimension**, and no native stamp is read
+anywhere.
+
+### THE CONSTRAINT APPLIED LITERALLY FREEZES COVERAGE, ON EVERY ROW
+
+Per-dimension `touched` asks whether we hold a recorded watermark for *this* dimension. Coverage
+holds none — it is computed, has no Answer, and nothing in the system had ever recorded one. So
+the first run of the repair held Coverage back **on all six people**, including Neeraja and
+Jefferson whose values we had provably just written.
+
+**That is the a22 defect reproduced exactly**, and a22's own comment names it: *"the first cut of
+this guard read that absence as evidence of a human edit and held back every coverage value we
+had written ourselves — the correction freezing the thing it corrects."* The per-dimension test
+is not retraction for coverage; without a watermark home it is a permanent freeze.
+
+So the repair is two halves and **they ship together or neither is correct**:
+
+1. **Coverage gets a watermark of its own.** `AAO_Participant__c.AAO_Coverage_Projected_Value__c`
+   and `AAO_Coverage_Projected_Modstamp__c`, written by the writer beside the write. This is the
+   watermark law reaching the one dimension it had never reached: a23 wrote Wendy's coverage and
+   recorded nothing, which is why the value was unprovable as ours the moment it landed.
+2. **A bootstrap fallback.** Where we hold no coverage watermark yet, coverage falls back to the
+   per-person test it used before. That still never reads the native stamp — the whole of the
+   binding constraint — because the fallback is our own recorded watermarks on the *other*
+   dimensions. It relaxes only "for that dimension", only toward our own records, and only until
+   the row carries a coverage watermark, after which the per-dimension test governs it
+   permanently. **Divergence from the constraint's letter, stated rather than buried.**
+
+### A SECOND BOOTSTRAP, found the same way
+
+With both halves in, the run still recorded **zero** watermarks. Because we stamped only when the
+value *changed*, and every row already read what we derive.
+
+The answer watermark solved this months ago and its `matched` comment says why: *"a re-projection
+that changes nothing has still asserted this value, and if only a changed write stamped, the
+3 August rows would stay unprotected forever."* Coverage now follows the same rule — **stamped on
+assertion, not only on change**, with held-back excluded, because stamping a held value would be
+us claiming the human's edit. Four watermarks recorded on the next run, for exactly the people we
+can prove we wrote.
+
+### WENDY'S COVERAGE DOES NOT RETRACT, AND THE RULING EXPECTED IT TO
+
+Design's item 7 ends *"Then Wendy's Coverage retracts and her correction completes."* It does not,
+and the reason is lawful rather than a bug in the repair.
+
+We hold **no watermark of any kind for her**: her only answer stands UNVERIFIED with no projected
+value, and her Buyer Role claim is now retired. So both the per-dimension test and the bootstrap
+fallback say the same thing — we cannot prove the value is ours — and the value holds back.
+
+**Manufacturing one is the backfill the law already refuses**, in the same words that refused it
+on a provably deterministic chain in session 75: *a watermark is written by the writer or it does
+not exist; no watermark is ever inferred, reconstructed, or backfilled.* We know from a23's own
+report that we wrote it. Knowing is not holding.
+
+Recorded rather than worked around, and I am not asking for the exception: **her Contact stays
+anyway** under item 6's ratified mark-and-report, so a coverage value on a row we have already
+disowned is consistent with the disposition, not in tension with it. If design wants the value
+cleared regardless, that is a one-time ruled exception to the backfill law and it should be
+written as one, because the precedent is the expensive part.
+
+**What did complete:** the claim is retired with its reason, and no Buyer Role value ever reached
+the map, because UNVERIFIED places nothing. The only residue is a coverage value on a disowned
+row.
+
+### The standing assertion, as ruled
+
+`aNativeStampIsNotOurWatermarkAndTheHumanStillWins` in `AAO_ProjectTest`: a row carrying a
+populated native stamp and no watermark of ours still holds back. It asserts the native stamp is
+actually populated first, because a specimen that silently stops reproducing its own condition
+guards nothing.
+
+### Next, in the ruled order
+
+The candidate-set widening with its zero-creation number. Design's expectation is recorded so it
+can be shown wrong: most of the 7, Fatema included, resolve to an existing Contact, shadow or map
+row with no creation at all. Then the criterion name, whose design is already journalled; then
+the name-based internal check, which the mentioned-person path does not build without.

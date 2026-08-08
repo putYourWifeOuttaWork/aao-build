@@ -60,6 +60,16 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>AAO_Participant__c.AAO_Coverage_Projected_Value__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>AAO_Participant__c.AAO_Coverage_Projected_Modstamp__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>AAO_Participant__c.AAO_Opportunity__c</field>
         <readable>true</readable>
     </fieldPermissions>

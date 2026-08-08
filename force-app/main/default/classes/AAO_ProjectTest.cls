@@ -661,6 +661,52 @@ private class AAO_ProjectTest {
     }
 
     @IsTest
+    static void aNativeStampIsNotOurWatermarkAndTheHumanStillWins() {
+        // THE STANDING ASSERTION THE 8 AUGUST RULING REQUIRED, and it guards the repair
+        // against itself. `touched` became per-dimension so a value we wrote could be proved
+        // ours and retracted; the binding constraint was that it must never read the native
+        // `ALTF__*_Last_Modified__c` stamp to do it.
+        //
+        // The native stamps are non-null for precisely the rows a human edited - Fatema's
+        // Political Status carries one, hers. A repair that read them would have declared her
+        // row touched, handed her deliberate judgment back to the derivation, and undone the
+        // session-77 repair from inside the correction meant to complete it.
+        //
+        // So: a row carrying a native stamp and no watermark of ours still holds back.
+        Fixture f = fixture();
+        AAO_Answer__c a = establish(f, AAO_P8Codes.SENTIMENT, 'TRUE', 2);
+        AAO_Project.Outcome first = AAO_Project.run(f.oppId);
+        Id rowId = first.people[0].mapRowId;
+
+        // A human edit stamps the native field on the way past. That stamp is the vendor's
+        // record that SOMEBODY wrote, never a record that WE did.
+        update new ALTF__Contact_Map_Details__c(Id = rowId, ALTF__Status__c = 'Mentor');
+        update new AAO_Answer__c(
+            Id = a.Id, AAO_Projected_Value__c = null, AAO_Projected_Modstamp__c = null
+        );
+        ALTF__Contact_Map_Details__c stamped = [
+            SELECT ALTF__Status_Last_Modified__c FROM ALTF__Contact_Map_Details__c
+            WHERE Id = :rowId
+        ];
+        System.assertNotEquals(
+            null,
+            stamped.ALTF__Status_Last_Modified__c,
+            'The specimen only means something if the native stamp is actually populated.'
+        );
+
+        Test.startTest();
+        AAO_Project.run(f.oppId);
+        Test.stopTest();
+
+        System.assertEquals(
+            'Mentor',
+            [SELECT ALTF__Status__c FROM ALTF__Contact_Map_Details__c WHERE Id = :rowId]
+                .ALTF__Status__c,
+            'A native stamp is not our watermark. The human value must stand.'
+        );
+    }
+
+    @IsTest
     static void aHumanValueOnARowWeHaveNeverWrittenIsNeverOverwritten() {
         // FATEMA CHOUDRAY'S SHAPE, 7 August. Matthew set a Political Status by hand on a
         // person we hold no answer, no participation row and no watermark for. Under the

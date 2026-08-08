@@ -251,6 +251,7 @@ public with sharing class AAO_Project {
             return o;
         }
 
+        List<AAO_Participant__c> coverageStamps = new List<AAO_Participant__c>();
         List<String> personKeys = new List<String>(byPerson.keySet());
         personKeys.sort();
         for (String personKey : personKeys) {
@@ -270,6 +271,24 @@ public with sharing class AAO_Project {
             }
 
             PersonResult r = project(opportunityId, accountId, answers, d);
+            // A WATERMARK IS WRITTEN BY THE WRITER OR IT DOES NOT EXIST, and until now that
+            // law had never reached coverage - the one dimension with no Answer to carry it.
+            // a23 wrote Wendy Higley's coverage and recorded nothing, so the value became
+            // unprovable as ours the moment it landed. Recorded here, beside the write.
+            // STAMPED ON ASSERTION, NOT ONLY ON CHANGE - the same rule the answer watermark
+            // already follows and for the same reason: a re-projection that changes nothing has
+            // still asserted this value, and if only a changed write stamped, a row whose map
+            // value already matches would never acquire a watermark and would stay unprovable
+            // as ours forever. Held back is excluded, because a held value is the human's and
+            // stamping it would be us claiming their edit.
+            if (d.coverage != null && !r.heldBack.contains('Coverage') &&
+                answers[0].AAO_Participant__c != null) {
+                coverageStamps.add(new AAO_Participant__c(
+                    Id = answers[0].AAO_Participant__c,
+                    AAO_Coverage_Projected_Value__c = d.coverage,
+                    AAO_Coverage_Projected_Modstamp__c = System.now()
+                ));
+            }
             o.people.add(r);
             o.valuesRetracted += r.retracted.size();
             if (r.identity == 'created') {
@@ -290,6 +309,9 @@ public with sharing class AAO_Project {
             }
         }
 
+        if (!coverageStamps.isEmpty()) {
+            update coverageStamps;
+        }
         projectCriteria(opportunityId, accountId, o);
         return o;
     }
@@ -422,6 +444,8 @@ public with sharing class AAO_Project {
                 AAO_Participant__c,
                 AAO_Participant__r.AAO_Display_Name__c,
                 AAO_Participant__r.AAO_Contact__c,
+                AAO_Participant__r.AAO_Coverage_Projected_Value__c,
+                AAO_Participant__r.AAO_Coverage_Projected_Modstamp__c,
                 AAO_Verdict__c,
                 AAO_Interpretation__c,
                 AAO_Support_Counter__c,
@@ -681,14 +705,53 @@ public with sharing class AAO_Project {
         // non-blank value that our own watermark does not claim was put there by somebody
         // else, because nobody else could have. Absence of our watermark plus presence of a
         // value IS the evidence of a human edit; it is not the absence of evidence.
+        // TOUCHED IS PER DIMENSION, ruled 8 August under one binding constraint: it must mean
+        // OUR OWN RECORDED PROJECTION WATERMARK for that dimension, never the native
+        // `ALTF__*_Last_Modified__c` stamp. The native stamps are non-null precisely for the
+        // rows a human edited - Fatema's Political Status carries one, hers - so reading them
+        // as ours would silently undo the session-77 repair inside the repair, which is the
+        // correction-that-disables-what-it-corrects hazard firing on its own first instance.
+        //
+        // Per person was too coarse and the a23 correction is what proved it: Wendy Higley's
+        // only answer stood UNVERIFIED and placed nothing, so by the per-person test we had
+        // never touched her row, and the Coverage value WE wrote could never be retracted.
+        //
+        // Coverage supplies its watermark from the participant rather than from an answer,
+        // because it is computed and has none. Without that half this per-dimension test would
+        // make coverage PERMANENTLY UNWRITABLE rather than retractable - it would hold back on
+        // first contact and every contact after it, since no answer can ever carry a coverage
+        // watermark. The two halves ship together or neither is correct.
         Map<String, Set<String>> ourValues = ourValuesByDimension(answers);
-        // Have we ever written anything to this person's row? Our own watermark is the only
-        // honest answer, and it is per person rather than per dimension.
-        Boolean touched = !ourValues.isEmpty();
+        String recordedCoverage = coverageWatermark(answers) == null
+            ? null
+            : answers[0].AAO_Participant__r.AAO_Coverage_Projected_Value__c;
+        if (String.isNotBlank(recordedCoverage)) {
+            ourValues.put(AAO_P8Codes.DIM_COVERAGE, new Set<String>{ recordedCoverage });
+        }
+
+        // THE BOOTSTRAP, and it is not a detail: coverage's watermark is recorded only when
+        // coverage is written, so on every row written before that recording existed there is
+        // none. Applying the per-dimension test to coverage alone froze it on ALL SIX people
+        // on the first run of this repair - including Neeraja and Jefferson, whose values we
+        // had provably just written - which is the a22 defect reproduced exactly: "the
+        // correction freezing the thing it corrects".
+        //
+        // So where we hold no coverage watermark, coverage falls back to the per-person test
+        // it used before. That still never reads `ALTF__Coverage_Last_Modified__c` - the whole
+        // of the binding constraint - because the fallback is our own recorded projection
+        // watermarks on the other dimensions. It relaxes only "for that dimension", only
+        // toward our own records, and only until the row carries a coverage watermark of its
+        // own, after which the per-dimension test governs it permanently.
+        //
+        // Fatema is unaffected either way: she has no answers, no participation and no
+        // watermark of any kind, so both tests hold her back and the session-77 repair stands.
+        Boolean coverageTouched = ourValues.containsKey(AAO_P8Codes.DIM_COVERAGE) ||
+            (String.isBlank(recordedCoverage) && !ourValues.isEmpty());
 
         if (d.support != null) {
             if (humanEdited(row.ALTF__Status_Last_Modified__c, ours) ||
-                humanAuthored(row.ALTF__Status__c, ourValues.get(AAO_P8Codes.DIM_SUPPORT), touched)) {
+                humanAuthored(row.ALTF__Status__c, ourValues.get(AAO_P8Codes.DIM_SUPPORT),
+                    ourValues.containsKey(AAO_P8Codes.DIM_SUPPORT))) {
                 r.heldBack.add('Support');
             } else if (row.ALTF__Status__c != d.support) {
                 patch.ALTF__Status__c = d.support;
@@ -698,7 +761,8 @@ public with sharing class AAO_Project {
         }
         if (d.political != null) {
             if (humanEdited(row.ALTF__Political_Last_Modified__c, ours) ||
-                humanAuthored(row.ALTF__Political__c, ourValues.get(AAO_P8Codes.DIM_POLITICAL), touched)) {
+                humanAuthored(row.ALTF__Political__c, ourValues.get(AAO_P8Codes.DIM_POLITICAL),
+                    ourValues.containsKey(AAO_P8Codes.DIM_POLITICAL))) {
                 r.heldBack.add('Political');
             } else if (row.ALTF__Political__c != d.political) {
                 patch.ALTF__Political__c = d.political;
@@ -708,7 +772,8 @@ public with sharing class AAO_Project {
         }
         if (d.buyerRole != null) {
             if (humanEdited(row.ALTF__Buyer_Role_Last_Modified__c, ours) ||
-                humanAuthored(row.ALTF__Buyer_Role__c, ourValues.get(AAO_P8Codes.DIM_BUYER_ROLE), touched)) {
+                humanAuthored(row.ALTF__Buyer_Role__c, ourValues.get(AAO_P8Codes.DIM_BUYER_ROLE),
+                    ourValues.containsKey(AAO_P8Codes.DIM_BUYER_ROLE))) {
                 r.heldBack.add('Buyer Role');
             } else if (row.ALTF__Buyer_Role__c != d.buyerRole) {
                 patch.ALTF__Buyer_Role__c = d.buyerRole;
@@ -718,7 +783,8 @@ public with sharing class AAO_Project {
         }
         if (d.coverage != null) {
             if (humanEdited(row.ALTF__Coverage_Last_Modified__c, ours) ||
-                humanAuthored(row.ALTF__Coverage__c, ourValues.get(AAO_P8Codes.DIM_COVERAGE), touched)) {
+                humanAuthored(row.ALTF__Coverage__c, ourValues.get(AAO_P8Codes.DIM_COVERAGE),
+                    coverageTouched)) {
                 r.heldBack.add('Coverage');
             } else if (row.ALTF__Coverage__c != d.coverage) {
                 patch.ALTF__Coverage__c = d.coverage;
@@ -921,6 +987,24 @@ public with sharing class AAO_Project {
             out.get(dim).add(a.AAO_Projected_Value__c);
         }
         return out;
+    }
+
+    /**
+     * Our own recorded coverage watermark for this person, or null where we hold none.
+     *
+     * Read from the participant because coverage is computed and keeps no Answer. NEVER read
+     * from `ALTF__Coverage_Last_Modified__c`: that is the vendor's stamp on the row and is
+     * non-null exactly where somebody edited it, so treating it as ours would hand every
+     * human coverage edit straight back to the machine.
+     */
+    private static Datetime coverageWatermark(List<AAO_Answer__c> answers) {
+        for (AAO_Answer__c a : answers) {
+            if (a.AAO_Participant__r != null &&
+                a.AAO_Participant__r.AAO_Coverage_Projected_Modstamp__c != null) {
+                return a.AAO_Participant__r.AAO_Coverage_Projected_Modstamp__c;
+            }
+        }
+        return null;
     }
 
     private static Boolean humanEdited(Datetime nativeStamp, Datetime ourLastWrite) {

@@ -1,0 +1,18 @@
+Name,AAO_Evidence_Contract__r.AAO_Proposition_Code__c,AAO_Subject_Type__c,AAO_Subject_Contact__r.Name,AAO_Criterion__r.AAO_Subject__c,AAO_Verdict_After__c,AAO_Outcome__c
+CLM-00000117,AAO_BR_EVAL,Participant,,,TRUE,Established
+CLM-00000118,AAO_PS_1,Participant,Adam Pfeiffer,,TRUE,Established
+CLM-00000119,AAO_POL_PS1,Participant,Adam Pfeiffer,,TRUE,Established
+CLM-00000120,AAO_POL_PS2,Participant,Kayla Stanley,,UNVERIFIED,Established
+CLM-00000121,AAO_BR_EVAL,Participant,Kayla Stanley,,UNVERIFIED,Established
+CLM-00000122,AAO_BR_EVAL,Participant,,,TRUE,Reinforced
+CLM-00000123,AAO_BR_APP,Participant,Adam Pfeiffer,,UNVERIFIED,Established
+CLM-00000124,AAO_BR_EVAL,Participant,Adam Pfeiffer,,TRUE,Established
+CLM-00000125,AAO_BR_EVAL,Participant,Adam Pfeiffer,,TRUE,Reinforced
+CLM-00000126,AAO_BR_APP,Participant,,,UNVERIFIED,Established
+CLM-00000127,AAO_PS_1,Participant,Adam Pfeiffer,,TRUE,Reinforced
+CLM-00000128,AAO_DC_N,Decision_Criterion,Adam Pfeiffer,Competitive pricing within budget,TRUE,Established
+CLM-00000129,AAO_POL_PS2,Participant,Adam Pfeiffer,,TRUE,Established
+CLM-00000130,AAO_PS_1,Participant,,,TRUE,Established
+CLM-00000131,AAO_DC_N,Decision_Criterion,,"Salesforce-native, methodology-driven",UNVERIFIED,Downgraded
+CLM-00000132,AAO_BR_EVAL,Participant,,,TRUE,Reinforced
+CLM-00000133,AAO_BR_DM,Participant,Adam Pfeiffer,,UNVERIFIED,Established

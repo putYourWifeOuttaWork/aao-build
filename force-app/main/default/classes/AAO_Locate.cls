@@ -71,6 +71,19 @@ public with sharing class AAO_Locate {
         Integer n = 0;
         for (AAO_LocateCharter.Pair p : pairs) {
             n++;
+            // THE INTRODUCING QUOTE IS EVIDENCE AND GETS THE EVIDENCE TREATMENT: byte-checked
+            // against the artifact. A designator whose introduction does not match drops the
+            // DESIGNATOR, never the pair - the words themselves still located - and the note
+            // says so, because a silently vanished designator reads as self-subject.
+            if (p.aboutQuote != null && text.indexOf(p.aboutQuote) < 0) {
+                out.discardNotes.add(
+                    p.ref + ' ' + p.questionCode + ': designator "' + p.aboutWords +
+                    '" dropped, its introducing quote does not byte-match the artifact. ' +
+                    'The pair survives as its speaker\'s.'
+                );
+                p.aboutWords = null;
+                p.aboutQuote = null;
+            }
             List<Integer> starts = occurrences(text, p.answerText);
             if (starts.isEmpty()) {
                 out.discardedNoMatch++;
@@ -152,6 +165,9 @@ public with sharing class AAO_Locate {
             AAO_Answer_Text__c = p.answerText,
             AAO_Meaning__c = p.meaning,
             AAO_Coverage__c = p.coverage,
+            AAO_Criterion_Name__c = p.criterionName,
+            AAO_About_Designator__c = p.aboutWords,
+            AAO_About_Quote__c = p.aboutQuote,
             AAO_Occurrence__c = occ,
             AAO_Occurrence_Count__c = occCount,
             AAO_Start_Offset__c = startOffset,

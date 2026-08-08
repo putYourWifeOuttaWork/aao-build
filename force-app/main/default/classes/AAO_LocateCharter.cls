@@ -80,7 +80,36 @@ public with sharing class AAO_LocateCharter {
      * structural. The affirmative instruction survives only for the narrower within-family
      * case, which is a real thing that still has to work.
      */
-    public static final String VERSION = 'locate-3.0.0';
+    /**
+     * 4.0.0 · TWO COMPREHENSIVE READS, Matthew's ruling, 8 August evening (twenty-seventh
+     * stamp), superseding the family sweep as call 1's shape. Each read covers the whole
+     * artifact carrying ALL declared families' question sets in one prompt; two reads, not
+     * one and not four, because inference drops things and the reads' independent misses are
+     * the recall hedge ("let us do 2 comprehensive reads... so as to let the inference
+     * differences help each other"). The sweep's own reasoning and its two-to-eleven
+     * measurement stand as history: one fixture, priced by the tuned-behaviour law. The cost
+     * law survives intact - the read count is TWO and scales with nothing about the call.
+     *
+     * THE DESIGNATOR ARRIVES AT THIS VERSION TOO (ruled at the twenty-fourth stamp, carried
+     * into the read shape by the twenty-seventh): where the words are about a person other
+     * than the speaker, the pair carries the name or title AS WRITTEN plus the introducing
+     * span quoted - because the reader that holds the whole artifact is the only one that can
+     * resolve a pronoun the way a human does, and the quoted introduction is the mitigation
+     * for the wrong-referent hazard the byte check cannot catch. No org identity is ever
+     * attached; resolution is the next stage's deterministic job.
+     */
+    /**
+     * 3.1.0 · THE CRITERION'S NAME, ruled 8 August (a23, refined at the twenty-seventh stamp).
+     * A criterion's identity is its name: a descriptive word or words STATING THE CONDITION
+     * THAT MUST BE TRUE FOR THE BUYER TO MAKE THE POSITIVE DECISION, derived from the
+     * establishing words. "Annual total cost" is the specimen. Before this version the naming
+     * pair's meaning enum was closed at the literal string CRITERION, `mintCriteria` passed
+     * that word as the criterion's text, and every criterion in the org collapsed onto one row
+     * whose vendor Subject displayed the word CRITERION to the seller. The name is a derived
+     * LABEL, deliberately outside the byte check: the verbatim establishing words stay on
+     * `answer_text` under the evidence law, and the name is what a buyer would recognise.
+     */
+    public static final String VERSION = 'locate-4.0.0';
 
     /**
      * THE FAMILY OF A CONTRACT, from its code. Four families, and the number is bounded by the
@@ -231,6 +260,12 @@ public with sharing class AAO_LocateCharter {
         public String meaning;
         /** Full or Partial on fact families; null on sentiment. */
         public String coverage;
+        /** The criterion's name, AAO_DC_N pairs only; null everywhere else. */
+        public String criterionName;
+        /** The designator, only where the words are about someone other than the speaker. */
+        public String aboutWords;
+        /** The designator's introducing span, quoted; byte-checked by the locator. */
+        public String aboutQuote;
 
         public override String toString() {
             return ref + ' ' + questionCode + ' ' + meaning +
@@ -308,6 +343,39 @@ public with sharing class AAO_LocateCharter {
                     'DOUBT: a partial accrues safely. Omit on sentiment, which has no partial.'
             });
         }
+        // THE DESIGNATOR, required with an empty-string default like the criterion name and
+        // for the coverage lesson's reason: an optional field gets omitted on every pair,
+        // and an omitted designator silently reads as self-subject, which on a mentioned
+        // person is a wrong attribution nothing downstream can see.
+        pairProps.put('about', new Map<String, Object>{
+            'type' => 'string',
+            'description' => 'EMPTY STRING where the words are about their own speaker, ' +
+                'which is the usual case. Where the words are ABOUT A DIFFERENT PERSON, ' +
+                'that person\'s name or title EXACTLY AS WRITTEN in the transcript - a ' +
+                'misspelt name stays misspelt. Where the words use a pronoun, the name or ' +
+                'title the pronoun refers to, found in the surrounding transcript. Never a ' +
+                'guess and never a person the transcript does not introduce.'
+        });
+        pairProps.put('about_quote', new Map<String, Object>{
+            'type' => 'string',
+            'description' => 'EMPTY STRING when about is empty. Otherwise the verbatim ' +
+                'transcript span that INTRODUCES who the person is - the words that let ' +
+                'you connect the pair to them. Checked character for character against ' +
+                'the stored transcript; a quote that does not match drops the about and ' +
+                'the pair falls back to its speaker.'
+        });
+        Boolean anyNaming = codes.contains('AAO_DC_N');
+        if (anyNaming) {
+            pairProps.put('criterion_name', new Map<String, Object>{
+                'type' => 'string',
+                'description' => 'ONLY on an AAO_DC_N pair: the criterion\'s NAME, a short ' +
+                    'descriptive phrase stating the condition that must be true for the ' +
+                    'buyer to make the positive decision, derived from the quoted words. ' +
+                    '"Annual total cost" is the model. Two to six words a buyer would ' +
+                    'recognise as their own criterion; never a full sentence, never the ' +
+                    'quote repeated. On every other question write an empty string.'
+            });
+        }
 
         // COVERAGE IS REQUIRED, changed 5 August. It was optional, the model omitted it on
         // every pair, and the parser's default-to-Partial then wrote Partial 14 of 14 across
@@ -320,10 +388,16 @@ public with sharing class AAO_LocateCharter {
         // enum on a sentiment pair costs less than an unreachable value on the fifteen
         // families where Full is the honest answer.
         List<String> required = new List<String>{
-            'question_code', 'answer_text', 'meaning'
+            'question_code', 'answer_text', 'meaning', 'about', 'about_quote'
         };
         if (anyCoverage) {
             required.add('coverage');
+        }
+        // Required for the same reason coverage is: optional fields get omitted on every
+        // pair (the coverage lesson, 5 August). The empty string on non-naming pairs is
+        // the same wasted-enum trade the coverage requirement already made on sentiment.
+        if (anyNaming) {
+            required.add('criterion_name');
         }
 
         return new Map<String, Object>{
@@ -384,17 +458,25 @@ public with sharing class AAO_LocateCharter {
                 'question, the words themselves quoted exactly, and the meaning those words ' +
                 'voice.',
                 '',
-                'You are the first of three readers. You never say WHO. A second reader ' +
-                'attaches the person to each pair you emit, and a third reader sees one pair ' +
-                'at a time with no context and decides whether the words really carry it. ' +
-                'Every quote you write is checked character by character against the stored ' +
-                'transcript before anything is kept.',
+                'You are the first reader. A deterministic stage attaches the person to ' +
+                'each pair you emit - from whose turn the words sit in, or from the about ' +
+                'designator you supply - and a later blind reader sees one pair at a time ' +
+                'with no context and decides whether the words really carry it. Every quote ' +
+                'you write is checked character by character against the stored transcript ' +
+                'before anything is kept.',
                 '',
                 'RULES.',
                 '',
-                'NEVER NAME A PERSON. Not in a quote you choose for that reason, not in a ' +
-                'note, nowhere. There is no field for it. Who said it and who it is about are ' +
-                'the second reader\'s only job, and it has context you do not.',
+                'NEVER SAY WHO A PERSON IS. You never attach an identity, an email, a role ' +
+                'in our records, or a conclusion about anybody. Who each person IS in the ' +
+                'org\'s world is the next stage\'s deterministic job. The one thing you do ' +
+                'say, in the about field only: where the words are ABOUT a person other ' +
+                'than their speaker, write that person\'s name or title exactly as the ' +
+                'transcript writes it, with the introducing span quoted in about_quote. A ' +
+                'misspelt name stays misspelt; a pronoun becomes the name or title it ' +
+                'refers to in the surrounding transcript, with the introduction quoted. ' +
+                'Where the words are about the speaker themselves, about is an empty ' +
+                'string, and that is the usual case.',
                 '',
                 'EVERY QUESTION POINTS ONE WAY. You are never asked whether something is ' +
                 'false, and there is no way to say so. Words either voice the question\'s own ' +
@@ -583,6 +665,9 @@ public with sharing class AAO_LocateCharter {
             p.answerText = (String) m.get('answer_text');
             p.meaning = (String) m.get('meaning');
             p.coverage = (String) m.get('coverage');
+            p.criterionName = (String) m.get('criterion_name');
+            p.aboutWords = (String) m.get('about');
+            p.aboutQuote = (String) m.get('about_quote');
 
             String bad = reject(p, allowed);
             if (bad == null) {
@@ -624,6 +709,36 @@ public with sharing class AAO_LocateCharter {
         }
         if (wantsCoverage && p.coverage != 'Full' && p.coverage != 'Partial') {
             return 'coverage "' + p.coverage + '" is neither Full nor Partial';
+        }
+        // THE CRITERION'S NAME IS ITS IDENTITY (3.1.0). On the naming contract a blank name
+        // is a pair that cannot mint a distinguishable criterion - the collapsed-row defect
+        // by another door - so it is refused with its reason rather than defaulted, per the
+        // required-reason-field law: a name field satisfied by a non-name fails loudly,
+        // never fills. On every other contract the field is the schema's empty-string tax
+        // and is discarded.
+        if (p.questionCode == 'AAO_DC_N') {
+            p.criterionName = p.criterionName == null ? null : p.criterionName.trim();
+            if (String.isBlank(p.criterionName)) {
+                return 'is a naming pair with no criterion name, and a criterion\'s ' +
+                    'identity is its name';
+            }
+            if (p.criterionName.length() > 255) {
+                return 'has a criterion name of ' + p.criterionName.length() +
+                    ' characters; a name is a short phrase, not the quote';
+            }
+        } else {
+            p.criterionName = null;
+        }
+        // THE DESIGNATOR IS BOTH FIELDS OR NEITHER. A designator with no introducing quote
+        // has no visible evidence for the resolution it claims, which is the wrong-referent
+        // hazard unmitigated; a quote with no designator anchors nothing. Either half alone
+        // is dropped (the pair survives as self-subject) and counted by the locator's note
+        // path when the quote later fails the byte check.
+        p.aboutWords = String.isBlank(p.aboutWords) ? null : p.aboutWords.trim();
+        p.aboutQuote = String.isBlank(p.aboutQuote) ? null : p.aboutQuote;
+        if (p.aboutWords == null || p.aboutQuote == null) {
+            p.aboutWords = null;
+            p.aboutQuote = null;
         }
         return null;
     }

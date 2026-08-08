@@ -131,6 +131,11 @@ public class AAO_ClaimTriggerHandler {
             if (AAO_Synthetic.deletable(c.AAO_Synthetic__c)) {
                 continue;
             }
+            // The purge door, twenty-eighth stamp: open only inside AAO_Purge.run's own
+            // transaction, only for the enumerated fixture opportunity.
+            if (AAO_Purge.allowsClaim(c)) {
+                continue;
+            }
             c.addError(
                 'AAO_Claim__c is not deletable. Claims leave by retirement, ' +
                 'confirm-then-purge, library acknowledgement first.'

@@ -363,7 +363,8 @@ private class AAO_IdentityTest {
         AAO_Synthetic.MARK = false;
         f.sourceId = src.Id;
         return [
-            SELECT Id, AAO_Contact__c, AAO_Email__c, AAO_Roster_Key__c, AAO_Display_Name__c
+            SELECT Id, AAO_Contact__c, AAO_Email__c, AAO_Roster_Key__c, AAO_Display_Name__c,
+                AAO_Source__c
             FROM AAO_Participant__c
             WHERE AAO_Source__c = :src.Id AND AAO_Roster_Key__c = :rosterKey
             LIMIT 1
@@ -372,7 +373,8 @@ private class AAO_IdentityTest {
 
     private static AAO_Participant__c reread(Id id) {
         return [
-            SELECT Id, AAO_Contact__c, AAO_Email__c, AAO_Roster_Key__c, AAO_Display_Name__c
+            SELECT Id, AAO_Contact__c, AAO_Email__c, AAO_Roster_Key__c, AAO_Display_Name__c,
+                AAO_Source__c
             FROM AAO_Participant__c
             WHERE Id = :id
         ];

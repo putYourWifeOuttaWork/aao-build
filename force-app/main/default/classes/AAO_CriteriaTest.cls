@@ -240,6 +240,123 @@ private class AAO_CriteriaTest {
         );
     }
 
+    // ================================================== retirement, never deletion
+
+    @IsTest
+    static void aNamelessNamingMintsNothingAndIsCounted() {
+        // A naming pair from a pre-3.1.0 run carries no name. Minting the placeholder
+        // again would recreate the collapsed row the twenty-seventh stamp retires, so the
+        // pair mints nothing, counted, with the reason on the record.
+        Fixture f = fixture();
+        AAO_Synthetic.MARK = true;
+        String quote = QUOTES[0];
+        Integer start = TEXT.indexOf(quote);
+        AAO_Pair__c located = new AAO_Pair__c(
+            AAO_Run_Key__c = RUN,
+            AAO_Pair_Ref__c = 'de1',
+            AAO_Stage__c = 'Located',
+            AAO_Charter__c = 'AAO_LocateCharter',
+            AAO_Charter_Version__c = 'locate-3.0.0',
+            AAO_Source__c = f.sourceId,
+            AAO_Evidence_Contract__c = f.contracts.get(AAO_P8Codes.CRITERION_NAMING),
+            AAO_Answer_Text__c = quote,
+            AAO_Meaning__c = 'CRITERION',
+            AAO_Coverage__c = 'Full',
+            AAO_Start_Offset__c = start,
+            AAO_End_Offset__c = start + quote.length(),
+            AAO_Speaker_Key__c = 'buyer',
+            AAO_Occurrence__c = 1,
+            AAO_Occurrence_Count__c = 1,
+            AAO_Pair_Key__c = AAO_PairKey.compose(RUN, 'de1', 'Located'),
+            AAO_Synthetic__c = true
+        );
+        insert located;
+        insert new AAO_Pair__c(
+            AAO_Run_Key__c = RUN,
+            AAO_Pair_Ref__c = 'de1',
+            AAO_Stage__c = 'Identified',
+            AAO_Charter__c = 'AAO_IdentifyCharter',
+            AAO_Charter_Version__c = 'identify-1.0.0',
+            AAO_Located_Pair__c = located.Id,
+            AAO_Evidence_Contract__c = f.contracts.get(AAO_P8Codes.CRITERION_NAMING),
+            AAO_Disposition__c = 'Identified',
+            AAO_Person__c = f.participantId,
+            AAO_Verification__c = 'Upheld',
+            AAO_Pair_Key__c = AAO_PairKey.compose(RUN, 'de1', 'Identified'),
+            AAO_Synthetic__c = true
+        );
+        AAO_Synthetic.MARK = false;
+
+        Test.startTest();
+        AAO_PairCommit.Outcome o = AAO_PairCommit.run(RUN, new Set<String>());
+        Test.stopTest();
+
+        System.assertEquals(0, o.criteriaMinted, o.toString());
+        System.assert(
+            o.toString().contains('mints no criterion') ||
+                String.join(o.refusals, ' ').contains('mints no criterion'),
+            'The reason is on the record. Got: ' + o.toString()
+        );
+        System.assertEquals(
+            0,
+            [SELECT COUNT() FROM AAO_Criterion__c WHERE AAO_Opportunity__c = :f.oppId],
+            'The placeholder is never minted again.'
+        );
+    }
+
+    @IsTest
+    static void aRetiredCriterionIsNeverResurrectedByAMint() {
+        Fixture f = fixture();
+        AAO_Synthetic.MARK = true;
+        AAO_Criterion__c c = AAO_Criteria.mint(
+            'Must pass InfoSec', f.oppId, f.acctId, null, null, null
+        );
+        update new AAO_Criterion__c(
+            Id = c.Id,
+            AAO_Retired__c = true,
+            AAO_Retired_Because__c = 'Test retirement.'
+        );
+
+        try {
+            AAO_Criteria.mint('Must pass InfoSec', f.oppId, f.acctId, null, null, null);
+            System.assert(false, 'Expected a refusal.');
+        } catch (AAO_Criteria.CriteriaException e) {
+            System.assert(
+                e.getMessage().contains('RETIRED'),
+                'The upsert would silently un-retire the row. Got: ' + e.getMessage()
+            );
+        }
+        AAO_Synthetic.MARK = false;
+    }
+
+    @IsTest
+    static void aRetiredCriterionNeverProjects() {
+        Fixture f = fixture();
+        pair(f, 'de1', AAO_P8Codes.CRITERION_NAMING, 'Must pass InfoSec', 0);
+
+        Test.startTest();
+        AAO_PairCommit.run(RUN, new Set<String>());
+        AAO_Criterion__c c = [
+            SELECT Id FROM AAO_Criterion__c WHERE AAO_Opportunity__c = :f.oppId
+        ];
+        AAO_Synthetic.MARK = true;
+        update new AAO_Criterion__c(
+            Id = c.Id,
+            AAO_Retired__c = true,
+            AAO_Retired_Because__c = 'Test retirement before projection.'
+        );
+        AAO_Synthetic.MARK = false;
+        AAO_Project.Outcome o = AAO_Project.run(f.oppId);
+        Test.stopTest();
+
+        System.assertEquals(0, o.criteriaProjected, o.toString());
+        System.assertEquals(
+            0,
+            [SELECT COUNT() FROM ALTF__Decision_Criteria__c WHERE ALTF__Opportunity__c = :f.oppId],
+            'Shipping a retired criterion would put the retired mistake on the customer\'s map.'
+        );
+    }
+
     // ---------------------------------------------------------------------- fixture
 
     private class Fixture {
@@ -340,11 +457,16 @@ private class AAO_CriteriaTest {
             AAO_Pair_Ref__c = ref,
             AAO_Stage__c = 'Located',
             AAO_Charter__c = 'AAO_LocateCharter',
-            AAO_Charter_Version__c = 'locate-3.0.0',
+            AAO_Charter_Version__c = 'locate-3.1.0',
             AAO_Source__c = f.sourceId,
             AAO_Evidence_Contract__c = f.contracts.get(code),
             AAO_Answer_Text__c = quote,
-            AAO_Meaning__c = meaning,
+            AAO_Meaning__c = code == AAO_P8Codes.CRITERION_NAMING ? 'CRITERION' : meaning,
+            // The criterion's identity is its name (3.1.0). The fixture's old habit of
+            // writing the name into Meaning is what the collapsed-row defect looked like
+            // from inside a test, so the name now rides its own field.
+            AAO_Criterion_Name__c =
+                code == AAO_P8Codes.CRITERION_NAMING ? meaning : null,
             AAO_Coverage__c = coverage,
             AAO_Start_Offset__c = start,
             AAO_End_Offset__c = start + quote.length(),

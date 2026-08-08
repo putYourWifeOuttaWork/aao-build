@@ -92,6 +92,101 @@ public with sharing class AAO_VerifyPairsCharter {
         };
     }
 
+    /**
+     * THE KEYED BATCH SHAPE, twenty-seventh stamp, and it is the structural repair of the
+     * under-return defect that forced batch=1 everywhere.
+     *
+     * The array shape failed three ways (one verdict from fourteen, a duplicated ref from
+     * four, a repeated ref from one) and the platform rejects `minItems`, so an array's
+     * completeness was only ever prose. Here the verdicts come back as an OBJECT whose
+     * REQUIRED PROPERTIES are the claim refs themselves: a response missing one fails
+     * schema validation at the API rather than parsing short, and a response inventing one
+     * fails on `additionalProperties`. Mis-referencing and omission both become
+     * unexpressible - `schemaOne`'s own virtue, generalized to any batch size.
+     */
+    public static Map<String, Object> schemaKeyed(List<String> pairRefs, String contractCode) {
+        Map<String, Object> item = new Map<String, Object>{
+            'carries' => new Map<String, Object>{
+                'type' => 'boolean',
+                'description' => 'true only if the quoted words assert the ' +
+                    'claim. false if they merely mention it, discuss it, ' +
+                    'imply it, or say something adjacent to it.'
+            },
+            'reason' => new Map<String, Object>{
+                'type' => 'string',
+                'description' => 'One sentence. On a false, name what is ' +
+                    'missing or say what the quote actually asserts instead.'
+            }
+        };
+        List<String> itemRequired = new List<String>{ 'carries', 'reason' };
+        if (takesTarget(contractCode)) {
+            item.put('target', targetProperty());
+            itemRequired.add('target');
+        }
+        Map<String, Object> perRef = new Map<String, Object>();
+        for (String ref : pairRefs) {
+            perRef.put(ref, new Map<String, Object>{
+                'type' => 'object',
+                'properties' => item,
+                'required' => itemRequired,
+                'additionalProperties' => false
+            });
+        }
+        return new Map<String, Object>{
+            'type' => 'object',
+            'properties' => new Map<String, Object>{
+                'verdicts' => new Map<String, Object>{
+                    'type' => 'object',
+                    'properties' => perRef,
+                    'required' => new List<String>(pairRefs),
+                    'additionalProperties' => false
+                }
+            },
+            'required' => new List<String>{ 'verdicts' },
+            'additionalProperties' => false
+        };
+    }
+
+    /** The keyed batch's parser. Every handed ref present or it throws; nothing extra. */
+    public static List<Verdict> parseKeyed(
+        String jsonText, List<String> handedRefs, String contractCode
+    ) {
+        Map<String, Object> root;
+        try {
+            root = (Map<String, Object>) JSON.deserializeUntyped(jsonText);
+        } catch (Exception e) {
+            throw new CharterException(
+                'Call 3 returned something that is not JSON. First 300 characters: ' +
+                (jsonText == null ? '(null)' : jsonText.abbreviate(300))
+            );
+        }
+        if (!(root.get('verdicts') instanceof Map<String, Object>)) {
+            throw new CharterException(
+                'Call 3 returned no verdicts object. Keys present: ' +
+                String.join(new List<String>(root.keySet()), ', ')
+            );
+        }
+        Map<String, Object> byRef = (Map<String, Object>) root.get('verdicts');
+        List<Verdict> out = new List<Verdict>();
+        for (String ref : handedRefs) {
+            if (!(byRef.get(ref) instanceof Map<String, Object>)) {
+                throw new CharterException(
+                    'Call 3 omitted ' + ref + ', which the schema\'s required list should ' +
+                    'have made impossible. Our bug, per the parse law.'
+                );
+            }
+            Map<String, Object> m = (Map<String, Object>) byRef.get(ref);
+            Verdict v = new Verdict();
+            v.pairRef = ref;
+            v.carries = (Boolean) m.get('carries');
+            v.reason = (String) m.get('reason');
+            v.target = (String) m.get('target');
+            applyConjunct(v, contractCode);
+            out.add(v);
+        }
+        return out;
+    }
+
     public static String systemPrompt() {
         return String.join(
             new List<String>{

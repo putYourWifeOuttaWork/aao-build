@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>THE CREATE-LEG RECORD, twenty-first stamp item 6, shipped with the resolution-stage rebuild per the twenty-seventh. One row per org record the machine created - a Contact minted from a roster participant or a resolved mention - because A MACHINE-CREATED ROW WE CANNOT ENUMERATE IS A ROW WE CAN NEVER DISOWN. This is the watermark law reaching creation: the enumeration that makes "which rows did we put in this org, and which do we now disown" a query rather than archaeology. Machine-created org data is marked and reported through this record, never deleted by us: deleting a row someone may have since touched is the destructive move this build has refused repeatedly, so mark-and-report is the honest disposition. First row: Dan Lewis, created 8 August 2026 through the roster-participant leg ahead of this record, back-filled by the ruling that shipped it.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <label>AAO Created Row</label>
+    <nameField>
+        <displayFormat>MK-{00000000}</displayFormat>
+        <label>AAO Created Row Name</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>AAO Created Rows</pluralLabel>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

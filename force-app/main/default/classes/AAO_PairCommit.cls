@@ -131,6 +131,7 @@ public with sharing class AAO_PairCommit {
                 AAO_Located_Pair__r.AAO_Answer_Text__c,
                 AAO_Located_Pair__r.AAO_Meaning__c,
                 AAO_Located_Pair__r.AAO_Coverage__c,
+                AAO_Located_Pair__r.AAO_Criterion_Name__c,
                 AAO_Located_Pair__r.AAO_Start_Offset__c,
                 AAO_Located_Pair__r.AAO_End_Offset__c,
                 AAO_Located_Pair__r.AAO_Speaker_Key__c,
@@ -389,10 +390,29 @@ public with sharing class AAO_PairCommit {
         }
 
         List<AAO_Criteria.Span> namedSpans = new List<AAO_Criteria.Span>();
+        // Parallel to namedSpans, NOT to namings: a nameless naming mints nothing and must
+        // not shift which criterion a typing span attaches to.
+        List<AAO_Pair__c> mintedNamings = new List<AAO_Pair__c>();
         for (AAO_Pair__c p : namings) {
             AAO_Pair__c loc = p.AAO_Located_Pair__r;
+            // THE NAME, NEVER THE MEANING (twenty-seventh stamp). The meaning enum on the
+            // naming contract is closed at the literal word CRITERION, and passing it here
+            // is what collapsed every criterion in the org onto one row displaying that
+            // word to the seller. The name states the condition that must be true for the
+            // positive decision, and the key is opportunity plus name. A naming pair from a
+            // pre-3.1.0 run carries no name and mints nothing, counted, because minting the
+            // placeholder again would recreate the collapsed row this fix retires.
+            if (String.isBlank(loc.AAO_Criterion_Name__c)) {
+                o.criteriaUnattached++;
+                o.refusals.add(
+                    p.AAO_Pair_Ref__c + ' (' + AAO_P8Codes.CRITERION_NAMING + '): mints no ' +
+                    'criterion, because the pair carries no criterion name. A criterion\'s ' +
+                    'identity is its name; the placeholder is never minted again.'
+                );
+                continue;
+            }
             AAO_Criterion__c c = AAO_Criteria.mint(
-                loc.AAO_Meaning__c,
+                loc.AAO_Criterion_Name__c,
                 loc.AAO_Source__r.AAO_Opportunity__c,
                 loc.AAO_Source__r.AAO_Account__c,
                 p.AAO_Person__c,
@@ -403,6 +423,7 @@ public with sharing class AAO_PairCommit {
             namedSpans.add(new AAO_Criteria.Span(
                 loc.AAO_Source__c, loc.AAO_Start_Offset__c, loc.AAO_End_Offset__c
             ));
+            mintedNamings.add(p);
             o.criteriaMinted++;
         }
 
@@ -427,7 +448,7 @@ public with sharing class AAO_PairCommit {
                 );
                 continue;
             }
-            AAO_Criterion__c c = out.get(namings[at].Id);
+            AAO_Criterion__c c = out.get(mintedNamings[at].Id);
             out.put(p.Id, c);
             if (p.AAO_Evidence_Contract__r.AAO_Proposition_Code__c ==
                 AAO_P8Codes.CRITERION_FORMAL) {
@@ -521,9 +542,14 @@ public with sharing class AAO_PairCommit {
             AAO_Subject_Type__c = criterion == null ? 'Participant' : 'Decision_Criterion',
             AAO_Criterion__c = criterion == null ? null : criterion.Id,
             AAO_Participant__c = p.AAO_Person__c,
-            AAO_Subject_Contact__c = criterion != null
+            // THE SUBJECT CONTACT RIDES ON BOTH PATHS (twenty-seventh stamp). It used to be
+            // nulled on the criteria path, which made criterion claims unreachable from the
+            // voicer's evidence list - the null-Subject defect Matthew found on the live
+            // map. The answer KEY is untouched: Decision_Criterion keys on AAO_Criterion__c,
+            // so this field is linkage, never identity, on that path.
+            AAO_Subject_Contact__c = p.AAO_Person__r == null
                 ? null
-                : (p.AAO_Person__r == null ? null : p.AAO_Person__r.AAO_Contact__c),
+                : p.AAO_Person__r.AAO_Contact__c,
             AAO_Proposed_Verdict__c = proposed,
             AAO_Spans__c = AAO_Model.serializeSpans(new List<AAO_Model.Span>{ span }),
             AAO_Element_Coverage__c = AAO_Model.serializeCoverage(cov),

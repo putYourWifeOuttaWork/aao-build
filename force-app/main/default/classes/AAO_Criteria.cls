@@ -60,6 +60,18 @@ public with sharing class AAO_Criteria {
      * three criteria carrying one each. That is what makes reinforcement countable, and
      * guidance orders a person's criteria by what they have pressed most recently and most
      * often - an ordering that is a count of exactly those rows.
+     *
+     * **THE SUBJECT IS THE CRITERION'S NAME (twenty-seventh stamp)**: a descriptive phrase
+     * stating the condition that must be true for the buyer to make the positive decision,
+     * emitted by call 1 from the establishing words. It used to be the naming pair's meaning,
+     * whose enum is closed at the literal word CRITERION - so every criterion in the org
+     * keyed onto one row and the vendor displayed that word to the seller. The verbatim
+     * establishing words stay on the pair and the claim; this is the label the key and the
+     * vendor Subject carry.
+     *
+     * **A RETIRED ROW IS NEVER RESURRECTED.** The upsert would silently un-retire a row whose
+     * key matches, so the retired row is checked first and refused loudly. Criteria retire,
+     * never delete, and never quietly come back.
      */
     public static AAO_Criterion__c mint(
         String subject,
@@ -84,8 +96,23 @@ public with sharing class AAO_Criteria {
             );
         }
 
+        String criterionKey = key(opportunityId, text);
+        List<AAO_Criterion__c> standing = [
+            SELECT Id, AAO_Retired__c
+            FROM AAO_Criterion__c
+            WHERE AAO_Criterion_Key__c = :criterionKey
+            LIMIT 1
+        ];
+        if (!standing.isEmpty() && standing[0].AAO_Retired__c) {
+            throw new CriteriaException(
+                'Criterion key ' + criterionKey + ' ("' + text + '") belongs to a RETIRED ' +
+                'row. Upserting would silently un-retire it. If this criterion is real ' +
+                'again, that is a human decision about the retired row, not a mint.'
+            );
+        }
+
         AAO_Criterion__c row = new AAO_Criterion__c(
-            AAO_Criterion_Key__c = key(opportunityId, text),
+            AAO_Criterion_Key__c = criterionKey,
             AAO_Subject__c = text,
             AAO_Opportunity__c = opportunityId,
             AAO_Account__c = accountId,

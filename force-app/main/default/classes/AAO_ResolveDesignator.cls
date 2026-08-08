@@ -98,6 +98,20 @@ public with sharing class AAO_ResolveDesignator {
     }
 
     /**
+     * Whether the designator IS a known title, for kind detection. Distinct from
+     * `canonicalTitle`, which normalizes ANY string (unknown titles canonicalize to
+     * themselves so two Contacts' identical unlisted titles still compare equal) - a
+     * caller using it as a title test would classify every name as a title, which is
+     * exactly the defect that motivated this predicate.
+     */
+    public static Boolean isKnownTitle(String raw) {
+        if (String.isBlank(raw)) {
+            return false;
+        }
+        return TITLE_CANON.containsKey(raw.trim().toLowerCase().replaceAll('[.]', ''));
+    }
+
+    /**
      * Resolve one designator against one account's world.
      *
      * The rungs run ONCE, in order, and each is journalled whether it answered or not. **This

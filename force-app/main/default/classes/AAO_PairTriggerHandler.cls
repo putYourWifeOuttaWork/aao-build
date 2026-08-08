@@ -22,6 +22,9 @@ public class AAO_PairTriggerHandler {
         'AAO_Answer_Text__c' => 'the verbatim words',
         'AAO_Meaning__c' => 'the meaning those words voice',
         'AAO_Coverage__c' => 'full or partial coverage',
+        'AAO_Criterion_Name__c' => 'the criterion\'s name',
+        'AAO_About_Designator__c' => 'the designator of who the words are about',
+        'AAO_About_Quote__c' => 'the designator\'s introducing quote',
         'AAO_Occurrence__c' => 'which occurrence the words are',
         'AAO_Occurrence_Count__c' => 'how many occurrences there were',
         'AAO_Start_Offset__c' => 'the start offset',
@@ -33,6 +36,7 @@ public class AAO_PairTriggerHandler {
         'AAO_Disposition__c' => 'the identification disposition',
         'AAO_Person__c' => 'the person',
         'AAO_Identification_Basis__c' => 'the identification basis',
+        'AAO_Corroborated__c' => 'the two-read corroboration marker',
         'AAO_Verification__c' => 'the blind reader\'s verdict',
         'AAO_Verification_Note__c' => 'the blind reader\'s reason',
         'AAO_Claim__c' => 'the claim it became'
@@ -96,6 +100,12 @@ public class AAO_PairTriggerHandler {
     public static void beforeDelete(List<AAO_Pair__c> rows) {
         for (AAO_Pair__c p : rows) {
             if (AAO_Synthetic.deletable(p.AAO_Synthetic__c)) {
+                continue;
+            }
+            // The purge door, twenty-eighth stamp: the sandbox harness deleting its own
+            // run-enumerated rows is not the never-delete law's subject. Open only inside
+            // AAO_Purge.run's own transaction, only for the enumerated run keys.
+            if (AAO_Purge.allowsPair(p)) {
                 continue;
             }
             p.addError(

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Target_Object__c</fullName>
+    <description>The API name of the object the created row lives on. Contact today; the enumeration must survive a second create-capable path without a schema change.</description>
+    <label>Target Object</label>
+    <type>Text</type>
+    <length>80</length>
+    <caseSensitive>false</caseSensitive>
+    <unique>false</unique>
+    <externalId>false</externalId>
+    <required>true</required>
+</CustomField>

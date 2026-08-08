@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Retired_Because__c</fullName>
+    <description>Why this criterion was retired, required at retirement and never blank. A retirement with no stated reason is indistinguishable from a deletion that happened to leave a row behind. First use: the collapsed placeholder rows minted under the literal text CRITERION before a criterion&apos;s identity was its name.</description>
+    <label>Retired Because</label>
+    <type>LongTextArea</type>
+    <length>4096</length>
+    <visibleLines>4</visibleLines>
+</CustomField>

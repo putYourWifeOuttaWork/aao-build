@@ -11023,3 +11023,111 @@ Project Farma **Pass 2** on the designator path (Rich the mentioned approver is 
 call-2 return-N proposal; the create-leg-record precondition question Dan raised; the
 absent-versus-too-narrow additive propositions (pass-2-era); the caller-side join split. **The map
 is the grading surface - this run is on it, and unlike WF it counts.**
+
+## 2026-08-08 · session 78 · THE EFFICIENCY REBUILD AND ITS TIMING GATE · runs the purge and `pf0808-tg1`
+
+Three stamps landed in one evening (twenty-seventh, twenty-eighth, twenty-ninth) and this entry
+is the whole of their build order executed: the criteria fix, the call 1 / call 2 rebuild
+carrying the call 0 slim and the guard retirement, the purge, and the timing gate, COLD, on
+frozen Project Farma. **The gate's number: ~105 s in-org source through projection, 6 model
+calls, worst callout 31.8 s, ledger HELD.** Under the 120-second fail line, above the 60-90
+acceptable band, with the remaining 52 s sitting in two sequential verify batches that
+parallelize exactly the way the reads already do. Full report `review/pf0808-tg1/`.
+
+### The criteria fix, first as ruled
+
+`AAO_LocateCharter` 3.1.0 emits `criterion_name` (required when AAO_DC_N is declared, the
+coverage lesson's empty-string tax on other pairs; a nameless naming pair is REFUSED with its
+reason, per the required-reason-field law). The name rides `AAO_Pair__c.AAO_Criterion_Name__c`
+to `mintCriteria`, which keys the criterion on opportunity plus name and never mints the
+placeholder again. Criterion claims now carry the voicer's Subject Contact on the criteria path
+too - the null-Subject defect closed; the answer key is untouched (Decision_Criterion still keys
+on the criterion). The collapsed rows CR-00000000 (Emerson, projected, its vendor row still
+displaying the word CRITERION and reported for Matthew's disposition) and CR-00000001 (Project
+Farma) are RETIRED with reasons through new `AAO_Retired__c`/`AAO_Retired_Because__c` fields;
+mint refuses to resurrect a retired key and projection never ships one. **Live proof on the
+gate run: "Competitive pricing within budget" (Informal) on the vendor map, named, with
+"Salesforce-native, methodology-driven" held Partial.** 66/66 criteria-path tests.
+
+### The rebuild
+
+- **Call 1 = two comprehensive reads** (`locateRead`, refs r1*/r2*), all declared families in
+  one prompt, run in parallel by the shell (31+32 s in 33 s wall). The designator lands at
+  charter 4.0.0: `about` + `about_quote`, both required with empty-string defaults, the
+  introducing quote byte-checked at location and dropped-with-note on mismatch, the pair
+  surviving as its speaker's. The blank-retry guard is RETIRED at this shape (twenty-eighth
+  stamp): its signature was authored on family reads and matches nothing here.
+- **Call 2 = the resolution stage** (`AAO_Resolve`). The merge on contract + byte intersection
+  + same meaning, with one recorded addition of design's: THE DESIGNATORS MUST AGREE, because
+  two reads finding the same bytes about different subjects are two establishments and merging
+  them would pick a subject silently. Absorbed rows take a new `Merged` disposition (picklist
+  value added; the ledger counts it as disposed); the canonical is the row already carrying the
+  conservative coverage, so "partial unless both say full" holds without editing any located
+  row; corroboration is a marker on the identified row, never a gate. Speaker attach is the
+  byte lookup the diagnosis promised: 28 pairs in 234 ms with zero model calls. Designators:
+  roster first, then the ladder - and the ladder integration found a real defect,
+  `canonicalTitle` normalizes ANY string (unknown titles canonicalize to themselves so two
+  Contacts' identical unlisted titles compare equal), so a caller using it as a title TEST
+  classifies every name as a title; the new `isKnownTitle` predicate now decides kind. LINKED
+  designators mint a mention Participant (`mention:` roster key, display = the designator
+  VERBATIM per the ASR-name law, the Contact carrying the resolved identity), and COVERAGE
+  EXCLUDES MENTION ROWS in both of its queries - presence establishes coverage and a mention is
+  not presence.
+- **The model leg** (`AAO_ResolveRequestCharter`): one bounded call for the remainder, typed
+  resolution requests keyed by designator handle with EVERY HANDLE A REQUIRED PROPERTY - the
+  under-return defect designed out structurally, since an omission now fails schema validation
+  at the API instead of parsing short. The demo-narration guard is in its prompt: a person who
+  exists only in a story is NONE, never named-off-artifact. Creation NEVER happens at
+  resolution - the creating leg stays at projection, behind verify, the toggle, and the record,
+  which is also what keeps a narrated fiction structurally off the Contact table.
+- **Call 3 keyed batches** (`schemaKeyed`): verdicts as an object with required per-ref
+  properties, `schemaOne`'s mis-referencing-unexpressible virtue generalized to any batch size.
+  VERIFY_KEYED_BATCH=30, batches homogeneous by conjunct (sentiment vs the rest), 29 claims in
+  2 calls where the old shape needed 29.
+- **Call 0 slimmed** (`resolve-1.1.0`): the mentions emission cut from schema, prompt, parse.
+  And `AAO_Resolve.VERSION` stamps `resolution-1.0.0` because call 0 already owns the
+  `resolve-` prefix - two stages sharing a version prefix is a provenance smear.
+- **The create-leg record**: `AAO_Created_Row__c` + `AAO_CreatedRows`, wired into
+  `AAO_Identity`'s creating rung. Dan Lewis back-filled as MK-00000000; his re-creation on the
+  gate run was caught live as MK-00000001. The enumeration works.
+
+### The purge, proposed then run (twenty-eighth stamp item 3)
+
+`AAO_Purge.run(runKeys, opportunityId)`: the human-watermark guard first and fatal (every
+non-null map value must be claimed by one of our watermarks or the whole purge aborts), then
+map rows, machine-created Contacts via the record only, claims, candidates, answers, run-keyed
+pairs, and the participants' coverage watermarks cleared. Trigger doors in exactly two handlers
+(Pair by run key, Claim by fixture opportunity), open only inside the purge's own transaction.
+First use deleted 3 map rows, 1 Contact (Dan, via MK-00000000), 15 claims, 15 candidates, 12
+answers, 118 pairs; kept the retired criterion (the correction is the record), the Source, the
+participants, every seed, and the record itself.
+
+### The gate (twenty-ninth stamp targets; full table in review/pf0808-tg1/timings.md)
+
+COLD, one honest exception: **call 0's first attempt FAILED the quote law** - yes to
+opportunity content with no quote, thrown rather than accepted; the WARM retry resolved
+OPPORTUNITY correctly in 6.7 s. First observed instance on the slimmed schema; if it repeats it
+is a behaviour of the slim, watched. Then: reads 33 s parallel, resolution 234 ms / 0 calls,
+model leg 5.5 s (Rich minted toward creation, one held None), verify 52 s / 2 batches / 17
+upheld / 12 refused, join 4.7 s, projection 1.9 s. **The moved-cost line the stamp demanded:
+the org-side replacement for 59 callouts costs 234 ms of SOQL/DML/CPU.** Bytes 44/44 exact,
+designator quotes 3/3, demo trap 0/0, ledger 44/44/29 HELD. The map by eyeball: Adam
+(Supporter/Political Structure/Evaluator), Dan (Supporter/Evaluator, recorded), Kayla
+(coverage), Rich correctly nothing. **WF not rerun - it adds no timing information beyond PF;
+the call reported per the stamp.**
+
+### Named for the accuracy rerun, not adjudicated here
+
+The two-read shape located 44 pairs where the sweep found 59 (14 corroborated); Adam reads
+Evaluator here vs Decision Maker on pf0808-p1, Dan Supporter vs Non-Supporter. Same frozen
+bytes, different read shape, different map. That is precisely the question the accuracy rerun
+exists to answer and the gate does not touch it.
+
+### Owed next, in stamp order
+
+The gate report to Matthew (this entry and review/pf0808-tg1/ are it) → the accuracy rerun
+(two reads vs s1, a23, graded PF; the span set builds with it per the twenty-ninth stamp) →
+the admission filter (law landed, ladder proposal owed) → the run receipt (telemetry home,
+with-or-after the rebuild, mine to sequence) → the twenty-sixth-stamp queue. Deferred small
+honesty: a `merged` line in the ledger's Counts so absorbed rows stop reading as refusals; the
+verify batches parallelized (~26 s back); the prefix reorder for cache_read.

@@ -1,0 +1,14 @@
+AAO_Answer_Key__c,AAO_Verdict__c,AAO_Subject_Type__c,AAO_Subject_Contact__r.Name,AAO_Criterion__r.AAO_Subject__c,AAO_Projected_Value__c
+A1|Participant|a1ZWD000002akjA2AQ|a1WWD000002p7Kr2AI,TRUE,Participant,,,Evaluator
+A1|Participant|a1ZWD000002akj82AA|a1WWD000002p5R72AI,TRUE,Participant,Adam Pfeiffer,,Supporter
+A1|Participant|a1ZWD000002akj82AA|a1WWD000002p26j2AA,TRUE,Participant,Adam Pfeiffer,,Political Structure
+A1|Participant|a1ZWD000002akj92AA|a1WWD000002p26k2AA,UNVERIFIED,Participant,Kayla Stanley,,
+A1|Participant|a1ZWD000002akj92AA|a1WWD000002p7Kr2AI,UNVERIFIED,Participant,Kayla Stanley,,
+A1|Participant|a1ZWD000002akj82AA|a1WWD000002p26o2AA,UNVERIFIED,Participant,Adam Pfeiffer,,Evaluator
+A1|Participant|a1ZWD000002akj82AA|a1WWD000002p7Kr2AI,TRUE,Participant,Adam Pfeiffer,,Evaluator
+A1|Participant|a1ZWD000002am6b2AA|a1WWD000002p26o2AA,UNVERIFIED,Participant,,,
+A1|Decision_Criterion|a1cWD000005ppATYAY|a1WWD000002p26t2AA,TRUE,Decision_Criterion,Adam Pfeiffer,Competitive pricing within budget,
+A1|Participant|a1ZWD000002akj82AA|a1WWD000002p26k2AA,TRUE,Participant,Adam Pfeiffer,,Political Structure
+A1|Participant|a1ZWD000002akjA2AQ|a1WWD000002p5R72AI,TRUE,Participant,,,Supporter
+A1|Decision_Criterion|a1cWD000005ppAUYAY|a1WWD000002p26t2AA,UNVERIFIED,Decision_Criterion,,"Salesforce-native, methodology-driven",
+A1|Participant|a1ZWD000002akj82AA|a1WWD000002p26p2AA,UNVERIFIED,Participant,Adam Pfeiffer,,Evaluator

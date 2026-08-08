@@ -126,17 +126,96 @@ private class AAO_LocateCharterTest {
     static void doubtAboutCoverageBecomesPartialRatherThanCostingThePair() {
         // Partial is the instructed default under doubt, and a missing value IS doubt. A
         // pair discarded for an omitted enum would be an under-read created by our parser,
-        // which is the one failure mode nothing downstream can see.
+        // which is the one failure mode nothing downstream can see. (Moved off AAO_DC_N at
+        // 3.1.0: a naming pair now has its own required field with its own refusal.)
         AAO_LocateCharter.Result r = AAO_LocateCharter.parse(
             body(new Map<String, Object>{
-                'question_code' => 'AAO_DC_N',
+                'question_code' => 'AAO_BR_EVAL',
                 'answer_text' => 'what I\'m trying to do is just eliminate clicks',
-                'meaning' => 'CRITERION'
+                'meaning' => 'EVALUATOR'
             }),
             codes()
         );
         System.assertEquals(1, r.pairs.size(), 'The pair survives.');
         System.assertEquals('Partial', r.pairs[0].coverage, 'Doubt accrues safely.');
+    }
+
+    @isTest
+    static void aNamingPairCarriesItsNameAndANamelessOneIsRefused() {
+        // A criterion's identity is its name (3.1.0). A naming pair without one cannot mint
+        // a distinguishable criterion - the collapsed-row defect by another door - so it is
+        // refused with its reason rather than defaulted.
+        AAO_LocateCharter.Result named = AAO_LocateCharter.parse(
+            body(new Map<String, Object>{
+                'question_code' => 'AAO_DC_N',
+                'answer_text' => 'the big one for us is what this costs us per year, all in',
+                'meaning' => 'CRITERION',
+                'coverage' => 'Full',
+                'criterion_name' => '  Annual total cost '
+            }),
+            codes()
+        );
+        System.assertEquals(1, named.pairs.size(), 'The named pair survives.');
+        System.assertEquals(
+            'Annual total cost',
+            named.pairs[0].criterionName,
+            'Trimmed, and carried as its own field beside the verbatim words.'
+        );
+
+        AAO_LocateCharter.Result nameless = AAO_LocateCharter.parse(
+            body(new Map<String, Object>{
+                'question_code' => 'AAO_DC_N',
+                'answer_text' => 'the big one for us is what this costs us per year, all in',
+                'meaning' => 'CRITERION',
+                'coverage' => 'Full',
+                'criterion_name' => '   '
+            }),
+            codes()
+        );
+        System.assertEquals(0, nameless.pairs.size());
+        System.assert(
+            nameless.rejected[0].contains('identity is its name'),
+            'The refusal carries the law. Got: ' + nameless.rejected[0]
+        );
+    }
+
+    @isTest
+    static void aNonNamingPairsCriterionNameIsDiscardedAsTheSchemaTax() {
+        // criterion_name is required schema-wide when AAO_DC_N is declared (the coverage
+        // lesson: optional fields get omitted), so non-naming pairs pay an empty-string
+        // tax the parser discards.
+        AAO_LocateCharter.Result r = AAO_LocateCharter.parse(
+            body(new Map<String, Object>{
+                'question_code' => 'AAO_BR_EVAL',
+                'answer_text' => 'we compared it against our shortlist',
+                'meaning' => 'EVALUATOR',
+                'coverage' => 'Full',
+                'criterion_name' => 'should not survive'
+            }),
+            codes()
+        );
+        System.assertEquals(1, r.pairs.size());
+        System.assertEquals(
+            null,
+            r.pairs[0].criterionName,
+            'A criterion name on a non-naming pair is a category error, discarded.'
+        );
+    }
+
+    @isTest
+    static void theSchemaRequiresTheCriterionNameOnlyWhereNamingIsDeclared() {
+        String withNaming = JSON.serialize(AAO_LocateCharter.schema(codes()));
+        System.assert(
+            withNaming.contains('criterion_name'),
+            'The naming read must carry the name property.'
+        );
+        String withoutNaming = JSON.serialize(
+            AAO_LocateCharter.schema(new List<String>{ 'AAO_PS_1', 'AAO_BR_EVAL' })
+        );
+        System.assert(
+            !withoutNaming.contains('criterion_name'),
+            'A read with no naming contract has nothing to name.'
+        );
     }
 
     @isTest

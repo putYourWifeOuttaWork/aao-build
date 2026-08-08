@@ -338,11 +338,14 @@ public with sharing class AAO_Project {
      * `ALTF__AltifyId__c` is stamped by something on their side and we do not write it.
      */
     private static void projectCriteria(Id opportunityId, Id accountId, Outcome o) {
+        // Retired criteria never project: the collapsed placeholder rows are the first
+        // occupants of that state, and shipping one would put the retired mistake on the
+        // customer's map.
         Map<Id, AAO_Criterion__c> byId = new Map<Id, AAO_Criterion__c>([
             SELECT Id, AAO_Subject__c, AAO_Type__c, AAO_Required__c, AAO_Voiced_By__c,
                 AAO_Voiced_By__r.AAO_Contact__c, AAO_Projected_Criterion_Id__c
             FROM AAO_Criterion__c
-            WHERE AAO_Opportunity__c = :opportunityId
+            WHERE AAO_Opportunity__c = :opportunityId AND AAO_Retired__c = false
         ]);
         if (byId.isEmpty()) {
             return;
@@ -502,7 +505,8 @@ public with sharing class AAO_Project {
             return null;
         }
         List<AAO_Participant__c> found = [
-            SELECT Id, AAO_Contact__c, AAO_Email__c, AAO_Roster_Key__c, AAO_Display_Name__c
+            SELECT Id, AAO_Contact__c, AAO_Email__c, AAO_Roster_Key__c, AAO_Display_Name__c,
+                AAO_Source__c
             FROM AAO_Participant__c
             WHERE Id = :a.AAO_Participant__c
             LIMIT 1

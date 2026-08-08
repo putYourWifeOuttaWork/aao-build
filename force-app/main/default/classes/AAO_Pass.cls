@@ -370,8 +370,98 @@ public with sharing class AAO_Pass {
     }
 
     /** ONE family read, one transaction, one bounded callout. The production path. */
+    /**
+     * SUPERSEDED as the production path by `locateRead` (the twenty-seventh stamp): call 1
+     * is two comprehensive reads, not four family reads. Kept callable for tests and for
+     * history - the 5 August sweep ruling stands as superseded in place, never deleted.
+     */
     public static SweepRun locateFamily(Id sourceId, String runKey, String family) {
         return sweep(sourceId, runKey, new List<String>{ family });
+    }
+
+    // ============================================== call 1 · TWO COMPREHENSIVE READS
+
+    /**
+     * ONE COMPREHENSIVE READ: the whole artifact, ALL declared families' question sets in
+     * one prompt. Matthew's ruling, 8 August evening (twenty-seventh stamp), superseding
+     * the family sweep: two reads, not one and not four, because inference drops things
+     * and the reads' independent misses are the recall hedge.
+     *
+     * The caller drives read 1 and read 2 as separate transactions (and in parallel where
+     * the platform allows); each is one bounded callout. Refs are read-prefixed (`r1q1`,
+     * `r2q1`) so the two reads cannot collide on the pair key and so a ref reads as the
+     * read that produced it. THE READS ARE NEVER MERGED HERE - the resolution stage owns
+     * the merge, on contract plus byte-range intersection plus voiced meaning, never
+     * string equality on quotes.
+     *
+     * The blank-retry guard rides along unchanged: a comprehensive read returning zero
+     * pairs on a real sales call is even more suspicious than a family read doing so.
+     */
+    public static SweepRun locateRead(Id sourceId, String runKey, Integer readIndex) {
+        if (readIndex != 1 && readIndex != 2) {
+            throw new PassException(
+                'Read index must be 1 or 2. Two comprehensive reads is the ruled shape: ' +
+                'one misses things, four re-pays the sweep\'s cost for nothing.'
+            );
+        }
+        AAO_Source__c src = source(sourceId);
+        List<AAO_Evidence_Contract__c> declared = AAO_RecallGate.declaredSet();
+        Map<String, Id> idByCode = new Map<String, Id>();
+        List<String> codes = new List<String>();
+        for (AAO_Evidence_Contract__c ec : declared) {
+            codes.add(ec.AAO_Proposition_Code__c);
+            idByCode.put(ec.AAO_Proposition_Code__c, ec.Id);
+        }
+        String version = AAO_LocateCharter.effectiveVersion(declared);
+
+        AAO_Extract.StageSpec spec = AAO_Extract.inventorySpec();
+        spec.stage = 'call1_read' + readIndex;
+        spec.charter = 'AAO_LocateCharter';
+        spec.charterVersion = version;
+
+        List<String> body = new List<String>{
+            AAO_LocateCharter.rubricBlock(declared),
+            '# The transcript\n\n' + src.AAO_Normalized_Text__c
+        };
+        Map<String, Object> schema = AAO_LocateCharter.schema(codes);
+
+        SweepRun run = new SweepRun();
+        AAO_Extract.StageResult sr = AAO_Extract.callStage(
+            spec, AAO_LocateCharter.systemPrompt(), body, schema
+        );
+        run.calls.add(sr);
+        run.serialMs += sr.elapsedMs;
+        AAO_LocateCharter.Result parsed = AAO_LocateCharter.parse(sr.rawText, codes);
+
+        // THE BLANK-RETRY GUARD IS RETIRED HERE, twenty-eighth stamp ("no more triple
+        // checks"). Its trigger signature - output tokens and wall time measured on
+        // per-family reads - was authored for a shape that no longer exists and matches
+        // nothing about a comprehensive read. It survives on the sweep path as history. A
+        // comprehensive read returning zero pairs is reported by its own numbers and, if
+        // the two-read shape demonstrates a real cheap-blank mode, a guard is re-derived
+        // from measurements of THIS shape rather than inherited from the old one - the
+        // tuned-behaviour law applied to a guard.
+        if (parsed.pairs.isEmpty()) {
+            run.blankTwice.add('read' + readIndex);
+        }
+        run.parsed += parsed.pairs.size();
+        run.coverageDefaulted += AAO_LocateCharter.coverageDefaulted;
+        run.rejected.addAll(parsed.rejected);
+
+        // The read prefix is what keeps the two reads' refs from colliding on the pair
+        // key, exactly as the family prefix did for the sweep.
+        for (AAO_LocateCharter.Pair p : parsed.pairs) {
+            p.ref = 'r' + readIndex + p.ref;
+        }
+
+        AAO_Locate.Located loc = AAO_Locate.locate(src, parsed.pairs, runKey, version, idByCode);
+        run.located += loc.rows.size();
+        run.discardedNoMatch += loc.discardedNoMatch;
+        run.discardedCrossesTurns += loc.discardedCrossesTurns;
+        run.discardNotes.addAll(loc.discardNotes);
+        run.pairsByFamily.put('read' + readIndex, loc.rows.size());
+        AAO_Locate.write(loc);
+        return run;
     }
 
     /**
@@ -562,6 +652,20 @@ public with sharing class AAO_Pass {
     public static final Integer VERIFY_BATCH = 1;
 
     /**
+     * THE KEYED BATCH SIZE, twenty-seventh stamp. `schemaKeyed` makes the refs REQUIRED
+     * OBJECT PROPERTIES, so omission and mis-referencing fail schema validation at the API
+     * instead of parsing short - the structural completeness `minItems` could not provide
+     * and the reason VERIFY_BATCH was pinned at one. Thirty is a starting size, bounded by
+     * schema bulk rather than by trust; the timing gate measures it.
+     *
+     * Batches are homogeneous BY CONJUNCT, not by contract: the target question binds
+     * sentiment and nothing else, so sentiment claims batch together and every other
+     * family shares the plain shape. That is what makes one or two callouts per run
+     * possible instead of one per contract code.
+     */
+    public static final Integer VERIFY_KEYED_BATCH = 30;
+
+    /**
      * ONLY IDENTIFIED-TO-A-PERSON ROWS GO IN FRONT OF THE READER. A None or an Ambiguous row
      * has no claim on it, so there is nothing to verify and nothing is owed — which is
      * exactly what `assertOneForOne(runKey, true)` counts against.
@@ -622,47 +726,51 @@ public with sharing class AAO_Pass {
         r.verdicts = new List<AAO_VerifyPairsCharter.Verdict>();
         List<AAO_Pair__c> stamp = new List<AAO_Pair__c>();
 
-        // **BATCHES ARE HOMOGENEOUS BY FAMILY**, so one contract code governs the whole
-        // schema. That is what lets the occasion-versus-solution conjunct ride the batch shape
-        // and stay absent where it would be meaningless: a mixed batch would force the target
-        // field onto Buyer Role claims that have no feeling to point anywhere, which is the
-        // defaulted-coverage shape this build has been bitten by twice.
-        Integer lastBatchSize = VERIFY_BATCH;
-        Map<String, List<AAO_Pair__c>> byCode = new Map<String, List<AAO_Pair__c>>();
+        // **BATCHES ARE HOMOGENEOUS BY CONJUNCT** (twenty-seventh stamp). The target
+        // question binds sentiment and nothing else, so sentiment claims batch together
+        // under the target-bearing schema and every other family shares the plain one. The
+        // old homogeneous-by-contract grouping existed to keep the conjunct off fields
+        // where it is meaningless; this achieves the same with two buckets instead of
+        // seventeen, which is what makes one or two callouts per run possible. The keyed
+        // schema (refs as REQUIRED OBJECT PROPERTIES) is what makes a thirty-claim batch
+        // trustworthy where the array shape under-returned at fourteen and at four.
+        List<AAO_Pair__c> sentimentClaims = new List<AAO_Pair__c>();
+        List<AAO_Pair__c> plainClaims = new List<AAO_Pair__c>();
         for (AAO_Pair__c c : claims) {
-            String code = c.AAO_Evidence_Contract__r.AAO_Proposition_Code__c;
-            if (!byCode.containsKey(code)) {
-                byCode.put(code, new List<AAO_Pair__c>());
+            if (AAO_VerifyPairsCharter.takesTarget(
+                c.AAO_Evidence_Contract__r.AAO_Proposition_Code__c)) {
+                sentimentClaims.add(c);
+            } else {
+                plainClaims.add(c);
             }
-            byCode.get(code).add(c);
         }
-        List<AAO_Pair__c> ordered = new List<AAO_Pair__c>();
-        List<String> codeOrder = new List<String>(byCode.keySet());
-        codeOrder.sort();
-        for (String code : codeOrder) {
-            ordered.addAll(byCode.get(code));
+        List<List<AAO_Pair__c>> buckets = new List<List<AAO_Pair__c>>();
+        for (Integer start = 0; start < plainClaims.size(); start += VERIFY_KEYED_BATCH) {
+            List<AAO_Pair__c> b = new List<AAO_Pair__c>();
+            for (Integer i = start;
+                 i < Math.min(start + VERIFY_KEYED_BATCH, plainClaims.size()); i++) {
+                b.add(plainClaims[i]);
+            }
+            buckets.add(b);
         }
-        claims = ordered;
+        for (Integer start = 0; start < sentimentClaims.size(); start += VERIFY_KEYED_BATCH) {
+            List<AAO_Pair__c> b = new List<AAO_Pair__c>();
+            for (Integer i = start;
+                 i < Math.min(start + VERIFY_KEYED_BATCH, sentimentClaims.size()); i++) {
+                b.add(sentimentClaims[i]);
+            }
+            buckets.add(b);
+        }
 
-        for (Integer start = 0; start < claims.size(); start += lastBatchSize) {
-            List<AAO_Pair__c> batch = new List<AAO_Pair__c>();
-            String batchCode =
-                claims[start].AAO_Evidence_Contract__r.AAO_Proposition_Code__c;
-            for (Integer i = start; i < Math.min(start + VERIFY_BATCH, claims.size()); i++) {
-                if (claims[i].AAO_Evidence_Contract__r.AAO_Proposition_Code__c != batchCode) {
-                    break;
-                }
-                batch.add(claims[i]);
-            }
-            lastBatchSize = batch.size();
+        for (List<AAO_Pair__c> batch : buckets) {
+            Boolean sentiment = AAO_VerifyPairsCharter.takesTarget(
+                batch[0].AAO_Evidence_Contract__r.AAO_Proposition_Code__c
+            );
+            String conjunctCode = sentiment ? AAO_P8Codes.SENTIMENT : null;
             List<String> refs = new List<String>();
-            // The contract code travels with the ref so call 3's schema can carry the
-            // occasion-versus-solution conjunct on sentiment and on nothing else.
-            List<String> codes = new List<String>();
             List<String> block = new List<String>{ '# The claims', '' };
             for (AAO_Pair__c c : batch) {
                 refs.add(c.AAO_Pair_Ref__c);
-                codes.add(c.AAO_Evidence_Contract__r.AAO_Proposition_Code__c);
                 block.add('## ' + c.AAO_Pair_Ref__c);
                 block.add('Question: ' + c.AAO_Evidence_Contract__r.AAO_Proposition_Text__c);
                 // THE PLACEMENT NEVER REACHES THE BLIND READER. Ruled 5 August from the
@@ -693,8 +801,8 @@ public with sharing class AAO_Pass {
                 AAO_VerifyPairsCharter.systemPrompt(),
                 new List<String>{ String.join(block, '\n') },
                 refs.size() == 1
-                    ? AAO_VerifyPairsCharter.schemaOne(codes[0])
-                    : AAO_VerifyPairsCharter.schema(refs, codes[0])
+                    ? AAO_VerifyPairsCharter.schemaOne(conjunctCode)
+                    : AAO_VerifyPairsCharter.schemaKeyed(refs, conjunctCode)
             );
             if (r.call == null) {
                 r.call = sr;
@@ -706,9 +814,13 @@ public with sharing class AAO_Pass {
             }
             r.batches++;
             if (refs.size() == 1) {
-                r.verdicts.add(AAO_VerifyPairsCharter.parseOne(sr.rawText, refs[0], codes[0]));
+                r.verdicts.add(
+                    AAO_VerifyPairsCharter.parseOne(sr.rawText, refs[0], conjunctCode)
+                );
             } else {
-                r.verdicts.addAll(AAO_VerifyPairsCharter.parse(sr.rawText, refs, codes[0]));
+                r.verdicts.addAll(
+                    AAO_VerifyPairsCharter.parseKeyed(sr.rawText, refs, conjunctCode)
+                );
             }
         }
 

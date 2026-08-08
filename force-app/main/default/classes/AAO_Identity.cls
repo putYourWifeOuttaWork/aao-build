@@ -143,6 +143,21 @@ public with sharing class AAO_Identity {
             r.reason =
                 'No Contact existed for this person. Created as "' + name.display +
                 '" from the source form "' + sourceName(p) + '" (' + name.shape + ').';
+            // THE CREATE-LEG RECORD, before anything else touches the new row. This leg
+            // created Dan Lewis with nothing systematically recording it; from here every
+            // creation is enumerable and therefore disownable. A mention-minted
+            // participant (roster key `mention:`) reached here through the resolution
+            // stage; a plain roster key is the original leg.
+            AAO_CreatedRows.record(
+                r.contactId,
+                sourceName(p),
+                p.AAO_Roster_Key__c != null && p.AAO_Roster_Key__c.startsWith('mention:')
+                    ? AAO_CreatedRows.LEG_MENTION
+                    : AAO_CreatedRows.LEG_ROSTER,
+                r.reason,
+                p.AAO_Source__c,
+                null
+            );
             linkBack(p, r.contactId);
             return r;
         }

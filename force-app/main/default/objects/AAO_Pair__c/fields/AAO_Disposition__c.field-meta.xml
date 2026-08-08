@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>AAO_Disposition__c</fullName>
-    <description>Written by: call 2. Read by: the gates; Ambiguous routes to the Identification flag. Exactly one per located pair, which is the one-for-one-for-one arithmetic. None and Ambiguous are NOT abstention rows: they say what happened to a pair that exists, never that the transcript was silent. Blank on a Located row, required on an Identified row.</description>
+    <description>Written by: the resolution stage (call 2 until the twenty-seventh stamp). Read by: the gates; Ambiguous routes to the Identification flag. Exactly one per located pair, which is the one-for-one-for-one arithmetic. None and Ambiguous are NOT abstention rows: they say what happened to a pair that exists, never that the transcript was silent. Merged (twenty-seventh stamp) says the pair&apos;s establishment rides another read&apos;s canonical row, both receipts kept - a disposition, so the arithmetic still counts it. Blank on a Located row, required on an Identified row.</description>
     <label>Disposition</label>
     <type>Picklist</type>
     <required>false</required>
@@ -23,6 +23,11 @@
                 <fullName>Ambiguous</fullName>
                 <default>false</default>
                 <label>Ambiguous</label>
+            </value>
+            <value>
+                <fullName>Merged</fullName>
+                <default>false</default>
+                <label>Merged</label>
             </value>
         </valueSetDefinition>
     </valueSet>

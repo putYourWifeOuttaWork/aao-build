@@ -182,6 +182,11 @@ public with sharing class AAO_Coverage {
         // same conversation and same occurred-time to the second, and the two normalizations
         // carry two different hashes. Counting hashes made one call read as two occasions, so
         // the dedup failed precisely where it was designed to work.
+        // MENTION ROWS NEVER COUNT COVERAGE. Presence establishes coverage, and a
+        // mention-minted participant (roster key `mention:...`, the resolution stage's
+        // subject carrier for a person the call talked about) records who was TALKED
+        // ABOUT, not who was met. Counting one would write Brief contact for a person
+        // nobody has spoken to, which is an assertion from absence.
         Map<Id, Set<String>> hashes = new Map<Id, Set<String>>();
         for (AAO_Participant__c p : [
             SELECT Id, AAO_Roster_Key__c, AAO_Contact__c,
@@ -190,6 +195,7 @@ public with sharing class AAO_Coverage {
                 AAO_Source__r.AAO_Account__c
             FROM AAO_Participant__c
             WHERE AAO_Opportunity__c = :opportunityId
+                AND (NOT AAO_Roster_Key__c LIKE 'mention:%')
         ]) {
             if (!hashes.containsKey(p.Id)) {
                 hashes.put(p.Id, new Set<String>());
@@ -204,11 +210,14 @@ public with sharing class AAO_Coverage {
         // measure nothing.
         Map<String, Set<String>> byIdentity = new Map<String, Set<String>>();
         Map<String, List<Id>> rowsByIdentity = new Map<String, List<Id>>();
+        // The same mention exclusion as the hash query above: the two row sets must be one
+        // set or the identity grouping dereferences a person the count never saw.
         List<AAO_Participant__c> people = [
             SELECT Id, AAO_Roster_Key__c, AAO_Contact__c, AAO_Display_Name__c, AAO_Email__c,
                 AAO_Source__r.AAO_Account__c
             FROM AAO_Participant__c
             WHERE AAO_Opportunity__c = :opportunityId
+                AND (NOT AAO_Roster_Key__c LIKE 'mention:%')
         ];
         Map<Id, Id> alias = aliasByRow(people);
         for (AAO_Participant__c p : people) {

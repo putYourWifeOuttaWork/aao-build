@@ -23,7 +23,9 @@ public with sharing class AAO_ResolverCharter {
     public class CharterException extends Exception {
     }
 
-    public static final String VERSION = 'resolve-1.0.0';
+    /** 1.1.0: the mention emission cut, twenty-eighth stamp. Call 0 slims to the ladder,
+     *  the two scope halves, and the which-opportunity pick. */
+    public static final String VERSION = 'resolve-1.1.0';
 
     public static final String OPPORTUNITY = 'OPPORTUNITY';
     public static final String ACCOUNT = 'ACCOUNT';
@@ -117,10 +119,11 @@ public with sharing class AAO_ResolverCharter {
 
     // ================================================================== what comes back
 
-    public class Mention {
-        public String name;
-        public String why;
-    }
+    // THE MENTION EMISSION IS CUT, twenty-eighth stamp: mentioned people enter through
+    // call 1's designators and resolve on demand through the resolution stage, so call 0
+    // pre-judging which mentions are load-bearing duplicated a judgment pairs now make for
+    // free. Call 0 is the ladder, the two one-way scope questions with quotes, and the
+    // which-opportunity pick. Nothing else.
 
     /** One side's independent answer. Two of these derive the scope; neither outranks. */
     public class Side {
@@ -145,7 +148,6 @@ public with sharing class AAO_ResolverCharter {
         public Side accountSide = new Side();
         public String opportunity;
         public String opportunityBecause;
-        public List<Mention> mentions = new List<Mention>();
 
         /**
          * **BOTH SIDES NO.** The split makes this expressible where the two-sided question
@@ -219,24 +221,6 @@ public with sharing class AAO_ResolverCharter {
                 'opportunity_because' => new Map<String, Object>{
                     'type' => 'string',
                     'description' => 'One sentence. What in the call points at that deal.'
-                },
-                'mentions' => new Map<String, Object>{
-                    'type' => 'array',
-                    'description' => 'People the call TALKED ABOUT who did not speak on it, ' +
-                        'and only where the mention is LOAD-BEARING: a stated holder, a ' +
-                        'stated gate, a stated role. A name dropped in chatter is not one.',
-                    'items' => new Map<String, Object>{
-                        'type' => 'object',
-                        'properties' => new Map<String, Object>{
-                            'name' => new Map<String, Object>{ 'type' => 'string' },
-                            'why' => new Map<String, Object>{
-                                'type' => 'string',
-                                'description' => 'What the call said they hold or decide.'
-                            }
-                        },
-                        'required' => new List<String>{ 'name', 'why' },
-                        'additionalProperties' => false
-                    }
                 }
             },
             'required' => new List<String>{
@@ -246,7 +230,7 @@ public with sharing class AAO_ResolverCharter {
                 'carries_account_content',
                 'account_content_quote',
                 'account_content_because',
-                'opportunity', 'opportunity_because', 'mentions'
+                'opportunity', 'opportunity_because'
             },
             'additionalProperties' => false
         };
@@ -257,9 +241,8 @@ public with sharing class AAO_ResolverCharter {
     public static String systemPrompt() {
         return String.join(
             new List<String>{
-                'You read one sales-call transcript and answer three routing questions: what ' +
-                'this call is about, which deal it served, and which people it talked about ' +
-                'who were not on it.',
+                'You read one sales-call transcript and answer two routing questions: what ' +
+                'this call is about, and which deal it served.',
                 '',
                 'You are the first of several readers and the only one that routes. Everything ' +
                 'after you reads the same transcript again to find what was established; your ' +
@@ -523,17 +506,7 @@ public with sharing class AAO_ResolverCharter {
             requireReason('opportunity_because', r.opportunityBecause);
         }
 
-        if (root.get('mentions') instanceof List<Object>) {
-            for (Object o : (List<Object>) root.get('mentions')) {
-                Map<String, Object> m = (Map<String, Object>) o;
-                Mention mn = new Mention();
-                mn.name = (String) m.get('name');
-                mn.why = (String) m.get('why');
-                if (String.isNotBlank(mn.name)) {
-                    r.mentions.add(mn);
-                }
-            }
-        }
+        // The mentions block is gone (twenty-eighth stamp): designators own that job now.
         return r;
     }
 }

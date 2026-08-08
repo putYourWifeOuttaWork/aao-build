@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_About_Quote__c</fullName>
+    <description>The introducing span for the designator, quoted verbatim and byte-checked against the artifact like every other piece of evidence. The twenty-fourth stamp&apos;s mitigation for the wrong-referent hazard: a wrong name is not an invented quote and the byte check cannot catch it, so the claimed evidence for the resolution sits visibly on the row instead of being silent. A designator whose introducing quote does not byte-match is dropped with a note and the pair survives as self-subject-undecided.</description>
+    <label>About (Introducing Quote)</label>
+    <type>LongTextArea</type>
+    <length>4096</length>
+    <visibleLines>3</visibleLines>
+</CustomField>

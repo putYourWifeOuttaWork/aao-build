@@ -10811,3 +10811,70 @@ test.
 - Call 1's designator emission with quoted antecedents (the three pronouns).
 - The name-based internal check, still the precondition before any of this wires into a run.
 - The synonym list's and internal-domain list's seed-metadata homes, at packaging.
+
+---
+
+## 2026-08-08 · session 78 · the WF live-org test, staged to one input · WebVTT intake built · and the fixture bytes have not arrived
+
+**401 tests, 400 AAO pass, one org-resident failure.** `AAO_IntakeVTT` built and tested 6/6;
+`opentext.com` classified; the WF seed verified in the org, not reseeded.
+
+### The blocker, named rather than worked around
+
+The twenty-fifth stamp pulls the WF-OpenText live-org test to the front: Matthew wants it in
+Salesforce, on the map, not on CSVs, and quickly. **The one input the run cannot proceed without
+- the raw `.vtt` - has not reached this side.** Not in the repo, not in the project folder, not
+in the delivered zip, not anywhere on this machine by hash. The stamp's own rule is "verify the
+hash on receipt; a mismatch is a corrupt carry, stop and say so"; an absent file is the stronger
+form of that and this is the stop. **Building a Source row against invented text would put
+fabricated speech under a real customer's opportunity on a live map, which is the one thing this
+build refuses.** So everything buildable without the bytes is built, and the run is staged to a
+single command. `review/wf-opentext/PASS1-STAGED.md` is the whole of it.
+
+### What is built and verified
+
+- **The WebVTT intake, `AAO_IntakeVTT`.** Produces the NF1 body and the ordered speaker keys
+  from raw WebVTT; handles the header, NOTE/STYLE/REGION blocks, cue identifiers and timestamps,
+  voice tags including the `<v.class Name>` form, tag stripping so no markup reaches a span, and
+  **same-speaker cue merging** so caption cadence does not fragment a turn. Tested against a
+  synthesized VTT matching the described format, 6/6.
+- **`opentext.com` classified internal.** Added to the seed static resource's internal-domain
+  list. Harmless to the Emerson world (no existing person carries the domain) and correct for
+  WF, where OpenText sellers on `opentext.com` must mark internal or the join gate cannot catch
+  a claim about one - the a23 Wendy failure generalized to a non-altify seller, which is exactly
+  the test this fixture exists to run.
+- **The seed verified, not reseeded** per the stamp: Wells Fargo, the Aviator opp at Stage 3
+  ($2.315M), six `cib.wellsfargo.com` contacts, zero map rows, zero sources, Priya absent.
+
+### The one thing the intake cannot finalize without the bytes, stated
+
+The NOTE roster's exact line shape is a property of the specific file. `roster()` parses two
+documented shapes and returns EMPTY where neither matches, so the caller learns the roster was
+not read rather than receiving fabricated emails. **Speaker keys always come from the voice tags
+and are never guessed.** Participant resolution keys on email, so when the file lands the run
+either reads the roster's actual shape (deterministic, in scope) or maps voice-tag names to the
+seeded contacts by name (also deterministic, but it inherits the ASR-name hazard the designator
+number just measured). Which one, with the reason, is decided when I see the bytes and reported,
+not picked silently.
+
+### The generalization gap this exposed, named for its real home
+
+The internal-domain list is a single global list in a fixture static resource. That is wrong in
+general: which domain is "internal" is the domain of whoever runs AAO, which is org-level config,
+not a global constant. Adding `opentext.com` is the honest step for this run, and the right
+long-term home is the org-overridable seed metadata already owed at packaging - the same debt as
+the title synonym list and, relatedly, the live `AAO_Internal__c = false` on
+`wendy.higley@altify.com` that a23 flagged. All three are the one gap wearing three faces.
+
+### Sequencing, recorded so it is not re-argued
+
+Per the twenty-fifth stamp: the caller-side join split does not block Pass 1 (a governor blowout
+rolls back and prints the ceiling, which is a measurement); the absent-versus-too-narrow contract
+work is pass-2-era; Pass 1 runs on the pipeline as it stands, before the designator path, so
+Priya drops or holds as today's code behaves and that is the honest baseline. All design's calls
+with the reasons on the record and Matthew's veto open.
+
+### Owed, and the single gate
+
+The run is one input away. **The raw `.vtt` in the Downloads or project folder; I verify
+`be8e5e95…` and execute the staged Pass 1.** Nothing else on this path is waiting on anything.

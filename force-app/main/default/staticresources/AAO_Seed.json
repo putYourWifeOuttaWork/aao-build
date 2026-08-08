@@ -3,7 +3,8 @@
   "note": "The mini-rubric and the dummy transcripts. FROZEN once written: a transcript edited after a span was verified against it breaks the citation chain, which is the exact failure immutability exists to prevent. Spans are given as quotes, never as offsets, and AAO_Seed resolves them against the composed normalized text, so a fixture and the verifier cannot disagree about bytes.",
   "internalDomains": [
     "altify.example",
-    "altify.com"
+    "altify.com",
+    "opentext.com"
   ],
   "people": [
     {

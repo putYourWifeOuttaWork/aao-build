@@ -1,0 +1,17 @@
+Name,AAO_Evidence_Contract__r.AAO_Proposition_Code__c,AAO_Subject_Type__c,AAO_Subject_Contact__r.Name,AAO_Criterion__r.AAO_Subject__c,AAO_Verdict_After__c
+CLM-00000134,AAO_PS_1,Participant,Adam Pfeiffer,,TRUE
+CLM-00000135,AAO_PS_1,Participant,,,TRUE
+CLM-00000136,AAO_POL_PS1,Participant,Adam Pfeiffer,,TRUE
+CLM-00000137,AAO_POL_PS2,Participant,Kayla Stanley,,UNVERIFIED
+CLM-00000138,AAO_POL_IC1,Participant,Adam Pfeiffer,,TRUE
+CLM-00000139,AAO_BR_EVAL,Participant,Adam Pfeiffer,,TRUE
+CLM-00000140,AAO_BR_EVAL,Participant,,,TRUE
+CLM-00000141,AAO_BR_EVAL,Participant,Adam Pfeiffer,,TRUE
+CLM-00000142,AAO_BR_EVAL,Participant,Kayla Stanley,,UNVERIFIED
+CLM-00000143,AAO_BR_USER,Participant,Adam Pfeiffer,,TRUE
+CLM-00000144,AAO_DC_N,Decision_Criterion,Adam Pfeiffer,Pricing and competitive fit,UNVERIFIED
+CLM-00000145,AAO_DC_F,Participant,Adam Pfeiffer,,UNVERIFIED
+CLM-00000146,AAO_BR_EVAL,Participant,,,TRUE
+CLM-00000147,AAO_POL_IC1,Participant,Adam Pfeiffer,,UNVERIFIED
+CLM-00000148,AAO_BR_EVAL,Participant,,,TRUE
+CLM-00000149,AAO_BR_EVAL,Participant,,,TRUE

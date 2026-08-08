@@ -1,0 +1,42 @@
+AAO_Pair_Ref__c,AAO_Disposition__c,AAO_Corroborated__c,AAO_Verification__c,AAO_Verification_Note__c,AAO_Person__r.AAO_Display_Name__c
+r1q10,Identified,true,Upheld,An explicit statement of liking everything seen so far expresses positive regard for what we've shown.,Adam Pfeiffer
+r1q11,Identified,true,Refused,placeholder,Adam Pfeiffer
+r1q12,Identified,false,Upheld,"The words report favorable feedback and that we rank best, a positive stance toward us.",Dan Lewis
+r1q13,Identified,false,Refused,"Refused by the occasion-versus-solution conjunct: the words were read as voicing the stance, but the feeling points at THEIR_OWN_WORK_OR_PLAN rather than at us or our solution. Courtesy is not stance. Reader's own reason: The speaker explains how an internal reviewer will see the data request and states what they would push for, which is coaching on internal navigation plus advocacy.",Adam Pfeiffer
+r1q14,Identified,true,Upheld,Identifies himself as part of the implementation team.,Adam Pfeiffer
+r1q15,Identified,false,Upheld,"Says they can get the Salesforce setting turned on, indicating hands-on responsibility.",Kayla Stanley
+r1q16,Identified,true,Refused,"Refers to Kayla getting approval, not the speaker's own execution role.",Dan Lewis
+r1q17,Identified,false,Upheld,"Describes account treatment and calls the ideal state part of 'our growth strategy', asserting goal-setting.",Adam Pfeiffer
+r1q18,Identified,false,Upheld,Probes capability/mechanics against their Salesforce data need.,Adam Pfeiffer
+r1q2,Identified,true,Upheld,Probes prerequisite/add-on licensing and fit.,Dan Lewis
+r1q20,Merged,false,,,
+r1q21,Identified,false,Refused,"States reporting lines, not product usage.",Adam Pfeiffer
+r1q3,Identified,true,Upheld,Probes configurability and data source against their 8 practice areas.,Adam Pfeiffer
+r1q4,Identified,true,Upheld,Presses on a capability (multi-user visibility) relevant to their need.,Kayla Stanley
+r1q5,Identified,true,Refused,Says the recommendation is theirs but the commitment/approval lies with Rich and others.,Adam Pfeiffer
+r1q6,Identified,false,Refused,Describes downstream approval as a formality; frames others' approval rights rather than the speaker retaining veto/funds release.,Rich
+r1q7,None,false,,,
+r1q8,Identified,true,Upheld,"Says 'some of us are like Dan and I' within a diverse user group, placing himself among users.",Adam Pfeiffer
+r1q9,Identified,true,Refused,"Describes rollout from two reps to all 46 users, not the speaker's own use.",Jennae Jizdeortega
+r2q1,Merged,false,,,
+r2q10,Merged,false,,,
+r2q11,Merged,false,,,
+r2q12,Merged,false,,,
+r2q13,Merged,false,,,
+r2q14,Merged,false,,,
+r2q15,Merged,false,,,
+r2q16,Identified,false,Refused,"Describes template differences, not any obligation or role in making the project happen.",Kayla Stanley
+r2q17,Identified,true,Upheld,"Speaker states pricing and other things make it contingent, tying a condition to proceeding.",Adam Pfeiffer
+r2q18,Identified,false,Refused,States a priority/focus but no condition tied to evaluating or proceeding with a solution.,Adam Pfeiffer
+r2q19,Identified,false,Upheld,Cites an advisory committee mandate requiring approval — a formal organizational standard.,Adam Pfeiffer
+r2q2,Merged,false,,,
+r2q20,Identified,false,Upheld,Compares two implementation options' feature parity.,Dan Lewis
+r2q21,Identified,false,Upheld,States drivers/objectives of the initiative in the speaker's voice.,Adam Pfeiffer
+r2q22,Identified,false,Refused,This flags a procedural precondition (NDA) rather than guiding us on how to win internally or voicing support.,Adam Pfeiffer
+r2q3,Identified,false,Refused,"Refused by the occasion-versus-solution conjunct: the words were read as voicing the stance, but the feeling points at SOMETHING_ELSE rather than at us or our solution. Courtesy is not stance. Reader's own reason: The speaker maps out the internal approval chain and advisory committee, which is exactly insider guidance on the decision process.",Adam Pfeiffer
+r2q4,Merged,false,,,
+r2q5,Merged,false,,,
+r2q6,Identified,false,Refused,"Says the recommendation comes from them but approval rests with the president and others, so no approval/sponsorship authority is asserted.",Rich
+r2q7,Identified,false,Upheld,"States they will look at other options, indicating comparison of alternatives.",Dan Lewis
+r2q8,Identified,false,Upheld,Explicitly comparing offerings and probing pricing.,Dan Lewis
+r2q9,Merged,false,,,

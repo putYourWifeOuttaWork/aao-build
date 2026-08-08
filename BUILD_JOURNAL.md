@@ -11131,3 +11131,76 @@ the admission filter (law landed, ladder proposal owed) → the run receipt (tel
 with-or-after the rebuild, mine to sequence) → the twenty-sixth-stamp queue. Deferred small
 honesty: a `merged` line in the ledger's Counts so absorbed rows stop reading as refusals; the
 verify batches parallelized (~26 s back); the prefix reorder for cache_read.
+
+## 2026-08-08 · session 78 · THE HALVING · verify parallelized, the cache reorder built, ~57 s · run `pf0808-h1`
+
+The thirtieth stamp's verdict on the gate: good news, proceed, HALVE the number to ≤60 s (stretch
+50). Done, with two moves and a measured finding. **~57 s in-org critical path (66 s
+shell-to-shell), 6 model calls, ledger 41/41/28 HELD, bytes 41/41.** Full report
+`review/pf0808-h1/`.
+
+### Verify parallelized: 52.5 s to 20.8 s (item 1a)
+
+`AAO_Pass.verify(runKey, bucket, shardCount, shardIndex)`: the caller drives one conjunct bucket
+per transaction and fires them concurrently, the reads' own pattern. **The stamp's question
+answered: the two-batch split at 29 claims was CONJUNCT-HOMOGENEITY, never a size split.** The
+target field binds sentiment and nothing else, so a sentiment claim and a Buyer Role claim can
+never share one keyed schema; the multi-batch shape is permanent whenever a run carries both
+kinds, and parallelism is the whole fix. The shard params split a bucket further so a bucket
+crossing the 90-second trigger drives as concurrent shards; an empty speculatively-fired bucket
+returns empty rather than throwing. The two public legacy overloads (`verify(runKey)`,
+`verify(runKey, maxClaims)`) delegate to the same impl unchanged, so the join flow and tests are
+untouched.
+
+### call 0 hidden under the reads
+
+The reads do not consume call 0's scope verdict, so call 0 (4.7 s) now runs concurrently with the
+two reads and costs nothing on the critical path. tg1 paid it serially.
+
+### The cache prefix reorder: built, and the finding reported (item 1b)
+
+The transcript now LEADS every read (`locateRead` body = [transcript, rubric]), carrying the
+cache breakpoint callStage puts on block 0. **The artifact moved into the cache segment:
+`in_tok` on both reads dropped from 23,804 to 3,220.** But `cache_read=0` on the parallel reads,
+and that is MECHANICAL, not a failure: prompt caching matches the whole prefix including the
+SYSTEM message, so only two reads (same system, same rubric, same artifact) can share a prefix,
+and running them in parallel neither finishes writing before the other starts. Call 0 and verify
+carry different system prompts and cannot share the reads' prefix at all. **The token win is real
+and measured in a sequential control (`cache_probe`, two identical artifact-first reads, no DML):
+in_tok=3,220, cache_read=27,436 on BOTH calls - ~88% of a read's input cached, at ~10% of the
+price.** The wall benefit is small (reads are output-bound at ~2,500 tokens); the reorder is a
+TOKEN lever, which is precisely the "token halving that protects 10k/day." The honest caveat:
+under perfectly-simultaneous parallel reads each read pays cache-creation once (1.25x) for a
+prefix it does not read; the win lands under any serialization or stagger, and the probe shows
+the artifact stays warm across the run's TTL. Reported so nobody reads a parallel cache_read=0 as
+the reorder failing.
+
+### The Buyer Role note fix (item 4)
+
+`composeNote` wrote "Buyer Role: Evaluator" bare while Support and Political carried date and
+speaker. Now the Buyer Role line carries its citation the same way (captured in `deriveOne`'s
+DIM_BUYER_ROLE branch, newest last). Live on the map: "Buyer Role: Evaluator - Dan Lewis, 30
+July 2026." CR-00000000's Emerson vendor projection still displays the word CRITERION, correctly
+marked-and-reported and never deleted by us; its disposition is Matthew's by hand, recorded so
+it is not rediscovered.
+
+### Against the targets
+
+≤60 s MET at ~57 s. The 50 s stretch is one lever away: sharding the 22-claim plain bucket into
+two concurrent shards takes verify ~21 s to ~11 s, ~47 s critical path; the mechanism is deployed
+and I left it undriven to keep h1 a clean two-move comparison. Under 30 s (optimal) needs faster
+generation, which is the call 3 downsize at the accuracy phase. Suite: the AAO classes green;
+the standing org-resident `ConvertToOpportunityTest` is the only non-AAO failure.
+
+### The looks-right standard held
+
+Bytes 41/41, designator quotes 4/4, demo-narration trap 0/0, ledger HELD, named criteria on the
+map. The three runs disagree on identical bytes (Adam's role, Dan's polarity); at most one map is
+right and that is the accuracy rerun's adjudication, not the halving's.
+
+### Owed next, stamp order
+
+Matthew grades tg1's map against Pass 1's (the 44-vs-59 and the polarity/role disagreements) at
+the accuracy rerun, where the span set and the call 3 downsize comparison build. Then the
+admission-filter proposal, then the concurrency measurement. Deferred small honesty still open:
+the `merged` line in the ledger Counts; the plain-bucket shard to reach the 50 s stretch.

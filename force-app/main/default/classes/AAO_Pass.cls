@@ -419,9 +419,23 @@ public with sharing class AAO_Pass {
         spec.charter = 'AAO_LocateCharter';
         spec.charterVersion = version;
 
+        // THE CACHE PREFIX REORDER, thirtieth stamp item 1b: the ARTIFACT LEADS, carrying the
+        // cache breakpoint (callStage puts it on block 0 when cachePrefix is true). The
+        // transcript is the ~23,800-token block both reads send identically, so putting it
+        // first makes it the cached prefix instead of the ~2,000-token rubric that led before.
+        //
+        // MEASURED, NOT ASSUMED, and the finding is reported rather than buried: prompt
+        // caching matches the whole prefix INCLUDING the system message, and read A and read
+        // B share one system prompt, so read B reuses read A's artifact prefix ONLY when the
+        // reads run sequentially. Under the parallel reads (the stamp's own floor) neither
+        // warms the other and cache_read stays 0 within the run; the win is realized under
+        // production serialization and is measured in a sequential control, never claimed
+        // from a parallel run. Call 0 and verify carry different system prompts and cannot
+        // share this prefix at all, so the reorder is scoped to the reads where reuse is
+        // even possible.
         List<String> body = new List<String>{
-            AAO_LocateCharter.rubricBlock(declared),
-            '# The transcript\n\n' + src.AAO_Normalized_Text__c
+            '# The transcript\n\n' + src.AAO_Normalized_Text__c,
+            AAO_LocateCharter.rubricBlock(declared)
         };
         Map<String, Object> schema = AAO_LocateCharter.schema(codes);
 
@@ -684,10 +698,39 @@ public with sharing class AAO_Pass {
      * rather than discovered later by a timeout.
      */
     public static VerifyRun verify(String runKey) {
-        return verify(runKey, 1000);
+        return verifyImpl(runKey, 1000, null, 1, 0);
     }
 
     public static VerifyRun verify(String runKey, Integer maxClaims) {
+        return verifyImpl(runKey, maxClaims, null, 1, 0);
+    }
+
+    /**
+     * VERIFY IS PARALLELIZED BY CONJUNCT BUCKET, thirtieth stamp item 1a: the reads' own
+     * proven pattern applied to call 3. The caller drives one bucket per transaction and
+     * fires them concurrently, exactly as it fires the two reads.
+     *
+     * **The two-batch split at 29 claims was CONJUNCT-HOMOGENEITY, never a size split**, and
+     * that answers the stamp's question: the target field binds sentiment and nothing else,
+     * so a sentiment claim and a Buyer Role claim can never share one schema. The multi-batch
+     * shape is therefore PERMANENT whenever a run carries both kinds, and parallelism is the
+     * whole fix rather than a tuning of batch size.
+     *
+     * `bucket` is 'sentiment' or 'plain'; `shardCount`/`shardIndex` split a bucket further
+     * for a denser transcript (every shardCount-th claim from shardIndex), so a bucket that
+     * would cross the 90-second trigger is driven as concurrent shards rather than one long
+     * transaction. An empty bucket returns an empty run rather than throwing, because the
+     * caller fires both buckets speculatively without knowing which are populated.
+     */
+    public static VerifyRun verify(
+        String runKey, String bucket, Integer shardCount, Integer shardIndex
+    ) {
+        return verifyImpl(runKey, 1000, bucket, shardCount, shardIndex);
+    }
+
+    private static VerifyRun verifyImpl(
+        String runKey, Integer maxClaims, String bucket, Integer shardCount, Integer shardIndex
+    ) {
         List<AAO_Pair__c> claims = [
             // DEFECT, MINE, CAUGHT ON THE FIRST EMERSON RUN: this selected AAO_Meaning__c
             // from the IDENTIFIED row, where it is always null because the ledger's own
@@ -711,10 +754,39 @@ public with sharing class AAO_Pass {
             LIMIT :maxClaims
         ];
         if (claims.isEmpty()) {
+            if (bucket != null) {
+                // A speculatively-fired bucket with nothing owed is not an error.
+                return new VerifyRun();
+            }
             throw new PassException(
                 'No unverified identified claims on run ' + runKey + '. Call 3 verifies ' +
                 'claims that exist and have not been verified.'
             );
+        }
+
+        // THE BUCKET AND SHARD SELECTION, in memory over the ordered claims so the shard is
+        // deterministic across concurrent transactions reading the same run.
+        if (bucket != null) {
+            Boolean wantSentiment = bucket == 'sentiment';
+            List<AAO_Pair__c> ofBucket = new List<AAO_Pair__c>();
+            for (AAO_Pair__c c : claims) {
+                Boolean isSentiment = AAO_VerifyPairsCharter.takesTarget(
+                    c.AAO_Evidence_Contract__r.AAO_Proposition_Code__c
+                );
+                if (isSentiment == wantSentiment) {
+                    ofBucket.add(c);
+                }
+            }
+            List<AAO_Pair__c> sharded = new List<AAO_Pair__c>();
+            for (Integer i = 0; i < ofBucket.size(); i++) {
+                if (Math.mod(i, shardCount) == shardIndex) {
+                    sharded.add(ofBucket[i]);
+                }
+            }
+            claims = sharded;
+            if (claims.isEmpty()) {
+                return new VerifyRun();
+            }
         }
 
         Map<String, AAO_Pair__c> byRef = new Map<String, AAO_Pair__c>();

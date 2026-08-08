@@ -1191,6 +1191,7 @@ public with sharing class AAO_Project {
         Set<String> rolesEstablished = new Set<String>();
         List<String> supportCitations = new List<String>();
         List<String> politicalCitations = new List<String>();
+        List<String> buyerRoleCitations = new List<String>();
         List<AAO_Answer__c> criteriaAnswers = new List<AAO_Answer__c>();
 
         for (AAO_Answer__c a : answers) {
@@ -1228,6 +1229,10 @@ public with sharing class AAO_Project {
                 politicalCitations.add(citation(a));
             } else if (dim == AAO_P8Codes.DIM_BUYER_ROLE) {
                 rolesEstablished.add(AAO_P8Codes.buyerRole(code));
+                // EVERY DIMENSION LINE CARRIES ITS CITATION (thirtieth stamp item 4): the
+                // Buyer Role line used to render bare while Support and Political carried
+                // date and speaker. Captured here the same way, newest last.
+                buyerRoleCitations.add(citation(a));
             } else if (dim == AAO_P8Codes.DIM_CRITERIA) {
                 criteriaAnswers.add(a);
             }
@@ -1237,7 +1242,7 @@ public with sharing class AAO_Project {
         d.political = AAO_P8Codes.politicalCeiling(politicalPlacements);
         buyerRoleFrom(rolesEstablished, d);
         d.criteria = criteriaFrom(criteriaAnswers);
-        d.note = composeNote(d, supportCitations, politicalCitations);
+        d.note = composeNote(d, supportCitations, politicalCitations, buyerRoleCitations);
         return d;
     }
 
@@ -1338,7 +1343,8 @@ public with sharing class AAO_Project {
     private static String composeNote(
         Derivation d,
         List<String> supportCitations,
-        List<String> politicalCitations
+        List<String> politicalCitations,
+        List<String> buyerRoleCitations
     ) {
         List<String> parts = new List<String>();
         if (d.support != null) {
@@ -1358,7 +1364,12 @@ public with sharing class AAO_Project {
             );
         }
         if (d.buyerRole != null) {
-            parts.add('Buyer Role: ' + d.buyerRole);
+            parts.add(
+                'Buyer Role: ' + d.buyerRole +
+                (buyerRoleCitations.isEmpty()
+                    ? ''
+                    : ' - ' + buyerRoleCitations[buyerRoleCitations.size() - 1])
+            );
         } else if (!d.buyerRoleCollision.isEmpty()) {
             // The refusal says so on the surface the seller reads, because a blank field
             // beside three established roles is the silence this whole design exists to end.

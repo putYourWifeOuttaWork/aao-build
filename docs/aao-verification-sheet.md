@@ -1,4 +1,6 @@
-# AAO Verification Sheet · v1.0 · 8 August 2026
+# AAO Verification Sheet · v1.1 · 8 August 2026
+
+**v1.1, same day: two corrections from CODE's first use of this sheet on a live run. Check 2's disposition categories gain N/A (the ruled disposition for assertions keyed to another artifact; a universe report without N/A lines was exactly the defect a23 caught). Check 2's ledger identity corrected to the ledger's own law: located = disposed always; identified may be fewer (None rows carry no claim and owe nothing); verdicts = identified. The sheet caught a real defect on its first outing and was itself corrected by the user of it, which is the loop working in both directions.**
 
 **Design's per-run verification, written as the procedure it always was. Every run export is checked against exactly this list; a check nobody wrote down is a check nobody can know is complete. Satellite, outside the audit chain; the Board names it. The map read sheet is its companion for Matthew's human read.**
 
@@ -10,7 +12,7 @@ The run's export (pairs, claims, answers, coverage lines, regression disposition
 
 **1 · Provenance.** The export's artifact sha256 matches the freeze list's entry for the named fixture. Every pair's verbatim string occurs in the frozen artifact byte-exact at its stated offset and length. Every quote locates exactly once (multiple matches are reported, not failed). A yes from call 0 carries a quote that locates the same way.
 
-**2 · Arithmetic.** Located = sum of per-family counts. Located = identified = verdicts (one-for-one-for-one). Upheld count = claims written this run; every upheld pair carries a claim id; no refused pair carries one. Answer counts reconcile between report prose, README, and rows, in one unit each. Regression dispositions sum to the full universe, every assertion on its own line (HELD, LOST, RECOVERED, STILL MISSED, UNREACHABLE, CHANGED); categories that do not sum to the universe are a defect in the harness, not a rounding note.
+**2 · Arithmetic.** Located = sum of per-family counts. Located = disposed, always; identified may be fewer (None rows carry no claim and owe nothing); verdicts = identified. Upheld count = claims written this run; every upheld pair carries a claim id; no refused pair carries one. Answer counts reconcile between report prose, README, and rows, in one unit each. Regression dispositions sum to the full universe, every assertion on its own line (HELD, LOST, RECOVERED, STILL MISSED, UNREACHABLE, CHANGED, N/A for assertions keyed to another artifact); categories that do not sum to the universe are a defect in the harness, not a rounding note.
 
 **3 · Law compliance.** No trap in the graded set appears as an upheld projected claim; a fired trap is refused at the claim and reported. Partial-coverage pairs accrue and displace nothing (no TRUE downgraded by a later partial). No account-grain read dispatched while the grain is backburnered; routed-not-dispatched lines carry their yes-quotes. Retired claims remain present with reasons; nothing deleted. Watermarks present on every projected value including retractions; no machine write over a human-claimed value. Coverage derivation counts conversations (occasion identity), never artifact hashes or rows.
 

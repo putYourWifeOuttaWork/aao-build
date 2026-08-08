@@ -67,6 +67,66 @@ public class AAO_PairCommitTest {
         System.assertEquals('SUPPORTER', c.AAO_Interpretation__c);
     }
 
+    /**
+     * THE a23 DEFECT, as a law. `buq7` upheld a Buyer Role EVALUATOR on our own seller and
+     * projection created her a Contact on the customer's account. a22 met the same shape and
+     * call 3 happened to refuse it, which is luck rather than a rule.
+     *
+     * Asserted with the verdict UPHELD deliberately: the point is that the reader's answer
+     * is not consulted. A seller is not a member of the buying committee by construction.
+     */
+    @IsTest
+    static void aClaimAboutASellerIsRefusedEvenWhenTheVerifierUpheldIt() {
+        Fixture f = fixture();
+        pair(f, 'p1', 'AAO_BR_EVAL', 'EVALUATOR', 'Full', 'Identified', 'Upheld', f.sellerId);
+
+        Test.startTest();
+        AAO_PairCommit.Outcome o = AAO_PairCommit.run(RUN, new Set<String>{ 'seller.example' });
+        Test.stopTest();
+
+        System.assertEquals(1, o.pairsInternalSubject, o.toString());
+        System.assertEquals(0, o.pairsEligible, o.toString());
+        System.assertEquals(0, o.claimsWritten, o.toString());
+        System.assertEquals(
+            0,
+            [SELECT COUNT() FROM AAO_Answer__c WHERE AAO_Opportunity__c = :f.oppId],
+            'No answer may exist about a seller.'
+        );
+        System.assertEquals(
+            0,
+            [SELECT COUNT() FROM AAO_Claim__c WHERE AAO_Participant__c = :f.sellerId],
+            'And no claim.'
+        );
+    }
+
+    /**
+     * The gate is targeted, not blanket: the same run still commits the buyer-side pair. A
+     * guard that also silenced buyers would trade one silent defect for a louder one.
+     */
+    @IsTest
+    static void theSellerGateDoesNotTouchBuyerSideClaims() {
+        Fixture f = fixture();
+        pair(f, 'p1', 'AAO_BR_EVAL', 'EVALUATOR', 'Full', 'Identified', 'Upheld', f.sellerId);
+        pair(f, 'p2', AAO_P8Codes.SENTIMENT, 'SUPPORTER', 'Full', 'Identified', 'Upheld', f.participantId);
+
+        Test.startTest();
+        AAO_PairCommit.Outcome o = AAO_PairCommit.run(RUN, new Set<String>{ 'seller.example' });
+        Test.stopTest();
+
+        System.assertEquals(1, o.pairsInternalSubject, o.toString());
+        System.assertEquals(1, o.pairsEligible, o.toString());
+        System.assertEquals(1, o.claimsWritten, o.toString());
+        System.assertEquals(
+            f.participantId,
+            [
+                SELECT AAO_Participant__c
+                FROM AAO_Claim__c
+                WHERE AAO_Opportunity__c = :f.oppId
+            ].AAO_Participant__c,
+            'The one claim written is the buyer\'s.'
+        );
+    }
+
     @IsTest
     static void aRefusedVerificationIsCountedAndWritesNothing() {
         Fixture f = fixture();
@@ -344,6 +404,8 @@ public class AAO_PairCommitTest {
         public Id sourceId;
         public Id participantId;
         public Id unlinkedId;
+        /** The selling-side participant. Claims about this person must never write. */
+        public Id sellerId;
         public Map<String, Id> contracts = new Map<String, Id>();
     }
 
@@ -392,6 +454,13 @@ public class AAO_PairCommitTest {
                             'key' => 'jefferson',
                             'display' => 'Jefferson Vargas',
                             'email' => 'jvargas@customer.example'
+                        },
+                        // The seller in the room. Every real call has one, and until the
+                        // 8 August ruling nothing stopped a claim being made ABOUT them.
+                        new Map<String, Object>{
+                            'key' => 'seller',
+                            'display' => 'Wendy Seller',
+                            'email' => 'wendy@seller.example'
                         }
                     }
                 }
@@ -405,16 +474,21 @@ public class AAO_PairCommitTest {
         // rather than hand-building them is the whole point: a hand-built participant is a row
         // the product never produces, and that mistake has been made twice on this build.
         for (AAO_Participant__c p : [
-            SELECT Id, AAO_Contact__c
+            SELECT Id, AAO_Contact__c, AAO_Email__c
             FROM AAO_Participant__c
             WHERE AAO_Source__c = :src.Id
         ]) {
-            if (p.AAO_Contact__c == null) {
+            // Keyed on email rather than on contact-null, because the seller row is also
+            // contact-null and last-wins between two of them would make the fixture lie.
+            if (p.AAO_Email__c == 'wendy@seller.example') {
+                f.sellerId = p.Id;
+            } else if (p.AAO_Contact__c == null) {
                 f.unlinkedId = p.Id;
             } else {
                 f.participantId = p.Id;
             }
         }
+        System.assertNotEquals(null, f.sellerId, 'And the seller who was in the room.');
         System.assertNotEquals(null, f.participantId, 'A participant resolved to the Contact.');
         System.assertNotEquals(null, f.unlinkedId, 'And one with no Contact at all.');
 

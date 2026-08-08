@@ -50,13 +50,43 @@ public class AAO_SourceTriggerHandler {
             // stays; the condition cannot recur, because omitting the value is no longer
             // something a caller is able to do.
             s.AAO_SHA256__c = AAO_NormalForm.sha256(s.AAO_Normalized_Text__c);
+
+            // THE STAMP IS WRITER-SUPPLIED, NEVER CALLER-SUPPLIED. Ruled 8 August after the
+            // a23 suite found `theSmallTalkBoundaryStaysMutable` failing on a field the test
+            // never touches.
+            //
+            // The mechanism, measured rather than reasoned about: a before-insert trigger's
+            // field changes are NOT synced back to the caller's in-memory sObject (only the
+            // Id is). So a caller that assigns this field holds `NF1` while the row holds
+            // `NF1+out:...`, the stale value stays in the sObject's field map, and the
+            // caller's NEXT update - of any field at all - submits it and is refused by the
+            // immutability guard below for a change nobody made.
+            //
+            // The scope key and the output hash never had this problem for one reason: no
+            // caller assigns them, so they are absent from the field map and an update never
+            // carries them. THAT is the property, and it is what "writer-supplied" means
+            // here - not "computed by us", which they all already were, but "the caller has
+            // no value of it to go stale".
+            //
+            // So a caller-supplied stamp FAILS LOUDLY rather than being silently overwritten.
+            // Overwriting is what created the stale copy; refusing the write is the only
+            // form of this rule that cannot recreate it, and it keeps the caller's sObject
+            // exactly as the caller left it.
+            if (String.isNotBlank(s.AAO_Normalizer_Version__c)) {
+                s.addError(
+                    'AAO_Normalizer_Version__c is written by AAO_SourceTriggerHandler and ' +
+                    'must not be supplied by a caller. A supplied value cannot be overwritten ' +
+                    'safely: before-insert changes are not synced back to the caller\'s ' +
+                    'sObject, so the caller would keep a stale stamp and its next update of ' +
+                    'ANY field would be refused as an immutability violation. Leave the field ' +
+                    'null and the writer composes it.'
+                );
+                continue;
+            }
             // The stamp composes, so two different byte outputs can never carry the same
             // one. Computed after the output hash above, because it is one of its halves.
-            if (String.isBlank(s.AAO_Normalizer_Version__c) ||
-                !s.AAO_Normalizer_Version__c.contains('+')) {
-                s.AAO_Normalizer_Version__c =
-                    AAO_NormalForm.stamp(s.AAO_Raw_SHA256__c, s.AAO_SHA256__c);
-            }
+            s.AAO_Normalizer_Version__c =
+                AAO_NormalForm.stamp(s.AAO_Raw_SHA256__c, s.AAO_SHA256__c);
         }
     }
 

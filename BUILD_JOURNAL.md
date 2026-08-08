@@ -10401,3 +10401,140 @@ Reproducing the immutability failure inserted Source `a1XWD0000082Vcb2AE`,
 `diag/immutability-probe`, on the Emerson opportunity. It carries no participants and no pairs,
 so no reported number moves. It is not synthetic-deletable and it stays. I should have probed
 against a throwaway account rather than the deal under measurement.
+
+---
+
+## 2026-08-08 · session 78 · the nineteenth stamp's queue · two of four built, one defect found by doing it
+
+**387 tests, 386 AAO pass, one org-resident failure.** Our failure is gone.
+
+Four ruled items, order mine. I sequenced **3 → 1 → 2 → 4** and built the first two.
+
+**Why that order.** The stamp repair goes first because the suite was red and a red suite makes
+every later "tests pass" claim worthless; that is the green-suite hazard and it was live. The
+subject gate goes second because it must precede the shadow path: mentioned-person resolution
+mints person-shaped subjects for anyone the artifact names, sellers included, so building the
+shadow path first hands the new path the exact defect the gate exists to close. Criterion name
+is self-contained. Shadow path is largest and carries a proposal.
+
+### 1 · The stamp repair, ratified as recommended
+
+`AAO_TriggerLawTest.theSmallTalkBoundaryStaysMutable` passes.
+
+The mechanism, now written down where the next reader meets it: **a before-insert trigger's
+field changes are not synced back to the caller's in-memory sObject** — only the Id is. A caller
+that assigns the stamp keeps `NF1` while the row keeps `NF1+out:...`, the stale value stays in
+the sObject's field map, and the caller's next update of any field submits it and is refused for
+a change nobody made.
+
+**The scope key and the output hash never had this problem for one reason, and it is not the one
+I would have guessed:** they are equally computed by the writer, but *no caller assigns them*, so
+they are absent from the field map and an update never carries them. That is what
+"writer-supplied" turns out to mean here — not "computed by us", which all three already were,
+but **"the caller has no value of it to go stale"**.
+
+So a caller-supplied stamp now **fails loudly** rather than being silently overwritten.
+Overwriting is what created the stale copy; refusing the write is the only form of the rule that
+cannot recreate it, and it leaves the caller's sObject exactly as the caller left it, which is
+what the ruling asked for. `AAO_Seed` and `AAO_Demo` stop supplying it. Two tests: the refusal,
+and the other half — the writer composes it and an ordinary update still works.
+
+### 2 · The internal-domain gate reaches claim subjects
+
+Built at the join, beside the trap filter, which is the same shape at the same stage: refuse with
+the reason, count it, let the survivors through.
+
+**Scoped to the person-subject dimensions deliberately** (support, political, buyer role). A
+criteria claim's subject is the criterion rather than the person, so the gate does not fire
+there; whether a criterion voiced by a seller should stand is a question about the VOICER and it
+is not this ruling's. Named rather than folded in quietly.
+
+**The gap is named rather than papered over:** the decision is the participant's email domain, so
+a roster row carrying no email is not refused. That is the silence law — absence of a domain is
+not evidence of a buyer — and it is precisely why the shadow path has to make the same check when
+it resolves a person no roster ever vouched for.
+
+Two tests, and the first one asserts the verdict **Upheld** on purpose: the point of the ruling
+is that the reader's answer is not consulted. The second proves the gate is targeted rather than
+blanket, because a guard that also silenced buyers would trade one silent defect for a louder one.
+
+### 3 · Wendy's correction, and the defect that attempting it found
+
+The claim retired cleanly: `CLM-00000092`, with its reason, nothing deleted. Her Buyer Role
+answer stands UNVERIFIED and placed nothing, so no role value ever reached the map.
+
+**The Coverage value did not retract, and the reason is a defect rather than a policy.**
+
+`AAO_Project` holds a dimension back on `humanEdited(stamp, ours)` OR
+`humanAuthored(value, ourValues, touched)`. On Wendy's Coverage:
+
+- `humanEdited` says **ours** — the row carries our own stamp from a23, `2026-08-08 15:01:22`.
+- `humanAuthored` says **the human's** — because `touched = !ourValues.isEmpty()` and `ourValues`
+  is built only from answers carrying a projected value. Her one answer is UNVERIFIED and placed
+  nothing, so by that test we have never touched her row.
+
+**The stamp proves the value is ours and the guard ignores the stamp.** It generalizes past
+Wendy: **any person we meet once, place nothing on, and write Coverage for is a person whose
+Coverage we can never retract**, because Coverage is computed, keeps no answer of its own, and
+therefore can never supply the evidence that would let us clear it.
+
+The board's "correction that disables what it corrects" hazard, arriving on the exact row a
+ruling told us to correct. The session-77 repair that added `humanAuthored` was right about
+Fatema — a value on a row we have genuinely never met is somebody else's — and was written
+without a case where our own stamp and our own answer-set disagree.
+
+**Not fixed.** It is the human-override guard, which is absolute, and the failure mode of getting
+it wrong is silently overwriting a human's judgment. That earns a ruling even when the repair
+looks like one line, and especially then. Proposed with its one-line repair in
+`review/proposals/machine-created-org-data.md`.
+
+### 4 · The proposal design owes, delivered
+
+`review/proposals/machine-created-org-data.md` covers the three questions that looked separate
+and are one: the a23 Contact's disposition, the retraction defect above, and the creation
+boundary the shadow path needs before it builds.
+
+**The boundary I propose, in one sentence: the machine creates rows in OUR namespace freely and
+rows in the customer's namespace never.** Shadow persons and their claims are ours, retirable,
+and carry provenance; `Contact` and `ALTF__Contact_Map_Details__c` are the customer's record of a
+real human and get created by a human decision with our evidence attached, never automatically.
+
+**This inverts what a23 actually did, deliberately.** a23 created a Contact with no human in the
+loop and the result was our own seller on the customer's buying committee. The shadow path meets
+that shape far more often, because a mentioned person is by definition one no roster vouched for.
+
+**And it carries a consequence I want ruled rather than discovered:** under this boundary the 7
+a23 pairs still do not reach the map. They stop being silently dropped and start being held with
+their evidence and offered. If the acceptance criterion is "Fatema appears on the map", this
+boundary does not meet it, and being told that now is cheaper than being told it after building.
+
+### The two items handed forward, with item 2's design recorded so it is not re-derived
+
+**Item 2, the criterion's name.** Contained but real, and I stopped rather than start it: a
+half-changed charter makes the next run's criteria pairs unparseable, which is worse than not
+starting. The design, so the next session builds rather than re-derives:
+
+- `AAO_LocateCharter.schema` gains a `criterion_name` property, conditional on the block
+  containing `AAO_DC_N`, exactly the way `coverage` is already conditional on `anyCoverage`. The
+  sweep passes one family's codes per read, so the property appears only on the criteria read.
+- Parse carries it; `AAO_Locate` writes it to a new `AAO_Pair__c.AAO_Criterion_Name__c`.
+- `AAO_PairCommit.mintCriteria` passes that name to `AAO_Criteria.mint` instead of
+  `AAO_Meaning__c`. The key becomes opportunity plus the name with no other change, because
+  `mint` already keys on the text it is handed.
+- The vendor `Subject` follows with no edit: projection already writes the criterion's
+  `AAO_Subject__c`.
+- The collapsed `CR-00000000` corrects through the lawful path rather than being rewritten.
+- Acceptance is a live criteria family read against the frozen fixture, because the question is
+  whether the model produces names a buyer would recognise ("Annual total cost" is the
+  specimen), and only a real read answers that.
+
+**Item 4, the shadow path**, is unblocked the moment the boundary in §4 is confirmed or
+corrected. Building it against an unconfirmed boundary would mean building the creation semantics
+twice.
+
+### Owed from design, in the order it unblocks work
+
+1. **The retraction ruling.** It blocks the second half of the Wendy correction, which is why her
+   Coverage value is still on the customer's map as this is written.
+2. **The creation boundary**, which blocks item 4.
+3. The Contact's disposition, which blocks nothing.

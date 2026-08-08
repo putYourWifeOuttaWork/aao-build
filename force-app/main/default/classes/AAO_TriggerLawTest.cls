@@ -52,6 +52,81 @@ private class AAO_TriggerLawTest {
     }
 
     /**
+     * THE STAMP IS WRITER-OWNED, and this test exists because the composed stamp broke
+     * `theSmallTalkBoundaryStaysMutable` below without touching the field it asserts on.
+     *
+     * A caller that supplies the stamp keeps its supplied value in the sObject's field
+     * map - before-insert changes are not synced back - so its next update submits a
+     * stale stamp and is refused for a change nobody made. Refusing the supply at insert
+     * is what makes that state unreachable.
+     */
+    @IsTest
+    static void aCallerSuppliedStampIsRefused() {
+        AAO_Seed.Loaded s = load();
+        AAO_Source__c donor = [
+            SELECT AAO_Normalized_Text__c, AAO_Diarization__c, AAO_Account__c,
+                AAO_Opportunity__c, AAO_Origin__c, AAO_Artifact_SHA256__c,
+                AAO_Evidence_Occurred__c
+            FROM AAO_Source__c
+            WHERE Id = :s.sourceByCode.get('T1SRC').Id
+        ];
+
+        AAO_Source__c supplied = new AAO_Source__c(
+            AAO_Source_Ref__c = 'law/caller-supplied-stamp',
+            AAO_Normalized_Text__c = donor.AAO_Normalized_Text__c,
+            AAO_Diarization__c = donor.AAO_Diarization__c,
+            AAO_Account__c = donor.AAO_Account__c,
+            AAO_Opportunity__c = donor.AAO_Opportunity__c,
+            AAO_Origin__c = donor.AAO_Origin__c,
+            AAO_Artifact_SHA256__c = AAO_NormalForm.sha256('law-caller-supplied-stamp'),
+            AAO_Evidence_Occurred__c = donor.AAO_Evidence_Occurred__c,
+            AAO_Normalizer_Version__c = AAO_NormalForm.VERSION
+        );
+
+        try {
+            insert supplied;
+            System.assert(
+                false,
+                'A caller-supplied stamp leaves the caller holding a stale value the ' +
+                'immutability guard later refuses. The org must refuse the supply instead.'
+            );
+        } catch (DmlException e) {
+            System.assert(
+                e.getMessage().contains('written by AAO_SourceTriggerHandler'),
+                'Expected the writer-owned message, got: ' + e.getMessage()
+            );
+        }
+    }
+
+    /**
+     * The other half: with the field left alone, the writer composes it, and the caller's
+     * sObject carries no stamp to go stale - so an ordinary update still works. This is
+     * the assertion the composed stamp actually broke.
+     */
+    @IsTest
+    static void theWriterComposesTheStampAndTheCallerKeepsNoStaleCopy() {
+        AAO_Seed.Loaded s = load();
+        AAO_Source__c src = s.sourceByCode.get('T1SRC');
+
+        System.assertEquals(
+            null,
+            src.AAO_Normalizer_Version__c,
+            'The caller must hold no stamp; holding one is what goes stale.'
+        );
+
+        AAO_Source__c stored = [
+            SELECT AAO_Normalizer_Version__c FROM AAO_Source__c WHERE Id = :src.Id
+        ];
+        System.assert(
+            stored.AAO_Normalizer_Version__c.contains('+'),
+            'The writer composes the stamp: ' + stored.AAO_Normalizer_Version__c
+        );
+
+        src.AAO_Boundary_Basis__c = 'detector-v3';
+        update src;
+    }
+
+    /**
      * Small talk is marked, never cut, and the boundary is mutable so a better detector
      * can re-mark with no re-ingestion. Span verification never reads it.
      */

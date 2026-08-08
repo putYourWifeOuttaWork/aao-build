@@ -45,6 +45,8 @@ public with sharing class AAO_PairCommit {
         public Integer pairsAlreadyCommitted = 0;
         /** Upheld, identified, and refused by a standing graded trap. Addendum 17. */
         public Integer pairsTrapped = 0;
+        /** Upheld, identified, and refused because the subject is a seller. Ruled 8 Aug. */
+        public Integer pairsInternalSubject = 0;
         public Integer claimsWritten = 0;
         public Integer answersWritten = 0;
         public Integer countersRebuilt = 0;
@@ -73,6 +75,7 @@ public with sharing class AAO_PairCommit {
                     '  no identification      ' + pairsNotIdentified + ' (unit: pairs)',
                     '  already committed      ' + pairsAlreadyCommitted + ' (unit: pairs)',
                     '  refused, graded trap   ' + pairsTrapped + ' (unit: pairs)',
+                    '  subject is a seller    ' + pairsInternalSubject + ' (unit: pairs)',
                     'claims written           ' + claimsWritten + ' (unit: claims)',
                     'answers written          ' + answersWritten + ' (unit: answers)',
                     'support counters rebuilt ' + countersRebuilt + ' (unit: people)',
@@ -121,6 +124,7 @@ public with sharing class AAO_PairCommit {
                 AAO_Person__c,
                 AAO_Person__r.AAO_Contact__c,
                 AAO_Person__r.AAO_Display_Name__c,
+                AAO_Person__r.AAO_Email__c,
                 AAO_Charter__c,
                 AAO_Charter_Version__c,
                 AAO_Located_Pair__c,
@@ -217,6 +221,24 @@ public with sharing class AAO_PairCommit {
             }
         }
 
+        // THE INTERNAL-DOMAIN GATE APPLIES TO CLAIM SUBJECTS. Ruled 8 August, from a23.
+        //
+        // `internalDomains` has been threaded into this method since the join existed and
+        // was used for exactly one thing: resolving WHICH SELLER heard a claim. Nothing
+        // anywhere asked who a claim was ABOUT. So a23 upheld a Buyer Role EVALUATOR on
+        // Wendy Higley - our own seller - and projection created her a Contact on the
+        // customer's account.
+        //
+        // a22 met the identical shape on the same two people and call 3 happened to refuse
+        // both. The correct outcome was the verifier's judgment, which is not a rule. A
+        // seller cannot be a member of the buying committee BY CONSTRUCTION.
+        //
+        // Scoped to the person-subject dimensions deliberately. A criteria claim's subject
+        // is the criterion, not the person, so this gate does not fire there; whether a
+        // criterion voiced by a seller should stand is a different question about the
+        // VOICER and it is not this ruling's. Named rather than folded in silently.
+        eligible = withoutInternalSubjects(eligible, internalDomains, o);
+
         o.pairsEligible = eligible.size();
         if (eligible.isEmpty()) {
             return o;
@@ -289,6 +311,63 @@ public with sharing class AAO_PairCommit {
      * comes back unattached rather than typing a criterion nothing established. That is two
      * stages disagreeing about one sentence, and it is counted rather than swallowed.
      */
+    /**
+     * The person-subject dimensions. A claim on one of these asserts something about WHO
+     * the person is in the buying committee, so its subject must be buyer-side.
+     */
+    private static final Set<String> PERSON_SUBJECT_DIMENSIONS = new Set<String>{
+        AAO_P8Codes.DIM_SUPPORT,
+        AAO_P8Codes.DIM_POLITICAL,
+        AAO_P8Codes.DIM_BUYER_ROLE
+    };
+
+    /**
+     * Refuse, with its reason, any person-subject pair whose subject sits on a selling-side
+     * domain. Structural: the reader's verdict is not consulted and cannot override it.
+     *
+     * THE GAP IS NAMED RATHER THAN PAPERED OVER: this decides on the participant's email
+     * domain, so a roster row carrying no email is not refused here. That is the silence
+     * law applied - absence of a domain is not evidence of a buyer - and it is the reason
+     * the shadow path's own gate has to make the same check when it resolves a mentioned
+     * person who never appears on a roster at all.
+     */
+    private static List<AAO_Pair__c> withoutInternalSubjects(
+        List<AAO_Pair__c> eligible,
+        Set<String> internalDomains,
+        Outcome o
+    ) {
+        if (internalDomains == null || internalDomains.isEmpty()) {
+            return eligible;
+        }
+        List<AAO_Pair__c> survivors = new List<AAO_Pair__c>();
+        for (AAO_Pair__c p : eligible) {
+            String code = p.AAO_Evidence_Contract__r == null
+                ? null
+                : p.AAO_Evidence_Contract__r.AAO_Proposition_Code__c;
+            String email = p.AAO_Person__r == null ? null : p.AAO_Person__r.AAO_Email__c;
+            if (!PERSON_SUBJECT_DIMENSIONS.contains(AAO_P8Codes.dimensionOf(code)) ||
+                !isInternal(email, internalDomains)) {
+                survivors.add(p);
+                continue;
+            }
+            o.pairsInternalSubject++;
+            o.refusals.add(
+                p.AAO_Pair_Ref__c + ' (' + code + '): REFUSED, the subject is on the ' +
+                'selling side (' + email + '). A seller is not a member of the buying ' +
+                'committee, so no claim about one is written. Structural, not the ' +
+                'verifier\'s call.'
+            );
+        }
+        return survivors;
+    }
+
+    private static Boolean isInternal(String email, Set<String> internalDomains) {
+        if (String.isBlank(email) || !email.contains('@')) {
+            return false;
+        }
+        return internalDomains.contains(email.substringAfterLast('@').toLowerCase());
+    }
+
     private static Map<Id, AAO_Criterion__c> mintCriteria(
         List<AAO_Pair__c> eligible,
         Outcome o

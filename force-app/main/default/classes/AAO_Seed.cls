@@ -295,8 +295,7 @@ public class AAO_Seed {
                     AAO_Source_Ref__c = (String) s.get('sourceRef'),
                     AAO_Origin__c = (String) s.get('origin'),
                     AAO_Evidence_Occurred__c = gmt((String) s.get('occurred')),
-                    AAO_Duration_Seconds__c = (Integer) s.get('durationSeconds'),
-                    AAO_Normalizer_Version__c = AAO_NormalForm.VERSION
+                    AAO_Duration_Seconds__c = (Integer) s.get('durationSeconds')
                 )
             );
         }

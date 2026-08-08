@@ -274,8 +274,7 @@ public class AAO_Demo {
             AAO_Source_Ref__c = (String) spec.get('sourceRef'),
             AAO_Origin__c = (String) spec.get('origin'),
             AAO_Evidence_Occurred__c = AAO_Seed.gmt((String) spec.get('occurred')),
-            AAO_Duration_Seconds__c = (Integer) spec.get('durationSeconds'),
-            AAO_Normalizer_Version__c = AAO_NormalForm.VERSION
+            AAO_Duration_Seconds__c = (Integer) spec.get('durationSeconds')
         );
         insert src;
         AAO_Synthetic.MARK = false;

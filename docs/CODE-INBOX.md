@@ -1,4 +1,4 @@
-# CODE inbox · re-stamped 6 August 2026, 7 August, seventeenth stamp · coverage windowed, the D360 split, gate 2 closed
+# CODE inbox · re-stamped 6 August 2026, 8 August, nineteenth stamp · the mentioned-person ruling lands: the shadow path builds as part of People
 
 **This inbox supersedes the 4 August inbox whole. Read this top stamp, then the CURRENT Board (`docs/aao-board.md`, whatever its stamp says), then the current Charters (§P8 and Part II), then the Architecture heads newest-first. Version numbers never appear in this line again; the documents' own stamps are the authority, per the cross-reference law. Numbers from your BUILD_JOURNAL.**
 
@@ -8,6 +8,21 @@ Matthew stops hand-carrying. This inbox is the standing channel: read it at ever
 
 1. **Ship the row export with every run.** Pairs (ref, family, contract, verbatim, offset, length, call 3 verdict), claims, answers, and the projection outcome lines, as CSV or JSON, delivered into the project beside the report. Design's agents verify against the frozen artifact and the regression seed; a report without its rows cannot be verified and does not count as a report.
 2. **Ship stage timings per Addendum 20**: per-callout wall for call 0, each family read, call 2, call 3's batches, join, projection; worst single callout named against the 120-second ceiling.
+
+## Nineteenth stamp · MATTHEW HAS RULED: build the mentioned-person/shadow path as part of People
+
+The sequencing hold in the eighteenth stamp's item 4 is released. Matthew's ruling, 8 August: the mentioned-person path builds NOW, as part of People, before People closes. His stated ground is the first principle already on record: the resolver into people is 60 to 80 percent of the project, and a 20% silent drop on unseen speech that includes the signer of the deal is exactly "wrong even a little bit."
+
+What builds: a pair whose person is mentioned in the artifact but absent from every roster no longer drops silently. It resolves through the shadow stage (AAO_Shadow_Person__c), with Contact and map-detail creation PROPOSAL-FIRST per the eighteenth stamp's created-Contact disposition: propose the disposition boundary before any org data is created by the machine. Design expects your proposal on that boundary with the build, not after it. The 7/35 a23 pairs are the acceptance specimen; Fatema Choudray, the signer, is the named case. Sequence it with the three a23 items already ruled (subject gate, criterion name, stamp repair + full suite); order within those four is yours.
+
+## Eighteenth stamp · a23 absorbed; the rulings on its three findings
+
+The a23 run stands verified: provenance 35/35 on foreign speech, the ledger honest, None working, the regression N/A defect caught by the sheet and fixed. The verification sheet is corrected to v1.1 per your two mismatches. The cost journal is accepted as the standing model; the cache prefix reorder is APPROVED and QUEUED after Matthew grades a23, so this run's comparison stays valid.
+
+1. **RULING · THE INTERNAL-DOMAIN GATE APPLIES TO CLAIM SUBJECTS AT THE JOIN.** A People-family claim whose subject resolves to an internal domain refuses structurally with its reason; sellers cannot be buying-committee members by construction, never by verifier judgment. Wendy Higley corrects through the lawful path (retire the claim, retract the projection); the machine-created Contact's disposition is PROPOSAL-FIRST, because it is org data rather than our ledger and the never-delete law's boundary needs stating before anything moves.
+2. **RULING · A CRITERION'S IDENTITY IS ITS NAME.** The criteria families' pairs carry the criterion's name derived from the establishing words ("Annual total cost" is the specimen); the key is opportunity plus the name; the vendor Subject displays the name. Charter and schema both; the collapsed single-row history corrects through the lawful path; the three prior "minted/projected" progress reports are marked corrected in your journal.
+3. **RATIFIED · YOUR STAMP REPAIR, the recommendation you made:** the composed normalizer stamp is writer-supplied, never caller-supplied, the watermark law's own logic; the caller's sObject is never rewritten under it. Fix the failing trigger-law test through that repair and run the full suite, the session-77 lesson applied.
+4. **The mentioned-person/shadow path is MATTHEW'S sequencing call**, now with its number: 7 of 35 located pairs on unseen speech, including the signer of the deal. Do not build until he rules.
 
 ## Seventeenth stamp · three rulings from Matthew at the session close
 

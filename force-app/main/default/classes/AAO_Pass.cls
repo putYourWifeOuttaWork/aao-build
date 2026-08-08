@@ -744,7 +744,32 @@ public with sharing class AAO_Pass {
      * the gates' work and is not built.
      */
     public static IdentifyRun identify(Id sourceId, String runKey) {
+        return identify(sourceId, runKey, 1000);
+    }
+
+    /**
+     * CALL 2 SPLITS BY PAIR BATCH, and the Project Farma run is why.
+     *
+     * Call 1 splits by family and call 3 by claim batch; call 2 was the one stage still handed
+     * every located pair in a single call, because no fixture before this one produced enough.
+     * The 73-minute Project Farma call located 59 pairs, and call 2 disposed ONE of them, twice,
+     * and the one-for-one guard threw both times rather than let 58 vanish. That is the guard
+     * doing exactly its job, and the fix is the same shape the other two calls already have.
+     *
+     * The batch is the closed set of refs handed to the schema, so the model is constrained to
+     * return exactly this batch. Already-identified refs are excluded, so the caller drives it
+     * until none remain, and the run-level one-for-one still checks located == disposed at the
+     * end. No call retries by growing; the ceiling is split, not raised.
+     */
+    public static IdentifyRun identify(Id sourceId, String runKey, Integer maxPairs) {
         AAO_Source__c src = source(sourceId);
+        Set<String> alreadyIdentified = new Set<String>();
+        for (AAO_Pair__c p : [
+            SELECT AAO_Pair_Ref__c FROM AAO_Pair__c
+            WHERE AAO_Run_Key__c = :runKey AND AAO_Stage__c = :AAO_PairKey.IDENTIFIED
+        ]) {
+            alreadyIdentified.add(p.AAO_Pair_Ref__c);
+        }
         List<AAO_Pair__c> located = [
             SELECT Id, AAO_Pair_Ref__c, AAO_Answer_Text__c, AAO_Meaning__c, AAO_Coverage__c,
                 AAO_Start_Offset__c, AAO_End_Offset__c, AAO_Speaker_Key__c,
@@ -752,12 +777,14 @@ public with sharing class AAO_Pass {
                 AAO_Evidence_Contract__r.AAO_Proposition_Text__c
             FROM AAO_Pair__c
             WHERE AAO_Run_Key__c = :runKey AND AAO_Stage__c = :AAO_PairKey.LOCATED
+                AND AAO_Pair_Ref__c NOT IN :alreadyIdentified
             ORDER BY AAO_Start_Offset__c
+            LIMIT :maxPairs
         ];
         if (located.isEmpty()) {
             throw new PassException(
-                'No located pairs on run ' + runKey + '. Call 2 identifies pairs that exist ' +
-                'and there is nothing to identify.'
+                'No unidentified located pairs on run ' + runKey + '. Call 2 identifies pairs ' +
+                'that exist and have not been identified.'
             );
         }
 

@@ -73,3 +73,7 @@ seed/transcripts/bv-biweekly/*.txt
 **/__pycache__/
 **/.venv/
 **/venv/
+
+# Project Farma production transcript - real customer speech, same PII class as the other
+# real transcripts. Staged as a static resource only to feed the Apex intake; never committed.
+force-app/main/default/staticresources/AAO_RawProjectFarma.txt

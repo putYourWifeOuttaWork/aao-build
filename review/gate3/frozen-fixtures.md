@@ -18,6 +18,18 @@ nothing against any other bytes. Raw rows stay as provenance and are listed nowh
 |---|---|---|---|---|---|---|---|---|
 | 1 | `emerson/aspentech-2026-07-29-nf1` | `9e9740060bd348a1b3f64e21c1352d19bb942a7c43f4eb083cea23354b24a26c` | 29 Jul 20:00:55 | 1,245 s | 3 | Emerson Electric Co. | Insights 500 Full Insight (Stage 3) | short, small roster, same account as the training set, later in the deal |
 | 2 | `bv/biweekly-2026-06-24-nf1` | `2bed419d1079cdde1cbe0881e03ba40466f6466156596a980b80a842b76f25f9` | 24 Jun 07:01:00 | 2,435 s | 4 | Black & Veatch | Community Licenses-150 (Stage 1) | **long, account-side call, non-Emerson account, early stage** |
+| 3 | `projectfarma/2026-07-30-nf1` | `018cac1bb5a3425190678af890e7fc4a8794579353498c6ea67b18fd6690f7b6` | 30 Jul 14:59:46 | 4,405 s | 5 | Project Farma | Enterprise - 46 Seats (Stage 1) | **REAL PRODUCTION SPEECH, counts fully; longest+densest; early stage; demo-narration trap; Dan Lewis the creation specimen** |
+
+**Fixture 3 · Project Farma · REAL PRODUCTION, the first positive foreign measurement.** raw sha256
+`75917ba28def7c800908c482d07122321765a8edb21229cac57ebfcdc6745a54` (the ECI viewer paste, hand
+carried; verified on receipt: bytes 102,221, lines 1,434, hash exact). Stored form
+`projectfarma/2026-07-30-nf1`, artifact (NF1) sha `018cac1b…`, composed stamp `NF1+raw:75917ba2`.
+Occasion key `eci:6qrV4000000LbqzIAC`. Normalized by `AAO_IntakeECI` (the ECI-paste intake): 451
+blocks to 292 turns, 450 player lines and 82 topic-tag lines stripped, 5 speakers. **Counting
+status: REAL SPEECH, PRODUCTION. Counts fully under the inverted method.** Hand-carried capture,
+so disputed quotes spot-verify against ECI before a FAB or intake-failure grade; ASR spellings
+preserved verbatim per the evidence law. A deterministic re-capture supersedes this raw and
+re-freezes under a new composed stamp. Never part of any training set.
 
 Fixture 2 satisfies three of the ruled mix requirements on its own: account-side, non-Emerson,
 different stage. Fixture 1 varies roster size, length and deal position against the training set.

@@ -59,6 +59,11 @@ public with sharing class AAO_IdentifyCharter {
             'properties' => new Map<String, Object>{
                 'dispositions' => new Map<String, Object>{
                     'type' => 'array',
+                    // NOTE, Project Farma run: minItems/maxItems would force the count
+                    // structurally, but Anthropic structured outputs reject an array minItems
+                    // other than 0 or 1 (400). So completeness is enforced by the caller
+                    // instead: call 2 is driven in small batches and the one-for-one guard
+                    // throws on any short return, which is what the batching in AAO_Pass is for.
                     'description' => 'EXACTLY ONE ENTRY PER PAIR YOU WERE HANDED, in the ' +
                         'order handed, never omitting one. There are ' + pairRefs.size() +
                         ' pairs and there must be ' + pairRefs.size() + ' entries.',

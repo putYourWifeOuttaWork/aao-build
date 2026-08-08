@@ -10878,3 +10878,148 @@ with the reasons on the record and Matthew's veto open.
 
 The run is one input away. **The raw `.vtt` in the Downloads or project folder; I verify
 `be8e5e95…` and execute the staged Pass 1.** Nothing else on this path is waiting on anything.
+
+## 2026-08-08 · session 78 · PROJECT FARMA PASS 1 · the counting run, projected to the live map · run `pf0808-p1`
+
+Matthew landed fixture three and re-ordered the queue in his own words: the ECI-paste intake is
+the first build, Wells Fargo waits ("Will get back to you on Wells fargo test i guess. Sorry"),
+and the ask is plain - "I want to see it in salesforce, not on CSVs... goodness not perfection."
+So the ECI intake got built, the transcript got normalized in-org, and Pass 1 ran end to end to
+the **live Project Farma map**. This is the corpus's **first positive foreign measurement**: real
+production customer speech, an account that is not Emerson, and output that counts fully under the
+inverted method rather than being plumbing-only the way WF-OpenText would have been. Full report,
+row exports, timings, governors and regression disposition in `review/pf0808-p1/`.
+
+### The ECI-paste intake, built first because Matthew ruled it first
+
+`AAO_IntakeECI` turns an ECI viewer paste into NF1. The ECI export is hostile to a parser in
+specific, enumerable ways, and each got a named defense rather than a heuristic: `^\d+\.\s`
+block numbering stripped; the 450 "Move the player to N seconds in the call" scrubber lines
+dropped; the ECI topic tags (License Count or Usage Discussion, Go To Market Tech Stack
+Discussion, AI Tools and Automation Mentioned, Next Step, Product) matched longest-first and
+dropped only when a line reduces to **nothing but** tags-with-counts (`isPureTagLine` strips
+`\s*\(\d+\)` first, then known tags, and keeps the line if any real words survive - a line that
+merely mentions a product name is not a tag line). Glued headers `<name><[h]h:mm:ss>` are split
+by a Unicode-letter-bounded pattern; "Last, First" is unified to "First Last"; same-speaker
+consecutive turns merge. Real numbers on the real paste: **451 blocks to 292 turns, 450 player
+lines and 82 tag lines stripped, 5 speakers, NF1 70,771 chars.** Five tests, all green.
+
+### The run, stage by stage
+
+- **call 0** resolved **OPPORTUNITY**. The quote byte-located at offset 49882, and it captured
+  both "Rich" the president-approver and the ASR spelling "Perkerwicz and Elmer" (PerkinElmer)
+  verbatim - the resolver read real hand-carried speech and did not flinch at the misspellings.
+- **call 1** located **59 pairs**: Sentiment 11, Political Status 21, Buyer Role 18, Decision
+  criteria 9; two byte-discards; zero blank retries. The family sweep's largest input to date.
+- **call 2** disposed **57 to a person, 1 None, 1 Ambiguous** - but only by the batch=1 workaround
+  below.
+- **call 3** upheld **15, refused 42**.
+- ledger **59 / 59 / 57, HELD.**
+- **join**: 15 claims, 12 answers (**4 established TRUE** - Adam's Supporter and Decision Maker,
+  Dan's Non-Supporter and Evaluator, which are exactly the four non-null cells on the map), **1
+  criterion minted, 0 seller-subject, 0 trapped.**
+- **projection**: **3 contact rows on the live Project Farma map, one Contact created for Dan
+  Lewis, and the one criterion correctly HELD off the map** (unnamed, naming verdict UNVERIFIED,
+  the whole-only gate).
+
+**Byte provenance verified in-org: 59 of 59 verbatim exact at offset, each span unique.** On a
+hand-carried capture the byte layer held completely. Adam Pfeiffer (SVP Commercial Excellence)
+lands Supporter and Decision Maker on the recommendation quote; Dan Lewis lands Non-Supporter and
+Evaluator on the price-and-alternatives quotes; Kayla Stanley is present as coverage. **The map
+reads like the call.**
+
+### THE DEMO-NARRATION TRAP HELD - the fixture's headline test
+
+Half the transcript is Jennae narrating a fictional demo org - Clara Wilson, Beth Angel, Charles
+Underwood, the accounts 3M, Granfis, Republic Services - and the stamp's acceptance criterion was
+blunt: a run that puts Clara Wilson on Project Farma's map has failed no matter what else it did.
+**Nothing fictional reached the map.** All three created rows and all fifteen upheld claims cite
+a real participant on a real quote.
+
+Recorded because the *how* outranks the pass: the demo people are **not on the roster**, so call
+2's closed candidate list cannot name them - a quote about Clara Wilson identifies to its speaker
+(Jennae) or to None, never to Clara, because she was never a candidate. Jennae is **marked
+internal (seller)**, so anything that did land on her refuses at the subject gate - and the join
+reported **zero** seller-subject refusals, meaning call 2/call 3 already declined to treat demo
+narration as buyer content, the gate never had to fire. The never-invented law did the real work:
+**call 2 cannot mint a candidate, so a fictional name has nowhere to land.** This is the
+closed-candidate-list safety mechanism doing exactly its job on the hardest natural adversary in
+the corpus, and it is the strongest single result of the run.
+
+### THE CEILING THIS RUN DISCOVERED - call 2 does not scale, and the schema cannot force it
+
+The sweep handed call 2 all 59 pairs at once. **Call 2 returned ONE disposition and stopped at
+`end_turn`** - not truncation (63 output tokens against a 12,000 budget), a one-element array the
+model considered complete. It repeated at batch 15, 6, and 3. Only **batch=1** returned reliably.
+
+**a23 (35 pairs, short turns) returned 33 and hid this.** The schema's `dispositions` array only
+*described in prose* "exactly N entries"; a23 complied, Project Farma did not. This is the
+**tuned-behaviour law reaching the schema itself**: a completeness that was only ever prose held
+on the fixture it was written against and broke on the first denser one. The structural fix is
+**unavailable** - `minItems`/`maxItems` would force the count, but Anthropic structured outputs
+reject an array `minItems` other than 0 or 1 (a 400, verified from the runtime), so the schema
+cannot make the model emit N.
+
+**What I built:** call 2 now splits by pair batch (`AAO_Pass.identify(src, run, maxPairs)`), the
+same caller-driven pattern call 1 (by family) and call 3 (by claim) already carry, and the
+one-for-one guard throws on any short return rather than letting pairs vanish silently. **What I
+could not build:** a batch larger than 1 that returns completely. This run reached its map at
+**batch=1, one identify per transaction, 59 transactions** - honest and correct (one pair in, one
+disposition out), but a workaround, not the fix. Because DML cannot precede a callout in one
+transaction, batch=1 forces one identify per transaction, which is why call 2 shows 59
+transactions in the timings. **Owed as a proposal, not built:** make call 2 reliably return N per
+batch (a prompt restructure, or accept batch=1 as the identify contract and price its 59 small
+transactions). This is now the load-bearing scaling limit, ahead of the join's DML wall, which
+did not bind here (65/150 DML at only 15 eligible pairs).
+
+### DAN LEWIS WAS CREATED - the create leg fired ahead of the create-leg record
+
+Projection created a Contact for **Dan Lewis** (`003WD00001QZzh3YAD`) on Project Farma's account.
+Dan is exactly the corpus record's "creation path's first real specimen" - a present participant
+who speaks throughout and has no production Contact. **But it fired through the OLD
+roster-participant create leg** (`AAO_Identity`, Addendum 19), not the ruled mentioned-person
+path: Dan is on the roster, so he never needed resolution, and the old leg creates any roster
+participant lacking a Contact whenever the toggle is on. **The finding: creation fired without the
+create-leg record the twenty-first/twenty-sixth stamps require to ship first** - "a
+machine-created row we cannot enumerate is a row we can never disown," and Dan is now a Contact on
+a customer account with nothing systematically recording that we made it. The old leg predates the
+ruling and is still live. **Named for a ruling:** does the create-leg-record precondition bind the
+existing roster-participant leg too, or only the new mentioned-person creation? Today it binds
+neither, and Dan is the live proof. His establishments are otherwise sound; the question is the
+enumerate-before-create discipline, not whether Dan belongs on the map (by presence-is-acceptance,
+he does).
+
+### What correctly did NOT reach the map
+
+Rich the president (mentioned by Adam, no Contact, not a candidate - dropped at call 2, waits on
+the designator path in Pass 2). The PerkinElmer advisory committee ("Perkerwicz and Elmer") - an
+approval body, not a person, cited in a criteria pair but typing no criterion and placing nobody.
+John Van Schaick - on the call, coverage only, no establishment. All three correct.
+
+### The timings, on the corpus's first long real transcript
+
+Worst single callout **22,272 ms** (call 1 Political Status, 19% of ceiling); worst transaction
+**62,224 ms** (call 3 batch 3, 52% - the closest any transaction has come to the wall, and a
+denser call would want smaller verify batches). Call 1's four reads each sent the 70,771-char
+artifact at ~23,800 input tokens; cache read was zero on every callout, unchanged - the prefix
+reorder is still queued, and a per-minute cost figure on real speech is now available and owed in
+the cost journal.
+
+### Housekeeping, on the record
+
+Full suite after the `AAO_Pass`/`AAO_IdentifyCharter` edits: **406 ran, the only failure
+`ConvertToOpportunityTest.testgetOppCreationDetails`, an org-native class this work never
+touched** - every AAO class green. The temporary `AAO_RawProjectFarma` static resource (102,221
+bytes of real customer speech, staged only to feed the Apex intake) was **deleted from the org
+(081WD000000KqSHYA0) and from disk**; a `.gitignore` guard remains so it can never be committed.
+Real customer speech stays out of the repo. Regression printed **40 lines, all N/A** against the
+Emerson/BV-keyed seed. Source `a1XWD0000082Z1t2AE`, projected to opportunity
+`006WD00000TWzu5YAD` (Project Farma - Enterprise - 46 Seats), account `001WD00000uYQnwYAG`,
+occasion key `eci:6qrV4000000LbqzIAC`, stamp `NF1+raw:75917ba2`.
+
+### Owed next, in the twenty-sixth stamp's order
+
+Project Farma **Pass 2** on the designator path (Rich the mentioned approver is its specimen); the
+call-2 return-N proposal; the create-leg-record precondition question Dan raised; the
+absent-versus-too-narrow additive propositions (pass-2-era); the caller-side join split. **The map
+is the grading surface - this run is on it, and unlike WF it counts.**

@@ -10723,3 +10723,91 @@ load-bearing to blocking for two specific rows and nothing else in the report.**
 
 Nothing in this touches call 3. Its eighteen notes were the evidence for all of it, and on all
 eighteen it applied the contract it was given.
+
+---
+
+## 2026-08-08 · session 78 · the resolver service, the title rung, and the zero-creation number the ladder actually produces
+
+**395 tests, 394 AAO pass, one org-resident failure.** `AAO_ResolveDesignator` built and tested
+at 7/7; the number produced against the real account.
+
+### What the twenty-fourth stamp closed, and one wording correction carried
+
+Titles and pronouns are ruled, option B with the mechanism: call 1 emits a DESIGNATOR (name,
+title, or a pronoun's resolved antecedent) plus the introducing span quoted and byte-located,
+the resolver service runs the ladder, the resolved ID attaches before the claim is attributed.
+One correction carried into the fold: Matthew's message says "have Call 3 do attribution", and
+**call 3 never attributes, it is blind by law**; the intent is THE PASS attributing on paper,
+which lands at call 1 and the join where attribution already lives. Recorded so it can be
+overruled rather than assumed; he confirmed the corrected flow in session.
+
+### The resolution half of call 0, made callable
+
+`AAO_ResolveDesignator.resolve(designator, kind, accountId, opportunityId)`. Why a service and
+not a re-entrant call 0 is the binding half of the ruling: **only the resolution half is safe to
+re-enter.** The scope half is the routing decision and a family read that could re-open it could
+flip the pass's grain from inside. The service never creates and never picks: creation is
+ladder-zero behind the create-leg record, AMBIGUOUS is the Identification flag with the pair
+held.
+
+**The title rung, Matthew's sketch built:** Contact where Title matches, scoped to the account,
+plus contacts on the account's or opportunity's map rows. Title normalization is a deterministic
+synonym list, never a model; its seed-metadata home is owed at packaging and named rather than
+assumed. **The free structural guard holds: a title can LINK but can never CREATE**, because a
+Contact needs a LastName and "CFO" has none, so titles and pronouns are structurally incapable
+of reaching the creation leg. Only a real name gets there.
+
+**NOT wired into the pass**, deliberately: the name-based internal check is the precondition and
+that path is not built. Building the deterministic half early cost nothing and let the number be
+produced by real code.
+
+### A red test worth keeping · the parser's reading inverts on mentioned names
+
+`AAO_PersonName.parse` reads a single token as a SURNAME. That is right for its input: a roster
+string like `Vargas, Jefferson [EMR/CSS/AT/MEDI]` is a system record whose bare token is a family
+name. A MENTIONED name is the opposite - in speech a lone token is usually a given name, and
+a23's span is `Fatima`. Same parser, different class of input, opposite reading. **The
+tuned-behaviour law in miniature**: the parser was verified only against the input it was written
+for. The single-token rung now searches given OR family name, account-bound, never picking.
+
+### THE NUMBER · zero of seven resolve with zero creation, and buq1 is why
+
+| rows | designator | design's table | the ladder | why |
+|---|---|---|---|---|
+| buq1 | Fatima | the one clean case | **ZERO** | transcript says *Fatima*, the Contact is **Fatema** |
+| buq2 | Pat | refuse, never map | **ZERO** | no Contact by that name on Emerson at all |
+| buq3, poq10 | CFO | needs role lookup | **ZERO** | lookup built; the account has no CFO on file |
+| buq4, poq9, buq5 | he, she | needs referent resolution | **PENDING** | call 1 emission not built |
+
+Design's revised expectation was one of seven, the original most of seven. **Both wrong, and the
+clean case fails most interestingly.**
+
+**buq1 is the ASR hazard, not hypothetical, already in the org.** The twenty-first stamp named it
+with an invented example - "Fatema Choudray" and "Fatima Chowdhury" are one human and two
+Contacts. Reading the org: `Fatema Choudray` (Emerson) and `Fatema Choudhury` (Aspen Technology)
+are **two real rows on two accounts**, and the transcript adds a third spelling, `Fatima`. One
+character between *Fatima* and *Fatema* is the whole distance between the ruled outcome and
+silence.
+
+**So exact matching gets zero of seven, which puts the fuzzy-match rule on the critical path to
+the ruled outcome rather than being a refinement of it.** Presence is Matthew's acceptance
+criterion and exact matching delivers nobody. I did not add fuzzy matching: it is the single
+highest-risk change in this path, it is how one human becomes two Contacts once creation is live,
+and it deserves its own proposal with the match rule written down. Named as the next decision.
+
+**buq2 passes today for the wrong reason.** Pat resolves ZERO by absence, not by the gate - no
+Contact of that name exists, so the internal check was never reached. Its standing requirement
+(no run puts Pat on Emerson's committee) holds by accident of the data, and the accident stops
+protecting us the moment fuzzy matching lands or Pat acquires a Contact. **buq2 is not yet
+evidence the gate works; it is evidence it has not been tested.**
+
+**buq3/poq10 is a data answer and the right one.** Zero Emerson contacts carry a CFO-canonical
+title, the rung ran both legs and held with its reason. Priya on WF-OpenText is its next live
+test.
+
+### Owed, and the shape of what is left on this path
+
+- The fuzzy-match rule, as its own proposal, now on the critical path.
+- Call 1's designator emission with quoted antecedents (the three pronouns).
+- The name-based internal check, still the precondition before any of this wires into a run.
+- The synonym list's and internal-domain list's seed-metadata homes, at packaging.

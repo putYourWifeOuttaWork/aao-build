@@ -10633,3 +10633,93 @@ The candidate-set widening with its zero-creation number. Design's expectation i
 can be shown wrong: most of the 7, Fatema included, resolve to an existing Contact, shadow or map
 row with no creation at all. Then the criterion name, whose design is already journalled; then
 the name-based internal check, which the mentioned-person path does not build without.
+
+---
+
+## 2026-08-08 · session 78 · the absent-versus-too-narrow report · three of eighteen are wording changes
+
+**A read and a report, no build.** `review/em0808-a23/contract-repair-classes.md`.
+
+Design's diagnosis was done from the org and I did not reproduce it. What I did is the part it
+handed over: the eighteen notes placed beside the **declared** `AAO_Proposition_Text__c`, read
+from the sandbox this session rather than from memory, joined to `pairs.csv` so each row is
+classified against the contract it actually ran under.
+
+### The result changes the risk of the repair, not its direction
+
+| class | rows | count |
+|---|---|---|
+| ABSENT | poq1, poq2, poq3, poq6, poq11, poq12 | 6 |
+| PRESENT AND TOO NARROW | poq7, poq8, buq6 | 3 |
+| PRESENT AND CORRECTLY APPLIED | seq1-4, seq6, poq4, poq5, buq9, deq3 | 9 |
+
+**Only three of eighteen are wording changes on live contracts. Six are additive and expose
+nothing. Nine need no contract change at all.** Design framed this as two repair classes; the
+third is most of the set, and saying so is the point of having read every row rather than every
+group.
+
+### Why the six are ABSENT rather than PS2 being narrow
+
+Reading all four Political Structure texts together settles it. PS1 asks about executing approved
+projects, PS2 about being called on, PS3 about being sought out, PS4 about a track record.
+**Every one asks about standing. Not one asks whether the person is operating inside the
+structure.** Widening PS2 to admit the six would make it mean "participates in the process",
+which swallows PS1 and PS3 and leaves four questions with one meaning. Being the decider and
+knowing the ladder are different facts about a person and a seller acts on them differently.
+
+**poq3 is the specimen I would lead with, ahead of poq11.** Its note reads *"describes a generic
+process without assigning the action to this person"* — a precise, correct description of content
+the set has no question for. The verifier is not failing there; it is reporting an absence in its
+own instructions.
+
+**Named before anyone writes the new proposition:** it must not be written so that describing any
+process establishes structure membership, or the Handle negative control will establish political
+structure on an investor pitch. The narrowing that keeps it honest is the person's own
+involvement in the ladder they describe, which poq3 has and a bystander would not.
+
+### The two narrowings, each a different kind
+
+**PS1's temporal clause, "after they are approved."** Ryan will execute a project that is not yet
+approved. The contract is also habitual present, reading as a disposition against words that are
+a specific forward commitment.
+
+**BR_EVAL's enumeration.** Correcting the legal entity name is scrutiny of the agreement's terms;
+the list offers "price, terms or fit" and the verifier read terms as commercial. **This is §8
+defect 2 returning and the tuned-behaviour law's first confirmed instance.** Worth stating
+plainly: the v0.6 repair was not wrong, it was unverified, and the same repair applied again on
+the same evidence base would earn the same status.
+
+### The nine, and why no repair is the finding
+
+The five sentiment rows refuse on the exact clause the declared text carries. **There is no
+divergence between contract and application**, so nothing here is repairable without changing
+what MENTOR means, which is Matthew's. poq4/poq5 are the instance-for-pattern boundary and I
+agree with design that the verifier is on the defensible side: a contract that fires on one
+instance of passing information along fires on most sentences in most calls. buq9 would require
+inference, and **buq8 upheld on the same contract proves it fires when the words carry the fact**
+— widening it licenses exactly what the verification layer exists to refuse. deq3 is right on its
+own text; its defect is that deq4 upheld a property of a criterion the set refused to admit
+exists.
+
+### One fact the grouping did not carry
+
+**poq5 and poq6 are the same span, @10375, the same person**, refused under OPS1 and PS2
+respectively and both graded TRUE under labels the ontology treats as mutually exclusive. seq4 is
+on that span too. That is the Board's open poq5/poq6 item, and the span is the cleanest available
+specimen for the row-dependency finding: one utterance answering three questions.
+
+### The caveat, carried rather than left implicit
+
+**The classification is stable against the stage caveat but the two TOO-NARROW findings are
+not.** An absent proposition is absent in any register. PS1's temporal clause looks narrow on a
+call where nothing is approved yet and may be exactly right on a post-signature call; BR_EVAL's
+enumeration looks narrow on a call about document accuracy and may never bind on discovery.
+
+**So the six-row additive set is what I would build from and the three-row set is what I would
+not, yet.** Additive costs nothing if the caveat turns out to matter. A wording change on PS1 or
+BR_EVAL costs a re-grade of every standing assertion on those contracts and would be paid twice
+if the mixed-stage transcripts then disagree. **That moves Matthew's transcripts from
+load-bearing to blocking for two specific rows and nothing else in the report.**
+
+Nothing in this touches call 3. Its eighteen notes were the evidence for all of it, and on all
+eighteen it applied the contract it was given.

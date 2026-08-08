@@ -2,6 +2,60 @@
 
 > **The version lives on the stamp line below and nowhere else.**
 
+**v2.7 · 8 August 2026 · The abbreviations and the named laws, added because the final-validation cold read proved a stranger meets them undefined. One section below; the alphabetical body absorbs at the next rebuild.**
+
+## Abbreviations, conventions, and named laws · added at v2.7
+
+**ECI.** Einstein Conversation Insights, Salesforce's native call-capture product. Its transcripts and its related-record stamp are inputs; the stamp is inference and never the answer. Roughly 75% of target customers have no ECI; their transcripts arrive as files.
+
+**`altify-pbo`.** Altify's packaging org. Never read, under any circumstances, standing rail.
+
+**OM_ / AM_.** The vendor's own label prefixes: opportunity-map and account-map variants of a question. AM_OM_ is shared wording. No single list is the ontology; per-map bytes differ.
+
+**Inverted grading.** Matthew's ruled method: the system's output first, graded row by row; blank rows are the only channel for misses; findings state their nature ("three UNDERs found"), never a percentage.
+
+**Stamp, head, fold.** Every document's version lives on a stamp line inside it, nowhere else; changelog heads accumulate newest-first at the top; a fold is the act of writing rulings from a session into the documents and bumping the stamps. Wrong text is marked wrong in place, never deleted.
+
+**The silence law.** The system journals what happened, never what did not. No abstention rows at any grain; zero occasions writes nothing; the failure direction is silence, never spray.
+
+**The failed-twice law.** Where an instruction has failed twice, change the structure so the wrong answer cannot be expressed; never write the instruction a third time.
+
+**The two-halves law.** A version string must cover every input that can change the output it stamps, or it is decoration. Applied to charter prompts (prose plus declared contracts), and to normalization (normalizer version plus raw input hash).
+
+**The parse law.** A mismatch between stages is our bug and throws; it is never absorbed, defaulted, or reported as model behavior.
+
+**The capability law.** A capability claim is unverified until tried from the runtime that will make the call, including claims about our own code.
+
+**CODE and design.** The two working roles beside Matthew: CODE is the builder session (a Claude Code agent operating a git repository with the sandbox connection; it reads the CODE inbox at every pickup, builds, runs, and ships run reports with row exports). Design is the architect session (this document set's author; argues structural decisions, folds rulings, verifies every export). Matthew rules methodology and grades output.
+
+**v2.6 · 8 August 2026 · The loop era's vocabulary, carried at the head with its terms section below it; the alphabetical body absorbs them at the next full rebuild. Terms added: the iteration loop, the one-way scope halves, routed-not-dispatched, claim retirement, retraction, occasion identity, the identity alias, the composed normalizer stamp, the blank-retry guard, the freeze list and the training set, the refusal doctrine. Each defined once in the section below and nowhere else.**
+
+## Terms added at v2.6 · the loop era
+
+**The iteration loop.** The working mode ruled by Matthew, 6 August: the CODE inbox is the standing channel across sessions; every run ships its row export, stage timings, governor consumption, and full regression disposition or it does not count as a report; design-side verification agents audit each iteration mechanically against the frozen artifact and the regression seed; Matthew grades judgment only; design defaults technical calls with both positions recorded, and Matthew's rulings settle methodology.
+
+**The one-way scope halves.** Call 0's scope read after the failed-twice law retired the two-sided question: two independent questions, does this call carry opportunity content and does it carry account content, each answered yes-or-no with a byte-locating quote and a reason. DUAL is both yes; NEITHER is sayable and dispatches nothing; a missing side throws; a yes whose quote does not locate is worse than a no. A majority cannot eat a minority because no question asks for a majority.
+
+**Routed-not-dispatched.** The journalled state of a grain that call 0 routed but the system declined to run: the account grain while backburnered, and the opportunity grain where the deal resolved NONE or AMBIGUOUS. Carries the yes-quote as its reason. Distinct from ran-and-found-nothing, and neither ships the other's export.
+
+**Claim retirement.** The record law reaching the claim ledger: a wrong standing claim is marked retired in place with its reason, keeping its quote and verdict readable forever; replays exclude retired claims; retraction clears whatever map value the retired claim carried. Nothing is ever deleted. The trigger exception is one-way and describe-checked.
+
+**Retraction.** What re-run does when a derivation empties: projection writes the current derivation including null, only where the watermark proves the value is ours and unmodified, and the retraction stamps its watermark like any write. A blanked vendor field reads identically to never-established; the note carries the difference.
+
+**Occasion identity.** The conversation itself as a key: source-system reference plus occurred time, deterministic, never the normalization's bytes. One call arriving as any number of Source rows or normalizations is one occasion. Coverage counts occasions. Distinct from the artifact hash, which remains the byte-provenance key that spans verify against: two keys for two jobs.
+
+**The identity alias.** The read-time join of one human's multiple participant rows on their resolved Contact, email then name-within-account, never-pick. Never a row merge, because claims key the Participant and a merge rewrites what claims point at. Two unresolved rows for one human stay visibly split.
+
+**The composed normalizer stamp.** `NF1+raw:<hash>`: the normalizer version composed with the raw input's hash, per the two-halves provenance law, so two different byte outputs can never carry identical stamps. `NF1+out:` is the fallback where the raw was never recorded. Rows stamped before composition keep their uncomposed stamps permanently; the freeze list disambiguates them explicitly.
+
+**The blank-retry guard.** One re-invocation of a family read that returned zero pairs while matching the cheap-blank signature (early return, small output). A second zero stands; both invocations are journalled. It never forces pairs; it refuses to accept a single cheap blank as a family's only look. Addresses the whole-family blanking mode of the recall problem, not the within-read miss.
+
+**The freeze list and the training set.** The freeze list is the explicit, NF1-only, hash-named corpus of fixtures that gate 3 runs against; fixtures are taken from the list, never queried from the org. The training set is the fixture everything was calibrated against, named on the list so it can never be counted as unseen; its precision predicts nothing. Authored fixtures never substitute for customer speech.
+
+**The refusal doctrine.** A law that only permits corrections it can prove safe will sometimes refuse one that is safe, and paying that cost is what makes the law worth having. Recorded after the schema's third proven-right refusal (raised-at immutability, the claim ledger's insert-only rule, the normalizer-version restamp).
+
+**v2.5 · 5 August 2026 · The pass vocabulary lands and the retired are marked retired. Terms added, defined here and nowhere else, appended as the final section: pair, initial row and identified row, run receipt, sentiment read, the counter's return, family sweep, regression set, the third state. Section M gains eight rows for the terms the 4–5 August rulings retired — the abstention vocabulary (`not_surfaced` and `not_in_excerpts`, retired unbuilt), abstention rows in the pass, the anchor ledger, Extract-Bind-Verify as the pass shape, the TRUE/FALSE verdict vocabulary in the pass, the Support quiz as extraction contracts, recurrence rate as a gate, and the blind key as a practice. The v2.4 appended section is marked in place: its pass-shape terms are superseded by §P8 and stand as history. Authorities: Charters v3.0 §P8 for the pass, Model & Flow v1.4 for the pair ledger as built, the Board for the locked ledger.**
+
 **v2.4 · 3 August 2026 · Terms from the redesign, defined here and nowhere else, appended as the final section: Extract-Bind-Verify pass, Inventory, Binding, Verification stage, Evidence budget, Computed coverage, `model_missed` rate.**
 
 **v2.3 · 3 August 2026 · Matthew Weisberg · Five terms added from the build days, defined here and nowhere else: charter designation, declared applicable set, ceiling derivation, membership never routes, contract reconciliation. Definitions appended as the final section.**
@@ -135,6 +189,8 @@ The model read evidence that bears on a proposition and **declined to commit.** 
 > **Abstention is not silence.** If *the transcript did not mention budget* counted as an abstention, the rate would be dominated by the ordinary case and would stop measuring the thing it exists to measure. **The charter output schema must separate bears-on-it-and-declines from does-not-bear-on-it** — and whether a model makes that separation reliably is unmeasured, so the schema must ask for it before anything can find out.
 
 **The flag does not care which; the seller does.** Under **Day-One Red** a gating proposition's flag stands on null and on `UNVERIFIED` alike — a question nobody has asked is as dangerous as one that came back open. But *nobody has raised this* and *they do not know* require different next moves, so the distinction survives to the surface through the citation's presence, even though it never changes flag behaviour.
+
+**[v2.5 note: within the pass (Charters §P8), abstention rows do not exist at any grain — the pass writes what happened, never what did not; the run receipt and one-for-one-for-one arithmetic are the completeness record. The three-record-states table above stands for the wider system and for pre-pass rows; the Abstention entry's candidate-ledger mechanics stand as history for rows that carry them.]**
 
 **Citations Do Not Cross Deals**
 A proposition is a statement about one opportunity. Evidence from deal A never establishes a proposition on deal B, even about the same person. History informs where to look and what to expect. It never establishes.
@@ -434,7 +490,7 @@ Model pass one. Reads the live set, the evidence, and the context. Per propositi
 > **Changed in v1.6.** This previously read *emits a verdict and, where the verdict is not `UNVERIFIED`, a citation.* **The span is now emitted on `UNVERIFIED` as well** — it is what distinguishes a cited open answer from null — and byte verification runs on it exactly as on any other span, so the state costs no new machinery.
 
 **Span Verification**
-Deterministic Apex. Byte comparison of the emitted span against the normalized source. Not a model. No error rate. Runs before the second model pass, so no model time is spent on fabricated spans.
+Deterministic Apex. Byte comparison of the emitted span against the normalized source. Not a model. No error rate. Runs before the second model pass, so no model time is spent on fabricated spans. **[v2.5 note: the check catches invented words and cannot catch shortened ones — a cut prefix of a real quote is still a substring. Named as a live blind spot at adjudication sheet v0.7; grade-against-stored-spans is the defence.]**
 
 **State Verification**
 Deterministic Apex. Field-value comparison confirming that a cited state row actually carries the value the model claimed. The counterpart to span verification for state-established propositions. Also free, also zero error rate.
@@ -718,7 +774,7 @@ Three treatments, and picking the wrong one breaks either the philosophy or the 
 | **Categorical** | **Assertion proposition**: is X the Decision Maker, `TRUE` / `FALSE` / `UNVERIFIED`, with a span |
 | **Deal-scoped ordinal** | Ordinal, but never inherits. Always seeds at the floor |
 
-> **The ordinal row is withdrawn for ontology-backed dimensions.** *Corrected in v2.1.* Where an authored ontology exists — Support and Political Status carry guided questions — **the rung is computed from the authored propositions, and state is reconstructible from the contract answers**, not by summing deltas. Replay is unaffected; the mechanism differs. **The delta model survives as the inference fallback where no ontology exists.** The deal-scoped-ordinal row changes with it: Coverage no longer seeds at the floor, because it is answered by counting — see Cold Seed below.
+> **The ordinal row is withdrawn for ontology-backed dimensions.** *Corrected in v2.1.* Where an authored ontology exists — Support and Political Status carry guided questions — **the rung is computed from the authored propositions, and state is reconstructible from the contract answers**, not by summing deltas. Replay is unaffected; the mechanism differs. **The delta model survives as the inference fallback where no ontology exists.** The deal-scoped-ordinal row changes with it: Coverage no longer seeds at the floor, because it is answered by counting — see Cold Seed below. **[v2.5: for Support the mechanism moved again — the sentiment quiz is retired from extraction and the counter is re-promoted to Support's mechanism (Charters §P8.4); see The Counter's Return in the v2.5 section.]**
 
 Which dimensions are ordinal is itself discovered, because value sets differ per org.
 
@@ -907,7 +963,7 @@ A condition our solution must meet, stated by the buyer. Distinct from an insigh
 
 > **A stated goal does not create a criterion.** A goal of 3% revenue uplift is an insight. It becomes a criterion only when someone says we must prove it. **This ships as a seed non-establishment rule rather than being learned**, because a model holding both taxonomies will manufacture criteria out of goals and will do it plausibly every time.
 
-**Criteria are emitted by the insight charter.** Unbounded text is that charter's shape. Two charters reading one transcript would both fire on the same sentence with nothing to arbitrate.
+**Criteria are emitted by the insight charter.** Unbounded text is that charter's shape. Two charters reading one transcript would both fire on the same sentence with nothing to arbitrate. **[v2.5 note: superseded as placement — decision criteria join People (Charters v2.5 ruling, contracts at §P8.5); the boundary and seed rule below stand.]**
 
 **A criterion persists for the life of the deal and is never satisfied by us.** It is a standing fact about what a person weighs. Sending a document is our action, not their confirmation, and the speaker requirement means only they can confirm it. There is no satisfaction field and we do not add one.
 
@@ -924,7 +980,7 @@ Whoever told us the criterion exists. Usually the same person as the holder. Whe
 A buyer reporting a colleague's criterion is strong evidence — they are describing their own company's decision process. A *seller's* note claiming the same thing establishes nothing about the colleague, per **Speaker Requirement**.
 
 **Criterion Provenance**
-Altify's Formal and Informal type, and it is **provenance rather than intensity.** Formal means the criterion is already on paper: the RFP, the requirements document, the scorecard. Informal means nobody wrote it down — the personal win, the executive burned by a vendor last year. How forcefully someone states a criterion says nothing about which it is, so the type is set only when the speaker says where the criterion came from, and otherwise left empty. **Intensity has its own home in the Mandatory flag.**
+Altify's Formal and Informal type, and it is **provenance rather than intensity.** Formal means the criterion is already on paper: the RFP, the requirements document, the scorecard. Informal means nobody wrote it down — the personal win, the executive burned by a vendor last year. How forcefully someone states a criterion says nothing about which it is, so the type is set only when the speaker says where the criterion came from, and otherwise left empty. **Intensity has its own home in the Mandatory flag.** **[v2.5 note: DC-F's typing axis is RULED provenance (Matthew, 4 August): organizational standing spoken makes Formal, else Informal, upgradeable — Charters §P8.5.]**
 
 ---
 
@@ -1139,7 +1195,7 @@ Salesforce platform terms:
 
 ---
 
-## M. Retired terms · gloss v2.1
+## M. Retired terms · gloss v2.5
 
 | Do not use | Use instead | Why |
 |---|---|---|
@@ -1183,6 +1239,14 @@ Salesforce platform terms:
 | Claim, meaning the current-state row | Answer | A claim is one assertion, made once, by someone, on the strength of something. Attaching the word to an upserted row put *a claim is overwritten* into the design, and a word that makes a correct architecture sound broken to its own author is a defective word |
 | Journal Event | Claim | Retired as an entity. It existed only because Claim was busy doing the mirror's job — two immutable accounts of one fact with no mechanism to say which had drifted. Its keys, clocks and subject identity moved onto Claim unchanged |
 | Role Charter, Role charter | Persona Derivation | Retired in v2.1. The mechanism is unchanged: it writes one field, `AAO_Required_Map_Role__c` on the Evidence Contract, whose sole reader is ghost seeding, answering from the persona vocabulary. That is persona derivation, and *Role* collided with Buyer Role, a different axis |
+| `not_surfaced`, `not_in_excerpts` | Run receipt; one-for-one-for-one arithmetic | *Added v2.5.* Retired UNBUILT at Charters v2.7 — the pass writes no abstention value at any grain |
+| Abstention row, silence row, in the pass | Run receipt; one-for-one-for-one arithmetic | *Added v2.5.* The pass journals what happened, never what did not; transcript-wide silence is derivable on demand and never stored |
+| Anchor ledger | Initial row (pair ledger) | *Added v2.5.* The initial row's byte-located verbatim string IS the anchor; no separate entity exists (Charters §P8.0, Model & Flow v1.4) |
+| Extract-Bind-Verify, as the pass shape | The pass (Charters §P8); family sweep | *Added v2.5.* Superseded at Charters v2.7; §P7.3 retained as history and cost data. The v2.4 terms below stand as that history's vocabulary |
+| TRUE/FALSE verdict vocabulary, in the pass | True-or-nothing | *Added v2.5.* Every question points one way; negative states establish from their own affirmative words; no FALSE, no inversion, no two-sided verdict anywhere in the pass |
+| Support quiz, as extraction contracts | Sentiment read; the counter | *Added v2.5.* Retired at §P8.4; the nine questions stay the vendor's asset and the wizard's content, quizzed on by no model |
+| Recurrence rate, as a gate | Regression set; stable and graded counts | *Added v2.5.* Demoted to a secondary diagnostic (Board, 5 August): never gate on a ratio whose denominator is the thing being improved |
+| Blind key, as a practice | Inverted grading | *Added v2.5.* Retired by Matthew, 5 August: output first, graded row by row, blank rows the only channel for UNDERs; what the inversion costs is recorded once in the adjudication sheet |
 
 ---
 
@@ -1232,7 +1296,7 @@ Salesforce platform terms:
 
 ---
 
-*End of glossary. Sections A through M are settled and rest on a read org rather than a reasoned one. Section N is the agenda. Field-level detail for the closed objects lives in the AAO Field Tables. The version lives on the stamp line at the top and nowhere else.*
+*End of glossary main body. Sections A through M are settled and rest on a read org rather than a reasoned one. Section N is the agenda. Field-level detail for the closed objects lives in the AAO Field Tables. The version lives on the stamp line at the top and nowhere else.*
 
 ---
 
@@ -1252,9 +1316,11 @@ Salesforce platform terms:
 
 ## Terms added at v2.4 · 3 August 2026
 
+**[v2.5 note: the pass-shape terms in this section — Extract-Bind-Verify pass, Inventory, Binding, Verification stage — are SUPERSEDED as the pass by Charters §P8 (the pairs shape, the family sweep) and stand as the vocabulary of a retained history. Evidence budget, Computed coverage and the `model_missed` rate survive with their scope adjusted: `model_missed` as a rate is additionally bounded by the inverted-grading ruling — misses are a list, never a denominator, where grading is inverted.]**
+
 **Extract-Bind-Verify pass.** The pass shape (Charters §P7.3): one strong-model read per Source emitting an inventory; binding promoting Candidates to Claims; separate smaller-model verification by coextension before any Claim writes. Successor to every per-proposition and per-person pass shape, all retired.
 
-**Inventory.** Stage 1's output: every charter-relevant statement in a Source — speaker, subject, line anchor, minimal verbatim span, plausible proposition families. Potential claims, no verdicts. The inventory is the Candidate layer's content.
+**Inventory.** Stage 1's output: every charter-relevant statement in a Source — speaker, subject person, line anchor, minimal verbatim span, plausible proposition families. Potential claims, no verdicts. The inventory is the Candidate layer's content.
 
 **Binding.** The promotion step from Candidate to Claim: deterministic fan-out from families to the subject's contracts in the declared set, plus a small transcript-free call per pair needing judgment — establishes, does not establish, insufficient.
 
@@ -1265,3 +1331,25 @@ Salesforce platform terms:
 **Computed coverage.** Coverage is presence per occasion per scope, occasion = scope + artifact hash, counted deterministically; optional decay is parked config. Never extracted from words; the coverage proposition family does not exist in any read.
 
 **`model_missed` rate.** The per-run reported rate of statements the single read did not catch, measured at adjudication. Under extract-once this is a chosen, bounded residual — reported beside findings and abstentions, never buried.
+
+---
+
+## Terms added at v2.5 · 5 August 2026
+
+*The pass vocabulary, from Charters v3.0 §P8, Model & Flow v1.4, and the Board's 5 August rulings. Defined here and nowhere else.*
+
+**Pair.** Call 1's atomic output: a question from the declared set, the verbatim words that answer it, and the meaning those words voice. No person attached — identification is call 2's. True-or-nothing, in the question's own direction. Fact families (Political, Buyer Role, criteria, Process, assessment) add a coverage reading, full or partial, with partial the instructed default under doubt; sentiment has no partial. The verbatim string byte-locates in the frozen artifact or the pair is discarded and counted.
+
+**Initial row · Identified row.** The pair ledger's two persistences, built as `AAO_Pair__c` with an explicit `Located`/`Identified` stage picklist (Model & Flow v1.4). The initial row is call 1's output as found, unowned; **its byte-located verbatim string is the anchor** — no separate anchor entity exists. The identified row is call 2's identification, linked to the initial row; it is what call 3 verifies and what the gates promote toward Claim. Two rows so every stage is measurable in isolation; the `run|ref|stage` unique index refuses more than one and cannot detect zero, so `assertOneForOne` ships beside it.
+
+**Run receipt.** One row per Source per pass: read on this date, by this charter version, these calls made, these pairs found, these claims written. The did-we-read-it record and the whole replacement for abstention rows; feeds the flag's last-evidence-considered timestamp. **Owed by CODE (§P8.0), and its load rises under the family sweep**: four reads per pass make a partially completed pass expressible, and the receipt is what records which family reads ran.
+
+**Sentiment read.** Call 1's direct reading of words into one of the five states — mentor, supporter, neutral, non-supporter, enemy — under the label meanings pinned as law at §P8.4. Whole, never partial: partial sentiment is the second-guessing the quiz retirement killed. No neutral label exists; words that voice no stance produce no pair. **Engagement is not stance** (questions, process talk, "key step" praise emit nothing) and **courtesy is not stance** (the graded trap: "Looking forward to it" is niceties, not support).
+
+**The counter's return.** The re-promotion of the sentiment counter from inference fallback to **Support's mechanism** (Charters v2.7, arithmetic refined at v2.8, §P8.4). One clamped integer per person, −3 to +3, rungs at fixed positions. Each distinct verified establishment moves it one in its direction; a call's movement is the net sum; the only caps are the clamp and the ceiling of the strongest state the evidence voices — supporter-grade tops at +2, mentor-grade reaches +3, symmetric below. **Terminals are proof-gated, never time-gated.** Explicit declarations jump with the sequence flagged; mixed evidence nets with every quote journalled; movement applies to the standing counter read at reconciliation; replay over claims in evidence-occurred order reconstructs it exactly. Its field home is owed from CODE's proposal (Model & Flow v1.4).
+
+**Family sweep.** Call 1's shape, ruled by Matthew 5 August: **once per declared family, not once per transcript** — four bounded reads of the whole artifact, each carrying exactly one family's question set and nothing else. The cost law's exact terms: crossing by PERSON is forbidden because it scales with the roster without bound; crossing by FAMILY is permitted because it is bounded at four or five and scales with nothing — not roster, not length, not density; the code asserts the call count is never a function of participant count. What it bought, measured: **attention** (sentiment 2 → 11 pairs under one unchanged contract), tripled stable output, and multi-establishment landing structurally — one utterance pairs independently in several families' reads. Charters v3.0 §P8.1 is the charter text; the two-halves stamp composes per family read.
+
+**Regression set.** The standing successor to the recall gate, ruled 5 August, built by CODE at 27 assertions. **Every establishment Matthew has graded PASS is a standing assertion on every run; every graded trap must not appear; correct refusals are neither** — asserting one asserts that call 1 must keep making a mistake call 3 can catch. Keyed on **contract plus byte-range intersection** against the frozen artifact, never the stored string. An undeclared family reports `UNREACHABLE` on its own line and can never inflate a recall failure. Findings state their nature — counts, never a rate whose denominator is the harvest. **Temporal validity is owed** (adjudication sheet v0.7): an assertion is meaningful only forward from the run it was graded on; run against a pre-grading run the set reports false regressions.
+
+**The third state.** The family of run reports that refuse a false binary, because **a binary verdict on an incomplete pass must lie about one of the two cases.** Members: **`INCOMPLETE`** — `assertOneForOne` could not complete the arithmetic; reports its counts and is scored as neither held nor broken; **`UNREACHABLE`** — the regression set's line for a family undeclared in this run, never counted as a recall failure; **`CHANGED, undiagnosed`** — a difference observed without an attributed cause. The principle: name the state rather than forcing the binary; expect more members as instruments grow.

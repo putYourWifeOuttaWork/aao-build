@@ -10155,3 +10155,249 @@ correction that IS safe, and paying that cost is what makes the law worth having
 The 29 July extraction run goes to a fresh session per the ruling, on my own context flag.
 Everything it needs is frozen: the fixture `9e974006`, the corpus list, and the standing
 obligations.
+
+---
+
+## 2026-08-08 · session 78 · GATE 3'S EXTRACTION TEST · run `em0808-a23`
+
+**383 tests, 2 failures, and one of them is ours and new.** Export, timings, governors, the
+39-line disposition and Matthew's inverted grading sheet at `review/em0808-a23/`.
+
+The first fixture nothing was calibrated against. Fixture taken from the freeze list, never the
+org, per the ruling: `a1XWD0000081H5R2AU`, sha `9e974006`, and the sibling row carrying
+`d0606eac` under the same uncomposed `NF1` stamp is exactly why that ruling exists.
+
+### The run
+
+| stage | result |
+|---|---|
+| call 0 | OPPORTUNITY, opportunity side byte-located at 9775, account side no, deal named |
+| call 1 | **35 located** across four families (6 / 12 / 9 / 8), zero blank retries |
+| call 2 | **28 to a person, 7 None, 0 Ambiguous** |
+| call 3 | **28 verdicts, 10 upheld, 18 refused** |
+| ledger | 35 / 35 / 28, HELD |
+| join | 10 claims, 10 answers, 0 trapped, 0 verdicts rebuilt |
+| projection | 1 Contact created, 1 populated, 4 unchanged, 0 retracted |
+
+**Provenance is clean and machine-checked in-org: 35 of 35 verbatim strings byte-exact at their
+stated offset, every one locating exactly once.** The check ran against the artifact inside the
+org rather than a local copy, because pulling 19,774 chars through debug logs mangles them on
+every newline and a byte check against mangled bytes proves nothing.
+
+### THE SELLER IS ON THE CUSTOMER'S RELATIONSHIP MAP
+
+`buq7` located Wendy Higley's own words offering to pull up the terms and conditions. Call 2
+attributed them to her, correctly. Call 3 upheld a Buyer Role EVALUATOR claim **about our own
+seller**, the join wrote it, and projection created Contact `003WD00001QZE73YAH` — "Wendy
+Higley", `wendy.higley@altify.com` — **on Emerson Electric Co.**, then wrote her a Coverage
+value.
+
+**Nothing in the system asks whether a claim's subject is on the buying side.** `internalDomains`
+is threaded all the way into the join and is used for exactly one thing: resolving WHICH SELLER
+heard a claim. There is no guard on who a claim can be ABOUT.
+
+**a22 did the same thing and got away with it.** It identified `buq7` to Wendy and `buq12` to
+Renee Martin, and call 3 refused both. Same shape, same two people, opposite verdict. **The
+correct outcome on the training set was the verifier's judgment, not a rule** — which is this
+build's most familiar failure: a rule with a reporting half and no enforcement half, except here
+there was never even a reporting half. Renee is one upheld pair from the same treatment.
+
+The Contact stays. Deleting it is not mine to do and the record is the point.
+
+### THE VENDOR IS DISPLAYING THE WORD "CRITERION" TO THE SELLER
+
+`ALTF__Decision_Criteria__c` record `a0lWD00000GIbsjYAD` on the Emerson opportunity reads
+`ALTF__Subject__c = "CRITERION"`.
+
+`AAO_DC_N`'s meaning enum is closed at exactly one value, the literal string `'CRITERION'` —
+by construction, a naming pair's meaning can be nothing else. `AAO_PairCommit.mintCriteria`
+passes that field to `AAO_Criteria.mint` **as the criterion's text**, which keys on it, stores it
+in `AAO_Subject__c`, and projects it to the vendor object.
+
+Three consequences, all live and all previously invisible:
+
+1. **Every criterion on an opportunity collapses onto one row**, because the key is
+   `<oppId>|md5(text)` and the text is always the same word. This run "minted 2" and created
+   zero new rows. `AAO_Criterion__c` holds exactly one row for the entire org.
+2. **Each run overwrites that row's provenance.** `CR-00000000` was created 6 August and now
+   points at the 29 July Source and names Jefferson Vargas as its voicer.
+3. **a20's "1 criterion minted", a22's "5 criteria minted, 1 projected to the vendor", and this
+   run's 2 were all the same collapsing row.** The projected-to-the-vendor count was reported as
+   progress three times.
+
+`mint` refuses to truncate at 255 characters with a comment about not publishing "the buyer's
+words while being ours". The value it guards is not the buyer's words at all. **The comment was
+right about the danger and pointed at the wrong string.**
+
+Not fixed. The repair needs a decision about where a criterion's short name comes from: the
+verbatim runs to 205 characters on this transcript, and a name a buyer would recognise has to be
+emitted by the charter as its own field. That is charter work and it is Matthew's, so his Part 1
+answer on the grading sheet IS the specification.
+
+### TWENTY PERCENT OF THE EVIDENCE IS ABOUT PEOPLE WHO WERE NOT IN THE ROOM
+
+All 7 None dispositions are one shape: `AAO_BR_SIG` and `AAO_BR_APP` on the CFO and the
+approvers, `AAO_POL_IC2`/`IC3` on inner-circle members. Call 1 found them, call 2 correctly
+declined to attribute them to anyone present, and they were dropped, because a mentioned person
+has no Participant row and the shadow-creation path is unbuilt. `AAO_Pass.identify` names this
+in its own comment.
+
+Among the dropped: **"I believe Fatima will be the one signing it, yes."** Fatema Choudray is
+the person whose Political Status Matthew set by hand to Inner Circle because he knew she
+mattered. This call names her as the signer and we dropped the finding.
+
+**The training set showed this zero times out of 44 pairs. This fixture shows it 7 times out of
+35.** That is the whole argument for gate 3 in one number: a contracting call about getting to
+PO is *about* the people who are not on it, and that is not an unusual enterprise call.
+
+### THE CFO THRESHOLD WAS FOUND TWICE, UPHELD TWICE, AND MINTED NOTHING
+
+`deq7` (REQUIRED) and `deq8` (FORMAL) both anchor at offset 9783 on Jefferson saying the deal
+goes to the CFO at this dollar amount. Both upheld. Neither is a naming, and no `AAO_DC_N` was
+emitted over that span, so both report as typings that type no criterion. `deq4` is a third.
+
+3 of 8 criteria pairs typed nothing. The a20 entry predicted this shape — "two stages
+disagreeing about one sentence, which a count should surface" — and here it surfaces on unseen
+speech, on the single most consequential procurement fact on the call.
+
+### THE REGRESSION HARNESS PRINTED A UNIVERSE OF 39 AND A LIST OF ZERO
+
+Every assertion is keyed to the 17 June sha or the B&V ref, so `checked` is 0 and
+`notApplicable` is 39. Lawful and correct.
+
+**But the disposition list came back empty.** The not-applicable branch incremented its counter
+and `continue`d before writing a line, so the export's `regression-dispositions.txt` would have
+been a zero-row file against a 39-assertion seed — indistinguishable from a harness that skipped
+every assertion. **Every prior run hid it, because every prior run was against a fixture the
+seed covers.** Fixed in place and re-run against the stored pairs, no model calls: 39 `N/A`
+lines, each naming the fixture its assertion is keyed to, universe reconciled.
+
+The branch's own comment already said "NOT APPLICABLE TO THIS ARTIFACT IS ITS OWN DISPOSITION".
+**The intent was written and the line never was**, which is the fourth-stamp universe fix
+finishing a job it started: it added the counter and stopped there.
+
+**The coverage gap stands regardless.** The courtesy conjunct, the alias, the watermark value
+test and the composed normalizer stamp have still never been graded by the set.
+
+### `AAO_TriggerLawTest.theSmallTalkBoundaryStaysMutable` FAILS, AND IT IS OURS
+
+383 tests, 2 failures: the standing org-resident `ConvertToOpportunityTest`, named since 6
+August, and this one, which is new since session 77 reported 382/382.
+
+The test updates a Source's substantive offset and boundary basis. It touches the normalizer
+version nowhere. It is rejected by the immutability guard **on the normalizer version**.
+
+Reproduced with a probe rather than reasoned about:
+
+```
+IN MEMORY AFTER INSERT = [NF1]
+IN DATABASE            = [NF1+out:700ec5e4]
+UPDATE REJECTED: ... AAO_Normalizer_Version__c is immutable on AAO_Source__c
+```
+
+**The before-insert stamp rewrites a field the caller supplied, and the caller's own sObject is
+left holding the pre-stamp value.** Its next update — of any field at all — submits the stale
+`NF1`, the guard sees a change on a field nobody touched, and refuses. This reaches every caller
+that inserts a Source and then updates it: the seeder does exactly that, which is why the test
+is the thing that found it.
+
+**The composed stamp shipped without a full-suite run.** Session 77's 382/382 predates it; its
+last two entries carry no test count. The suite was green when it was last looked at and nobody
+looked again.
+
+Not fixed, deliberately. Both candidate repairs touch the immutability law that has now
+correctly refused three corrections, and choosing between them is a ruling, not a preference:
+
+1. **Treat a submitted value that is the uncomposed base of the stored stamp as no change** and
+   restore the stored value. Smallest fix; a silent repair, which this build distrusts.
+2. **Make the stamp not a caller-supplied field at all** — clear it before insert so the caller
+   never holds a value to go stale with. Honest, larger, changes the ingest contract.
+
+My recommendation is 2, because 1 makes the guard lie about what it compared. Owed to design.
+
+### The cost-per-pass model, owed since the sixteenth stamp
+
+Measured on this run, not modelled. Calls 0, 1 and 2 are exact; call 3 is estimated from the
+last `StageResult` of each of the three batches, because `AAO_Pass.verify` keeps only the last
+one — the run receipt's oldest debt, showing up as a hole in the one number Matthew asked for.
+
+| stage | input | cache write | output |
+|---|---|---|---|
+| call 0 | 9,198 | 2,564 | 577 |
+| call 1 × 4 | 35,528 | 14,010 | 4,526 |
+| call 2 | 12,252 | 1,698 | 2,806 |
+| call 3 × 28 (est.) | ~532 | ~24,584 | ~32,592 |
+| **total** | **~57,510** | **~42,856** | **~40,501** |
+
+At Opus 5 list ($5 / $25 per MTok, cache writes 1.25x, cache reads 0.1x):
+
+**≈ $1.57 per pass on a 20.75-minute transcript, or $0.076 per transcript minute.**
+Range $1.13 to $1.95 on the sampled spread of call 3's output. **Output is 64% of the bill and
+call 3 is 80% of the output** — the cost centre is one callout per claim, not the family reads.
+
+Extended, with the assumption stated rather than buried: **12 calls a month at 30 minutes is
+~$27 per seller per month; 20 calls at 40 minutes is ~$61.** Gateway pricing is not list
+pricing, so these are the right order of magnitude and not an invoice.
+
+**The number Matthew actually needs, ahead of Problems:** a fifth family costs ~$0.10 for its
+own read plus ~$0.035 for every pair it locates. Problems declares FOUR families. At this
+fixture's ~9 pairs per family that is ~$1.65 added to a $1.57 pass — **Problems roughly doubles
+the cost per pass**, and the doubling is in call 3, not in the reads. Insight families multiply
+the per-claim verification, which is exactly the quantity the sixteenth stamp called the most
+expensive unmeasured thing in the system. It was right.
+
+### PROMPT CACHING IS ON, PAYS THE PREMIUM, AND NEVER READS
+
+`cacheRead` is **zero on all 34 callouts**. `cacheWrite` is nonzero on all 34. We are paying the
+1.25x write premium ~42,856 tokens per pass — about **$0.05 a pass for a cache nothing ever
+reads** — and taking none of the 0.1x discount.
+
+The mechanism is in our code and the answer was already written down. Session 68 ruled
+artifact-first ordering for precisely this shape: *"one artifact is read N times, once per
+person, and only the proposition tail changes"*, and it pre-registered the falsification test:
+*"near-zero on the later calls falsifies the prediction and the shape gets revisited on
+evidence."* **This run is the first to actually measure it, and it reads zero.**
+
+The §P8 sweep, built later, orders `[rubricBlock(family), transcript]` with the cache breakpoint
+on block 0. So the breakpoint sits on **the one block that differs on every read**, and the
+artifact — the one block identical across all four — sits after it, where a prefix cache can
+never reach it. The retired path's comment states the law being broken: *"Put anything volatile
+above the breakpoint and the cache silently never reads, with no error to notice."*
+
+The axis of repetition inverted and the ordering did not follow. It used to be one rubric over
+many artifacts; the sweep made it one artifact over four rubrics.
+
+**Verified, not assumed:** Opus 5's minimum cacheable prefix is 512 tokens and our reads are
+8,882, so size is not the obstacle. **So the capability question the sixteenth stamp asked is
+answered: prompt caching IS usable through the gateway — cache writes are being created and
+billed right now. What is not working is our prefix ordering.**
+
+Proposed, not built, because inverting the block order changes every read's output and would
+invalidate this run's comparison against the training set mid-corpus: **artifact first with the
+breakpoint on it, family rubric second.** Expected saving ~7% of the pass today, growing with
+family count — and it turns a $0.05 waste into a discount. Held for design.
+
+### What this run did not measure
+
+**Recall.** There is no answer key for this transcript and there cannot be one after Matthew
+sees our output, which is why the grading sheet is inverted and why Part 1 asks him for the
+denominator before Part 2 shows him anything. Precision is gradeable from the rows today.
+
+### Owed from here
+
+1. Matthew's inverted grading sheet, Part 1 before Part 2. Recall does not exist until he
+   answers question 4.
+2. Three rulings on the sheet: buyer-side-subject as a law, the criterion's short name, and
+   whether the shadow-person path moves ahead of People closing.
+3. Design: the small-talk immutability fix, recommendation 2 above.
+4. Still standing: the caller-side join split before dense fixtures (DML confirmed at ~4.6 per
+   pair on a second fixture, so the ~32-pair wall is the join's property, not the transcript's);
+   the 90-day coverage re-derivation proposal; the hot/cold D360 split proposal; the ConnectApi
+   verification, which the seventeenth stamp made load-bearing for D360.
+
+### A diagnostic artifact I created and am not hiding
+
+Reproducing the immutability failure inserted Source `a1XWD0000082Vcb2AE`,
+`diag/immutability-probe`, on the Emerson opportunity. It carries no participants and no pairs,
+so no reported number moves. It is not synthetic-deletable and it stays. I should have probed
+against a throwaway account rather than the deal under measurement.

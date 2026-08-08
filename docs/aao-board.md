@@ -2,141 +2,137 @@
 
 > **The version lives on the stamp line below and nowhere else. Read this document first in every session and update it last.**
 
-**v1.6 · 5 August 2026 · Delivered as context 5 August; see BUILD_JOURNAL for three corrections CODE raised against this stamp (the ~95 s headline is the single-read shape's total for 14 establishments, not the sweep's 40 at ~261 s; §2 names locate-2.1.0 where the sweep ran locate-3.0.0; zero fabrication is true of STORED rows, the model-layer discard rate on B&V being 2 of 17 and 1 of 8). The board's own law applies: numbers come from BUILD_JOURNAL.**
+**v2.2 · 8 August 2026 · THREE RULINGS AT THE CLOSE, Matthew's, and the session ends here by his direction with the next session seeded below. (1) COVERAGE IS A TRAILING-90-DAY CONVERSATION COUNT, simple arithmetic, no ontology: how many conversations with this person in the last three months; a first call brings a person to one; the count maps to the vendor values as built. GATE 2 CLOSES on this ruling, because the current derivation already matches it exactly (Neeraja 1, Ryan 2, Jefferson 2, all occasions inside the window). Consequence, proposal-first for CODE: a windowed count must RE-DERIVE as calls age out, not only when new evidence arrives. (2) THE HOT/COLD SPLIT IS RULED DESIGN DIRECTION: the claims chain (claims, claim bases, the volume-heavy history) streams to Data 360 after roughly 30 days; Salesforce holds the hot window; D360 is the memory plane as the architecture already carries. Two consequences recorded so they are designed rather than discovered: the replay law (counters, verdicts, retirement) must work across the split, reading D360 past the hot window; and the 90-day coverage window is the archive's first consumer, since it looks back further than the hot store. Proposal-first, never ordinary work; the D360 platform facts and the one unverified ConnectApi item apply. (3) THE FOREIGN FIXTURE: the next session carries a research task to obtain an enterprise-grade 30-to-45-minute B2B sales-call transcript. PREFER FOUND REAL SPEECH from the web; an authored-realistic transcript is the fallback and tests intake and format only, NEVER counting toward precision or recall, because grading our own authorship is the training-set problem again; Matthew may override in session. Design writes the sandbox account, contacts, and opportunity for whichever fixture lands. Matthew's production transcripts remain wanted in addition, not instead. THE SESSION ENDS HERE; the seed below is the next session's first read.**
 
-**v1.5 · 4 August 2026, afternoon · The simplification rewrite, mid-session by Matthew's direction so the set travels coherent. The charter text landed twice in one day: first as v2.6 (the three-call shape written from the decision-criteria research), then REWRITTEN WHOLE as v2.7 after Matthew's afternoon rulings, argued in session before writing. What v2.7 holds: THE PASS IS PAIRS (call 1 reads the whole artifact once, resolves deal, account, and people, and emits question-answer pairs with verbatim words and voiced meaning and NO person; call 2 identifies only; call 3 verifies blind); NO ABSTENTION ROWS EXIST at any grain (the run receipt plus one-for-one-for-one arithmetic replace them; the silence hazard dissolves because the system no longer asserts silence anywhere); TRUE-OR-NOTHING (no FALSE, no inversion, no two-sided verdicts; negative states establish from their own affirmative words; the two-sided Political questions split into one-way halves); THE SUPPORT QUIZ IS RETIRED FROM EXTRACTION and the sentiment counter re-promoted (five states read directly, one step per call toward the voiced state and never past it, explicit declarations jump with the sequence flagged); THE OCCURRED-TIME CANDIDATE WINDOW is resolution law. The decision-criteria research satellite was written first, as the seed required, and DC-F's typing axis is RULED provenance. The rebuild is GO: CODE inbox re-stamped, and the new test fixture is the 17 June Emerson/AspenTech call with its harness satellite. Companion stamps: Charters v2.7, Architecture v3.6, Model & Flow v1.3 (bump owed), Glossary v2.4 (held deliberately; terms owed).**
+**v2.1 · 8 August 2026 · THE VALIDATED FOLD. A three-agent audit (cold read by a stranger, final coherence, feasibility) ran over the whole document set before this rewrite, and this stamp carries its verdict and its consequences. THE VERDICT: the architecture is sound to keep building on; nothing in the evidence core is structurally broken; the defect-finding loop demonstrably catches its own errors, including its own celebrated successes, and that is the property that compounds. The precision half of the promise is solved and machine-checked per run. The parked risks are scale-plane, not People-semantics: enterprise orchestration undesigned (the run receipt is the oldest debt), cost per pass unmeasured, recall's within-read mode mitigated only by instruments, and the org-agnostic claim carrying three unclosed holes (the empty-license gate, the per-org classifier, zero foreign transcripts through intake). THE SEQUENCE ADJUSTS on the audit's three cheapest de-riskers, now standing in the inbox: the caller-side join split lands BEFORE the production fixtures run (the DML wall at ~33 pairs sits where dense calls land); a COST-PER-PASS MODEL is journalled from existing timings and put in front of Matthew BEFORE Problems adds families; and one of Matthew's production transcripts should be as foreign as possible, the cheapest test of the 80% no-Altify case. DOCUMENTATION DEFECTS FOUND AND FIXED AT THIS FOLD: this Board now carries the locked ledger and hazards IN FULL, never as deltas to superseded versions; the inbox header names no versions (the documents' own stamps are the authority); the courtesy conjunct is folded into Charters (v3.5) where it was ruled and built but never folded, the held-for-veto clause superseded in place; the adjudication sheet's stamp caught up with its content (v0.9); the Glossary gained the abbreviations and named laws a stranger meets undefined (v2.7); Model & Flow carries the loop era's fields (v1.5); the VERIFICATION SHEET exists (design's per-run checks as a written procedure); and the PRIMER exists (`aao-primer.md`, the one document a stranger reads first). PEOPLE REMAINS HELD OPEN BEHIND ITS THREE GATES, unchanged: the 29 July extraction run in a fresh CODE session (fixture from the freeze list, never the org), Matthew's three-line coverage grade, and multi-transcript validation awaiting his production pull. MATTHEW'S FIRST PRINCIPLE, recorded at this fold in his words' substance: People is 60 to 80 percent of the project; everything else in this operating system feeds off People exactly as everything in enterprise sales feeds off people; get this right and everything else becomes easy, get it wrong and we fail. The gates exist because of that principle and close only on graded evidence. Companion stamps, written after the bumps landed as the update-last law requires: Primer, Charters v3.5, Architecture v4.12, Model & Flow v1.5, Glossary v2.7, adjudication sheet v0.9, verification sheet v1.0, map read sheet v0.3, CODE inbox sixteenth stamp. Numbers from BUILD_JOURNAL: 383 tests, 382 AAO pass, one named org-resident failure.**
 
-**What this is.** The one document a session opens first: current state, the law list, the open items with owners, and the next steps. When this document and a companion disagree, the companion's stamped body wins on substance and this board is corrected; the board wins only on what is open versus closed.
+**What this is.** The one document a session opens first: current state, the complete law list, the open items with owners, and the next steps. When this document and a companion disagree, the companion's stamped body wins on substance and this board is corrected; the board wins only on what is open versus closed. Prior board versions do not exist; everything a reader needs is in this one.
 
 ---
 
-## 1 · The five documents
+## 1 · The documents, the actors, the locations
 
 | Document | Authoritative for |
 |---|---|
-| **Board** (`aao-board.md`) | State, open/locked ledger, sequence, seeds |
-| **Glossary** (`aao-glossary.md`) | Vocabulary. **v2.4, held deliberately; new terms owed at its bump: pair, initial and identified rows, run receipt, sentiment read, the counter's return, retired terms marked retired** |
-| **Architecture** (`aao-architecture.md`) | The inventory, placement, every ruling. **v3.6: pair placement, no-abstention, pair ledger, occurred-time window, fixture** |
-| **Model & Flow** (`aao-model-and-flow.md`) | Entities, keys, field tables. **v1.3; bump owed: pair-ledger entities (CODE proposes mechanism first), abstention-row machinery removed from field tables, the counter's field home** |
-| **Charters** (`aao-charters.md`) | The AI. **v2.7: §P8 is the authoritative pass text; §P8.4 the sentiment ruling; §P8.5 the criteria contracts** |
+| **Primer** (`aao-primer.md`) | A stranger's first read; orientation and reading order |
+| **Board** (`aao-board.md`) | State, the complete locked ledger, sequence, seeds |
+| **Glossary** (`aao-glossary.md`, v2.7) | Vocabulary, abbreviations, the named laws |
+| **Architecture** (`aao-architecture.md`, v4.12) | Every ruling with its reasoning; the loop era is the v4.2 through v4.12 heads |
+| **Model & Flow** (`aao-model-and-flow.md`, v1.5) | Entities, keys, fields as built |
+| **Charters** (`aao-charters.md`, v3.5) | The AI: every model call, the contracts, the resolver, the recovered ontologies |
+| **Adjudication sheet** (`aao-adjudication-sheet.md`, v0.9) | Every human grading; §10 is the map read |
+| **Verification sheet** (`aao-verification-sheet.md`) | Design's per-run checks, the written procedure |
+| **Map read sheet** (`aao-map-read-sheet-v0_3.md`) | Matthew's read procedure on the product surface |
 
-**Paths per environment:** project root on the design side, `docs/` in CODE's repo. Open by exact path, never search. Read the stamp inside, never the filename. One live copy per document. When a zip is amended mid-carry, the CODE inbox is re-stamped last, same as this board.
+**The actors.** MATTHEW rules methodology and grades output, inverted. DESIGN (the session holding this document set) argues structural decisions before writing, defaults technical calls with both positions recorded, folds rulings, verifies every export per the verification sheet, re-stamps the inbox last. CODE is the builder: a Claude Code agent operating a git repository with the sandbox connection and NO production connection; a fresh CODE session's entire seed is "read the inbox top stamp."
 
-**Satellites, outside the audit chain:** decision-criteria research (v0.1, this session's first act, cited), **pass test harness (v1.0, the 17 June Emerson fixture and CSV spec)**, adjudication sheet (v0.3), transcript-normalization research (v0.1), competitive rebuttals, proof register, plan to QBR, demo run sheet, sandbox build sheet, Gate 1 fixtures, corrections archive, `applicable_set.json`. Numbers come from CODE's BUILD_JOURNAL, never from here.
+**The locations.** These documents live in the claude.ai project (design's side) and as `docs/` in CODE's repository, carried between them by Matthew or the project. CODE's repository also holds: `BUILD_JOURNAL` (the only numeric record), `review/<run-id>/` (every run's export), `review/gate3/frozen-fixtures.md` (the freeze list, which disambiguates what stamps cannot), and the regression set. Exports reach design as files through Matthew. The CODE inbox (`CODE-INBOX.md`) is the standing channel; its top stamp is CODE's current instruction.
 
-## 2 · Current state · 4 August 2026, afternoon
+## 2 · Current state · 8 August 2026
 
-**Org:** sandbox `altify--aossb2`. Production read-only unconditionally; `altify-pbo` never read.
+**Org:** sandbox `altify--aossb2`. Production (`altify.my.salesforce.com`, org `00DHn000006jYatMAE`) read-only unconditionally; `altify-pbo` never read.
 
-**Design, this session:** the decision-criteria research satellite written and cited (methodology convergence: gate versus gradient, organizational versus personal provenance, ownership by person; production read: 404 criteria, 329 Formal to 74 Informal, text lives in `Subject`, junction accepts duplicates). Charters v2.6 written, then v2.7 after the afternoon rulings; Architecture v3.5 then v3.6; the harness satellite; this board. The v2.6 layer (abstention vocabulary, separate anchor ledger, call 2 as judge, TRUE/FALSE verdicts in the pass, the Support quiz as contracts) was ruled out by Matthew the same day and is marked superseded in place, never deleted.
+**The pipeline is whole and self-honest**, artifact to live vendor map: call 0 (one-way scope halves with byte-located evidence; the deterministic ladder as its input; NONE does not dispatch), the family sweep (one bounded read per family per transaction, blank-retry guard), identify from the closed roster, blind verify (courtesy conjunct structural, homogeneous batches), the join through the single writer (claims key the Participant; retire never delete; partial displaces nothing; traps refuse at the claim), projection (per-dimension watermarks, human edits absolute including on rows we never touched, retraction that stamps), coverage computed on conversation-keyed occasions, composed normalizer stamps going forward. Every run ships export, timings, governors, and the full regression disposition or it does not count. Regression set at 39 assertions, byte-keyed.
 
-**Correction absorbed from CODE:** commit `9a0720a` changed BUILD_JOURNAL only; the report-unit fix in `AAO_EBV.report()` is queued, not shipped. The v1.4 board's §2 sentence recording it as done was wrong; this rewrite is the correction. The unit law stands.
+**People held open behind three gates:** (1) resolution: the split has corrected under-calls on both live fixtures (Emerson a17; B&V re-adjudicated DUAL); caveat failure count at one, the caveat gate named-not-built; (2) coverage: numbers honest after occasion identity and the alias; Matthew's three-line grade owed; (3) multi-transcript: corpus frozen NF1-only, training set named and excluded, B&V done (zero establishments correct: dual, deal NONE, nothing dispatched), the 29 July extraction run next in a fresh CODE session, production transcripts owed from Matthew.
 
-**Build, per BUILD_JOURNAL:** unchanged since morning: §P7.3's four stages built (now superseded as shape), 239-test suite, NF1 proven, the projection proof (`74fa9ac`), first adjudication graded. CODE held the rebuild all day as instructed; the hold is lifted this afternoon.
+## 3 · Locked · the complete ledger, not open to relitigating
 
-**The new fixture, read from production:** VideoCall `6qrV4000000J5K9IAK`, "Altify + AspenTech/Emerson Pricing + Buying Process Overview," 17 June, 41 minutes, Teams, diarized. Five participants: Neeraja Chimata linked to a Contact; Ryan Couture and Jefferson Vargas with null RelatedPersonId (Vargas the known no-Contact specimen); Wendy Higley and Renee Martin internal. Emerson Electric Co. held exactly one open opportunity at call time (Insights 500, Renee's, since closed won 31 July); a renewal opened 3 August. **The standing occurred-time specimen: a run-date candidate window resolves this call to a deal that did not exist when the words were spoken.** ECI's stamp agrees with the right answer here and remains one input, never the answer.
-
-**The old Emerson blocker is structurally dissolved, pending Matthew's confirmation:** contracts are no longer person-crossed under v2.7, so the all-48-contracts-point-at-B&V problem cannot recur; people arrive through call 1's resolution and the gates. The blind key for the **29 July video** remains owed and unspent; the 17 June fixture is deliberately a joint-review fixture, not blind.
-
-**Fixtures:** B&V 24 June in NF1 (489 turns, six graded answers plus the canonical criterion: the only answer key that exists; the recall gate runs on it first). Emerson 29 July in NF1 (blind, key owed). Emerson 17 June: acquisition next (Path A, the Apex transcript-action capability test; Path B, viewer paste), normalization to NF1, then the harness.
-
-## 3 · Locked · not open to relitigating
-
-- **LAW #1.** No ALTF package-version dependency, ever. Feature detection, never version checks.
-- **No metadata, triggers, or logic on any ALTF or native object.** Opportunity and Account never written by the product runtime; Contact toggleable; seeders are scaffolding.
-- **Production read-only unconditionally. Evidence over inference. A capability claim is unverified until tried from the calling runtime.**
-- **THE PASS IS PAIRS (Charters v2.7 §P8):** call 1 locates and pairs (whole artifact, resolution, question-answer pairs, verbatim words, voiced meaning, no person); call 2 identifies only, from the closed candidate list, NONE and AMBIGUOUS honest; call 3 verifies blind. Each charter forbids the other calls' jobs. Judgment of words is call 1's, identity call 2's, carriage call 3's; speaker-rank laws live in the gates after identification.
-- **NO ABSTENTION ROWS, at any grain, ever.** The run receipt (one row per Source per pass) is the did-we-read-it record; one-for-one-for-one arithmetic between stage row sets is the completeness proof, throwing on mismatch; transcript-wide silence is derivable, never stored, never asserted.
-- **THE PAIR LEDGER:** initial unowned row from call 1, linked identified row from call 2, every stage measurable in isolation; the initial row's byte-located verbatim string is the anchor; no separate anchor entity.
-- **TRUE-OR-NOTHING:** every question points one way; no FALSE, no inversion, no two-sided verdict in the pass; negative states establish from their own affirmative words; two-sided Political questions split into one-way halves.
-- **THE SUPPORT QUIZ IS RETIRED FROM EXTRACTION; the sentiment counter is Support's mechanism (§P8.4):** five states with one-line label meanings; one step per call toward the voiced state, never past it; explicit declarations jump, sequence flagged; mixed nets to no move, all quotes journal; sentiment reads are whole, never partial; the nine questions stay recorded byte-exact as the vendor's asset. Ontology-where-feasible survives with its application corrected; Political, Buyer Role, criteria, insights, Process, assessment keep their ontologies; Coverage stays computed.
-- **THE OCCURRED-TIME CANDIDATE WINDOW:** resolution's candidate opportunities are open plus recently closed as of the evidence-occurred clock, never the run date.
-- **Decision criteria join People; DC-F types by PROVENANCE (Matthew, 4 August):** organizational standing spoken makes Formal, else Informal, upgradeable; DC-R by gate language only; ownership is the voicer's, derived, junction rows voicer-only; criteria writes bypass ratification and never flag.
-- **Questions once per transcript, never per person. Cost scales with transcript length, never roster size. Dynamic scaling measured, never assumed; splits by pair or claim batch; no call retries by growing.**
-- **Partial-evidence accrual for fact families (UNVERIFIED with receipts) stands; sentiment accrues through the counter: two mechanisms, both receipts-backed.**
-- **NF1 is written law. The unit law. Byte-exact propositions and spans. The model path is the Trust Layer / Models API; the 120-second ceiling; one bounded callout per transaction.**
-- **Resolver-next after People closes. FirstName/LastName as read. Similar names are not duplicates. The scope stamp law, two-key lock, membership never routes, two layers law, null never `Unknown`, flag volume as budget, query-then-branch, citations on Answer rows only, day-one red, no dismiss anywhere. Human override absolute; watermarks; no decay; neutral disposition, never a rate.**
-- **Rulings travel to CODE as one explicit line. Corrections into documents, never chat. Wrong text marked wrong, never deleted. One structural decision at a time. Agentforce is not part of this build.**
+- **LAW #1.** No ALTF package-version dependency, ever. Feature detection, never version checks. The system runs with Altify absent; the ontology ships as our seed metadata, org-overridable.
+- **No metadata, triggers, or logic on any ALTF or native object.** Opportunity and Account never written by the product runtime; Contact toggleable (the toggle defaults ON, Matthew's, design's OFF recorded; overrides are picklists because a checkbox cannot express untouched); shadow persons permanent for toggle-off customers and never on the vendor map (`ALTF__Contact__c` is `nillable=false`, verified from the runtime).
+- **Production read-only unconditionally. Evidence over inference. A capability claim is unverified until tried from the calling runtime, including claims about our own code.**
+- **THE PASS IS PAIRS; CALL 1 IS A FAMILY SWEEP** (once per declared family, whole artifact, one transaction each; the call count never a function of participant count; questions once per transcript; cost scales with transcript length, never roster size). Call 2 identifies only, from the closed candidate list, NONE and AMBIGUOUS honest. Call 3 verifies the proposition blind and nothing else; the placement never reaches the reader; the courtesy conjunct is part of the sentiment proposition (stance toward us or our solution, never the meeting or the occasion).
+- **CALL 0, ALWAYS:** the resolver's read on every Source before the sweep; deterministic ladder in Apex first, outputs as evidence; resolution consolidated into it; family reads are pure pair emitters; call 0 routes and resolves and never establishes. **THE SCOPE READ IS TWO ONE-WAY QUESTIONS**, each yes carrying a byte-locating quote; DUAL is both yes; NEITHER is sayable; a missing side throws. **SIDE-YES WITH DEAL-NONE DOES NOT DISPATCH** (routed-not-dispatched, journalled with the yes-quote; yes-with-NONE is the expansion-detection specimen at the Flags fold). **A PAIR'S SCOPE IS ITS READ'S DECLARED GRAIN.** The stretch-stamp law decides which deal, never which grain. Membership never routes.
+- **THE OCCURRED-TIME CANDIDATE WINDOW:** candidates are open plus recently closed as of the evidence-occurred clock, never the run date. (Unverifiable in this sandbox; verifies at pilot.)
+- **TRUE-OR-NOTHING:** every question points one way; no FALSE, no inversion; negative states establish from their own affirmative words; two-sided questions split into one-way halves (the scope read included, by the same law).
+- **NO ABSTENTION ROWS, at any grain, ever.** The run receipt (owed, oldest debt) is the did-we-read-it record; one-for-one-for-one arithmetic between stage row sets; `assertOneForOne` returns HELD / INCOMPLETE / BROKEN. **DECLINED-TO-RUN AND RAN-AND-FOUND-NOTHING ARE DIFFERENT FACTS; neither ships the other's export.**
+- **THE SENTIMENT COUNTER is Support's mechanism:** one move per distinct verified establishment toward the voiced state, never past it; net per call; clamp ±3; voiced-state ceiling (supporter-grade tops +2, mentor-grade reaches +3); terminals proof-gated, never time-gated; the standing value on the Support Answer row, rebuildable from claims in evidence-occurred order. **The label meanings are §P8.4's law: MENTOR is conjunctive and org-directed; ENGAGEMENT IS NOT STANCE; COURTESY IS NOT STANCE.**
+- **CLAIMS KEY THE PARTICIPANT** (a Contact is a resolution outcome of a person, never their identity). **CLAIMS RETIRE, NEVER DELETE**; replays exclude retired claims; retraction clears what they carried and stamps its watermark like any write. **PARTIAL ACCRUES, PLACES NOBODY, AND DISPLACES NOTHING**; answer verdicts are monotone over evidence strength; zero live claims is UNVERIFIED, distinct from never-asked. **A TRAP THAT FIRES IS REFUSED AT THE CLAIM.**
+- **DECISION CRITERIA JOIN PEOPLE; `AAO_Criterion__c` IS OURS** (the fifth subject type; the vendor row is its projection; contracts join by byte-range overlap); DC-F types by provenance; criteria are sparse by nature; buying-process mechanics and approval coaching are never criteria; **partial criteria project nothing until elements complete** (whether partials survive at all is Matthew's, held).
+- **COVERAGE IS COMPUTED, NEVER EXTRACTED**, from distinct conversations (occasion identity: system ref plus occurred time; **TWO KEYS FOR TWO JOBS**, the artifact hash staying byte provenance); `In-depth` deliberately underivable; zero occasions writes nothing. **THE ALIAS, NEVER THE MERGE** (a merge rewrites what claims point at); unresolved-unresolved stays visibly split, never-pick.
+- **THE NORMALIZER STAMP COMPOSES** (`NF1+raw:`); pre-composition rows keep uncomposed stamps permanently, because **provenance a later process can rewrite is not provenance**; the freeze list carries the disambiguation explicitly. **A normalizer's output contract is the stored form; NF1 is the fixture form; fixtures are taken from the freeze list, never the org.** **THE TRAINING SET IS NAMED so it can never be counted as unseen; authored fixtures never substitute for customer speech.**
+- **A VERSION STRING COVERS EVERY INPUT THAT CAN CHANGE THE OUTPUT IT STAMPS** (charter prose plus contracts, composed per family read; normalizer version plus raw hash). **A WATERMARK IS WRITTEN BY THE WRITER OR IT DOES NOT EXIST**; the one lawful repair class is a named repair whose value is known, which refuses itself where preconditions fail. **A non-blank value our watermark does not claim was put there by a human.**
+- **WHERE AN INSTRUCTION HAS FAILED TWICE, CHANGE THE STRUCTURE SO THE WRONG ANSWER CANNOT BE EXPRESSED.** **THE REFUSAL DOCTRINE:** a law that only permits corrections it can prove safe will sometimes refuse one that is safe, and paying that cost is what makes the law worth having.
+- **THE ITERATION LOOP** (Matthew, 6 August): the inbox is the channel; row export, timings, governors, full-universe regression disposition with every run or it does not count; design verifies per the verification sheet; Matthew grades judgment, inverted (**THE BLIND KEY IS RETIRED**; output first; blank rows the only miss channel; findings state their nature, never a percentage); design defaults technical calls with both positions recorded. **Rulings travel through the inbox and as files; corrections into documents, never chat; wrong text marked wrong in place, never deleted; one structural decision at a time, options with costs, Matthew's calls left open.**
+- **CEILINGS ARE PRINTED OR THEY ARE DISCOVERED IN PRODUCTION:** the 120-second cumulative transaction law (one bounded callout per transaction; caller-driven splits for calls 1 and 3); governor consumption per stage with an 80% marker; **a suite that cannot see a component is green about nothing; a required reason field satisfied by a non-reason fails loudly, never fills.**
+- **THE OPPORTUNITY GRAIN LEADS; PRECISION BEFORE COVERAGE, per grain.** **THE ACCOUNT GRAIN IS BACKBURNERED, NEVER FORGOTTEN** (detection live; nothing account-side extracted, written, or authored; the five-row fixture and key attached; the family delta is small: Buyer Role out, Decision Orientation in). **DREAMFORCE IS NEVER A DECISION FACTOR.** **Agentforce is not part of this build.** No leads. Behaviour establishes, titles never matter in either direction; one quote, several establishments; advocacy is never discounted for coming from a professional; the families are not equally heavy. **NF1 is written law. Byte-exact propositions and spans. Citations on Answer rows only. No dismiss anywhere. Human override absolute. No decay. No em dashes in written output.**
 
 ## 4 · Open · with owners
 
-**Matthew:**
-- **Confirm the Emerson unblock** (contracts no longer person-crossed dissolves the old blocker; harness proceeds on that basis).
-- **The blind key for the 29 July video:** still clean, still owed before any output on that fixture exists. The 17 June fixture is joint-review by design and needs no key.
-- **The warmth bar, calibrated by grading, not argument:** sentiment reads are the standard he graded by; the June fixture reviews will show whether the five-state reads over- or under-place, and his grades tune the label meanings.
-- Reported-holder junction rows (voicer-only stands until he rules otherwise); exact-name duplicate tiebreak; seller scope and seat-gaming; model-role naming; corporate-namespace deletions; **the Toby deck before the QBR week of 10 August**.
+**Matthew:** the gate 2 three-line coverage grade (Neeraja Brief 1, Ryan Multiple 2, Jefferson Multiple 2: True, or name the wrong one); the production transcripts as files, three or more, mixed shapes, one as foreign as possible; the empty-license gate ruling (what an org with no Altify license rows resolves to; currently the pipeline sees nothing there); poq7/seq2 standing; the Adam Meloan re-read; the Toby deck (deferred by his word, another conversation).
 
-**Design (this side):**
-- **Acquire the 17 June transcript** (paste or Chrome pull of the viewer text; CODE owns the Apex action test), normalize to NF1, hand-carry to the fixture.
-- **Review the harness CSV with Matthew when it exists; the joint grades become the fixture's answer key.**
-- **At session end:** Glossary bump (terms listed at Charters §P8.8), Model & Flow bump (pair-ledger entities after CODE's proposal, abstention machinery removed from field tables, counter field home), fold, zip refresh with the inbox re-stamped last, next seed.
-- Grade the 9 item-refusals (catch rate); the Dreamforce demo-surface question; resolver proposition list accumulates (occurred-time org state now partially answered by the window law; parent/subsidiary topology open); persona emission; account-grain bundle.
+**CODE (fresh session; seed = read the inbox):** run 29 July from the freeze list, full standing obligations; then the sixteenth stamp's items: the caller-side join split BEFORE the production fixtures, the cost-per-pass journal, the ConnectApi verification, the foreign transcript through intake when it arrives. Standing debts: the run receipt object (oldest), regression temporal validity, the domain list's seed-metadata home at packaging.
 
-**CODE (the rebuild, GO):**
-- Order per the inbox: watermark question; D1/D2 and the unit-law fix; the cheap count; pair-ledger mechanism proposal (one line back); normalization intake per the harness; call 1 plus the 24 June recall gate; calls 2 and 3; the Emerson harness end to end with the CSV.
-- MANIFEST repoint; shadow objects (Wave 2).
+**Design:** verify the 29 July export per the verification sheet; prepare Matthew's inverted grading sheet; present the cost-per-pass number when CODE journals it; the Flags and Guidance fold (two specimens: retraction, expansion-detection); the Problems charter after the gates; the ratification opens sequence before any pilot date; Dreamforce demo surface; persona emission.
 
-**Parked, structurally unanswerable here:** module-licence detection; package-upgrade behavior of subscriber edits; provider batch endpoints.
+**Parked, structurally unanswerable here:** module-licence detection; package-upgrade behavior of subscriber edits; provider batch endpoints (incompatible with trust mode today, never sold); the occurred-window and role-map verification (pilot).
 
 ## 5 · Next steps, in order
 
-1. Design: acquire and normalize the 17 June transcript; deliver to the fixture.
-2. CODE: rebuild per the inbox order; recall gate on 24 June before anything downstream is trusted.
-3. CODE: the Emerson harness end to end; CSV out.
-4. Matthew and design: review the CSV together; grades become the answer key; warmth bar calibrated from the grades.
-5. Matthew: blind key; then the 29 July fixture runs blind on the proven shape; adjudication; fold; resolver build; then Politics.
+1. **The 29 July extraction run** (fresh CODE session), design verifies, Matthew grades inverted. The first numbers nothing was tuned against.
+2. **The join split**, then **Matthew's transcripts** normalize, freeze, and run, each verified and graded. His gate 2 grade lands any time.
+3. **The cost-per-pass number in front of Matthew** before any new family is declared.
+4. If the caveat shape fails a second time in the corpus, the caveat gate is built as named.
+5. Gates pass; **People closes; PROBLEMS opens** (Goal, Pressure, Obstacle, Initiative; charter design-side first; one structural decision at a time), with the cost model in hand.
 
-## 6 · Standing hazards
+## 6 · Standing hazards · the complete list
 
-The only queryable orgs are Altify's own; ~80% of installs have no methodology history, no call capture, no package. Retrieval returns chunks from retired versions: open by path, demand stamps. ECI's related-record stamp is inference, misfiring both directions. Sweep wider than the question. Vocabulary: our answer row, never bare answer; verified, never scored; receipts, never confidence; Agentforce-ready, never Agentforce-dependent. No em dashes in written output. `CreatedBy` cannot separate CODE from Matthew. FLS is a second fact beside deploy success. Lightning caches hard. Contact-role sync is a configuration. The local-fix hazard. The decision-slot hazard: rulings travel as one explicit line, never brackets or bundles. A run that succeeds only on a cache hit is not a run that works. The unit hazard, the display hazard, the off-badge hazard, all as at v1.4.
-
-**Changed this fold:** **The silence hazard is dissolved by ruling**, not by fix: the system no longer asserts silence anywhere, so no read's reliability is ever borrowed to claim it; what remains is the honest statement that absence of a pair is absence of a finding, bounded by call 1's measured recall. **New: the run-date hazard.** Org state moves between a call and its processing: deals close, deals open, contacts appear. Resolution windows on the occurred clock by law; every other org read in a pass should ask the same question before trusting the present tense. **New: the intake hazard.** Transcripts arrive from many sources in many formats, with identities, with name labels, or with nothing; the normalizer declares format and diarization class per intake and strips machine annotations to sidecars, or the byte check verifies machine text as if spoken.
+The only queryable orgs are Altify's own; ~80% of installs have none of its history (**the hazard stands until pilots answer it**). **THE TRAINING-SET HAZARD:** a calibration fixture's precision predicts nothing; unseen speech is the only real number. **THE ATTENTION HAZARD**, two named modes: the cheap whole-family blank (guarded, journalled) and the within-read miss (q9's mode; partitioning is the named unbuilt lever). **THE SILENT-SUCCESS HAZARD**, extended three times: a stage reporting success while writing nothing; a rule with a reporting half and no enforcement half; a write that skips its own watermark; the guard is arithmetic at every stage boundary, projection included. **THE GREEN-SUITE HAZARD:** a component with no tests, an unnamed failing test waved through, a suite proving a retired rubric. **THE KNOWN-RULE-UNAPPLIED shape:** a reader that paraphrases a caveat back and ignores it; wording has nothing to grip; structure is the only lever. **THE STAMP-LEDGER SPLIT:** pre-composition rows are permanently ambiguous by stamp; explicit lists carry that weight. **THE CORRECTION THAT DISABLES WHAT IT CORRECTS:** any correction path whose safe response to uncertainty is not-running, or that cannot stamp its consequence. **THE RATE HAZARD:** never gate on a ratio whose denominator is the thing being improved. **THE THIRD-STATE HAZARD:** a binary verdict on an incomplete pass must lie; name the state. **THE SPAN-BOUNDARY HAZARD:** one establishment across an interruption; two specimens; open. **THE BYTE-CHECK BLIND SPOT:** invented words are caught, shortened ones are not. Retrieval returns chunks from retired versions: open by path, demand stamps. ECI's related-record stamp is inference, misfiring both directions. Vocabulary: our answer row; verified, never scored; receipts, never confidence; Agentforce-ready, never Agentforce-dependent. `CreatedBy` cannot separate CODE from Matthew. FLS is a second fact beside deploy success. Lightning caches hard. A run that succeeds only on a cache hit is not a run that works. The unit, display, off-badge, run-date, decision-slot, and intake hazards. **The scale plane is honestly parked, not solved:** enterprise orchestration, cost per pass, per-org calibration shipping without a Matthew; the feasibility audit's findings stand in Architecture and the inbox until each is closed.
 
 ## 7 · The session seed
 
 ```
-Seed - AAO single-purpose session. Focus: RUN THE FIXTURE. The pass
-is rebuilt to Charters v2.7 SP8 (pairs; identify; verify; no
-abstention rows; sentiment counter; occurred-time window). Cowork
-session attached to the Altify Agency project.
+Seed - AAO single-purpose session. Focus: THE UNSEEN CORPUS.
+Cowork session attached to the Altify Agency project.
 
-Open by exact path, never search: aao-board.md first (v1.5), then
-Charters v2.7 SP8, then the harness satellite
-aao-pass-test-harness-v1_0.md. Numbers from CODE's BUILD_JOURNAL.
+Read first: aao-primer.md if you are new, then aao-board.md (v2.2),
+then CODE-INBOX.md top stamp, then Charters and Architecture heads
+newest-first. Open by exact path, never search. Numbers from CODE's
+BUILD_JOURNAL only.
 
-State on pickup: charters and architecture rewritten twice on 4
-August, morning (three-call, v2.6/v3.5) then afternoon
-(simplification, v2.7/v3.6) after Matthew ruled: no abstention rows
-anywhere; call 1 emits question-answer pairs with no person; call 2
-identifies only; true-or-nothing, no FALSE, no inversions; Support
-quiz retired from extraction, sentiment counter re-promoted (one
-step toward the voiced state, never past it; declarations jump,
-flagged); criteria typed by provenance. Rebuild GO went to CODE
-with a 14-ruling inbox and the harness satellite. Fixture: the 17
-June Emerson/AspenTech call (6qrV4000000J5K9IAK), joint-review, not
-blind; the 24 June B&V recall gate runs first because it holds the
-only answer key. The 29 July video stays blind, key owed and
-unspent.
+State on pickup: People is held open behind three gates and gate 2
+(coverage) is CLOSED by Matthew's trailing-90-day ruling. Gate 1
+needs the one-way scope halves to pass on live evidence (the caveat
+gate is named and waiting on a second failure). Gate 3 needs the
+29 July extraction run plus the corpus: Matthew's production
+transcripts and one foreign fixture.
 
-Owed at the fold if the prior session did not fold: Glossary bump
-(terms at SP8.8), Model & Flow bump (pair-ledger entities after
-CODE proposes, abstention machinery out of the field tables,
-counter field home).
+ACTIONS, in order:
+1. Check whether the 29 July run's report and export landed. If
+yes: verify per aao-verification-sheet.md, prepare Matthew's
+inverted grading sheet. If no: CODE's fresh session runs it first;
+its entire seed is "read the inbox."
+2. RESEARCH TASK: obtain an enterprise-grade B2B sales-call
+transcript, 30 to 45 minutes. Prefer found REAL speech from the
+web; authored-realistic is fallback and tests intake and format
+only, never counting toward precision or recall (Matthew may
+override). Design the sandbox seed for it: account, contacts,
+opportunity. Normalize through the ruled intake, freeze with
+hashes, add to the freeze list.
+3. Fold Matthew's production transcripts into the corpus as they
+arrive; run, verify, and grade each fixture inverted.
+4. CODE's queue rides the inbox: the 90-day coverage window with
+re-derivation, the hot/cold D360 split proposal, the caller-side
+join split BEFORE dense fixtures, the cost-per-pass journal before
+Problems declares families.
 
-Rules: one structural decision at a time, options with costs,
-Matthew's calls left open; rulings to CODE as one explicit line.
-Evidence over inference; capability claims unverified until tried
-from the calling runtime. Expected failure mode: over-reading,
-never fabrication; the new watch item is sentiment over-reading
-under the looser standard, measured against Matthew's grades.
+Matthew's first principle, standing: People is 60 to 80 percent of
+the project; get it right and the rest becomes easy, get it wrong
+and we fail. The gates close only on graded evidence.
 
-At session end, when Matthew confirms it is over: fold every ruling
-and finding into the five documents, bump stamps, mark wrong text
-wrong, rewrite the Board, refresh the zip with a re-stamped CODE
-inbox, and write the next seed naming one focus. Nothing may
-reference a retired version.
+Rules unchanged: the iteration loop; one structural decision at a
+time; design defaults technical calls, both positions recorded;
+Matthew rules methodology and grades inverted; corrections into
+documents, never chat; wrong text marked wrong, never deleted; the
+account grain backburnered, never forgotten; Dreamforce never a
+decision factor; no em dashes in written output.
+
+At session end, when Matthew confirms: fold every ruling into the
+documents, bump stamps, rewrite this board CARRYING THE FULL LEDGER
+(never deltas), re-stamp the inbox last, write the next seed naming
+one focus.
 ```
 
 ---
 
-*End v1.5. This document is rewritten at every session end and was rewritten mid-session this once by Matthew's direction; everything below its stamp is current or it is a defect.*
+*End v2.2. This document is rewritten at every session end and carries everything; prior versions do not exist.*

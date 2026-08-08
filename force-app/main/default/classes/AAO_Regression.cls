@@ -457,6 +457,22 @@ public with sharing class AAO_Regression {
             // reconcilable to the seed's own size.
             if (x.fixture != sha && x.fixture != ref) {
                 rep.notApplicable++;
+                // THE LINE THIS BRANCH ALWAYS OWED AND NEVER WROTE, found by the first run
+                // against a fixture the seed does not cover. The comment above already said
+                // not-applicable is its own disposition; the counter was written and the
+                // disposition line was not, so a run outside the seed's fixtures produced a
+                // universe of 39 and a disposition list of ZERO. Every other run to date hid
+                // it, because every other run was against a fixture the seed does cover.
+                //
+                // An empty list is unfalsifiable in the direction that matters: it reads the
+                // same whether the harness accounted for every assertion or skipped them all.
+                // The line names the fixture the assertion is keyed to, so a reader can see
+                // WHY it is out of the denominator rather than trusting that it should be.
+                rep.dispositions.add(
+                    'N/A        ' + x.key + ' [' + x.kind + '] keyed to ' +
+                    (x.fixture.length() == 64 ? x.fixture.substring(0, 8) : x.fixture) +
+                    ', not this artifact'
+                );
                 continue;
             }
             rep.checked++;

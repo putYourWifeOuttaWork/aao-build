@@ -11255,3 +11255,55 @@ define a stability threshold as a methodology choice - none built, none chosen. 
 wants its own measurement. And the buyer-role collision (Matthew's open call) is confirmed stable
 - Adam's role is HELD in all three runs even as his Status flickers. Org left clean: all three
 probe runs purged (254 pairs, 3 maps, Dan's contact via the create-leg record).
+
+## 2026-08-09 · session 78 · THE INSTRUMENTATION RUN · governors in full, two ceilings found · run `pf0808-i1`, RESIDENT
+
+The thirty-third stamp's efficiency-and-scalability run: does the current express-lane pipeline
+run comfortably clear of governor limits and inside the time bar, or does it need a redesign? HEAD
+`bb3d26d`, clean tree, org confirmed `00DWD00000DV7iT2AT` aossb2, fixture sha `018cac1b` verified
+against the freeze list. **Left RESIDENT** for design spot-check. Full report `review/pf0808-i1/`.
+Label WARM on the model cache (reads cache_read=27,436, artifact prefix warm within TTL); the
+governor, callout, projection, and evidence-trail proofs are cache-independent.
+
+### The verdict: clear of every per-transaction governor on this fixture
+
+7 callouts, zero per-pair. Deterministic resolution disposed 40 pairs in 207 ms with 0 callouts -
+the old 59-callout job. ~59 s in-org critical path, inside the 60 s express bar; worst callout a
+read at 31.2 s, under the 90 s trigger and 120 s ceiling. Governor headroom, used/limit, sync
+transaction: every stage under 12% of every governor EXCEPT the join, which is the only non-idle
+stage at SOQL 61/100 and DML 71/150 on 17 claims. Heap peaks at 94 KB of 6 MB (a non-issue at
+this artifact size). Projection confirmed live (3 rows, watermarks 12:45:32Z, shown not asserted).
+Evidence trail walked source to map for Dan Lewis Evaluator (offset 19348, "extra add-on... max
+AI ability"), unbroken; AAO_Claim_Basis__c is 0 rows because the basis is the inline AAO_Spans__c
+JSON on the claim, reported honestly. Looks-right: bytes 45/45, designator quotes 6/6, trap 0/0,
+ledger HELD, named criteria opp+name, Dan's note "Buyer Role: Evaluator - Dan Lewis, 30 July 2026".
+
+### Two ceilings found, both named as redesign triggers, neither breached on PF
+
+**1 · THE KEYED-VERIFY GRAMMAR CEILING, the real scalability finding.** The first i1 attempt drove
+shardCount=1 (the literal h1 graph). The denser plain bucket (45 located, ~24 claims) hit a model
+gateway 400: "The compiled grammar is too large... reduce the number of strict tools." The keyed
+schema is one required property per claim ref; at ~24 refs the compiled structured-output grammar
+crosses a gateway size limit that h1's 22-claim bucket stayed under. **So shardCount=1 is NOT
+viable on a transcript this dense - shardCount is a REQUIRED function of claim density, not a
+tuning knob.** shardCount=2 (two 12-claim shards, concurrent) cleared it and produced the resident
+HELD run. This adds a SECOND split trigger beside the stamped 90-second wall trigger: a
+grammar-size trigger fired by claims-per-bucket. The shard mechanism serves both; the split logic
+should cap max-claims-per-keyed-bucket. Named for design.
+
+**2 · THE JOIN DML SCALES WITH THE DEAL.** 71 DML at 17 eligible claims is ~4.2/claim; the 150-DML
+sync ceiling is reached near ~35 claims, the ~32-pair join wall the sixteenth stamp named. First
+stage to hit a ceiling on a denser transcript; the caller-side join split (queued) and the
+single-projection ruling (thirty-first stamp, moves vendor DML out of the join) are its
+mitigations. Not near it on PF (17 claims). The async batch lane doubles SOQL and 6x's CPU, so
+every number has MORE headroom there.
+
+**3 · CALL 0 COLD-FLAKE, third instance.** The genuinely-cold first attempt answered yes with no
+quote; the quote-law caught it; the retry resolved OPPORTUNITY. Not rare; a cold call 0 needs a
+named retry policy, which the express lane's speculative launch can absorb. Cost: one ~7 s retry.
+
+### Scope, stated
+
+One run, per-transaction envelope and single-pipeline wall only. NOT concurrency or throughput -
+that is the separate stamped measurement waiting on the async-concurrency and gateway ceilings.
+No code changed this run; HEAD ran as-is.

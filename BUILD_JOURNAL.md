@@ -11204,3 +11204,54 @@ Matthew grades tg1's map against Pass 1's (the 44-vs-59 and the polarity/role di
 the accuracy rerun, where the span set and the call 3 downsize comparison build. Then the
 admission-filter proposal, then the concurrency measurement. Deferred small honesty still open:
 the `merged` line in the ledger Counts; the plain-bucket shard to reach the 50 s stretch.
+
+## 2026-08-09 · session 78 · THE STABILITY PROBE · the two-read shape flickers against itself
+
+The thirty-second stamp ratified the halving (~57 s, both moves kept, the conjunct-homogeneity
+verify shape permanent, the shard mechanism accepted) and opened the accuracy phase. The one
+piece runnable without Matthew's grading is the stability probe, and it is the whole of this
+entry. **Three identical express-lane runs on frozen Project Farma, purged between, `shardCount=2`
+driven on the plain verify bucket. Mechanical only, nothing tuned against it. Report
+`review/pf0808-stability/`.**
+
+### The finding: located is stable, everything after it flickers
+
+| run | located | upheld | map rows |
+|---|---|---|---|
+| s1 | 42 | 8 | 2 |
+| s2 | 42 | 17 | 3 |
+| s3 | 43 | 21 | 3 |
+
+The reads find the same VOLUME every time (42/42/43) and the verdict count nearly triples
+(8/17/21). The map disagrees with itself on almost every establishment: **Adam's Status was
+nothing, then Supporter, then Mentor across three runs of the same bytes.** Stability rate on the
+load-bearing dimensions (Status/Political/Buyer-Role placement): 1 of 7 cells is 3/3 stable, and
+that one is Dan as Evaluator. Coverage is stable where a person appears, but Kayla's very presence
+flickered (absent in s1). **The instability is concentrated AFTER locate - in resolution and above
+all call 3 - which reframes the attention hazard on this fixture as a VERIFIER-and-join flicker,
+not a locator-recall flicker.** tg1's 44 and h1's 41 were not shape-versus-shape; the shape
+flickers against its own reruns.
+
+### What held, every run
+
+Bytes exact, demo-narration trap 0/0, ledger HELD on all three. The flicker is entirely in WHICH
+true things get affirmed, never in fabrication: unstable about what it establishes, never unsafe
+about inventing.
+
+### The 50-stretch, and why read variance now gates it
+
+`shardCount=2` (verified live - `AAO_Pass.verify(runKey,'plain',2,shardIndex)`) took the plain
+bucket from h1's 20.8 s single call to ~15 s across two concurrent shards. But the batch did not
+cleanly hit ≤50 s, and the reason is not verify: the reads ran 27-43 s here against h1's 27 s, and
+a 40 s read swamps any verify saving. Totals 69-83 s. With h1-typical 27 s reads the sharded graph
+lands ~52 s. **Read-time variance is now the express stretch's gating factor, and it is the same
+variance the flicker table is made of.**
+
+### Parked for design (working mode: measured, not answered)
+
+The flicker is a design question, not execution: options are (a) lower/zero call-3 temperature,
+(b) N-of-M verify voting (a token cost, the thing the halving fought), (c) accept flicker and
+define a stability threshold as a methodology choice - none built, none chosen. Read-time variance
+wants its own measurement. And the buyer-role collision (Matthew's open call) is confirmed stable
+- Adam's role is HELD in all three runs even as his Status flickers. Org left clean: all three
+probe runs purged (254 pairs, 3 maps, Dan's contact via the create-leg record).

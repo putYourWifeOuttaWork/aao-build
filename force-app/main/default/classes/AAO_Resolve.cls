@@ -361,35 +361,63 @@ public with sharing class AAO_Resolve {
             pairsByHandle.get(h).add(p);
         }
 
-        List<String> block = new List<String>{ '# The people on the call', '' };
-        block.addAll(candidateLines);
-        block.add('');
-        block.add('# The designators needing resolution');
-        block.add('');
-        for (String h : designatorByHandle.keySet()) {
-            AAO_Pair__c specimen = pairsByHandle.get(h)[0];
-            block.add('## ' + h);
-            block.add('As written: "' + designatorByHandle.get(h) + '"');
-            block.add('Introduced: "' + specimen.AAO_About_Quote__c + '"');
-            block.add('Spoken in the turn of: ' + specimen.AAO_Speaker_Key__c);
-            block.add('');
-        }
-
         AAO_Extract.StageSpec spec = AAO_Extract.inventorySpec();
         spec.stage = 'call2_requests';
         spec.charter = 'AAO_ResolveRequestCharter';
         spec.charterVersion = AAO_ResolveRequestCharter.VERSION;
 
         RequestRun r = new RequestRun();
-        r.call = AAO_Extract.callStage(
-            spec,
-            AAO_ResolveRequestCharter.systemPrompt(),
-            new List<String>{ String.join(block, '\n') },
-            AAO_ResolveRequestCharter.schema(
-                new List<String>(designatorByHandle.keySet()), candidateHandles
-            )
-        );
-        r.requests = AAO_ResolveRequestCharter.parse(r.call.rawText, designatorByHandle);
+        r.requests = new List<AAO_ResolveRequestCharter.Request>();
+
+        // THE GRAMMAR BUDGET REACHES THE MODEL LEG (thirty-fourth stamp). Its typed-request
+        // schema is one required property per designator handle, so it grows with unresolved
+        // people - harmless at a transcript's two, but a note or email hands it five to ten,
+        // and the same compiled-grammar ceiling verify hit lives here. The handles are
+        // chunked at the measured cap and each chunk is its own bounded callout, so the
+        // schema per call never crosses the ceiling. Derived NOW, before notes rediscover it
+        // with customer data in flight. On a transcript this is one chunk; the loop is the
+        // shape, not a cost.
+        List<String> allHandles = new List<String>(designatorByHandle.keySet());
+        Integer cap = AAO_Pass.MAX_UNITS_PER_KEYED_CALL;
+        for (Integer start = 0; start < allHandles.size(); start += cap) {
+            List<String> chunk = new List<String>();
+            Map<String, String> chunkDesignators = new Map<String, String>();
+            for (Integer i = start; i < Math.min(start + cap, allHandles.size()); i++) {
+                chunk.add(allHandles[i]);
+                chunkDesignators.put(allHandles[i], designatorByHandle.get(allHandles[i]));
+            }
+
+            List<String> block = new List<String>{ '# The people on the call', '' };
+            block.addAll(candidateLines);
+            block.add('');
+            block.add('# The designators needing resolution');
+            block.add('');
+            for (String h : chunk) {
+                AAO_Pair__c specimen = pairsByHandle.get(h)[0];
+                block.add('## ' + h);
+                block.add('As written: "' + designatorByHandle.get(h) + '"');
+                block.add('Introduced: "' + specimen.AAO_About_Quote__c + '"');
+                block.add('Spoken in the turn of: ' + specimen.AAO_Speaker_Key__c);
+                block.add('');
+            }
+
+            AAO_Extract.StageResult sr = AAO_Extract.callStage(
+                spec,
+                AAO_ResolveRequestCharter.systemPrompt(),
+                new List<String>{ String.join(block, '\n') },
+                AAO_ResolveRequestCharter.schema(chunk, candidateHandles)
+            );
+            if (r.call == null) {
+                r.call = sr;
+            } else {
+                r.call.usage.inputTokens += sr.usage.inputTokens;
+                r.call.usage.outputTokens += sr.usage.outputTokens;
+                r.call.elapsedMs += sr.elapsedMs;
+            }
+            r.requests.addAll(
+                AAO_ResolveRequestCharter.parse(sr.rawText, chunkDesignators)
+            );
+        }
 
         List<AAO_Participant__c> mentionsToInsert = new List<AAO_Participant__c>();
         Map<String, AAO_Participant__c> mentionByKey = new Map<String, AAO_Participant__c>();

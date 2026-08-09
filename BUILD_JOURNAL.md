@@ -11307,3 +11307,58 @@ named retry policy, which the express lane's speculative launch can absorb. Cost
 One run, per-transaction envelope and single-pipeline wall only. NOT concurrency or throughput -
 that is the separate stamped measurement waiting on the async-concurrency and gateway ceilings.
 No code changed this run; HEAD ran as-is.
+
+## 2026-08-09 · session 78 · THE GRAMMAR BUDGET AND CALL 0'S RETRY · the i1 ceilings get structure
+
+The thirty-fourth stamp ratified `pf0808-i1` and turned its two findings into two ruled builds
+folded into the accuracy phase. Both built and verified; one of them the honest way, by trying
+the ruled first choice, watching it fail worse, and shipping the ruled fallback.
+
+### The grammar budget (ruling 1), built and airtight
+
+The gateway rejects a keyed schema whose compiled grammar is too large (the i1 400). The measured
+cap is a constant in code and here, never in law text: **a plain bucket of 22 claims passed
+(h1); ~24 400'd (i1); the cap sits at 15** with margin. `AAO_Pass.MAX_UNITS_PER_KEYED_CALL = 15`,
+`keyedShardCount(units) = ceil(units/cap)`, `plannedVerifyShards(runKey, bucket)` so the caller
+DERIVES shardCount from density and never picks it - shardCount is a required function of density,
+not a knob. **The actual i1 cause, now fixed at the root: `VERIFY_KEYED_BATCH` was 30, so a
+24-claim bucket made one over-ceiling call.** Pinned to 15, any bucket or shard sub-batches at 15
+sequentially, and no single keyed call can cross the ceiling regardless of shard count; sharding
+is now purely for parallelism. Verified: keyedShardCount 16 to 2, 24 to 2, 45 to 3. **The grammar
+budget reaches the resolution model leg too** (ruling's explicit ask): `AAO_Resolve.requests`
+chunks its designator handles at the cap and makes one bounded callout per chunk, so a note handing
+it ten mentioned people never 400s - derived NOW, before notes hit it with customer data. A 400
+despite the cap still stops the run loudly (the AAO_Extract 400 throw propagates), a ceiling like
+any governor.
+
+### Call 0's flake (ruling 2): schema tried, reverted, retry ships - "which landed" reported
+
+The ruling: make yes-without-quote unexpressible in the schema, and if the schema layer cannot
+enforce it, fall back to the named retry. **I tried the schema first, as instructed.** I removed
+the `carries_*_content` booleans so a non-empty quote IS the yes and an empty string IS the no -
+structurally, no boolean to lie with. It deployed and unit-tested clean. **But live it caused a
+WORSE failure: call 0 generated runaway output (12,000 tokens, max_tokens truncation, >2 minutes),
+twice, versus ~250 tokens before.** Removing the binary anchor destabilized generation; a
+`maxLength` on the quote did not rein it in (the grammar does not enforce it here). So the schema
+approach did NOT land, and I reverted it to 1.1.0 (booleans restored). **The ruled fallback ships:
+the named retry policy in `AAO_Pass.resolve`** - exactly one retry on any `CharterException` (the
+whole family of call-0 parse/quote-law flakes, not just yes-without-quote), both attempts
+journalled to `routedNotDispatched`, a second failure stops the run honestly, never a loop.
+Verified live: call 0 flaked (a missing `_because` this draw), the retry caught it, the second
+attempt resolved OPPORTUNITY with a 192-char quote, `retryNotes=1`. Which landed: the retry, not
+the schema. Reported, per the stamp.
+
+### State
+
+Full suite: the latest run's only failure is the standing org-resident `ConvertToOpportunityTest`;
+every AAO class passes (ResolverCharter 12, Resolve 8, Project 28, Criteria 11, PairCommit 14,
+LocateCharter 13, PassContracts 8). No new run vehicle this turn - these are the accuracy phase's
+build work; the next full/instrumented run exercises the retry and the grammar budget end to end.
+The i1 resident state is untouched and available for design spot-check.
+
+### Parked, unchanged: the accuracy phase proper
+
+The span set, the call 3 downsize comparison, the two-read shape against s1 and a23, and Matthew's
+tg1-versus-Pass-1 grading remain design/grading work, not touched here. The flicker remedy stays
+parked. This turn hardened the two ceilings the instrumentation run exposed so the accuracy phase
+builds on a pipeline that cannot 400 on density or route on an unchecked scope.

@@ -139,21 +139,51 @@ public with sharing class AAO_Pass {
         spec.charter = 'AAO_ResolverCharter';
         spec.charterVersion = AAO_ResolverCharter.effectiveVersion();
 
-        r.call = AAO_Extract.callStage(
-            spec,
-            AAO_ResolverCharter.systemPrompt(),
-            new List<String>{
-                AAO_ResolverCharter.ontologyText(),
-                String.join(block, '\n'),
-                '# The transcript\n\n' + src.AAO_Normalized_Text__c
-            },
-            AAO_ResolverCharter.schema(handles)
-        );
-        r.verdict = AAO_ResolverCharter.parse(r.call.rawText, handles);
-        // The two sides' quotes are checked against the frozen artifact here rather than in
-        // the parse, because the parse holds the model's answer and this holds it against the
-        // bytes - the same separation the pairs law makes one stage later.
-        AAO_ResolverCharter.locate(r.verdict, src.AAO_Normalized_Text__c);
+        List<String> body = new List<String>{
+            AAO_ResolverCharter.ontologyText(),
+            String.join(block, '\n'),
+            '# The transcript\n\n' + src.AAO_Normalized_Text__c
+        };
+        Map<String, Object> schema = AAO_ResolverCharter.schema(handles);
+
+        // THE NAMED RETRY POLICY (thirty-fourth stamp), the fallback behind the schema fix.
+        // The yes-is-the-quote schema makes yes-without-quote unexpressible, which should
+        // end call 0's cold-flake; this is the backstop for any residual quote-law
+        // violation (a quote the model invented that the byte check refuses). Exactly ONE
+        // retry, both attempts journalled, a second failure stands and the run stops
+        // honestly. Never a loop.
+        Integer attempts = 0;
+        while (true) {
+            attempts++;
+            r.call = AAO_Extract.callStage(
+                spec, AAO_ResolverCharter.systemPrompt(), body, schema
+            );
+            try {
+                r.verdict = AAO_ResolverCharter.parse(r.call.rawText, handles);
+                // The two sides' quotes are checked against the frozen artifact here rather
+                // than in the parse, because the parse holds the model's answer and this
+                // holds it against the bytes - the same separation the pairs law makes one
+                // stage later.
+                AAO_ResolverCharter.locate(r.verdict, src.AAO_Normalized_Text__c);
+                if (attempts > 1) {
+                    r.routedNotDispatched.add(
+                        'call 0 quote-law retry: attempt ' + attempts + ' succeeded after a ' +
+                        'first quote-law violation. One retry only, both attempts on the record.'
+                    );
+                }
+                break;
+            } catch (AAO_ResolverCharter.CharterException e) {
+                if (attempts >= 2) {
+                    throw new PassException(
+                        'Call 0 failed the quote law twice on run for source ' + sourceId +
+                        '. One retry is the policy (thirty-fourth stamp); a second failure ' +
+                        'stops the run rather than routing on an unchecked scope. Last: ' +
+                        e.getMessage()
+                    );
+                }
+                // fall through to the single retry
+            }
+        }
 
         // v3.2 dispatch. One grain, and the other is logged rather than silently dropped.
         if (r.verdict.carriesNothing()) {
@@ -677,7 +707,67 @@ public with sharing class AAO_Pass {
      * family shares the plain shape. That is what makes one or two callouts per run
      * possible instead of one per contract code.
      */
-    public static final Integer VERIFY_KEYED_BATCH = 30;
+    /**
+     * The internal keyed sub-batch size, now PINNED TO THE GRAMMAR-BUDGET CAP (15, below).
+     * It was 30, which is what let a ~24-claim bucket make one over-ceiling call and 400 on
+     * `pf0808-i1`. At the cap, any bucket or shard sub-batches at 15, sequentially within its
+     * transaction, and no single keyed call ever crosses the compiled-grammar ceiling -
+     * independent of how many shards the caller drives. Sharding buys parallelism; this buys
+     * grammar safety. A literal rather than a reference to the constant below, because Apex
+     * initialises static finals in declaration order and this one leads.
+     */
+    public static final Integer VERIFY_KEYED_BATCH = 15;
+
+    /**
+     * THE GRAMMAR BUDGET, thirty-fourth stamp. The model gateway rejects a keyed schema whose
+     * compiled grammar is too large ("compiled grammar is too large... reduce the number of
+     * strict tools", a 400). Keyed schemas are how this build enforces completeness (one
+     * required property per unit), so the ceiling scales with unit count.
+     *
+     * **THE CAP IS MEASURED, NOT AUTHORED IN LAW TEXT** (the ruling's own words): a single
+     * plain bucket of 22 claims passed (`pf0808-h1`); ~24 claims 400'd (`pf0808-i1`). The cap
+     * sits at 15 - comfortably below the observed 22-24 boundary with margin for a denser
+     * schema (more properties per unit, e.g. sentiment's target field). The number lives here
+     * and in BUILD_JOURNAL, never in a charter or a document as law. **shardCount is a
+     * REQUIRED FUNCTION OF DENSITY, never a tuning knob:** the caller derives it from
+     * `keyedShardCount`, and a 400 that fires despite the cap stops the run loudly (the
+     * AAO_Extract 400 throw propagates), a ceiling like any governor.
+     */
+    public static final Integer MAX_UNITS_PER_KEYED_CALL = 15;
+
+    /** ceil(units / cap), at least one. The derivation the grammar budget makes mandatory. */
+    public static Integer keyedShardCount(Integer unitCount) {
+        if (unitCount == null || unitCount <= 0) {
+            return 1;
+        }
+        return (unitCount + MAX_UNITS_PER_KEYED_CALL - 1) / MAX_UNITS_PER_KEYED_CALL;
+    }
+
+    /**
+     * The shard count a bucket's verify REQUIRES, derived from its unverified-claim count
+     * against the measured cap. The caller drives exactly this many concurrent shards; it
+     * never picks a number itself.
+     */
+    public static Integer plannedVerifyShards(String runKey, String bucket) {
+        Boolean wantSentiment = bucket == 'sentiment';
+        Integer n = 0;
+        for (AAO_Pair__c c : [
+            SELECT AAO_Evidence_Contract__r.AAO_Proposition_Code__c
+            FROM AAO_Pair__c
+            WHERE AAO_Run_Key__c = :runKey
+                AND AAO_Stage__c = :AAO_PairKey.IDENTIFIED
+                AND AAO_Disposition__c = 'Identified'
+                AND AAO_Verification__c = null
+        ]) {
+            Boolean isSentiment = AAO_VerifyPairsCharter.takesTarget(
+                c.AAO_Evidence_Contract__r.AAO_Proposition_Code__c
+            );
+            if (isSentiment == wantSentiment) {
+                n++;
+            }
+        }
+        return keyedShardCount(n);
+    }
 
     /**
      * ONLY IDENTIFIED-TO-A-PERSON ROWS GO IN FRONT OF THE READER. A None or an Ambiguous row

@@ -1,0 +1,38 @@
+AAO_Pair_Ref__c,AAO_Evidence_Contract__r.AAO_Proposition_Code__c,AAO_Meaning__c,AAO_Coverage__c,AAO_Start_Offset__c,AAO_End_Offset__c,AAO_Answer_Text__c,AAO_About_Designator__c
+r2q4,AAO_POL_PS2,POLITICAL_STRUCTURE,Full,135,283,"the first thing I did was send it off to legal to update, and I know that they've already, I know that they've received it because they've responded",
+r1q1,AAO_PS_1,MENTOR,,370,496,"I guess I asked again that we try to expedite wherever possible. But yeah, they're going to have to give us an update on that.",
+r2q3,AAO_POL_PS2,POLITICAL_STRUCTURE,Full,370,434,I guess I asked again that we try to expedite wherever possible.,
+r1q2,AAO_POL_PS2,POLITICAL_STRUCTURE,Full,840,896,"So I noticed that you sent over the, like the order from",
+r1q3,AAO_POL_PS2,POLITICAL_STRUCTURE,Full,2731,2782,This is what I originally sent to legal for review.,
+r1q19,AAO_DC_N,CRITERION,Partial,5236,5378,"the only thing that's really of substance is the entity name, and I know that that will stop the car because there needs to be alignment there",
+r2q14,AAO_DC_N,CRITERION,Full,5236,5379,"the only thing that's really of substance is the entity name, and I know that that will stop the car because there needs to be alignment there.",
+r2q15,AAO_DC_R,REQUIRED,Full,5236,5379,"the only thing that's really of substance is the entity name, and I know that that will stop the car because there needs to be alignment there.",
+r1q18,AAO_DC_R,REQUIRED,Partial,5236,5378,"the only thing that's really of substance is the entity name, and I know that that will stop the car because there needs to be alignment there",
+r1q17,AAO_DC_N,CRITERION,Partial,6956,7161,"I think that like in order for us to get to PO, and I would bet that's the ultimate goal here is getting to PO, that we're going to need to have clean versions of all three, the MSA, the SOW, and the order",
+r2q16,AAO_DC_N,CRITERION,Full,6974,7161,"in order for us to get to PO, and I would bet that's the ultimate goal here is getting to PO, that we're going to need to have clean versions of all three, the MSA, the SOW, and the order",
+r2q17,AAO_DC_F,FORMAL,Partial,7297,7377,"routed through our system, Coupa, and those will all be signed at the same time.",
+r2q13,AAO_BR_EVAL,EVALUATOR,Partial,7656,7717,Looks like there's a couple comments that I see from Neeraja.,Neeraja
+r1q7,AAO_BR_SIG,SIGNATURE_APPROVER,Full,8322,8371,"I believe Fatima will be the one signing it, yes.",Fatima
+r2q8,AAO_BR_SIG,SIGNATURE_APPROVER,Full,8322,8371,"I believe Fatima will be the one signing it, yes.",Fatima
+r1q6,AAO_POL_PS2,POLITICAL_STRUCTURE,Full,9047,9259,"Once we have clean versions of all of them, then that can, those will need to be uploaded with our, the ticket in or the request in Coupa. And then that will get forwarded through the internal chain of approvers.",
+r2q18,AAO_POL_PS2,POLITICAL_STRUCTURE,Full,9315,9532,"you know, that's procurement and they've been CC'd on these communications as well, as well as like the GL team, they just do a check to make sure that everything was entered correctly when it comes to the GL strings.",
+r2q10,AAO_BR_APP,APPROVER,Full,9775,10048,"Because with this dollar amount, it's going to go to CFO, which is, you know, a few weeks ago I mentioned like on the payment terms issue, like that's where we've seen roadblocks in the past because CFO gets it. They see, okay, it's not net 110. No, they hit the no button.",Jacob
+r2q1,AAO_PS_1,MENTOR,,9775,10048,"Because with this dollar amount, it's going to go to CFO, which is, you know, a few weeks ago I mentioned like on the payment terms issue, like that's where we've seen roadblocks in the past because CFO gets it. They see, okay, it's not net 110. No, they hit the no button.",
+r1q4,AAO_PS_1,MENTOR,,9775,9986,"Because with this dollar amount, it's going to go to CFO, which is, you know, a few weeks ago I mentioned like on the payment terms issue, like that's where we've seen roadblocks in the past because CFO gets it.",
+r1q5,AAO_PS_1,MENTOR,,10121,10287,"So I guess I just want to make sure that when I sent that message earlier today to Corey and Neeraja, like, I think it's important that that gets socialized to Jacob.",
+r2q2,AAO_PS_1,MENTOR,,10121,10287,"So I guess I just want to make sure that when I sent that message earlier today to Corey and Neeraja, like, I think it's important that that gets socialized to Jacob.",
+r2q5,AAO_PS_1,MENTOR,,10375,10430,I'll bring that up with Neeraja and make sure that that,
+r1q12,AAO_POL_PS2,POLITICAL_STRUCTURE,Full,10375,10430,I'll bring that up with Neeraja and make sure that that,
+r1q15,AAO_PS_1,MENTOR,,10375,10430,I'll bring that up with Neeraja and make sure that that,
+r1q8,AAO_BR_SIG,SIGNATURE_APPROVER,Full,13107,13179,I know we have Pat who will sign on our side lined up and ready to roll.,Pat
+r2q9,AAO_BR_SIG,SIGNATURE_APPROVER,Full,13107,13179,I know we have Pat who will sign on our side lined up and ready to roll.,Pat
+r1q14,AAO_POL_PS1,POLITICAL_STRUCTURE,Full,13998,14077,Jefferson gets to go off and to the next adventure and I get to start this one.,
+r2q6,AAO_POL_PS1,POLITICAL_STRUCTURE,Full,13998,14077,Jefferson gets to go off and to the next adventure and I get to start this one.,
+r1q10,AAO_BR_APP,APPROVER,Full,15045,15180,"So she said he is aware. Do you have any concerns? And I guess basically just on the terms of the 60 days, right? That was the big one.",Jacob
+r1q11,AAO_POL_PS2,POLITICAL_STRUCTURE,Full,15045,15095,So she said he is aware. Do you have any concerns?,Neeraja
+r2q11,AAO_BR_APP,APPROVER,Full,16124,16205,I think that he's aware of and approves of it. So he reviewed as far as she knows,Jacob
+r1q9,AAO_BR_APP,APPROVER,Full,16544,16793,"once that goes through Koopa, I mean, that will be the one that count, that will be the approval that makes the determination or not. You know, it's great that he kind of pre-approves it, but yeah, but I'm sure he's going to need to have eyes on it.",Jacob
+r2q12,AAO_POL_IC3,INNER_CIRCLE,Partial,16544,16677,"once that goes through Koopa, I mean, that will be the one that count, that will be the approval that makes the determination or not.",Jacob
+r1q16,AAO_PS_1,SUPPORTER,,18704,18976,"I'm looking forward to it. I'm looking forward to getting into the sandbox and start to build this out. There's been, you know, just from what the meetings that I've been in and everything, there's been more and more of an ask on that relationship map and on the insights.",
+r2q7,AAO_BR_USER,USER,Full,18731,18807,I'm looking forward to getting into the sandbox and start to build this out.,
+r1q13,AAO_BR_USER,USER,Full,18731,18807,I'm looking forward to getting into the sandbox and start to build this out.,

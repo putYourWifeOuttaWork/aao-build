@@ -1,0 +1,38 @@
+AAO_Pair_Ref__c,AAO_Disposition__c,AAO_Corroborated__c,AAO_Verification__c,AAO_Located_Pair__r.AAO_Evidence_Contract__r.AAO_Proposition_Code__c,AAO_Located_Pair__r.AAO_Start_Offset__c,AAO_Located_Pair__r.AAO_Meaning__c,AAO_Person__r.AAO_Display_Name__c
+r2q4,Identified,false,Upheld,AAO_POL_PS2,135,POLITICAL_STRUCTURE,Jefferson Vargas
+r1q1,Identified,false,Refused,AAO_PS_1,370,MENTOR,Jefferson Vargas
+r2q3,Identified,false,Upheld,AAO_POL_PS2,370,POLITICAL_STRUCTURE,Jefferson Vargas
+r1q2,Identified,false,Refused,AAO_POL_PS2,840,POLITICAL_STRUCTURE,Jefferson Vargas
+r1q3,Identified,false,Upheld,AAO_POL_PS2,2731,POLITICAL_STRUCTURE,Jefferson Vargas
+r1q19,Identified,true,Upheld,AAO_DC_N,5236,CRITERION,Jefferson Vargas
+r2q14,Merged,false,,AAO_DC_N,5236,CRITERION,
+r1q18,Identified,true,Upheld,AAO_DC_R,5236,REQUIRED,Jefferson Vargas
+r2q15,Merged,false,,AAO_DC_R,5236,REQUIRED,
+r1q17,Identified,true,Upheld,AAO_DC_N,6956,CRITERION,Jefferson Vargas
+r2q16,Merged,false,,AAO_DC_N,6974,CRITERION,
+r2q17,Identified,false,Refused,AAO_DC_F,7297,FORMAL,Jefferson Vargas
+r2q13,Identified,false,Refused,AAO_BR_EVAL,7656,EVALUATOR,Neeraja
+r1q7,Identified,false,Refused,AAO_BR_SIG,8322,SIGNATURE_APPROVER,Fatima
+r2q8,Merged,false,,AAO_BR_SIG,8322,SIGNATURE_APPROVER,
+r1q6,Identified,false,Refused,AAO_POL_PS2,9047,POLITICAL_STRUCTURE,Jefferson Vargas
+r2q18,Identified,false,Refused,AAO_POL_PS2,9315,POLITICAL_STRUCTURE,Jefferson Vargas
+r2q10,Identified,false,Upheld,AAO_BR_APP,9775,APPROVER,Jacob
+r2q1,Merged,false,,AAO_PS_1,9775,MENTOR,
+r1q4,Identified,true,Refused,AAO_PS_1,9775,MENTOR,Jefferson Vargas
+r2q2,Merged,false,,AAO_PS_1,10121,MENTOR,
+r1q5,Identified,true,Refused,AAO_PS_1,10121,MENTOR,Jefferson Vargas
+r1q15,Identified,true,Refused,AAO_PS_1,10375,MENTOR,Ryan Couture
+r2q5,Merged,false,,AAO_PS_1,10375,MENTOR,
+r1q12,Identified,false,Upheld,AAO_POL_PS2,10375,POLITICAL_STRUCTURE,Ryan Couture
+r2q9,Merged,false,,AAO_BR_SIG,13107,SIGNATURE_APPROVER,
+r1q8,None,false,,AAO_BR_SIG,13107,SIGNATURE_APPROVER,
+r1q14,Identified,true,Refused,AAO_POL_PS1,13998,POLITICAL_STRUCTURE,Ryan Couture
+r2q6,Merged,false,,AAO_POL_PS1,13998,POLITICAL_STRUCTURE,
+r1q10,Identified,false,Refused,AAO_BR_APP,15045,APPROVER,Jacob
+r1q11,Identified,false,Refused,AAO_POL_PS2,15045,POLITICAL_STRUCTURE,Neeraja
+r2q11,Identified,false,Upheld,AAO_BR_APP,16124,APPROVER,Jacob
+r1q9,Identified,false,Upheld,AAO_BR_APP,16544,APPROVER,Jacob
+r2q12,Identified,false,Upheld,AAO_POL_IC3,16544,INNER_CIRCLE,Jacob
+r1q16,Identified,false,Refused,AAO_PS_1,18704,SUPPORTER,Ryan Couture
+r2q7,Merged,false,,AAO_BR_USER,18731,USER,
+r1q13,Identified,true,Upheld,AAO_BR_USER,18731,USER,Ryan Couture

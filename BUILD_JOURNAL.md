@@ -11422,3 +11422,94 @@ parked entry is a DO-NOT-BUILD. Every entry below quotes its authorizing bytes.
   set up safely rather than rushed at session tail after a correction about overreach.
 
 Nothing else built. No charter text touched this turn. No customer-shaped data touched.
+
+## 2026-08-09 · session 78 · the thirty-sixth stamp's three moves · (a) exports delivered, (b) Wendy closed, (c) two-read measured
+
+The thirty-sixth stamp is NOT in my on-disk ledger (newest inbox file tops out at the thirty-second;
+the thirty-fifth came inline). Per the RECEIPT RULE I execute each move against its OLDER quotable
+authorization and treat the thirty-sixth references as Matthew's sequencing. None of the three is a
+build: (a) delivery, (b) already-ruled fixes, (c) a named measurement.
+
+### (a) The export delivery leg · DONE, evidenced by paths
+
+Authorizing bytes: the standing obligation "Ship the row export with every run ... delivered into
+the project beside the report." The 14 CSVs (Pass 1's 4, tg1's 5, i1's 5) plus their reports are now
+in THE PROJECT (distinct from the git repo) at:
+`/Users/thefinalmachine/Downloads/claude/review/pf0808-p1/`, `.../pf0808-tg1/`, `.../pf0808-i1/`.
+tg1's projection.csv sits beside Pass 1's claims/README, so Matthew's tg1-versus-Pass-1 grading
+sheet is unblocked. Done = paths in the project, not commits in git.
+
+### (b) The Wendy diagnosis, by query, then only the ruled fix · DONE, BEFORE/AFTER evidenced
+
+The diagnosis distinguished item 4's three candidate causes by evidence:
+1. **The retraction never executed against her row - CONFIRMED, and it is a LAWFUL hold-back, not a
+   bug.** All three of Wendy's Emerson participant rows carry NO coverage watermark of ours
+   (`AAO_Coverage_Projected_Value__c`/`_Modstamp__c` null), and her only answer (a1SWD..., AAO_BR_EVAL,
+   UNVERIFIED) points at participant a1ZWD000002aBqD2AU whose coverage modstamp is null. So
+   `coverageWatermark(answers)` returns null, `recordedCoverage` is null, and the projection treats her
+   live "Brief contact" as not-ours and holds it back. This is exactly the case AAO_Project's own
+   comment (lines 719-721) anticipates - "the Coverage value WE wrote could never be retracted" - and
+   the same shape as Fatema's protected row (native value, no watermark of ours, holds back).
+2. **AAO_Internal__c = false still live - CONFIRMED**, on 2 of 3 participant rows (a1ZWD000002aBlN2AU,
+   a1ZWD000002aBqD2AU); one row (a1ZWD000002aIDO2A2) already true. The twenty-second stamp item 9
+   defect. NOTE: `AAO_Coverage` has NO `AAO_Internal__c` reference, so coverage does not currently read
+   the flag; the false flag did NOT put coverage on her map (coverage is presence-based). The flag's
+   live impact is upstream of the GATE (claims about internal subjects); its coverage impact is FUTURE.
+3. **Silent failure - NOT the case.** The retraction's absence is the lawful hold-back, not an error.
+
+**Executed ONLY the authorized fix:** twenty-second stamp item 9, *"AAO_Internal__c = false on
+wendy.higley@altify.com ... yours and is not closed"* - set the 2 false participant rows to true.
+BEFORE: false/false/true. AFTER: true/true/true. **Wendy's map coverage UNCHANGED** (Brief, native
+stamp 15:01:22, no write since - I did not touch her map row). **Fatema's regression row UNCHANGED**
+(Inner Circle, coverage null, Political_Last_Modified 2026-08-07T20:41:54).
+
+**Reported and PARKED (no build), the diagnosis's surface:**
+- Clearing Wendy's live map coverage is NOT ours (no watermark, holds back like Fatema). The
+  twenty-first stamp's expectation *"Then Wendy's Coverage retracts and her correction completes"* is
+  shown WRONG by evidence: her coverage is unwatermarked. Options for design: a human clears it; or a
+  coverage-excludes-internal build so a future projection drops her (but Emerson projection is blocked
+  by the protected map); or accept she stays as a coverage-only row. None authorized this session.
+- The latent defect behind it: the coverage projection writes the map value but the retraction reads
+  the watermark off the ANSWER's participant, and Wendy has 3 participant rows; the watermark it needs
+  was never written on the row her answer consults. Worth a design look. PARKED.
+
+### (c) The two-read measurement, ratified shape · reads to resolution to verify, NO join, NO projection
+
+Authorizing bytes: twenty-seventh stamp item 6, *"Two comprehensive reads against the graded sets
+(s1, a23 ...) measures what the second read recovers ... and whether the merged output holds the
+graded assertions."* Run-keyed (pf-c1-s1, pf-c1-a23), NO join, NO projection, no Emerson map touch;
+run-keyed pairs left resident (harmless, no map/claims). Call 0 not part of the ratified shape, so
+retryNotes = N/A (no call 0 ran). Rows in review/pf0808-c1/ and the project.
+
+| | s1 (training set, COLD) | a23 (unseen, WARM on shared prefix) |
+|---|---|---|
+| located read A / read B | 16 / 15 | 19 / 18 |
+| total located | 31 | 37 |
+| corroborated (both reads) | 11 | 10 |
+| survivors (establishments) | 20 | 27 |
+| single-read survivors | 9 | 17 |
+| designators: ladder / model-leg remainder | 0 / 0 | 2 / 7 (6 minted, 1 none) |
+| upheld / refused | 15 / 5 | 12 / 14 |
+
+**What the second read recovers, the measurement's point:** on a23 (unseen) 17 of 27 establishments
+(63%) are single-read - a MAJORITY would be lost by a single read; on s1 (training) 9 of 20 (45%).
+The recall hedge earns its keep, most on unseen speech. Governors clear everywhere (worst any stage
+SOQL 16/100 at a23 resolution, heap under 11 KB/6 MB). Timings and the graded comparison in
+review/pf0808-c1/README.md; the graded-versus-output comparison ran under adversarial verification.
+The tuned-behaviour law (s1 predicts nothing) and the stage caveat (a23 one late-stage call) ride
+every number; nothing is tuned against this output.
+
+**The graded comparison's decisive finding (workflow, adversarially verified):** a23's row-level
+grades DO NOT EXIST in `docs/aao-adjudication-sheet.md`. The sheet's sections are 1, 2, 3, 3a, 3b, 4,
+5, 6, 8, 10, 9, 7; there is no section 11. The only offset-bearing Emerson grades (§8, §9) are the 17
+June fixture (`ec8e7170`, sweep s1) in a different byte space (offsets to 35,552 vs a23's 135 to
+18,976). So a23 cannot be graded row-by-row from this repo; the only authoritative a23 grade is the
+carried aggregate (32/35 TRUE, 70% = 7/10 upheld, 0/18 refusals correct) from the EARLIER single-read
+run, ungradable against this two-read run. The verifier ruled the refusal-to-borrow §8/§9 correct.
+s1's grades ARE present (§9): 12/15 = 80% upheld estimate (floor 10/15, ceiling 13/15), below the
+sweep's own 94.1% but cross-run and proxy-matched, both refusal errors at offset 10348/Neeraja where
+the sweep's own two wrong refusals live. Verifier CONFIRMED arithmetic exact on both fixtures; one
+minor non-material wording defect (s1 merge side is r2 for 9 of 11 pairs, not all 11 - r1q3 @14363,
+r1q12 @23678 carry Merged on read A; changes no count). Corroboration-flag nuance verified: a23's 10
+merges yield only 8 flagged canonicals (r1q7 @8322 Refused, r1q8 @13107 None did not propagate the
+flag). Net: recall arithmetic solid; precision quality unavailable (a23) or non-generalizable (s1).

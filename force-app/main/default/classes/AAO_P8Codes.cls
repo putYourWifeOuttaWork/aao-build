@@ -34,11 +34,19 @@ public with sharing class AAO_P8Codes {
      * It is the one dimension the writer must not count as an answer read.
      */
     public static final String DIM_COVERAGE = 'coverage';
+    /**
+     * PROBLEMS. Like criteria, this dimension places nobody on the map ROW: its answers become
+     * insight CARDS, which are their own records with their own junctions. It is declared here
+     * anyway because `assertCovers` is the guard that a minted contract cannot go unplaced, and
+     * "this one writes a card rather than a field" is a placement, not an exemption.
+     */
+    public static final String DIM_PROBLEMS = 'problems';
 
     /** The dimension order the run report prints in. Support and Political lead (§P8.9). */
     public static List<String> dimensions() {
         return new List<String>{
-            DIM_SUPPORT, DIM_POLITICAL, DIM_BUYER_ROLE, DIM_CRITERIA, DIM_COVERAGE
+            DIM_SUPPORT, DIM_POLITICAL, DIM_BUYER_ROLE, DIM_CRITERIA, DIM_COVERAGE,
+            DIM_PROBLEMS
         };
     }
 
@@ -141,6 +149,23 @@ public with sharing class AAO_P8Codes {
         return role != null && BUYER_ROLE_LADDER.contains(role);
     }
 
+    /**
+     * PROBLEMS, and the vendor card TYPE each code writes. The type is the judgment call 3
+     * makes (type matching is the verified judgment, forty-second stamp), so the mapping from
+     * our code to the vendor's picklist is arithmetic once that judgment stands.
+     */
+    private static final Map<String, String> PROBLEM_TYPE = new Map<String, String>{
+        'AAO_PB_GOAL' => 'Goal',
+        'AAO_PB_PRESS' => 'Pressure',
+        'AAO_PB_INIT' => 'Initiative',
+        'AAO_PB_OBST' => 'Obstacle'
+    };
+
+    /** The vendor card type this code establishes, or null where the code is not a Problem. */
+    public static String problemType(String code) {
+        return String.isBlank(code) ? null : PROBLEM_TYPE.get(code);
+    }
+
     /** Sentiment. One contract; its meaning is the state, and the counter does the rest. */
     public static final String SENTIMENT = 'AAO_PS_1';
 
@@ -163,6 +188,9 @@ public with sharing class AAO_P8Codes {
         m.put(CRITERION_NAMING, DIM_CRITERIA);
         m.put(CRITERION_FORMAL, DIM_CRITERIA);
         m.put(CRITERION_REQUIRED, DIM_CRITERIA);
+        for (String code : PROBLEM_TYPE.keySet()) {
+            m.put(code, DIM_PROBLEMS);
+        }
         return m;
     }
 

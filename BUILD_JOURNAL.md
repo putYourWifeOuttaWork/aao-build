@@ -11730,3 +11730,49 @@ subject-contact link; the tenth is Rich, a mention-minted participant with no Co
 correct outcome and not a gap. John Van Schaick is on the roster, has no Contact, and is therefore
 not placed: the honest gap against "everyone placed", and the create leg stays evidence-driven where
 the forty-fourth stamp left it.
+
+## Session 83 · the forty-sixth stamp · the Problems contracts are live, and the family is NOT free after all
+
+Item 1 of four shipped. Items 2 to 4 (card writer, person-to-insight link, the run that shows cards)
+are NOT built, and the reason is a finding rather than a shortfall. Suite 440, all AAO green.
+
+**THE FOUR CONTRACTS ARE MINTED AND ROUTED.** `AAO_PB_GOAL`, `AAO_PB_PRESS`, `AAO_PB_INIT`,
+`AAO_PB_OBST`, built strictly from the draft: every vendor materiality gate dropped by ruling and
+each drop named on its own contract so nobody re-adds it as an improvement, type matching stated as
+the verified judgment, the four types described as near neighbours because that is the calibration
+target. `Spec.family` now carries to `AAO_Family__c` at mint; blank stays correct for the seventeen
+People contracts, whose families have always come from the prefix ladder. Measured: 4 minted, 17
+unchanged, `sweepFamilies()` returns five families, and NO Apex routing edit was needed.
+
+**THE CORRECTION TO MY OWN EARLIER REPORT: ADDING A FAMILY IS NOT PURELY A DATA ACT.** The
+forty-third stamp's routing build made the FAMILY a data act and this session's first cut read that
+as the whole job. It is not. A first full run harvested ZERO Problems pairs at every stage, on a
+fixture whose transcript demonstrably carries pricing pressure, an NDA condition and
+implementation-timing material. Diagnosed before reporting rather than after: the reads were NOT
+truncated (`stop=end_turn`, 2,277 output tokens against a 12,000 cap, 19 of 19 proposed pairs
+byte-located, zero discarded), the contracts WERE in the declared set (21) and in the rubric block
+(12,730 chars, both codes present). The suite named the cause in one line before any of it reached a
+report: `everyDeclaredContractHasAMeaningItCanVoice` fails, because a contract with no entry in
+`AAO_LocateCharter.MEANINGS` has every pair PARSED AWAY AND READ AS SILENCE. Meanings are code.
+Declared now, single-valued per contract for the reason the Buyer Role enums are: the contract IS
+the type.
+
+**Five test corrections in place**, each an assertion encoding a superseded fact rather than a
+defect: the family count four to five, the contract count seventeen to twenty-one in three places,
+and `everyDeclaredContractHasAFamilyOrTheSweepThrows` now asks the RECORD overload, since asking the
+prefix ladder about `AAO_PB_GOAL` asks it a question it correctly refuses. One self-inflicted slip
+caught and repaired: a bulk 17-to-21 replacement rewrote "the 17 June fixture" as "21 June" in a
+comment; the date is restored and the prose now says what does not move with the roster is the
+point, not the particular number.
+
+**NOT BUILT, and not claimed: the card writer, the person-to-insight link, and the run that shows
+cards.** The harvest was empty when the meanings were missing, so there was nothing to write and
+nothing to verify a writer against; building it blind against an empty harvest is what the receipt
+rule and the calibration discipline both exist to prevent. The meanings now exist but no run has
+been taken since, so the first honest next step is a run that measures what the four contracts
+actually harvest. The writer also needs a row of our own (there is no `AAO_Insight__c`; the criteria
+path's `AAO_Criterion__c` is the shape it would mirror) plus the vendor surface, which is confirmed
+present and mapped: `ALTF__Insight_Card__c` carries `ALTF__Type__c` {Goal, Pressure, Initiative,
+Obstacle, Solution}, `ALTF__Short_Description__c` for the one-sentence face, `Long_Description__c`
+and `Note__c` for detail and citations, and `ALTF__Insight_Card_Contact__c` carries the
+person-to-insight link with types {Informer, Owner}.

@@ -10,7 +10,7 @@ private class AAO_PassContractsTest {
     @isTest
     static void theSetIsSeventeenAndNoCodeCarriesAPerson() {
         List<AAO_PassContracts.Spec> specs = AAO_PassContracts.specs();
-        System.assertEquals(17, specs.size(), 'Seventeen propositions, asked once per transcript.');
+        System.assertEquals(21, specs.size(), 'Twenty-one propositions, asked once per transcript: the seventeen People contracts plus the four Problems contracts added at the forty-sixth stamp.');
 
         Set<String> codes = new Set<String>();
         for (AAO_PassContracts.Spec sp : specs) {
@@ -27,19 +27,21 @@ private class AAO_PassContractsTest {
             System.assert(!sp.elements.isEmpty(), sp.code + ' has no elements.');
             codes.add(sp.code);
         }
-        System.assertEquals(17, codes.size(), 'Every code is distinct.');
+        System.assertEquals(21, codes.size(), 'Every code is distinct.');
     }
 
     @isTest
     static void theCountDoesNotMoveWithTheRoster() {
         // The whole point of the redesign, stated as an assertion rather than a comment. The
         // old set was 16 questions x N people; on the 17 June fixture's five-person roster that
-        // is 80 contract-questions. This set is seventeen at any roster size, because the person
-        // is call 2's job and appears in no code here.
+        // is 80 contract-questions. This set is TWENTY-ONE at any roster size, because the
+        // person is call 2's job and appears in no code here. It was seventeen until the
+        // forty-sixth stamp added the four Problems contracts; what does not move with the
+        // roster is the point, not the particular number.
         Integer forThree = AAO_PassContracts.specs().size();
         Integer forSeventeen = AAO_PassContracts.specs().size();
         System.assertEquals(forThree, forSeventeen);
-        System.assertEquals(17, forThree);
+        System.assertEquals(21, forThree);
     }
 
     @isTest
@@ -145,14 +147,14 @@ private class AAO_PassContractsTest {
         AAO_PassContracts.Result second = AAO_PassContracts.mint();
         Test.stopTest();
 
-        System.assertEquals(17, first.minted, 'unit: contracts');
+        System.assertEquals(21, first.minted, 'unit: contracts');
         System.assertEquals(1, first.superseded, 'The old rubric is superseded, never deleted.');
         System.assertEquals(
             0,
             second.minted,
             'Minting unchanged text again upserts onto the same key. Seventeen, not thirty-four.'
         );
-        System.assertEquals(17, second.unchanged, 'unit: contracts');
+        System.assertEquals(21, second.unchanged, 'unit: contracts');
         System.assertEquals(
             0,
             second.superseded,
@@ -160,7 +162,7 @@ private class AAO_PassContractsTest {
         );
 
         System.assertEquals(
-            17,
+            21,
             [
                 SELECT COUNT()
                 FROM AAO_Evidence_Contract__c

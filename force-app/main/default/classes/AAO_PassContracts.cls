@@ -53,6 +53,16 @@ public with sharing class AAO_PassContracts {
         public String speakerRequirement;
         public String basis;
         public List<String> elements;
+        /**
+         * The family this contract is read under, written to `AAO_Family__c`.
+         *
+         * BLANK IS CORRECT for the seventeen People contracts: `AAO_LocateCharter.familyOf`
+         * falls back to the code-prefix ladder for them, which is where their families have
+         * always come from, so leaving it null changes no routing. A family is stated here
+         * only where the ladder cannot infer it, which is every family added after the
+         * forty-third stamp's routing build.
+         */
+        public String family;
 
         public Spec(
             String code,
@@ -272,7 +282,87 @@ public with sharing class AAO_PassContracts {
             new List<String>{ 'Gate language: failing this blocks or ends the purchase' }
         ));
 
+        // ---- PROBLEMS · 4 · route E · the forty-sixth stamp, on Matthew's plain-word yes ----
+        //
+        // The family the two comprehensive reads carry beside People, per the thirty-first
+        // stamp's one-pass law. They declare `AAO_Family__c = Problems` rather than relying on
+        // a code prefix, which is what the forty-third stamp's routing build made possible: no
+        // Apex edit was needed to add a family, and this is the first family to use it.
+        //
+        // **ADMISSION CARRIES NO MATERIALITY JUDGMENT** (forty-second stamp, Matthew's): a card
+        // is admitted because a person genuinely said the thing. Every vendor gate that asks
+        // how BIG a thing is was dropped by ruling, and each drop is named on its contract so
+        // nobody re-adds it as an improvement. **TYPE MATCHING IS THE JUDGMENT THAT MATTERS**:
+        // the verifier is asked whether these words, from this speaker, genuinely establish
+        // THIS type, and cross-type confusion is the calibration target the way the role
+        // contracts were for People.
+        String pbShared =
+            'ADMISSION IS NOT MATERIALITY: if the person genuinely said it, it is admitted, ' +
+            'however small it sounds. What you are judging is whether the words match THIS ' +
+            'type rather than a neighbouring one. The four types are near neighbours on ' +
+            'purpose: a GOAL is wanted and not yet true, a PRESSURE pushes from outside, an ' +
+            'INITIATIVE is action already taken or committed, an OBSTACLE stands in the way. ' +
+            'Seller words never establish a buyer\'s problem. Speculation, hypotheticals and ' +
+            'questions are not statements of any of the four.';
+        out.add(problem(
+            'AAO_PB_GOAL',
+            'Problems · Goal',
+            'Did this person, in their own words, state an outcome they or their organization want to achieve?',
+            'A goal is a DESIRED FUTURE STATE: wanted, and not yet true. Company goals and ' +
+            'personal goals both admit, and the card records whose goal it is. THE VENDOR\'S ' +
+            'DECISION-MAKER-PERSONAL FILTER IS DROPPED BY RULING, so a goal held by anyone on ' +
+            'the call admits. Wanting is the test: a description of the current state is not a ' +
+            'goal, and a vendor capability the speaker likes is not their goal. ' + pbShared
+        ));
+        out.add(problem(
+            'AAO_PB_PRESS',
+            'Problems · Pressure',
+            'Did this person, in their own words, describe a force acting on them or their organization that demands response?',
+            'A pressure PUSHES. The vendor\'s categories (Financial, Operational, Customer, ' +
+            'Partner, Technology, Supplier, Market, Competitive) are guidance for RECOGNITION ' +
+            'and never a gate, and FUNDING OR SPONSORSHIP CONSEQUENCES ARE NOT REQUIRED, by ' +
+            'ruling. If the words describe something they merely want it is a Goal; if they ' +
+            'describe something standing in their way it is an Obstacle. Where a pressure ' +
+            'blocks a stated goal, the card names which goal in plain words. ' + pbShared
+        ));
+        out.add(problem(
+            'AAO_PB_INIT',
+            'Problems · Initiative',
+            'Did this person, in their own words, describe an effort, project or program underway or decided, intended to change something?',
+            'An initiative is ACTION TAKEN OR COMMITTED. FUNDED-AND-PRIORITIZED IS NOT ' +
+            'REQUIRED, by ruling; where funding or sponsorship words were actually said the ' +
+            'card records them, and where they were not, their absence is not a refusal. ' +
+            'Intent without commitment is a Goal, not an initiative. ' + pbShared
+        ));
+        out.add(problem(
+            'AAO_PB_OBST',
+            'Problems · Obstacle',
+            'Did this person, in their own words, describe a task, situation or process that stands in the way of something they are trying to do?',
+            'An obstacle BLOCKS. THE VENDOR\'S SUBSTANTIAL-VALUE TEST IS DROPPED BY RULING: a ' +
+            'small blocker is an obstacle. Where the obstacle blocks a stated goal, or more ' +
+            'than one, the card names them in plain words. A complaint about the world with ' +
+            'nothing blocked is sentiment, not an obstacle. ' + pbShared
+        ));
+
         return out;
+    }
+
+    /**
+     * A Problems contract. `Any_Participant` because a problem is established by whoever
+     * voiced it, and the family is stated rather than inferred from the code.
+     */
+    private static Spec problem(
+        String code,
+        String shortLabel,
+        String proposition,
+        String guidance
+    ) {
+        Spec s = new Spec(
+            code, shortLabel, proposition, guidance, 'Any_Participant', BASIS_OURS,
+            new List<String>{ proposition }
+        );
+        s.family = 'Problems';
+        return s;
     }
 
     private static Spec pol(
@@ -342,6 +432,7 @@ public with sharing class AAO_PassContracts {
                 AAO_Elements_Basis__c = sp.basis,
                 AAO_Speaker_Requirement__c = sp.speakerRequirement,
                 AAO_Route__c = 'E',
+                AAO_Family__c = sp.family,
                 AAO_Charter_Designation__c = 'People',
                 AAO_Contract_State__c = 'Derived',
                 AAO_Rubric_Version__c = RUBRIC_VERSION,

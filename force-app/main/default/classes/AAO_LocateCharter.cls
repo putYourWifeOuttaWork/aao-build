@@ -234,7 +234,22 @@ public with sharing class AAO_LocateCharter {
         'AAO_BR_SIG' => new List<String>{ 'SIGNATURE_APPROVER' },
         'AAO_DC_N' => new List<String>{ 'CRITERION' },
         'AAO_DC_F' => new List<String>{ 'FORMAL', 'INFORMAL' },
-        'AAO_DC_R' => new List<String>{ 'REQUIRED' }
+        'AAO_DC_R' => new List<String>{ 'REQUIRED' },
+        // PROBLEMS, the forty-sixth stamp. Single-valued per contract for the reason the Buyer
+        // Role enums are: the contract IS the type, and TYPE MATCHING IS THE VERIFIED JUDGMENT
+        // (forty-second stamp), so the choice call 3 makes is whether these words establish
+        // THIS type at all, never which of four to pick inside one pair.
+        //
+        // **DECLARING THESE IS NOT OPTIONAL AND IS NOT DATA.** The forty-third stamp's routing
+        // build made the FAMILY a data act, and this session's first cut read that as the whole
+        // job: the four contracts minted, routed and reached the read prompt, and the fixture
+        // harvested ZERO pairs for them, because a contract with no meaning it can voice has
+        // every pair parsed away and read as silence. The suite said so in one line
+        // (`everyDeclaredContractHasAMeaningItCanVoice`) before any of it reached a report.
+        'AAO_PB_GOAL' => new List<String>{ 'GOAL' },
+        'AAO_PB_PRESS' => new List<String>{ 'PRESSURE' },
+        'AAO_PB_INIT' => new List<String>{ 'INITIATIVE' },
+        'AAO_PB_OBST' => new List<String>{ 'OBSTACLE' }
     };
 
     /**

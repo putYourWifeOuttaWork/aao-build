@@ -86,6 +86,61 @@ public with sharing class AAO_P8Codes {
         'AAO_BR_SIG' => 'Signature Approver'
     };
 
+    /**
+     * THE BUYER-ROLE LADDER, Matthew's ruling, confirmed 11 August and quoted at the
+     * forty-fifth stamp: *"The writer projects the highest-ranked ESTABLISHED role, Decision
+     * Maker above Evaluator above User; the unprojected established roles ride the Option C
+     * note with their citations; the refusal-note hold is superseded for ladder-resolvable
+     * collisions and stays for anything the ladder cannot rank."* His shorter form on the map:
+     * if they are Evaluator and User, they are Evaluator.
+     *
+     * His reasoning, from the grading sheet's row 3 and worth keeping beside the order: an
+     * Evaluator outranks a User *"not because it is later, but because almost all evaluators
+     * are also users"*. The ladder is about which role SUBSUMES the other, never about which
+     * establishment arrived last.
+     *
+     * **APPROVER AND SIGNATURE APPROVER ARE DELIBERATELY ABSENT.** Only three roles were
+     * ranked, and a collision touching an unranked one is exactly what the ruling means by
+     * "anything the ladder cannot rank": it keeps the refusal-note hold. Guessing where an
+     * Approver sits against a Decision Maker would be this file inventing a ruling.
+     */
+    private static final List<String> BUYER_ROLE_LADDER = new List<String>{
+        'Decision Maker',
+        'Evaluator',
+        'User'
+    };
+
+    /**
+     * The highest-ranked established Buyer Role, or NULL where the ladder cannot rank the set.
+     *
+     * Null is the signal to hold: the caller keeps the collision refusal rather than picking.
+     * That is the difference between this and `politicalCeiling`, which ranks a closed
+     * vocabulary and can always answer.
+     */
+    public static String buyerRoleCeiling(Set<String> roles) {
+        if (roles == null || roles.isEmpty()) {
+            return null;
+        }
+        for (String role : roles) {
+            if (!BUYER_ROLE_LADDER.contains(role)) {
+                // One unrankable role and the whole set holds. A partial ranking would project
+                // a value while silently dropping a role nobody ruled on.
+                return null;
+            }
+        }
+        for (String rung : BUYER_ROLE_LADDER) {
+            if (roles.contains(rung)) {
+                return rung;
+            }
+        }
+        return null;
+    }
+
+    /** Whether the ladder ranks this role at all. Used to explain a hold. */
+    public static Boolean ranksBuyerRole(String role) {
+        return role != null && BUYER_ROLE_LADDER.contains(role);
+    }
+
     /** Sentiment. One contract; its meaning is the state, and the counter does the rest. */
     public static final String SENTIMENT = 'AAO_PS_1';
 

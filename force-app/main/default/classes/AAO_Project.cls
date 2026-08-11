@@ -1311,6 +1311,12 @@ public with sharing class AAO_Project {
          * populated list is a refusal, not a value** - see `buyerRoleFrom`.
          */
         public List<String> buyerRoleCollision = new List<String>();
+        /**
+         * Established roles the LADDER outranked. Projected nowhere; carried to the note with
+         * their citations, because a role the evidence established does not stop existing
+         * when a higher one is also established.
+         */
+        public List<String> buyerRoleOutranked = new List<String>();
         public List<CriterionRead> criteria = new List<CriterionRead>();
         /** Computed, never extracted. Null is leave-alone, which is the silence law. */
         public String coverage;
@@ -1444,9 +1450,34 @@ public with sharing class AAO_Project {
             d.buyerRole = new List<String>(established)[0];
             return;
         }
+
+        // THE LADDER, Matthew's ruling, ruled at the thirty-eighth stamp and built at the
+        // forty-fifth: "The writer projects the highest-ranked ESTABLISHED role, Decision Maker
+        // above Evaluator above User; the unprojected established roles ride the Option C note
+        // with their citations; the refusal-note hold is superseded for ladder-resolvable
+        // collisions and stays for anything the ladder cannot rank."
+        //
+        // Before this, EVERY collision was a refusal, and the field held its "the evidence
+        // establishes Evaluator, User and the field holds one" note. That was right while
+        // nothing ranked the roles; it is wrong now that something does, and Adam Pfeiffer's
+        // row is the acceptance case. The hold survives only where the ladder genuinely cannot
+        // answer, which is any set touching Approver or Signature Approver.
+        String ceiling = AAO_P8Codes.buyerRoleCeiling(established);
         List<String> several = new List<String>(established);
         several.sort();
-        d.buyerRoleCollision = several;
+        if (ceiling == null) {
+            d.buyerRoleCollision = several;
+            return;
+        }
+        d.buyerRole = ceiling;
+        // The roles the ladder outranked are NOT discarded: they were established by evidence
+        // and the note carries them with their citations, which is what makes a projected
+        // Evaluator still auditable back to the User words.
+        for (String role : several) {
+            if (role != ceiling) {
+                d.buyerRoleOutranked.add(role);
+            }
+        }
     }
 
     /**
@@ -1541,6 +1572,20 @@ public with sharing class AAO_Project {
                     ? ''
                     : ' - ' + buyerRoleCitations[buyerRoleCitations.size() - 1])
             );
+            if (!d.buyerRoleOutranked.isEmpty()) {
+                // THE LADDER'S OTHER HALF. The ruling projects the highest role AND keeps the
+                // rest visible: "the unprojected established roles ride the Option C note with
+                // their citations". Without this line the map would silently drop a role the
+                // evidence established, which is the same silence the refusal note exists to
+                // end, just quieter.
+                parts.add(
+                    'Also established, outranked by ' + d.buyerRole + ': ' +
+                    String.join(d.buyerRoleOutranked, ', ') +
+                    (buyerRoleCitations.size() < 2
+                        ? ''
+                        : ' - ' + buyerRoleCitations[0])
+                );
+            }
         } else if (!d.buyerRoleCollision.isEmpty()) {
             // The refusal says so on the surface the seller reads, because a blank field
             // beside three established roles is the silence this whole design exists to end.
@@ -1567,6 +1612,14 @@ public with sharing class AAO_Project {
         }
         if (d.buyerRole != null) {
             plain.add('Buyer Role: ' + d.buyerRole);
+            if (!d.buyerRoleOutranked.isEmpty()) {
+                // Survives the degrade: the outranked roles are FACTS the evidence
+                // established, not decoration, so they outlive the citations when the note
+                // has to shed length.
+                plain.add(
+                    'Also established, outranked: ' + String.join(d.buyerRoleOutranked, ', ')
+                );
+            }
         }
         plain.add('Full citations on the AAO answer rows for this person.');
         return String.join(plain, '\n').abbreviate(NOTE_MAX);

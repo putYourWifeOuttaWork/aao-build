@@ -11694,3 +11694,39 @@ reported rather than hidden, the claim-immutability throw above, corrected and p
 (idempotent, same rows).
 
 Report and rows: `review/pf0811-fresh/`, calibration set at `review/calibration/`. Delivered.
+
+## Session 82 · the forty-fifth stamp · the buyer-role ladder, built at last, and it did not fire
+
+One build. The ladder was ruled at the thirty-eighth stamp as queue item (f), the forty-first stamp's
+new queue did not carry it forward, and it was never built; design named the drop plainly and
+restored it. Suite 437, all AAO green.
+
+**THE LADDER.** `AAO_P8Codes.buyerRoleCeiling` ranks Decision Maker above Evaluator above User and
+returns NULL for any set touching a role the ladder does not rank. `buyerRoleFrom` projects the
+ceiling, moves the outranked roles onto `buyerRoleOutranked`, and keeps the refusal hold only where
+the ceiling is null. The note gained an "Also established, outranked by X" line so a projected
+Evaluator stays walkable back to the User words, and that line survives the note's length degrade
+because the outranked roles are facts and the citations are decoration. APPROVER AND SIGNATURE
+APPROVER ARE DELIBERATELY UNRANKED: only three roles were ruled, and placing an Approver against a
+Decision Maker would be this code inventing a ruling. Four tests, including the hold and the
+lone-unranked-role case; the superseded "refuse rather than rank what nobody ranked" test is
+corrected in place with its old text kept.
+
+**IT DID NOT FIRE ON THIS RUN, and the map is misleading about that.** Adam Pfeiffer reads Evaluator,
+but his `AAO_BR_USER` answer came back UNVERIFIED this run, so only ONE role is established and there
+was no collision for the ladder to resolve. Nobody on the deal holds two established roles. The
+acceptance case Matthew saw on the live map came from `pf0811-live`, whose rows his own purge order
+removed. The ladder's correctness therefore rests on its tests, not on this run, and that is stated
+rather than implied.
+
+**The resident map** (`pf0811-fresh2`): Adam Supporter / Political Structure / Evaluator / Brief;
+Dan Evaluator / Brief; Kayla Brief only. Kayla's Buyer Role is blank this run where an earlier run
+had Evaluator, her `AAO_BR_USER` also landing UNVERIFIED: flicker, unchanged by anything here.
+Support is blank for Dan and Kayla because they have NO sentiment answers at all, which is
+never-measured and correctly blank rather than Neutral. Notes carry a cited line for every projected
+value, verified by reading them with newlines flattened after an earlier read of mine was truncated
+at the first line and briefly looked like a missing-citation defect. 9 of 10 answers carry the
+subject-contact link; the tenth is Rich, a mention-minted participant with no Contact, which is the
+correct outcome and not a gap. John Van Schaick is on the roster, has no Contact, and is therefore
+not placed: the honest gap against "everyone placed", and the create leg stays evidence-driven where
+the forty-fourth stamp left it.

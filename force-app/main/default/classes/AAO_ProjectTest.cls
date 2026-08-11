@@ -258,7 +258,14 @@ private class AAO_ProjectTest {
     }
 
     @IsTest
-    static void severalRolesRefuseToChooseRatherThanRankingWhatNobodyRanked() {
+    static void theLadderProjectsTheHighestEstablishedRoleAndTheRestRideTheNote() {
+        // MATTHEW'S RULING, ruled at the thirty-eighth stamp and built at the forty-fifth,
+        // REVERSING what this test used to assert. It read: "The field holds one value and the
+        // evidence establishes two. There is no authored ordering among the five, so picking
+        // would be the machine deciding what outranks what." That was right while nothing
+        // ranked the roles. Something does now, and it is Matthew's, not the machine's: "if
+        // they are Evaluator and User, they are Evaluator", because almost all evaluators are
+        // also users. Adam Pfeiffer's row is the acceptance case.
         Id p = someone();
         AAO_Project.Derivation d = AAO_Project.derive(
             new List<AAO_Answer__c>{
@@ -267,18 +274,82 @@ private class AAO_ProjectTest {
             }
         );
         System.assertEquals(
-            null,
-            d.buyerRole,
-            'The field holds one value and the evidence establishes two. There is no authored ' +
-            'ordering among the five, so picking would be the machine deciding what outranks ' +
-            'what - the same line that keeps a discovered criterion from raising a flag.'
+            'Evaluator', d.buyerRole, 'The highest ranked ESTABLISHED role is projected.'
         );
-        System.assertEquals(new List<String>{ 'Evaluator', 'User' }, d.buyerRoleCollision);
         System.assert(
-            d.note != null && d.note.contains('Evaluator, User'),
-            'The refusal says so on the surface the seller reads. A blank field beside two ' +
-            'established roles is exactly the silence this design exists to end. Got: ' + d.note
+            d.buyerRoleCollision.isEmpty(),
+            'And the refusal hold is superseded for a set the ladder can rank. Got: ' +
+            d.buyerRoleCollision
         );
+        System.assertEquals(
+            new List<String>{ 'User' },
+            d.buyerRoleOutranked,
+            'The outranked role is kept, not dropped: it was established by evidence.'
+        );
+        System.assert(
+            d.note != null && d.note.contains('User'),
+            'And it rides the note, so a projected Evaluator stays walkable back to the User ' +
+            'words. Got: ' + d.note
+        );
+    }
+
+    @IsTest
+    static void decisionMakerOutranksBothAndTheLadderIsNotAboutArrivalOrder() {
+        Id p = someone();
+        // The User establishment arrives LAST on purpose. The ruling ranks by which role
+        // subsumes the other, never by which establishment came in latest.
+        AAO_Project.Derivation d = AAO_Project.derive(
+            new List<AAO_Answer__c>{
+                ans('AAO_BR_EVAL', p, 'TRUE', 10),
+                ans('AAO_BR_DM', p, 'TRUE', 11),
+                ans('AAO_BR_USER', p, 'TRUE', 12)
+            }
+        );
+        System.assertEquals('Decision Maker', d.buyerRole);
+        System.assertEquals(new List<String>{ 'Evaluator', 'User' }, d.buyerRoleOutranked);
+    }
+
+    @IsTest
+    static void aCollisionTOUCHINGanUnrankedRoleSTILLREFUSES() {
+        // THE HOLD SURVIVES exactly where the ruling leaves it: "the refusal-note hold is
+        // superseded for ladder-resolvable collisions and STAYS FOR ANYTHING THE LADDER CANNOT
+        // RANK." Only three roles were ranked. Approver and Signature Approver were not, and
+        // deciding where an Approver sits against a Decision Maker would be this code inventing
+        // a ruling nobody gave it.
+        Id p = someone();
+        AAO_Project.Derivation d = AAO_Project.derive(
+            new List<AAO_Answer__c>{
+                ans('AAO_BR_EVAL', p, 'TRUE', 10),
+                ans('AAO_BR_APP', p, 'TRUE', 11)
+            }
+        );
+        System.assertEquals(
+            null, d.buyerRole, 'One unrankable role and the whole set holds. Got: ' + d.buyerRole
+        );
+        System.assertEquals(new List<String>{ 'Approver', 'Evaluator' }, d.buyerRoleCollision);
+        System.assert(
+            d.buyerRoleOutranked.isEmpty(),
+            'And nothing is reported as outranked, because nothing was ranked.'
+        );
+        System.assert(
+            d.note != null && d.note.contains('Approver, Evaluator'),
+            'The refusal still says so on the surface the seller reads. Got: ' + d.note
+        );
+    }
+
+    @IsTest
+    static void oneRoleIsStillJustThatRole() {
+        Id p = someone();
+        AAO_Project.Derivation d = AAO_Project.derive(
+            new List<AAO_Answer__c>{ ans('AAO_BR_SIG', p, 'TRUE', 10) }
+        );
+        System.assertEquals(
+            'Signature Approver',
+            d.buyerRole,
+            'An unranked role alone is not a collision. The ladder only ever arbitrates ' +
+            'between several, so a lone Signature Approver projects exactly as before.'
+        );
+        System.assert(d.buyerRoleOutranked.isEmpty());
     }
 
     // ========================================================================== criteria

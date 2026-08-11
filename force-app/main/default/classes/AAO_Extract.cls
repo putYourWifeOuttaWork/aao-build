@@ -144,6 +144,15 @@ public class AAO_Extract {
         public Integer promptChars;
         /** What was actually on the wire, so a probe can evidence it rather than claim it. */
         public Decimal temperature;
+        /**
+         * True when a temperature was configured, the model refused it, and the call was
+         * remade without it (forty-first stamp ruling 2, the BYO-LLM law). A run that reports
+         * `temp=refused` is telling you the stability knob was NOT applied, which is a
+         * different run from one that never asked for it.
+         */
+        public Boolean temperatureRefused = false;
+        /** Same, for the reasoning-effort knob, so the journal names which knob was missing. */
+        public Boolean effortRefused = false;
 
         public override String toString() {
             return stage +
@@ -152,7 +161,10 @@ public class AAO_Extract {
                 ' ms=' + elapsedMs +
                 ' ' + usage +
                 ' promptChars=' + promptChars +
-                (temperature == null ? ' temp=unset' : ' temp=' + temperature) +
+                (temperatureRefused == true
+                    ? ' temp=REFUSED_BY_MODEL'
+                    : (temperature == null ? ' temp=unset' : ' temp=' + temperature)) +
+                (effortRefused == true ? ' effort=REFUSED_BY_MODEL' : '') +
                 ' stop=' + stopReason;
         }
     }
@@ -226,6 +238,41 @@ public class AAO_Extract {
         }
     }
 
+    /**
+     * THE SAME SEPARATION, ON THE PATH WHERE VERIFICATION ACTUALLY HAPPENS.
+     *
+     * `requireSeparateModels` above guards the extract-bind-verify path and was the only guard
+     * that existed. The §P8 pass never called it, and §P8's call 3 built its spec from
+     * `inventorySpec()` and inherited the READ model, so for three weeks the reader and the
+     * verifier were the same model on the wire while the config record named a different one.
+     * The guard was watching a comparison the running pass did not use. That is the drift the
+     * forty-first stamp's ruling 1 closes, and this is the half that stops it recurring
+     * silently: the pass asks, every call 3, whether the two models are still distinct.
+     *
+     * The comparison is READER versus VERIFIER because on §P8 those are the two readings that
+     * must be independent. There is no binder on this path.
+     */
+    public static void requireSeparateReaderAndVerifier() {
+        Config cfg = config();
+        if (String.isBlank(cfg.verifyModel)) {
+            throw new ExtractException(
+                'AAO_Verify_Model__c is blank. §P8 call 3 dispatches the CONFIGURED verify ' +
+                'model (forty-first stamp, ruling 1) and there is no fallback on purpose: ' +
+                'falling back to the read model is precisely the drift this replaces.'
+            );
+        }
+        if (String.isBlank(cfg.inventoryModel)) {
+            throw new ExtractException('AAO_Inventory_Model__c is blank; the reads have no model.');
+        }
+        if (cfg.inventoryModel == cfg.verifyModel) {
+            throw new ExtractException(
+                'The read model and the verify model are both ' + cfg.inventoryModel +
+                '. Call 3 is meant to be a SECOND reader; the same model asked again is the ' +
+                'same reader asked twice, and every verdict it returns would measure nothing.'
+            );
+        }
+    }
+
     private static void requireActive(Config cfg) {
         if (cfg.active != true) {
             throw new ExtractException(
@@ -266,7 +313,9 @@ public class AAO_Extract {
 
         StageResult r = new StageResult();
         r.stage = spec.stage;
-        r.temperature = spec.temperature;
+        r.temperature = c.temperatureSent;
+        r.temperatureRefused = c.temperatureRefused == true;
+        r.effortRefused = c.effortRefused == true;
         r.rawText = c.text;
         r.usage = c.usage;
         r.modelRequested = spec.model;
@@ -639,6 +688,12 @@ public class AAO_Extract {
         String stopReason;
         Long elapsedMs;
         String text;
+        /** What actually rode the wire on the request that succeeded, null if none did. */
+        Decimal temperatureSent;
+        /** True when the model refused the key and the call was remade without it. */
+        Boolean temperatureRefused = false;
+        /** Same, for the reasoning-effort knob. */
+        Boolean effortRefused = false;
     }
 
     /**
@@ -709,6 +764,51 @@ public class AAO_Extract {
 
         Call c = new Call();
         c.elapsedMs = System.currentTimeMillis() - started;
+        c.temperatureSent = spec.temperature;
+
+        // OPTIONAL MODEL CAPABILITIES ARE FEATURE-DETECTED, NEVER REQUIRED. Forty-first
+        // stamp, ruling 2: the product is BYO-LLM, each org configures its own model per call,
+        // and a customer's model may or may not carry a given knob. The ruling extends LAW #1's
+        // discipline (feature detection, never version checks) to MODEL CAPABILITIES, so a
+        // configured extra that the chosen model refuses must not restrict the model choice or
+        // fail the run. The key is dropped, the call is remade, and the fact is journalled so a
+        // run report can say the knob was unavailable rather than implying it was applied.
+        //
+        // Detection is on the endpoint's OWN refusal, never on a model-name list. A name or
+        // version check would be exactly the LAW #1 mistake and would be wrong the first time a
+        // customer points this at a model nobody here has heard of. Measured on this org:
+        //   temperature  opus-5 and sonnet-5 refuse ("deprecated for this model"), haiku accepts
+        //   effort       haiku-4-5 refuses ("does not support the effort parameter"), opus accepts
+        // Two different models, two different missing knobs, in opposite directions. That is the
+        // whole argument for detecting rather than knowing.
+        //
+        // The loop retries once per refused key, because a model may lack more than one, and
+        // stops as soon as a request is not refused for a key we actually sent.
+        for (Integer attempt = 0; attempt < 2; attempt++) {
+            if (res.getStatusCode() != 400 || res.getBody() == null) {
+                break;
+            }
+            String err = res.getBody();
+            Boolean dropped = false;
+            if (body.containsKey('temperature') && err.contains('temperature')) {
+                body.remove('temperature');
+                c.temperatureRefused = true;
+                c.temperatureSent = null;
+                dropped = true;
+            }
+            if (outputConfig.containsKey('effort') && err.contains('effort')) {
+                outputConfig.remove('effort');
+                c.effortRefused = true;
+                dropped = true;
+            }
+            if (!dropped) {
+                break;
+            }
+            req.setBody(JSON.serialize(body));
+            started = System.currentTimeMillis();
+            res = new Http().send(req);
+            c.elapsedMs = System.currentTimeMillis() - started;
+        }
 
         if (res.getStatusCode() != 200) {
             throw new ExtractException(

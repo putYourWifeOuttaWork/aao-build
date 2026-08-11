@@ -953,17 +953,37 @@ public with sharing class AAO_Pass {
                 block.add('');
             }
 
+            // CALL 3 DISPATCHES THE CONFIGURED VERIFY MODEL, forty-first stamp ruling 1.
+            //
+            // The spec is still SEEDED from `inventorySpec()`, because the read spec is where
+            // the output bound and the cache-prefix posture live and neither is what the
+            // ruling moves. What the ruling moves is the MODEL: this borrowed the read model
+            // and therefore ran verification on the same model that did the reading, while
+            // `AAO_Verify_Model__c` sat in the config naming a different one. Config and code
+            // now say the same thing, and `requireSeparateReaderAndVerifier` throws if they
+            // ever converge again, so the drift cannot come back quietly.
+            AAO_Extract.Config vcfg = AAO_Extract.config();
+            AAO_Extract.requireSeparateReaderAndVerifier();
             AAO_Extract.StageSpec spec = AAO_Extract.inventorySpec();
             spec.stage = 'call3_verify';
             spec.charter = 'AAO_VerifyPairsCharter';
             spec.charterVersion = AAO_VerifyPairsCharter.VERSION;
-            // §P8's call 3 borrows the READ spec and overrides it, so it never saw the verify
-            // stage's configuration. The temperature has to be attached HERE, at the site that
-            // actually dispatches call 3, or a temperature-0 probe measures nothing: the first
-            // attempt at this wired `verifySpec()` and the wire still reported temp=unset,
-            // because that spec belongs to the older extract-bind-verify path. Reads keep their
-            // variance: `inventorySpec()` itself is never given a temperature.
-            spec.temperature = AAO_Extract.config().verifyTemperature;
+            spec.model = vcfg.verifyModel;
+            // AND CALL 3 BUYS NO THINKING. `verifySpec()` has always omitted effort on purpose,
+            // in its own words: the verifier "is answering a low-inference question about two
+            // pieces of text, and buying thinking tokens for that is paying for deliberation
+            // nobody asked for". Call 3 was carrying the READ's effort only because it seeds
+            // from the read spec, which is the same borrowing ruling 1 corrects for the model.
+            // The configured verifier refuses the parameter outright ("This model does not
+            // support the effort parameter"), so leaving it set would have made ruling 1
+            // unrunnable; the feature detection in AAO_Extract would now recover from that, and
+            // this makes the recovery unnecessary rather than routine.
+            spec.effort = null;
+            // Attached HERE, at the site that actually dispatches call 3. The first attempt at
+            // this wired `verifySpec()` and the wire still reported temp=unset, because that
+            // spec belongs to the older extract-bind-verify path. Reads keep their variance:
+            // `inventorySpec()` itself is never given a temperature.
+            spec.temperature = vcfg.verifyTemperature;
 
             AAO_Extract.StageResult sr = AAO_Extract.callStage(
                 spec,

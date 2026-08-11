@@ -1222,6 +1222,178 @@ private class AAO_ExtractTest {
         );
     }
 
+    /** 400 first, then 200, and it keeps every body so the retry can be inspected. */
+    private class RefuseThenAcceptMock implements HttpCalloutMock {
+        public List<String> sent = new List<String>();
+        private String okBody;
+        private String refusal;
+        public RefuseThenAcceptMock(String okBody, String refusal) {
+            this.okBody = okBody;
+            this.refusal = refusal;
+        }
+        public HttpResponse respond(HttpRequest req) {
+            sent.add(req.getBody());
+            HttpResponse res = new HttpResponse();
+            Boolean first = sent.size() == 1;
+            res.setStatusCode(first ? 400 : 200);
+            res.setStatus(first ? 'Bad Request' : 'OK');
+            res.setBody(first ? refusal : okBody);
+            return res;
+        }
+    }
+
+    @IsTest
+    static void aModelThatRefusesTemperatureStillRuns_theByoLlmLaw() {
+        // FORTY-FIRST STAMP, RULING 2. The product is BYO-LLM: every org configures its own
+        // model per call, and a customer's model may or may not carry a temperature knob. A
+        // configured temperature the chosen model refuses must NOT restrict the model choice
+        // and must NOT fail the run. Measured on the real endpoint: opus-5 and sonnet-5 refuse
+        // with "`temperature` is deprecated for this model", haiku-4-5 accepts.
+        AAO_Extract.overrideConfig = testConfig();
+        AAO_Extract.StageSpec s = plainSpec();
+        s.temperature = 0;
+        RefuseThenAcceptMock mock = new RefuseThenAcceptMock(
+            envelope('{"ok":true}', 'end_turn'),
+            '{"type":"error","error":{"type":"invalid_request_error",' +
+                '"message":"`temperature` is deprecated for this model."}}'
+        );
+        Test.setMock(HttpCalloutMock.class, mock);
+
+        Test.startTest();
+        AAO_Extract.StageResult r = AAO_Extract.callStage(
+            s, 'sys', new List<String>{ 'u' }, okSchema()
+        );
+        Test.stopTest();
+
+        System.assertEquals(2, mock.sent.size(), 'The call is remade exactly once.');
+        System.assert(
+            bodyOf(mock.sent[0]).containsKey('temperature'),
+            'The first attempt asks for what was configured.'
+        );
+        System.assertEquals(
+            false,
+            bodyOf(mock.sent[1]).containsKey('temperature'),
+            'The retry drops the key rather than the model. Restricting model choice for a ' +
+            'sampling knob is the thing ruling 2 forbids.'
+        );
+        System.assertEquals(
+            true, r.temperatureRefused, 'And the run REPORTS that the knob did not apply.'
+        );
+        System.assertEquals(
+            null,
+            r.temperature,
+            'A run that reports a temperature it did not get to send would be claiming a ' +
+            'stability property it does not have.'
+        );
+    }
+
+    @IsTest
+    static void aModelThatRefusesEffortStillRuns_theSameLawOnADifferentKnob() {
+        // The knob that proved the rule general. Ruling 2 extends feature detection to MODEL
+        // CAPABILITIES, and effort is the second one measured: on this org opus-5 accepts
+        // effort and refuses temperature, while haiku-4-5 accepts temperature and refuses
+        // effort. Two models, two missing knobs, opposite directions. Knowing which model
+        // lacks what is exactly the thing a version check gets wrong.
+        AAO_Extract.overrideConfig = testConfig();
+        AAO_Extract.StageSpec s = plainSpec();
+        s.effort = 'low';
+        RefuseThenAcceptMock mock = new RefuseThenAcceptMock(
+            envelope('{"ok":true}', 'end_turn'),
+            '{"type":"error","error":{"type":"invalid_request_error",' +
+                '"message":"This model does not support the effort parameter."}}'
+        );
+        Test.setMock(HttpCalloutMock.class, mock);
+
+        Test.startTest();
+        AAO_Extract.StageResult r = AAO_Extract.callStage(
+            s, 'sys', new List<String>{ 'u' }, okSchema()
+        );
+        Test.stopTest();
+
+        System.assertEquals(2, mock.sent.size(), 'Remade exactly once.');
+        Map<String, Object> second = bodyOf(mock.sent[1]);
+        Map<String, Object> oc = (Map<String, Object>) second.get('output_config');
+        System.assertEquals(
+            false, oc.containsKey('effort'), 'The retry drops effort, not the model.'
+        );
+        System.assertEquals(true, r.effortRefused, 'And the run reports the knob was refused.');
+    }
+
+    @IsTest
+    static void aFourHundredThatIsNotAboutTemperatureIsNotRetried() {
+        // The detection must key on the endpoint's own refusal of THIS parameter, not swallow
+        // every 400. A blanket retry would hide real request defects behind a second attempt.
+        AAO_Extract.overrideConfig = testConfig();
+        AAO_Extract.StageSpec s = plainSpec();
+        s.temperature = 0;
+        RefuseThenAcceptMock mock = new RefuseThenAcceptMock(
+            envelope('{"ok":true}', 'end_turn'),
+            '{"type":"error","error":{"type":"invalid_request_error",' +
+                '"message":"max_tokens: must be greater than 0"}}'
+        );
+        Test.setMock(HttpCalloutMock.class, mock);
+
+        Test.startTest();
+        try {
+            AAO_Extract.callStage(s, 'sys', new List<String>{ 'u' }, okSchema());
+            System.assert(false, 'An unrelated 400 must surface, not be retried away.');
+        } catch (AAO_Extract.ExtractException e) {
+            System.assert(e.getMessage().contains('max_tokens'), e.getMessage());
+        }
+        Test.stopTest();
+
+        System.assertEquals(1, mock.sent.size(), 'Exactly one attempt, no silent second try.');
+    }
+
+    // ============================================== the reader-versus-verifier separation
+
+    @IsTest
+    static void theP8GuardCatchesTheDriftThatActuallyHappened() {
+        // The §P8 pass ran verification on the READ model for three weeks while the config
+        // named a different one, because call 3 built its spec from inventorySpec() and the
+        // only separation guard compared bind against verify on a path §P8 never called. This
+        // is the guard that watches the comparison the running pass actually uses.
+        AAO_Extract.Config cfg = testConfig();
+        cfg.inventoryModel = 'claude-opus-5';
+        cfg.verifyModel = 'claude-opus-5';
+        AAO_Extract.overrideConfig = cfg;
+        try {
+            AAO_Extract.requireSeparateReaderAndVerifier();
+            System.assert(false, 'Reader and verifier on one model must not pass.');
+        } catch (AAO_Extract.ExtractException e) {
+            System.assert(
+                e.getMessage().contains('same reader asked twice'), e.getMessage()
+            );
+        }
+    }
+
+    @IsTest
+    static void theP8GuardRefusesABlankVerifyModelRatherThanFallingBack() {
+        AAO_Extract.Config cfg = testConfig();
+        cfg.inventoryModel = 'claude-opus-5';
+        cfg.verifyModel = '';
+        AAO_Extract.overrideConfig = cfg;
+        try {
+            AAO_Extract.requireSeparateReaderAndVerifier();
+            System.assert(false, 'A blank verify model must throw.');
+        } catch (AAO_Extract.ExtractException e) {
+            System.assert(
+                e.getMessage().contains('no fallback'),
+                'Falling back to the read model is exactly the drift this replaces. Got: ' +
+                e.getMessage()
+            );
+        }
+    }
+
+    @IsTest
+    static void distinctReaderAndVerifierPass() {
+        AAO_Extract.Config cfg = testConfig();
+        cfg.inventoryModel = 'claude-opus-5';
+        cfg.verifyModel = 'claude-haiku-4-5-20251001';
+        AAO_Extract.overrideConfig = cfg;
+        AAO_Extract.requireSeparateReaderAndVerifier();
+    }
+
     @IsTest
     static void aConfiguredTemperatureReachesTheBodyExactly() {
         AAO_Extract.overrideConfig = testConfig();

@@ -121,9 +121,37 @@ public with sharing class AAO_LocateCharter {
         if (code.startsWith('AAO_BR_')) { return 'Buyer Role'; }
         if (code.startsWith('AAO_DC_')) { return 'Decision criteria'; }
         throw new CharterException(
-            'Contract ' + code + ' belongs to no family the sweep knows. A contract with no ' +
-            'family would be silently swept by nobody, so this throws rather than dropping it.'
+            'Contract ' + code + ' belongs to no family the sweep knows, and it declares no ' +
+            'AAO_Family__c. A contract with no family would be silently swept by nobody, so ' +
+            'this throws rather than dropping it. THE FIX IS DATA, NOT CODE: set AAO_Family__c ' +
+            'on the contract and the pass carries it without an Apex change.'
         );
+    }
+
+    /**
+     * THE FAMILY THE CONTRACT DECLARES, falling back to the code ladder above.
+     *
+     * **Adding a family is a data act, not an Apex edit, and until now it was the reverse.**
+     * `familyOf(String)` is a hardcoded prefix ladder that THROWS on any code it does not
+     * recognise, and `families()` runs it over the whole declared set, so the first Problems or
+     * Politics contract minted on the live rubric would not have degraded that one family: it
+     * would have failed call 1 outright, for every family at once, before a single read.
+     * Preparing the pass to carry added families (forty-first stamp, item iv) is mostly this.
+     *
+     * The declared value wins where present; blank falls back to the ladder, so the seventeen
+     * contracts seeded before this field existed keep their families with nothing migrated in a
+     * hurry. The throw survives both paths, because a contract nobody sweeps is still worse than
+     * a loud failure, and its message now names the remedy.
+     *
+     * This is ROUTING and never charter content. It says which read a question travels in; it
+     * says nothing about what the question asks, which is the charter's to declare and design's
+     * to write.
+     */
+    public static String familyOf(AAO_Evidence_Contract__c ec) {
+        if (ec != null && String.isNotBlank(ec.AAO_Family__c)) {
+            return ec.AAO_Family__c.trim();
+        }
+        return familyOf(ec == null ? null : ec.AAO_Proposition_Code__c);
     }
 
     /** Declared contracts grouped by family, in a deterministic order. */
@@ -135,7 +163,7 @@ public with sharing class AAO_LocateCharter {
         List<AAO_Evidence_Contract__c> sorted = new List<AAO_Evidence_Contract__c>(declared);
         sorted.sort(new ByCode());
         for (AAO_Evidence_Contract__c ec : sorted) {
-            String fam = familyOf(ec.AAO_Proposition_Code__c);
+            String fam = familyOf(ec);
             if (!out.containsKey(fam)) {
                 out.put(fam, new List<AAO_Evidence_Contract__c>());
             }

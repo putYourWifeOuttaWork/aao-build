@@ -11592,3 +11592,57 @@ the named policy working; and `locateRead` is 1-indexed, which cost one read on 
 
 Reports: `review/pf0811-queue/README.md`, `review/pf0811-t0/README.md`, rows in
 `review/pf0811-csvfix/`. All delivered into the project.
+
+## Session 80 · the forty-first stamp's queue · Matthew's rulings executed, and the probe answers no
+
+All four queue items shipped. Full suite 435 tests, every AAO test green (the lone failure,
+`ConvertToOpportunityTest`, is not an AAO class and fails on an org validation rule).
+
+**(i) CALL 3 IS ON THE CONFIGURED VERIFY MODEL.** Ruling 1 executed minimally: the spec still seeds
+from `inventorySpec()` (that is where the output bound and cache posture live and the ruling moves
+neither), and the MODEL now comes from `AAO_Verify_Model__c`. Confirmed on the wire every run:
+`model=claude-haiku-4-5-20251001`. `requireSeparateReaderAndVerifier()` is new and runs on every
+call 3, comparing READER against VERIFIER because those are §P8's two independent readings, and
+refusing a blank verify model rather than falling back to the read model, which is the drift itself.
+A SECOND CAPABILITY GAP surfaced by running it: haiku 400'd with "This model does not support the
+effort parameter", because call 3 had been inheriting `effort=low` from the read spec, the same
+borrowing ruling 1 corrects for the model. Two fixes, both inside ruling 2's bytes: call 3 now sets
+NO effort (`verifySpec()` always omitted it deliberately, "buying thinking tokens for that is paying
+for deliberation nobody asked for"), and feature detection is GENERALIZED from temperature to model
+capabilities as ruling 2 directs. The matrix is the argument: opus-5 refuses temperature and accepts
+effort; haiku accepts temperature and refuses effort. Two models, two missing knobs, OPPOSITE
+directions. Both now survive with both knobs set, proven from the runtime. N-of-M removed from the
+parked lists per ruling 2.
+
+**(ii) THE TEMP-0 PROBE ON THE NEW VERIFIER IS NOT CLEAN.** Three purged runs, `temp=0.00` on the
+call-3 wire each time, zero claims left unverified (a catch-up pass exists so a transient Overloaded
+cannot leave one run with fewer claims judged). Cells that ever fire 7: STABLE 4, FLICKERING 3
+(Adam's Political, Adam's Buyer Role, Kayla's presence). Load-bearing 2 of 4. Against the pf0808
+baseline stability went 3 of 10 to 4 of 7 and the upheld spread narrowed from 2.6x (8 to 21) to 1.4x
+(12 to 17). BUT THE FLICKER MOVED RATHER THAN WENT: the baseline's location was stable (42/42/43)
+while verdicts tripled; here verdicts are tight and LOCATION varies (38/50/49), which is the reads'
+ruled recall hedge doing what it does. TWO VARIABLES CHANGED AT ONCE against the baseline (model and
+temperature), so none of the narrowing is attributable to temperature alone and it is not offered as
+one. The gate is unclean; N-of-M is dead by ruling; the remedy is design's call.
+
+**(iii) A FRESH MAP IS RESIDENT ON PROJECT FARMA**, run key `pf0811-live`, full pipeline onto the
+surface design purged: Adam (Political Structure, Evaluator, Brief), Dan (Evaluator, Brief), Kayla
+(Political Structure, Evaluator, Brief). This is the accuracy review of record per ruling 3. Emerson
+stays at 0 map rows per the stamp's own condition ("when its transcripts rerun"); not assumed.
+Call 3 got much cheaper as a side effect of ruling 1: verify ran ~15 s per shard against opus-5's
+40-52 s, no thinking bought. Governors clear, worst the join at SOQL 48/100, DML 56/150. retryNotes:
+none.
+
+**(iv) THE PASS IS OPEN TO NEW FAMILIES, AND THE BLOCKER WAS A HARD STOP.** `familyOf` was a
+hardcoded prefix ladder that THREW on unknown codes, and `families()` runs it over the whole declared
+set, so the first Problems or Politics contract minted would have failed call 1 OUTRIGHT, for every
+family at once, before a single read. Now `AAO_Evidence_Contract__c.AAO_Family__c` lets a contract
+declare its own family; blank falls back to the ladder so nothing migrates in a hurry; the throw
+survives both paths and names the remedy. All 17 live contracts backfilled from the ladder, routing
+byte-identical after (Buyer Role 5, Decision criteria 3, Political Status 8, Sentiment 1). Routing
+only: it says which read a question travels in and nothing about what it asks. NO CHARTER TEXT
+TOUCHED. Named for design's fold: the question declarations, and the EDGES AT THE JOIN, since
+Problems and Politics carry relationships rather than per-person values and nothing in the join or
+projection writes an edge today.
+
+Report and rows: `review/pf0811-h0/`. Delivered into the project.

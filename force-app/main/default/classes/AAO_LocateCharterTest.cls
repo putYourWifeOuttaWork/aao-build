@@ -312,4 +312,64 @@ private class AAO_LocateCharterTest {
             AAO_Element_Count__c = parts
         );
     }
+
+    // ============================================ adding a family is a data act, not a build
+
+    @IsTest
+    static void aContractInANewFamilyRoutesOnWhatItDeclares() {
+        // FORTY-FIRST STAMP, ITEM (iv). Problems and Politics enter the pass next, and before
+        // this the family map was a hardcoded prefix ladder that THREW on any code it did not
+        // recognise. `families()` runs it across the whole declared set, so the first contract
+        // minted in a new family would not have degraded that family: it would have failed
+        // call 1 outright, for every family at once, before a single read happened.
+        AAO_Evidence_Contract__c problem = contract(
+            'AAO_PRB_1', 'The buyer named a problem this deal has to solve.', 1
+        );
+        problem.AAO_Family__c = 'Problems';
+
+        System.assertEquals(
+            'Problems',
+            AAO_LocateCharter.familyOf(problem),
+            'The contract declares its own family and the pass carries it. No Apex edit, no ' +
+            'new prefix in a ladder, and nothing here says what the question ASKS, which is ' +
+            'the charter\'s to declare.'
+        );
+
+        Map<String, List<AAO_Evidence_Contract__c>> grouped = AAO_LocateCharter.families(
+            new List<AAO_Evidence_Contract__c>{
+                contract('AAO_BR_USER', 'Buyer role, user.', 1),
+                problem
+            }
+        );
+        System.assertEquals(2, grouped.size(), 'Two families, one of them brand new.');
+        System.assert(grouped.containsKey('Problems'), 'Got: ' + grouped.keySet());
+        System.assert(grouped.containsKey('Buyer Role'), 'And the old one is untouched.');
+    }
+
+    @IsTest
+    static void adeclaredFamilyWinsAndABlankOneFallsBackToTheLadder() {
+        AAO_Evidence_Contract__c legacy = contract('AAO_BR_USER', 'Buyer role, user.', 1);
+        System.assertEquals(
+            'Buyer Role',
+            AAO_LocateCharter.familyOf(legacy),
+            'Blank falls back, so the seventeen contracts seeded before the field existed ' +
+            'keep their families with nothing migrated in a hurry.'
+        );
+    }
+
+    @IsTest
+    static void aContractWithNeitherAFamilyNorAKnownPrefixStillThrows() {
+        // The loud failure survives both paths: a contract nobody sweeps is worse than a
+        // throw. What changed is that the message now names the remedy, which is data.
+        try {
+            AAO_LocateCharter.familyOf(contract('AAO_ZZZ_9', 'Unknown.', 1));
+            System.assert(false, 'A contract no read would carry must not pass silently.');
+        } catch (AAO_LocateCharter.CharterException e) {
+            System.assert(
+                e.getMessage().contains('AAO_Family__c'),
+                'The error has to tell the reader the fix is data, not code. Got: ' +
+                e.getMessage()
+            );
+        }
+    }
 }

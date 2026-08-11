@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Family__c</fullName>
+    <description>THE FAMILY THIS CONTRACT IS READ UNDER, declared by the contract rather than inferred from its code. Written by: the contract seeders. Read by: AAO_LocateCharter.familyOf, which groups the declared set into families for the read and the run report. It exists so ADDING A FAMILY IS A DATA ACT, NOT AN APEX EDIT: familyOf used to be a hardcoded prefix ladder that THREW on any code it did not recognise, so the first Problems or Politics contract minted would have failed call 1 outright for every family at once. Blank falls back to that ladder, so every contract seeded before this field existed keeps its family and nothing has to be migrated in a hurry. This is routing, never charter content: it says which read a question travels in, and says nothing about what the question asks.</description>
+    <inlineHelpText>Which family this contract is read under (for example Buyer Role, Political Status, Decision criteria, Sentiment). Set it when minting a contract in a new family. Blank falls back to the legacy code-prefix mapping.</inlineHelpText>
+    <label>Family</label>
+    <type>Text</type>
+    <length>80</length>
+    <required>false</required>
+    <unique>false</unique>
+</CustomField>

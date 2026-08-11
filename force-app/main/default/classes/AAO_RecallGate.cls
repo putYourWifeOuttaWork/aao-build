@@ -525,7 +525,8 @@ public with sharing class AAO_RecallGate {
     public static List<AAO_Evidence_Contract__c> declaredSet() {
         List<AAO_Evidence_Contract__c> rows = [
             SELECT Id, AAO_Proposition_Code__c, AAO_Proposition_Text__c,
-                AAO_Guidance_Text__c, AAO_Element_Count__c, AAO_Contract_Key__c
+                AAO_Guidance_Text__c, AAO_Element_Count__c, AAO_Contract_Key__c,
+                AAO_Family__c
             FROM AAO_Evidence_Contract__c
             WHERE AAO_Rubric_Version__c = :AAO_PassContracts.RUBRIC_VERSION
                 AND AAO_Contract_State__c != 'Superseded'

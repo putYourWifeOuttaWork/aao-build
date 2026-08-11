@@ -55,12 +55,31 @@ public class AAO_Commit {
     private static Map<Id, AAO_Candidate__c> candidateCache = new Map<Id, AAO_Candidate__c>();
     private static Map<Id, AAO_Source__c> sourceCache = new Map<Id, AAO_Source__c>();
     private static Map<Id, Map<Id, String>> roleCache = new Map<Id, Map<Id, String>>();
+    /**
+     * Existing answers by answer key, primed in one query for a whole batch.
+     *
+     * THE JOIN'S SOQL CEILING, forty-eighth stamp item 2. `readExisting` ran ONE query per
+     * candidate, which sat inside the 100-query ceiling at 18 upheld establishments and broke
+     * it at 34 (`Too many SOQL queries: 101`) the first time a second family rode the pass.
+     * One added family roughly doubles the join's load, so the join was one family from its
+     * wall all along and Politics would have hit it regardless.
+     *
+     * A MISS IS NOT A NULL ANSWER. The cache records absence explicitly, because "primed and
+     * genuinely has no existing answer" and "never primed" must not collapse into the same
+     * value: the first is a create, the second has to fall through to its own read or a
+     * single-candidate caller would silently stop seeing standing answers. That is the whole
+     * of the semantic risk in this change and it is handled by the containsKey check below.
+     */
+    private static Map<String, AAO_Answer__c> answerCache = new Map<String, AAO_Answer__c>();
+    private static Set<String> answerPrimed = new Set<String>();
 
     /** Between runs in one transaction, and in tests. */
     public static void clearCaches() {
         candidateCache.clear();
         sourceCache.clear();
         roleCache.clear();
+        answerCache.clear();
+        answerPrimed.clear();
     }
 
     /**
@@ -74,6 +93,40 @@ public class AAO_Commit {
         for (AAO_Candidate__c c : candidateQuery(candidateIds)) {
             candidateCache.put(c.Id, c);
         }
+        primeAnswers(candidateCache.values());
+    }
+
+    /**
+     * One query for the whole batch's standing answers, replacing one per candidate.
+     *
+     * The keys are composed exactly as `commitCandidate` composes them, from the same cached
+     * candidate rows, so the set queried is the set that would have been read one at a time.
+     * Semantics are unchanged by construction: the same key returns the same row.
+     */
+    private static void primeAnswers(List<AAO_Candidate__c> cands) {
+        Set<String> keys = new Set<String>();
+        for (AAO_Candidate__c c : cands) {
+            String k;
+            try {
+                k = AAO_AnswerKey.compose(c);
+            } catch (Exception e) {
+                // A candidate whose key cannot be composed is refused later, by the same code
+                // that always refused it. Priming is an optimisation and never a gate.
+                continue;
+            }
+            if (String.isNotBlank(k)) {
+                keys.add(k);
+            }
+        }
+        if (keys.isEmpty()) {
+            return;
+        }
+        for (AAO_Answer__c a : answerQuery(keys)) {
+            answerCache.put(a.AAO_Answer_Key__c, a);
+        }
+        // Every key ASKED FOR is primed, including the ones that came back empty: absence is
+        // the answer for those, and it is a fact we now hold rather than one to re-query.
+        answerPrimed.addAll(keys);
     }
 
     private static List<AAO_Candidate__c> candidateQuery(List<Id> ids) {
@@ -369,6 +422,17 @@ public class AAO_Commit {
         answer.AAO_Last_Claim__c = claim.Id;
         update answer;
 
+        // AND THE KEY STAYS OUT OF THE CACHE AFTER A WRITE. Two candidates can share an answer
+        // key (the same person and contract established twice in one run), and the old
+        // per-candidate read meant the second one SAW THE FIRST ONE'S WRITE and accumulated
+        // onto it rather than replacing it. Re-priming here with the row we just wrote would
+        // look equivalent and is not: it would also mask a human takeover landing between the
+        // two commits. Invalidating instead means the second read pays one query and sees
+        // whatever is actually standing, which is what "read then branch against standing
+        // state" has always meant.
+        answerPrimed.remove(answerKey);
+        answerCache.remove(answerKey);
+
         // Day-one red. TRUE clears the gating flag, FALSE holds it with a changed cause.
         // Here rather than in a trigger on Answer because commit is the single writer and
         // the clearance is part of establishing, not a side effect of a row changing.
@@ -401,7 +465,30 @@ public class AAO_Commit {
             raceSimulated = true;
             return null;
         }
-        List<AAO_Answer__c> found = [
+        if (answerPrimed.contains(answerKey)) {
+            // PRIMED, AND CONSUMED ON READ. The prime is trusted exactly once per key and then
+            // dropped, so any SECOND read of the same key in this transaction goes back to the
+            // database. That is not caution for its own sake: the first cut kept the entry and
+            // `commitDoesNotOverwriteAHumanAnswer` failed deterministically, because a human
+            // can take an answer BETWEEN two commits and a retained cache would hand the second
+            // commit the pre-takeover row, branch it as machine-owned, and drive a write
+            // straight into the human-precedence guard. Human precedence is absolute, so the
+            // cache defers to the database the moment there is any chance of a second opinion.
+            //
+            // The cost is bounded and lands where it should: N candidates with distinct keys
+            // still cost ONE query, and only a repeated key pays a read, which is exactly the
+            // case where standing state may have moved.
+            answerPrimed.remove(answerKey);
+            AAO_Answer__c primed = answerCache.remove(answerKey);
+            return primed;
+        }
+        List<AAO_Answer__c> found = answerQuery(new Set<String>{ answerKey });
+        return found.isEmpty() ? null : found[0];
+    }
+
+    /** The one shape both the primed batch read and the single fall-through read use. */
+    private static List<AAO_Answer__c> answerQuery(Set<String> answerKeys) {
+        return [
             SELECT
                 Id,
                 AAO_Answer_Key__c,
@@ -424,10 +511,8 @@ public class AAO_Commit {
                 AAO_Account__c,
                 AAO_Publication_State__c
             FROM AAO_Answer__c
-            WHERE AAO_Answer_Key__c = :answerKey
-            LIMIT 1
+            WHERE AAO_Answer_Key__c IN :answerKeys
         ];
-        return found.isEmpty() ? null : found[0];
     }
 
     private static AAO_Answer__c newAnswer(AAO_Candidate__c cand) {

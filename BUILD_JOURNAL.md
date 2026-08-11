@@ -11806,3 +11806,45 @@ with the surface already mapped, and NOT attempted blind.
 
 Run `pf0811-pb2`, purged from `pf0811-prob`. The map projected from the claims that existed before
 the join died and is therefore partial; it is not offered as a result.
+
+## Session 85 · the forty-eighth stamp · the join is bulkified and THE FIRST CARDS ARE ON THE DEAL
+
+All four queue items ran. Suite 440, all AAO green.
+
+**(a) THE JOIN'S SOQL CEILING IS CLEARED, semantics preserved.** `AAO_Commit.readExisting` ran one
+query per candidate; it is now primed in one batch query from the same cached candidate rows, so the
+set read is the set that would have been read one at a time. Measured: the join went from
+`Too many SOQL queries: 101` to **SOQL 57/100** on 66 pairs. TWO SEMANTIC TRAPS FOUND AND HANDLED,
+the second by the suite rather than by me: a cache that survived a write would have let a second
+candidate on the same answer key overwrite the first instead of accumulating; and a cache retained
+across a HUMAN TAKEOVER made `commitDoesNotOverwriteAHumanAnswer` fail deterministically, because
+the second commit branched on a pre-takeover row and drove a write into the human-precedence guard.
+The prime is therefore CONSUMED ON READ and invalidated on write, so a repeated key pays one query
+exactly where standing state may have moved. Distinct keys still cost one query for the batch.
+
+**(b) The pass reran clean** on a purged Project Farma, run `pf0811-cards`, join 3,254 ms, 66 pairs.
+
+**(c) THE INTERNAL-SUBJECT GATE HOLDS ON PROBLEMS.** Jennae Jizdeortega's GOAL and INIT
+establishments produced **zero internal-subject answers** on the deal, 22 pairs refused at the join.
+The coverage-Internal lesson did not repeat on the new family; the gate was already general.
+`AAO_Cards` carries its own check beside it, because a card is customer-visible.
+
+**(d) THE CARDS ARE WRITTEN: 4 created, 4 person-to-insight links, 0 held.** One per type, each with
+a one-sentence face from the establishing words, the full words in Long_Description, and a plain
+citation. Links land as `Informer` rather than `Owner`, deliberately: the evidence establishes that
+this person VOICED it, and whose goal it ultimately is, is a different assertion nobody ruled. The
+face is derived from the verified words rather than from a fresh model call, so it cannot drift from
+what call 3 upheld. Dedup compares type plus normalised face and does NOT guess at paraphrase, per
+"completely different language is a different insight".
+
+**THE FINDING THAT MATTERS, and it is a grain mismatch design has to rule on: SIXTEEN UPHELD
+ESTABLISHMENTS BECAME FOUR CARDS.** The answer key is subject plus contract, so every Goal Adam
+voiced collapses into ONE Goal answer and the card takes its first span. Adam's "hit 90 million
+company-wide sales target this year", "we're moving towards a key account model" and "we don't have
+connectivity across our own internal team" are three different goals and the deal shows one. The
+draft asks for a card per insight; the answer model gives one per person per type. Nothing here can
+fix that without a ruling on the card's grain: either Problems answers key per establishment rather
+than per contract, or the card writer reads PAIRS rather than answers and accepts that it is then
+writing from proposals rather than from the accumulated thing. Reported, not chosen. The
+reinforcement mechanics are built and untested in the wild for the same reason: with one answer per
+type there was nothing for them to count.

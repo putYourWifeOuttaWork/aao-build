@@ -11953,3 +11953,39 @@ a fresh grid on top of it.
 was, so the next section titles by date alone. His preferred option is recorded as intake carrying
 the meeting title from the source system, which is small and honest and involves no inference; it
 is not built and is not assumed.
+
+## Session 89 · the fifty-fourth stamp · the card content spec, and the one grade a rewrite cannot answer
+
+Four items ran. Suite 440, all AAO green. All ten cards rewritten to the ruled spec.
+
+**(a) THE CONTENT SPEC.** The face is now a hard-capped CLAUSE (60 characters), not a sentence: the
+model returns `face` and `summary` as two fields rather than one line. The details carry the three
+ruled layers in order: the inferred summary, the citation line with speaker, date AND SOURCE NAME,
+then the verbatim as the receipt. **The citation moving into the details is the defect this closes**:
+it existed on every card already in `ALTF__Note__c`, which the vendor panel does not surface, so from
+Matthew's seat the cards were uncited. A receipt nobody can see is not a receipt. Faces now run 19 to
+58 characters; the one he graded too long reads "Ideal: 2-3 large multi-site accounts per person" at
+47.
+
+**(b) TWO SPECIMENS RECORDED** at `review/calibration/`, specimens 2 and 3, with their verbatim and
+the grade.
+
+**(c) THE GOAL GUIDANCE, applied verbatim.** Matthew's wording as the stamp carries it, "a wanted
+outcome the speaker owns or explicitly attributes to its owner", with the motivation case named. NOT
+a role gate, per design's honesty rider: a role gate stacks inference on inference and reintroduces
+flux. Contract superseded and re-minted, 1 minted 20 unchanged 1 superseded.
+
+**(d) THE DM ENRICHMENT** is written, filling the Goal panel's decision-maker line from the MAP where
+the map knows one, marked machine-written, blank where it does not and never picking between two. It
+wrote nothing this run because the Project Farma map carries no Decision Maker, which is the correct
+outcome and not a failure.
+
+**THE GRADE A REWRITE CANNOT ANSWER, said plainly: the "driver" card is still a Goal.** Guidance acts
+at the QUESTION, on call 1 and call 3. This stretch rewrote cards from the BANKED harvest, located
+and verified before the guidance changed, so every card's TYPE is exactly what it was. The tightening
+is UNTESTED until a fresh pass reads and verifies the transcript again, and nothing was hand-corrected
+on the board to make the grade look answered. The immediate next step is that pass.
+
+Also recorded: the card purge now deletes CARDS, whose junctions follow them, rather than deleting
+junctions, which cascade-deleted the cards two sessions ago. The safe direction is written into the
+script.

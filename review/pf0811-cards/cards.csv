@@ -1,11 +1,51 @@
-ALTF__Type__c,ALTF__Short_Description__c,ALTF__Long_Description__c,ALTF__Note__c
-Goal,Want to bring it into Salesforce and make it consistent,that's why we want to bring it into Salesforce and make it consistent,"Adam Pfeiffer, 30 July 2026."
-Goal,"Driver is better business practices, more efficient use of time and intelligent sharing","the driver is better business practices, more efficient use of our time and intelligent sharing","Adam Pfeiffer, 30 July 2026."
-Goal,"Ideal state is two or three key accounts per person that are large volume, large revenue, multi-site","I would say the ideal thing would be to have two or three key accounts, truly like large volume, large revenue, multi-site accounts for each person","Adam Pfeiffer, 30 July 2026."
-Pressure,Key pressure is resourcing in general,"I'd say our key pressures are, well, number one, like resourcing in general","Adam Pfeiffer, 30 July 2026."
-Initiative,Moving towards a key account model,"we have like, you know, we're moving towards a key account model","Adam Pfeiffer, 30 July 2026."
-Obstacle,Principal consultants and practice leads have sales targets in Salesforce that are challenging from IT cloud compliance,"We have a lot of like principal consultants and practice area leads that have sales targets that use Salesforce that are, Taylor, what's the PC way to say it? Challenging from an IT cloud compliance adherence perspective, if you will.","Adam Pfeiffer, 30 July 2026."
-Obstacle,Most inconsistent depending on who's in charge; want Salesforce to standardize it,"Oh, it's the most inconsistent. I mean, it's just depends on who's sort of in charge of it. So, I mean, that's why we want to bring it into Salesforce and make it consistent.","Adam Pfeiffer, 30 July 2026."
-Obstacle,Gap in email tracking to opportunity or contact level within Salesforce,"And then, again, that's reliant on e-mail tracking to an opportunity or contact level within Salesforce, so that's that's a gap, but that's our own gap","Adam Pfeiffer, 30 July 2026."
-Obstacle,No connectivity across internal team on who knows who and who needs to be talking to,we don't have connectivity across our own internal team as to who knows who and like. who we need to be talking to.,"Adam Pfeiffer, 30 July 2026."
-Obstacle,Operate in silos across manufacturing networks; don't leverage or know which relationships to expand beyond existing,we tend to operate in silos across manufacturing networks for the same company. So we don't necessarily leverage the relationships or the right relationships or even know which relationships to leverage to expand outside of the existing site we're working on.,"Adam Pfeiffer, 30 July 2026."
+ALTF__Type__c,ALTF__Short_Description__c,ALTF__Long_Description__c
+Goal,Consolidate and standardize via Salesforce,"They want to consolidate and standardize their processes by bringing everything into Salesforce.
+
+Source: Adam Pfeiffer, 30 July 2026, projectfarma/2026-07-30-nf1.
+
+In their words: ""that's why we want to bring it into Salesforce and make it consistent"""
+Goal,"Better practices, efficient time use, intelligent sharing","They want to work more efficiently and share intelligence across the team rather than duplicating effort or missing connections.
+
+Source: Adam Pfeiffer, 30 July 2026, projectfarma/2026-07-30-nf1.
+
+In their words: ""the driver is better business practices, more efficient use of our time and intelligent sharing"""
+Goal,Ideal: 2-3 large multi-site accounts per person,"Each person should own 2-3 large, multi-site accounts with significant volume and revenue.
+
+Source: Adam Pfeiffer, 30 July 2026, projectfarma/2026-07-30-nf1.
+
+In their words: ""I would say the ideal thing would be to have two or three key accounts, truly like large volume, large revenue, multi-site accounts for each person"""
+Pressure,Resourcing pressure,"Resourcing constraints are their primary pressure.
+
+Source: Adam Pfeiffer, 30 July 2026, projectfarma/2026-07-30-nf1.
+
+In their words: ""I'd say our key pressures are, well, number one, like resourcing in general"""
+Initiative,Moving toward key account model,"They are actively moving toward a key account management model.
+
+Source: Adam Pfeiffer, 30 July 2026, projectfarma/2026-07-30-nf1.
+
+In their words: ""we have like, you know, we're moving towards a key account model"""
+Obstacle,Sales targets vs. IT cloud compliance tension,"Sales leaders using Salesforce face challenges meeting IT cloud compliance and adherence requirements.
+
+Source: Adam Pfeiffer, 30 July 2026, projectfarma/2026-07-30-nf1.
+
+In their words: ""We have a lot of like principal consultants and practice area leads that have sales targets that use Salesforce that are, Taylor, what's the PC way to say it? Challenging from an IT cloud compliance adherence perspective, if you will."""
+Obstacle,Inconsistent process depending on who's in charge,"Their current process is highly inconsistent depending on who manages it, which is why they want Salesforce to enforce consistency.
+
+Source: Adam Pfeiffer, 30 July 2026, projectfarma/2026-07-30-nf1.
+
+In their words: ""Oh, it's the most inconsistent. I mean, it's just depends on who's sort of in charge of it. So, I mean, that's why we want to bring it into Salesforce and make it consistent."""
+Obstacle,Email tracking gap at opportunity/contact level,"Email tracking to opportunity and contact level in Salesforce is missing, creating a gap they acknowledge as their own.
+
+Source: Adam Pfeiffer, 30 July 2026, projectfarma/2026-07-30-nf1.
+
+In their words: ""And then, again, that's reliant on e-mail tracking to an opportunity or contact level within Salesforce, so that's that's a gap, but that's our own gap"""
+Obstacle,No visibility into internal relationships and connections,"The team lacks visibility into who knows whom internally and which relationships matter for account expansion.
+
+Source: Adam Pfeiffer, 30 July 2026, projectfarma/2026-07-30-nf1.
+
+In their words: ""we don't have connectivity across our own internal team as to who knows who and like. who we need to be talking to."""
+Obstacle,"Silos across manufacturing networks, unknown relationships","They operate in isolated silos within the same company's manufacturing networks and don't leverage or even know about existing relationships to expand beyond current sites.
+
+Source: Adam Pfeiffer, 30 July 2026, projectfarma/2026-07-30-nf1.
+
+In their words: ""we tend to operate in silos across manufacturing networks for the same company. So we don't necessarily leverage the relationships or the right relationships or even know which relationships to leverage to expand outside of the existing site we're working on."""

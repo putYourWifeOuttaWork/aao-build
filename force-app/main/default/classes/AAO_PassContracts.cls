@@ -308,6 +308,17 @@ public with sharing class AAO_PassContracts {
             'AAO_PB_GOAL',
             'Problems · Goal',
             'Did this person, in their own words, state an outcome they or their organization want to achieve?',
+            // THE OWNERSHIP LINE, Matthew's ruling at the fifty-fourth stamp, applied to the
+            // guidance VERBATIM as the stamp carries it. It lands here rather than as a role
+            // gate on the speaker, and design's honesty rider says why: a role gate stacks
+            // inference on inference and reintroduces flux, so the vague cases die at the
+            // question instead. The specimen that produced it is on the board: "Driver is
+            // better business practices, more efficient use of time, and intelligent sharing",
+            // Adam's rationale for the Salesforce initiative upheld as an owned Goal.
+            'A GOAL IS A WANTED OUTCOME THE SPEAKER OWNS OR EXPLICITLY ATTRIBUTES TO ITS ' +
+            'OWNER. A motivation, a rationale for doing something, or a benefit someone hopes ' +
+            'follows is NOT a goal: if the words do not say who wants this outcome and that ' +
+            'they can want it on that organization\'s behalf, there is no goal here. ' +
             'A goal is a DESIRED FUTURE STATE: wanted, and not yet true. Company goals and ' +
             'personal goals both admit, and the card records whose goal it is. THE VENDOR\'S ' +
             'DECISION-MAKER-PERSONAL FILTER IS DROPPED BY RULING, so a goal held by anyone on ' +

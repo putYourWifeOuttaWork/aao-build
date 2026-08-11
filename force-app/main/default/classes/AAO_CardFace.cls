@@ -20,16 +20,30 @@
  */
 public with sharing class AAO_CardFace {
     /** Kept small: a face that runs long stops being scannable, which is its whole job. */
-    private static final Integer MAX_CHARS = 120;
+    /**
+     * THE FACE IS A SHORTENED CLAUSE, NOT A SENTENCE. Matthew's grade on the live board: the
+     * third Goal's headline was "TOO LONG (the whole sentence instead of a shortened version)",
+     * and his shape for it is "Ideal state: 2-3 large key accounts per person". Hard-capped so a
+     * card scans at a glance; everything the clause drops is one layer down in the details.
+     */
+    private static final Integer MAX_CHARS = 60;
+    /** The inferred summary that opens the details. Room for a thought, not a paragraph. */
+    private static final Integer SUMMARY_CHARS = 240;
+
+    /** What the model wrote for one card: the clause on the face, the meaning below it. */
+    public class Face {
+        public String face;
+        public String summary;
+    }
 
     @TestVisible
-    private static Map<String, String> stubbed;
+    private static Map<String, Face> stubbed;
 
     /**
      * Pair ref to one-line face. Refs absent from the map fall back to the caller's own rule.
      */
-    public static Map<String, String> infer(List<AAO_Pair__c> pairs) {
-        Map<String, String> out = new Map<String, String>();
+    public static Map<String, Face> infer(List<AAO_Pair__c> pairs) {
+        Map<String, Face> out = new Map<String, Face>();
         if (stubbed != null) {
             return stubbed;
         }
@@ -55,9 +69,21 @@ public with sharing class AAO_CardFace {
             }
             block.add(p.AAO_Pair_Ref__c + ' [' + type + ']: "' + words + '"');
             props.put(p.AAO_Pair_Ref__c, new Map<String, Object>{
-                'type' => 'string',
-                'description' => 'One line, at most ' + MAX_CHARS +
-                    ' characters, summarising ' + p.AAO_Pair_Ref__c + '.'
+                'type' => 'object',
+                'properties' => new Map<String, Object>{
+                    'face' => new Map<String, Object>{
+                        'type' => 'string',
+                        'description' => 'A shortened CLAUSE, at most ' + MAX_CHARS +
+                            ' characters, not a full sentence.'
+                    },
+                    'summary' => new Map<String, Object>{
+                        'type' => 'string',
+                        'description' => 'One or two sentences saying what the clause means, ' +
+                            'at most ' + SUMMARY_CHARS + ' characters.'
+                    }
+                },
+                'required' => new List<String>{ 'face', 'summary' },
+                'additionalProperties' => false
             });
             required.add(p.AAO_Pair_Ref__c);
         }
@@ -88,10 +114,20 @@ public with sharing class AAO_CardFace {
             );
             Map<String, Object> parsed = (Map<String, Object>) JSON.deserializeUntyped(r.rawText);
             for (String ref : parsed.keySet()) {
-                String face = String.valueOf(parsed.get(ref));
-                if (String.isNotBlank(face)) {
-                    out.put(ref, trim(face));
+                Map<String, Object> got = (Map<String, Object>) parsed.get(ref);
+                if (got == null) {
+                    continue;
                 }
+                String faceText = String.valueOf(got.get('face'));
+                if (String.isBlank(faceText)) {
+                    continue;
+                }
+                Face f = new Face();
+                f.face = trim(faceText, MAX_CHARS);
+                f.summary = got.get('summary') == null
+                    ? null
+                    : trim(String.valueOf(got.get('summary')), SUMMARY_CHARS);
+                out.put(ref, f);
             }
         } catch (Exception e) {
             // Not fatal, deliberately. The caller has a deterministic fallback, and a deal whose
@@ -114,13 +150,13 @@ public with sharing class AAO_CardFace {
      * degrades them to a clean short line rather than a visibly clipped one.
      */
     @TestVisible
-    private static String trim(String face) {
+    private static String trim(String face, Integer bound) {
         String f = face.trim().replaceAll('\\s+', ' ');
-        if (f.length() <= MAX_CHARS) {
+        if (f.length() <= bound) {
             return f;
         }
-        Integer cut = f.substring(0, MAX_CHARS).lastIndexOf(' ');
-        String bounded = cut > 40 ? f.substring(0, cut) : f.substring(0, MAX_CHARS);
+        Integer cut = f.substring(0, bound).lastIndexOf(' ');
+        String bounded = cut > (bound / 3) ? f.substring(0, cut) : f.substring(0, bound);
         return bounded.trim().removeEnd(',').removeEnd(';');
     }
 
@@ -129,8 +165,13 @@ public with sharing class AAO_CardFace {
         return 'You write the one-line face of an insight card for a seller reading a deal ' +
             'board.\n\n' +
             'You are given established insights, each with a REF, a TYPE already decided, and ' +
-            'the buyer\'s VERBATIM WORDS. For each ref, return ONE LINE that says what that ' +
-            'person conveyed, in their own terms, understandable at a glance.\n\n' +
+            'the buyer\'s VERBATIM WORDS. For each ref return TWO things:\n' +
+            '  face    - a SHORTENED CLAUSE, at most ' + MAX_CHARS + ' characters, that a ' +
+            'seller can read at a glance. NOT the whole sentence. Shape it like ' +
+            '"Ideal state: 2-3 large key accounts per person" or "Silos across manufacturing ' +
+            'networks": a label for the thing, not a retelling of it.\n' +
+            '  summary - one or two sentences saying what that clause MEANS, at most ' +
+            SUMMARY_CHARS + ' characters, in their terms.\n\n' +
             'RULES, each of which matters more than fluency:\n' +
             '1. SUMMARISE, NEVER JUDGE. The type is already settled and is not yours to ' +
             'revisit, soften, strengthen or re-label.\n' +
@@ -141,8 +182,8 @@ public with sharing class AAO_CardFace {
             'is underway or what blocks, that belongs on the line.\n' +
             '4. Their terms, not ours. No vendor vocabulary, no coaching, no advice, no ' +
             'recommendation.\n' +
-            '5. One sentence or less, at most ' + MAX_CHARS + ' characters, no trailing ' +
-            'ellipsis, and never a fragment that stops mid-thought.\n' +
+            '5. The face is a CLAUSE and is hard-capped; a face that runs to a full ' +
+            'sentence has failed even if every word is true. No trailing ellipsis.\n' +
             '6. No quotation marks, no speaker name, no date. The verbatim and the citation are ' +
             'carried on the card already; repeating them on the face wastes the only line the ' +
             'reader is guaranteed to see.\n\n' +

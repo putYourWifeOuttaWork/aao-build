@@ -72,7 +72,7 @@ public with sharing class AAO_Cards {
         // still the receipt, and the verdict read here is the one call 3 upheld.
         List<AAO_Pair__c> established = [
             SELECT Id, AAO_Pair_Ref__c, AAO_Source__c,
-                AAO_Source__r.AAO_Evidence_Occurred__c,
+                AAO_Source__r.AAO_Evidence_Occurred__c, AAO_Source__r.AAO_Source_Ref__c,
                 AAO_Evidence_Contract__r.AAO_Proposition_Code__c,
                 AAO_Person__c, AAO_Person__r.AAO_Display_Name__c,
                 AAO_Person__r.AAO_Internal__c, AAO_Person__r.AAO_Contact__c,
@@ -114,7 +114,8 @@ public with sharing class AAO_Cards {
         // THE FACE IS INFERRED, forty-ninth stamp item 3(a). One batched call over the whole
         // harvest, so the model writes the headlines and the writer never puts a raw verbatim on
         // the face again. The words themselves are untouched and go to `Long_Description`.
-        Map<String, String> headline = AAO_CardFace.infer(established);
+        Map<String, AAO_CardFace.Face> headline = AAO_CardFace.infer(established);
+        String decisionMaker = decisionMakerOn(opportunityId);
 
         for (AAO_Pair__c a : established) {
             String code = a.AAO_Evidence_Contract__r.AAO_Proposition_Code__c;
@@ -137,9 +138,9 @@ public with sharing class AAO_Cards {
                 o.notes.add('Pair ' + a.AAO_Pair_Ref__c + ' carries no words; no card written.');
                 continue;
             }
-            String face = headline.containsKey(a.AAO_Pair_Ref__c)
-                ? headline.get(a.AAO_Pair_Ref__c)
-                : faceFrom(words);
+            AAO_CardFace.Face inferred = headline.get(a.AAO_Pair_Ref__c);
+            String face = inferred == null ? faceFrom(words) : inferred.face;
+            String summary = inferred == null ? null : inferred.summary;
             String key = meaningKey(type, face);
 
             if (byMeaning.containsKey(key)) {
@@ -171,7 +172,7 @@ public with sharing class AAO_Cards {
                 ALTF__Account__c = accountId,
                 ALTF__Type__c = type,
                 ALTF__Short_Description__c = face,
-                ALTF__Long_Description__c = words,
+                ALTF__Long_Description__c = details(summary, a, words, type, decisionMaker),
                 ALTF__Note__c = citation(a) + '.'
             );
             fresh.add(card);
@@ -459,6 +460,62 @@ public with sharing class AAO_Cards {
             ));
         }
         update named;
+    }
+
+    /**
+     * THE DETAILS, three layers in the ruled order (fifty-fourth stamp item 2).
+     *
+     * (i) the INFERRED SUMMARY of what the headline means, model-written at card time because the
+     * model already made that judgment; (ii) the CITATION LINE carrying speaker, date and source
+     * name; (iii) the VERBATIM as the receipt.
+     *
+     * **THE CITATION IS WRITTEN INTO THIS TEXT AND NOT ONLY INTO `ALTF__Note__c`**, which is the
+     * defect this closes: the citation existed on every card already and the vendor panel does
+     * not surface that field, so from Matthew's seat the cards were uncited. A receipt nobody can
+     * see is not a receipt.
+     */
+    private static String details(
+        String summary,
+        AAO_Pair__c a,
+        String words,
+        String type,
+        String decisionMaker
+    ) {
+        List<String> layers = new List<String>();
+        if (String.isNotBlank(summary)) {
+            layers.add(summary);
+        }
+        layers.add('Source: ' + citation(a) + sourceName(a) + '.');
+        layers.add('In their words: "' + words + '"');
+        // Enrichment, item 4: only where the MAP already knows, and marked as ours so nobody
+        // reads a machine fill as a human's answer. Blank where the map does not know, because
+        // guessing the accountable person is the inference this whole build refuses.
+        if (type == 'Goal' && String.isNotBlank(decisionMaker)) {
+            layers.add(
+                'Decision Maker responsible (from the relationship map, machine-written): ' +
+                decisionMaker + '.'
+            );
+        }
+        return String.join(layers, '\n\n');
+    }
+
+    private static String sourceName(AAO_Pair__c a) {
+        return a.AAO_Source__r == null || String.isBlank(a.AAO_Source__r.AAO_Source_Ref__c)
+            ? ''
+            : ', ' + a.AAO_Source__r.AAO_Source_Ref__c;
+    }
+
+    /** The map's Decision Maker on this deal, or null where the map does not know one. */
+    private static String decisionMakerOn(Id opportunityId) {
+        List<ALTF__Contact_Map_Details__c> dm = [
+            SELECT ALTF__Contact__r.Name
+            FROM ALTF__Contact_Map_Details__c
+            WHERE ALTF__Opportunity__c = :opportunityId
+                AND ALTF__Buyer_Role__c = 'Decision Maker'
+            LIMIT 2
+        ];
+        // Never pick between two, the standing rule wherever the map is ambiguous.
+        return dm.size() == 1 ? dm[0].ALTF__Contact__r.Name : null;
     }
 
     // ------------------------------------------------------------------------ internals

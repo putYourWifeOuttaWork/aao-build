@@ -61,3 +61,43 @@ Matthew's blank Status looked like erasure of a value a previous run had written
 projection-side law already holds: nothing overwrites a value with a blank, and a purged surface
 recomputes from scratch rather than overwriting. The blank was a fresh computation on a clean
 surface, which is why it looked like loss and was not.
+
+---
+
+## Specimen 2 · a motivation upheld as a Goal
+
+**Recorded by:** the fifty-fourth stamp, item 1. Matthew's first card-level grades, from the live
+board, 11 August. **Run:** the banked Project Farma harvest. **Card:** Goal, from Adam Pfeiffer.
+**Status:** recorded; the GOAL guidance is tightened, the specimen is NOT tuned against.
+
+> face as first written: *"Driver is better business practices, more efficient use of time, and
+> intelligent sharing"*
+> verbatim: *"the driver is better business practices, more efficient use of our time and
+> intelligent sharing"*
+
+**Matthew's grade: NOT VIABLE.** Read cold it is Adam's RATIONALE for the Salesforce initiative,
+not an owned wanted outcome. The word "driver" is the tell: a driver is why someone is doing a
+thing, and a goal is the thing they want to be true.
+
+**What was done:** the GOAL contract's guidance now carries Matthew's ruled wording verbatim, *"a
+wanted outcome the speaker owns or explicitly attributes to its owner"*, with the motivation case
+named. **Deliberately NOT done: a role gate on the speaker.** Design's honesty rider, which Matthew
+saw and did not overrule: a role gate stacks inference on inference and reintroduces flux, so the
+vague cases die at the question instead.
+
+**HONEST LIMIT, and it is why this card is still on the board.** Guidance acts at the QUESTION, on
+call 1 and call 3. This stretch rewrote the cards from the BANKED harvest, which was located and
+verified before the guidance changed, so the card's TYPE is exactly what it was. The tightening is
+untested until a fresh pass reads and verifies the transcript again. Nothing was hand-corrected on
+the board to make the grade look answered.
+
+## Specimen 3 · a headline that was the whole sentence
+
+**Recorded by:** the same stamp and grade. The third Goal's face was the entire sentence rather
+than a shortened clause. Matthew's shape for it: *"Ideal state: 2-3 large key accounts per person"*.
+
+**What was done, and this one IS fixed on the board:** the face is now a hard-capped CLAUSE (60
+characters) and the meaning moved into the details as the ruled first layer. That card now reads
+*"Ideal: 2-3 large multi-site accounts per person"* at 47 characters. This was a writer defect
+rather than a judgment defect, which is why it could be fixed in the writer and the specimen above
+could not.

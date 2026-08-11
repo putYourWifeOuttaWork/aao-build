@@ -334,15 +334,25 @@ public with sharing class AAO_Cards {
         Outcome o
     ) {
         String title = sectionTitle(src, callType);
-        List<ALTF__Insight_Section__c> found = [
-            SELECT Id, ALTF__X_Coordinate__c
+        String datePrefix = sectionTitle(src, null);
+        // MATCHED ON THE CALL'S DATE, NOT ON THE EXACT TITLE, and that is a defect fix rather
+        // than a convenience. The first cut matched the whole string, so once a human retitled
+        // the call's section "30 July 2026: Discovery Call" the writer no longer recognised it,
+        // created a SECOND section titled "30 July 2026", and left the retitled one standing
+        // empty beside it. Matthew saw the two columns on the board. A section belongs to a
+        // CALL, the call's date is what identifies it, and a human's better title for it must
+        // survive the next run rather than be shadowed by one of ours.
+        for (ALTF__Insight_Section__c existing : [
+            SELECT Id, ALTF__X_Coordinate__c, ALTF__Short_Description__c
             FROM ALTF__Insight_Section__c
             WHERE ALTF__Opportunity__c = :opportunityId
-                AND ALTF__Short_Description__c = :title
-            LIMIT 1
-        ];
-        if (!found.isEmpty()) {
-            return found[0];
+            ORDER BY ALTF__X_Coordinate__c ASC NULLS LAST
+        ]) {
+            String label = existing.ALTF__Short_Description__c;
+            if (String.isNotBlank(label) &&
+                (label == title || label.startsWith(datePrefix))) {
+                return existing;
+            }
         }
         // A NEW COLUMN TO THE RIGHT OF EVERYTHING STANDING, so calls read left to right in the
         // order they were added and no existing column is displaced.

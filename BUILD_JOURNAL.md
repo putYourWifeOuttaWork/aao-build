@@ -11989,3 +11989,35 @@ on the board to make the grade look answered. The immediate next step is that pa
 Also recorded: the card purge now deletes CARDS, whose junctions follow them, rather than deleting
 junctions, which cascade-deleted the cards two sessions ago. The safe direction is written into the
 script.
+
+## Session 90 · the fifty-fourth stamp's open question, ANSWERED: the machine refuses the motivation statement on its own
+
+Suite 440, all AAO green.
+
+**THE ANSWER IS YES.** A full fresh pass with the tightened GOAL guidance live, run `pf0811-goal`:
+the motivation statement Matthew graded NOT VIABLE was **not proposed as a Goal at all**. Measured
+three ways: zero pairs in the entire run carry "better business practices" or "intelligent sharing"
+under ANY contract; the run produced 8 Goal pairs and 4 upheld; and no card on the board carries
+that face. **It died at the question, which is exactly where design's honesty rider said the vague
+cases should die rather than at a role gate.** Nothing was hand-corrected: the words are still in the
+transcript and the machine simply did not offer them as an owned wanted outcome this time.
+
+The one grade Matthew gave that a rewrite could not answer is now answered by the machine, and the
+loop it demonstrates is the product's thesis: he read a card, named why it was wrong, the wording
+changed, and the next run refused it on its own.
+
+**THE DUPLICATE-SECTION DEFECT, fixed, and it was mine.** `sectionFor` matched on the EXACT title,
+so once the call's section was retitled "30 July 2026: Discovery Call" the writer no longer
+recognised it, created a second section titled "30 July 2026", and left the retitled one standing
+empty. Matthew saw both columns. A section belongs to a CALL and the call's DATE identifies it, so
+the match is now on the date prefix and **a human's better title survives the next run**. Verified:
+12 cards written into the existing section, **0 new sections created**, two sections on the deal
+("Enter title" empty and Matthew's, "30 July 2026: Discovery Call" holding the cards).
+
+**The board now: 12 cards** (3 Goals, 1 Pressure, 3 Initiatives, 5 Obstacles), 12 Informer links, 12
+placements. 14 answers were read and 12 became cards: the two skipped are Jennae's, our own seller,
+refused by the writer's internal check exactly as ruled. Notable movement beside the Goal refusal:
+"that's why we want to bring it into Salesforce and make it consistent" now reads as an INITIATIVE
+rather than a Goal, which is the type-matching judgment doing its job on a near neighbour.
+
+Writer 25,148 ms including the inferred-face call, SOQL 6/100, DML 6/150, 72 rows. retryNotes: none.

@@ -33,13 +33,15 @@ public with sharing class AAO_Cards {
         public Integer linksHeld = 0;
         /** Cards given a section membership, which is what makes them render at all. */
         public Integer placedOnBoard = 0;
+        /** Dated sections created for this run's calls. */
+        public Integer sectionsCreated = 0;
         public List<String> notes = new List<String>();
 
         public override String toString() {
             return 'cards: ' + created + ' created, ' + reinforced + ' reinforced, ' +
                 unchanged + ' unchanged, ' + contradictionsFlagged + ' contradictions flagged; ' +
                 'links: ' + linksWritten + ' written, ' + linksHeld + ' held; placed on board: ' +
-                placedOnBoard +
+                placedOnBoard + ' in ' + sectionsCreated + ' new section(s)' +
                 (notes.isEmpty() ? '' : '\n  ' + String.join(notes, '\n  '));
         }
     }
@@ -69,7 +71,8 @@ public with sharing class AAO_Cards {
         // proposal, so the accumulation an answer carries is not behind these rows; the CLAIM is
         // still the receipt, and the verdict read here is the one call 3 upheld.
         List<AAO_Pair__c> established = [
-            SELECT Id, AAO_Pair_Ref__c, AAO_Source__r.AAO_Evidence_Occurred__c,
+            SELECT Id, AAO_Pair_Ref__c, AAO_Source__c,
+                AAO_Source__r.AAO_Evidence_Occurred__c,
                 AAO_Evidence_Contract__r.AAO_Proposition_Code__c,
                 AAO_Person__c, AAO_Person__r.AAO_Display_Name__c,
                 AAO_Person__r.AAO_Internal__c, AAO_Person__r.AAO_Contact__c,
@@ -190,7 +193,7 @@ public with sharing class AAO_Cards {
                 ));
             }
             update named;
-            attachToBoard(opportunityId, accountId, fresh, o);
+            attachToBoard(opportunityId, accountId, fresh, freshSource, o);
         }
         if (!patchById.isEmpty()) {
             update patchById.values();
@@ -250,78 +253,193 @@ public with sharing class AAO_Cards {
     }
 
     /**
-     * SECTION MEMBERSHIP AT CARD BIRTH. Forty-ninth stamp item 2, and the defect it closes was
-     * invisible in exactly the way that matters: all four cards existed on the right deal with
-     * the right types and citations, and Matthew saw EMPTY LANES, because the vendor board
-     * renders a card only inside a section column. A card with no `ALTF__Insight_Card_Section__c`
-     * row is written, correct, and unreadable.
+     * THE CALL'S OWN SECTION, and the cards packed from the top of each lane.
      *
-     * The deal's existing section is reused where it has one; a deal with none gets one created,
-     * because a card that cannot be placed is the same silence in a new coat. Y coordinates
-     * continue below whatever already sits in the column rather than starting at one, so a rerun
-     * does not stack fresh cards on top of standing ones.
+     * Matthew's ruling, fifty-first stamp, from reading the live board: the machine's cards from
+     * a given source land in THEIR OWN section titled for the call, never in the deal's default
+     * column, and each lane packs Y = 1, 2, 3 with no gaps so the most possible cards sit above
+     * the fold. The board then reads left to right as a timeline of conversations.
+     *
+     * THE CONTINUE-BELOW POLICY IS SUPERSEDED WHERE IT CAUSED THE SPRAWL. It survives only inside
+     * a lane already carrying this section's own standing cards, which is a rerun adding to the
+     * same call; across sections it produced the scattered column Matthew read.
+     *
+     * HUMAN SECTIONS AND HUMAN CARDS ARE NEVER TOUCHED OR REPOSITIONED. This creates its own
+     * section and writes only its own placements; the deal's default column is handed back
+     * untouched, per the annotation law's spirit.
      */
     private static void attachToBoard(
         Id opportunityId,
         Id accountId,
         List<ALTF__Insight_Card__c> cards,
+        List<AAO_Pair__c> sources,
         Outcome o
     ) {
-        List<ALTF__Insight_Section__c> sections = [
-            SELECT Id, ALTF__X_Coordinate__c
-            FROM ALTF__Insight_Section__c
-            WHERE ALTF__Opportunity__c = :opportunityId
-            ORDER BY ALTF__X_Coordinate__c ASC NULLS LAST, CreatedDate ASC
-        ];
-        ALTF__Insight_Section__c section;
-        if (sections.isEmpty()) {
-            section = new ALTF__Insight_Section__c(
-                ALTF__Opportunity__c = opportunityId,
-                ALTF__Account__c = accountId,
-                ALTF__Short_Description__c = 'Enter title',
-                ALTF__X_Coordinate__c = 1
-            );
-            insert section;
-            update new ALTF__Insight_Section__c(
-                Id = section.Id, Name = String.valueOf(section.Id).substring(0, 15)
-            );
-            o.notes.add('No section on this deal, so one was created: a card that cannot be ' +
-                'placed on the board is written and unreadable.');
-        } else {
-            section = sections[0];
+        // Grouped by SOURCE, because a section is a call and a run can carry more than one.
+        Map<Id, List<ALTF__Insight_Card__c>> bySource =
+            new Map<Id, List<ALTF__Insight_Card__c>>();
+        Map<Id, AAO_Source__c> sourceRow = new Map<Id, AAO_Source__c>();
+        for (Integer i = 0; i < cards.size(); i++) {
+            AAO_Pair__c p = sources[i];
+            Id srcId = p.AAO_Source__c;
+            if (srcId == null) {
+                o.notes.add('A card has no source, so it gets no dated section; placement held.');
+                continue;
+            }
+            if (!bySource.containsKey(srcId)) {
+                bySource.put(srcId, new List<ALTF__Insight_Card__c>());
+            }
+            bySource.get(srcId).add(cards[i]);
+            sourceRow.put(srcId, p.AAO_Source__r);
         }
-
-        AggregateResult[] taken = [
-            SELECT MAX(ALTF__Y_Coordinate__c) maxY
-            FROM ALTF__Insight_Card_Section__c
-            WHERE ALTF__Insight_Section__c = :section.Id
-        ];
-        Decimal nextY = taken.isEmpty() || taken[0].get('maxY') == null
-            ? 0
-            : (Decimal) taken[0].get('maxY');
+        if (bySource.isEmpty()) {
+            return;
+        }
 
         List<ALTF__Insight_Card_Section__c> memberships =
             new List<ALTF__Insight_Card_Section__c>();
-        for (ALTF__Insight_Card__c c : cards) {
-            nextY = nextY + 1;
-            memberships.add(new ALTF__Insight_Card_Section__c(
-                ALTF__Insight_Card__c = c.Id,
-                ALTF__Insight_Section__c = section.Id,
-                ALTF__X_Coordinate__c = section.ALTF__X_Coordinate__c == null
-                    ? 1
-                    : section.ALTF__X_Coordinate__c,
-                ALTF__Y_Coordinate__c = nextY
-            ));
+        for (Id srcId : bySource.keySet()) {
+            ALTF__Insight_Section__c section = sectionFor(
+                opportunityId, accountId, sourceRow.get(srcId), null, o
+            );
+            memberships.addAll(
+                pack(section, bySource.get(srcId), o)
+            );
+        }
+        if (memberships.isEmpty()) {
+            return;
         }
         insert memberships;
+        nameRows(memberships);
+        o.placedOnBoard = memberships.size();
+    }
+
+    /**
+     * The section for one call, found by title or created.
+     *
+     * THE TITLE IS THE CALL'S DATE AND TYPE, "30 July 2026: Discovery Call" in shape. **No field
+     * on `AAO_Source__c` carries a call type today** (`AAO_Origin__c` holds the ingest origin,
+     * `ECI`, which is how the bytes arrived and not what kind of conversation it was), so the
+     * ruling's own fallback applies and the title is the DATE ALONE until a source can say. That
+     * gap is named in the run report rather than papered over with a guess, because a section
+     * mis-titled "Discovery Call" on a renewal call is worse than one titled by date.
+     */
+    @TestVisible
+    private static ALTF__Insight_Section__c sectionFor(
+        Id opportunityId,
+        Id accountId,
+        AAO_Source__c src,
+        String callType,
+        Outcome o
+    ) {
+        String title = sectionTitle(src, callType);
+        List<ALTF__Insight_Section__c> found = [
+            SELECT Id, ALTF__X_Coordinate__c
+            FROM ALTF__Insight_Section__c
+            WHERE ALTF__Opportunity__c = :opportunityId
+                AND ALTF__Short_Description__c = :title
+            LIMIT 1
+        ];
+        if (!found.isEmpty()) {
+            return found[0];
+        }
+        // A NEW COLUMN TO THE RIGHT OF EVERYTHING STANDING, so calls read left to right in the
+        // order they were added and no existing column is displaced.
+        Decimal nextX = 0;
+        for (ALTF__Insight_Section__c existing : [
+            SELECT ALTF__X_Coordinate__c FROM ALTF__Insight_Section__c
+            WHERE ALTF__Opportunity__c = :opportunityId
+        ]) {
+            if (existing.ALTF__X_Coordinate__c != null &&
+                existing.ALTF__X_Coordinate__c > nextX) {
+                nextX = existing.ALTF__X_Coordinate__c;
+            }
+        }
+        nextX = nextX + 1;
+        ALTF__Insight_Section__c section = new ALTF__Insight_Section__c(
+            ALTF__Opportunity__c = opportunityId,
+            ALTF__Account__c = accountId,
+            ALTF__Short_Description__c = title,
+            ALTF__X_Coordinate__c = nextX
+        );
+        insert section;
+        update new ALTF__Insight_Section__c(
+            Id = section.Id, Name = String.valueOf(section.Id).substring(0, 15)
+        );
+        o.sectionsCreated++;
+        o.notes.add('Section created: "' + title + '".');
+        return section;
+    }
+
+    @TestVisible
+    private static String sectionTitle(AAO_Source__c src, String callType) {
+        Datetime occurred = src == null ? null : src.AAO_Evidence_Occurred__c;
+        String d = occurred == null ? 'Undated call' : occurred.format('d MMMM yyyy');
+        return String.isBlank(callType) ? d : d + ': ' + callType;
+    }
+
+    /**
+     * PACK FROM THE TOP OF EACH LANE. One lane per card TYPE, Y compact from 1.
+     *
+     * The lane is the type because that is what the board shows as a row of like things, and the
+     * ruling is about what sits above the fold: a Goal lane with three cards at Y 1, 2, 3 is
+     * three readable cards, and the same three at Y 1, 5, 9 is one readable card and a scroll.
+     */
+    private static List<ALTF__Insight_Card_Section__c> pack(
+        ALTF__Insight_Section__c section,
+        List<ALTF__Insight_Card__c> cards,
+        Outcome o
+    ) {
+        // Standing cards in THIS section only. Continue-below survives here and nowhere else:
+        // a rerun that adds to the same call must not sit on top of that call's own cards.
+        // Grouped in Apex rather than in SOQL: the vendor marks these coordinate fields
+        // ungroupable, so a GROUP BY on them throws at runtime rather than at compile time.
+        Map<Decimal, Decimal> takenByLane = new Map<Decimal, Decimal>();
+        for (ALTF__Insight_Card_Section__c m : [
+            SELECT ALTF__X_Coordinate__c, ALTF__Y_Coordinate__c
+            FROM ALTF__Insight_Card_Section__c
+            WHERE ALTF__Insight_Section__c = :section.Id
+        ]) {
+            Decimal x = m.ALTF__X_Coordinate__c == null ? 0 : m.ALTF__X_Coordinate__c;
+            Decimal y = m.ALTF__Y_Coordinate__c == null ? 0 : m.ALTF__Y_Coordinate__c;
+            if (!takenByLane.containsKey(x) || takenByLane.get(x) < y) {
+                takenByLane.put(x, y);
+            }
+        }
+
+        List<ALTF__Insight_Card_Section__c> out = new List<ALTF__Insight_Card_Section__c>();
+        for (ALTF__Insight_Card__c c : cards) {
+            Decimal lane = laneFor(c.ALTF__Type__c);
+            Decimal y = (takenByLane.containsKey(lane) ? takenByLane.get(lane) : 0) + 1;
+            takenByLane.put(lane, y);
+            out.add(new ALTF__Insight_Card_Section__c(
+                ALTF__Insight_Card__c = c.Id,
+                ALTF__Insight_Section__c = section.Id,
+                ALTF__X_Coordinate__c = lane,
+                ALTF__Y_Coordinate__c = y
+            ));
+        }
+        return out;
+    }
+
+    /** The lane order the board reads in. Unknown types land right of the four ruled ones. */
+    @TestVisible
+    private static Decimal laneFor(String type) {
+        if (type == 'Goal') { return 1; }
+        if (type == 'Pressure') { return 2; }
+        if (type == 'Initiative') { return 3; }
+        if (type == 'Obstacle') { return 4; }
+        return 5;
+    }
+
+    private static void nameRows(List<ALTF__Insight_Card_Section__c> rows) {
         List<ALTF__Insight_Card_Section__c> named = new List<ALTF__Insight_Card_Section__c>();
-        for (ALTF__Insight_Card_Section__c m : memberships) {
+        for (ALTF__Insight_Card_Section__c m : rows) {
             named.add(new ALTF__Insight_Card_Section__c(
                 Id = m.Id, Name = String.valueOf(m.Id).substring(0, 15)
             ));
         }
         update named;
-        o.placedOnBoard = memberships.size();
     }
 
     // ------------------------------------------------------------------------ internals

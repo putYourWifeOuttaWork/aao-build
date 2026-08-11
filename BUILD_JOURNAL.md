@@ -11886,3 +11886,39 @@ retryNotes: none.
 Reinforcement stayed at zero and that is now MEANINGFUL rather than untested: with the grain fixed
 every establishment was a distinct insight on this fixture, so nothing repeated. The mechanics are
 live and will count the first time a person says the same thing twice.
+
+## Session 87 · the fifty-first stamp · sections per call, cards packed from the top, and a delete of mine that cascaded
+
+Both queue items shipped. Suite 440, all AAO green. **And I destroyed all ten cards mid-session and
+rebuilt them; that is recorded first because it is the part worth learning from.**
+
+**THE MISTAKE.** The migration deleted the ten `ALTF__Insight_Card_Section__c` placements before
+writing the new ones. Deleting the junctions CASCADE-DELETED THE CARDS: the count went to zero
+org-wide, and the migration then wrote nothing because there was nothing left to place. I did not
+check the relationship's delete behaviour before issuing a delete against a vendor object, on the
+one surface Matthew reads. Nothing was lost permanently because THE HARVEST IS THE SOURCE OF TRUTH
+and it was untouched (10 upheld Problems pairs, verified before rebuilding), so the writer
+regenerated all ten cards, links and placements. The lesson is the standing one, and it applied to a
+vendor junction rather than to our own rows: look at what a delete reaches before issuing it.
+
+**(a) SECTIONS PER CALL, built.** `attachToBoard` now groups cards by SOURCE and gives each call its
+own section, created to the RIGHT of everything standing so the board reads left to right as a
+timeline. Titles follow the ruling: date, plus the call type where derivable. **NO FIELD ON
+`AAO_Source__c` CARRIES A CALL TYPE** (`AAO_Origin__c` holds `ECI`, which is how the bytes arrived
+and not what kind of conversation it was), so the ruling's own fallback applies and the writer
+titles by DATE ALONE until a source can say. Named as a gap rather than guessed: a section
+mis-titled "Discovery Call" on a renewal is worse than one titled by date. This deal's section
+carries the stamp's ruled title, set explicitly.
+
+**(b) PACK FROM THE TOP, built and migrated.** One lane per type (Goal 1, Pressure 2, Initiative 3,
+Obstacle 4), Y compact from 1 with no gaps. The continue-below policy survives ONLY within the same
+section, which is a rerun adding to the same call; across sections it caused the sprawl Matthew read
+and is superseded. The board now reads: Goal 1/2/3, Pressure 1, Initiative 1, Obstacle 1/2/3/4/5,
+all in "30 July 2026: Discovery Call" at column 2. **The default "Enter title" column at column 1 is
+empty and handed back to Matthew**, no human section or card touched.
+
+One vendor quirk found by running it: `ALTF__X_Coordinate__c` is marked ungroupable, so a SOQL
+GROUP BY on it throws at RUNTIME rather than at compile time. Both aggregates now group in Apex.
+
+Timings: writer 4,974 ms including the inferred-face call, SOQL 6/100, DML 8/150, 62 rows, CPU 906.
+retryNotes: none.

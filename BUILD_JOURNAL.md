@@ -11922,3 +11922,34 @@ GROUP BY on it throws at RUNTIME rather than at compile time. Both aggregates no
 
 Timings: writer 4,974 ms including the inferred-face call, SOQL 6/100, DML 8/150, 62 rows, CPU 906.
 retryNotes: none.
+
+## Session 88 · the fifty-third stamp · the grid: three across, then wrap
+
+One refinement, applied to the writer and to the ten standing placements. Suite 440, all AAO green.
+
+**THE GRID.** Matthew's math, verbatim from the stamp: for the nth card of a lane, one-based,
+`X = ((n-1) mod 3) + 1` and `Y = ((n-1) div 3) + 1`. The previous cut spent X on the LANE, which is
+what made each type drift rightward one card per line; the board groups by type itself, so X and Y
+position a card INSIDE its type row and the type is not encoded in a coordinate at all. Verified
+in-org after the re-lay:
+
+    Goal:       (1,1) (2,1) (3,1)
+    Pressure:   (1,1)
+    Initiative: (1,1)
+    Obstacle:   (1,1) (2,1) (3,1) (1,2) (2,2)
+
+Five Obstacles render three wide then two wide, all above the fold, which is the rule's whole point.
+
+**THE RE-LAY WAS AN UPDATE, NOT A DELETE, and that is the fifty-second stamp's standing rule
+applied to my own incident.** Deleting these junctions cascade-deleted the cards last session; a
+coordinate change needs no delete at all, so the ten placements were updated in place. 793 ms,
+SOQL 1/100, DML 1/150, 10 rows. Cards and links untouched at 10 and 10.
+
+Continue-below still survives only within the same section, now counted per TYPE rather than per
+lane coordinate, so a rerun adding to the same call continues that type's row rather than starting
+a fresh grid on top of it.
+
+**Still open, Matthew's:** the call type. Nothing in the data says what kind of call a transcript
+was, so the next section titles by date alone. His preferred option is recorded as intake carrying
+the meeting title from the source system, which is small and honest and involves no inference; it
+is not built and is not assumed.

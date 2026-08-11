@@ -379,47 +379,66 @@ public with sharing class AAO_Cards {
     }
 
     /**
-     * PACK FROM THE TOP OF EACH LANE. One lane per card TYPE, Y compact from 1.
+     * THE GRID: within each type row, cards go side by side up to THREE ACROSS, then wrap.
      *
-     * The lane is the type because that is what the board shows as a row of like things, and the
-     * ruling is about what sits above the fold: a Goal lane with three cards at Y 1, 2, 3 is
-     * three readable cards, and the same three at Y 1, 5, 9 is one readable card and a scroll.
+     * Matthew's refinement, fifty-third stamp, from reading the rendered board: the first packing
+     * put one card per line and let each lane drift rightward, so five Obstacles were five lines
+     * deep. His math, verbatim: for the nth card of a lane, one-based,
+     * `X = ((n-1) mod 3) + 1` and `Y = ((n-1) div 3) + 1`, scoped to the lane inside the
+     * machine's section. Five Obstacles therefore render three wide then two wide, all above the
+     * fold, which is the whole point of the rule.
+     *
+     * THE LANE IS THE CARD'S TYPE AND THE BOARD GROUPS BY IT ITSELF, so the type is not encoded
+     * in a coordinate: X and Y position a card INSIDE its type row. The previous cut spent X on
+     * the lane, which is what made the rows drift.
      */
     private static List<ALTF__Insight_Card_Section__c> pack(
         ALTF__Insight_Section__c section,
         List<ALTF__Insight_Card__c> cards,
         Outcome o
     ) {
-        // Standing cards in THIS section only. Continue-below survives here and nowhere else:
-        // a rerun that adds to the same call must not sit on top of that call's own cards.
-        // Grouped in Apex rather than in SOQL: the vendor marks these coordinate fields
-        // ungroupable, so a GROUP BY on them throws at runtime rather than at compile time.
-        Map<Decimal, Decimal> takenByLane = new Map<Decimal, Decimal>();
+        // Cards already standing in THIS section, counted per type. Continue-below survives here
+        // and nowhere else: a rerun adding to the same call must not sit on that call's own
+        // cards. Across sections it caused the sprawl and is superseded.
+        Map<String, Integer> takenByType = new Map<String, Integer>();
         for (ALTF__Insight_Card_Section__c m : [
-            SELECT ALTF__X_Coordinate__c, ALTF__Y_Coordinate__c
+            SELECT ALTF__Insight_Card__r.ALTF__Type__c
             FROM ALTF__Insight_Card_Section__c
             WHERE ALTF__Insight_Section__c = :section.Id
         ]) {
-            Decimal x = m.ALTF__X_Coordinate__c == null ? 0 : m.ALTF__X_Coordinate__c;
-            Decimal y = m.ALTF__Y_Coordinate__c == null ? 0 : m.ALTF__Y_Coordinate__c;
-            if (!takenByLane.containsKey(x) || takenByLane.get(x) < y) {
-                takenByLane.put(x, y);
-            }
+            String t = m.ALTF__Insight_Card__r == null
+                ? ''
+                : m.ALTF__Insight_Card__r.ALTF__Type__c;
+            takenByType.put(t, (takenByType.containsKey(t) ? takenByType.get(t) : 0) + 1);
         }
 
         List<ALTF__Insight_Card_Section__c> out = new List<ALTF__Insight_Card_Section__c>();
         for (ALTF__Insight_Card__c c : cards) {
-            Decimal lane = laneFor(c.ALTF__Type__c);
-            Decimal y = (takenByLane.containsKey(lane) ? takenByLane.get(lane) : 0) + 1;
-            takenByLane.put(lane, y);
+            String t = c.ALTF__Type__c;
+            Integer n = (takenByType.containsKey(t) ? takenByType.get(t) : 0) + 1;
+            takenByType.put(t, n);
             out.add(new ALTF__Insight_Card_Section__c(
                 ALTF__Insight_Card__c = c.Id,
                 ALTF__Insight_Section__c = section.Id,
-                ALTF__X_Coordinate__c = lane,
-                ALTF__Y_Coordinate__c = y
+                ALTF__X_Coordinate__c = gridX(n),
+                ALTF__Y_Coordinate__c = gridY(n)
             ));
         }
         return out;
+    }
+
+    /** Cards per line inside a type row. Matthew's number, read off the rendered board. */
+    @TestVisible
+    private static final Integer ACROSS = 3;
+
+    @TestVisible
+    private static Integer gridX(Integer n) {
+        return Math.mod(n - 1, ACROSS) + 1;
+    }
+
+    @TestVisible
+    private static Integer gridY(Integer n) {
+        return ((n - 1) / ACROSS) + 1;
     }
 
     /** The lane order the board reads in. Unknown types land right of the four ruled ones. */

@@ -19,20 +19,33 @@ private class AAO_SupportCounterTest {
     // ============================================================================ the rungs
 
     @IsTest
-    static void theRungsSitAtTheirRuledPositionsAndZeroIsNotOne() {
+    static void theRungsSitAtTheirRuledPositionsAndACountedZeroIsNeutral() {
         System.assertEquals('Mentor', AAO_SupportCounter.rungFor(3));
         System.assertEquals('Supporter', AAO_SupportCounter.rungFor(2));
         System.assertEquals('Supporter', AAO_SupportCounter.rungFor(1));
         System.assertEquals('Non-Supporter', AAO_SupportCounter.rungFor(-1));
         System.assertEquals('Non-Supporter', AAO_SupportCounter.rungFor(-2));
         System.assertEquals('Enemy', AAO_SupportCounter.rungFor(-3));
+
+        // MATTHEW'S RULING, forty-fourth stamp item 2, REVERSING what this test used to
+        // assert. It read: "Neutral stays derived, never written. Zero is the absence of a
+        // placement, and writing Neutral would be the map asserting a balance nobody voiced."
+        // The specimen that overturned it: Adam Pfeiffer in run `pf0811-live`, one supportive
+        // establishment and one hedge upheld as non-support, netting zero and leaving Status
+        // BLANK on a person whose enthusiasm is in the transcript. Zero was not the absence of
+        // a placement there; it was two placements cancelling, which is a measurement.
+        System.assertEquals(
+            'Neutral',
+            AAO_SupportCounter.rungFor(0),
+            'A COUNTED zero is Neutral: the machine weighed support and counter-support and ' +
+            'they balance, and the map says so with the evidence behind it.'
+        );
         System.assertEquals(
             null,
-            AAO_SupportCounter.rungFor(0),
-            'Neutral stays derived, never written. Zero is the absence of a placement, and ' +
-            'writing "Neutral" would be the map asserting a balance nobody voiced.'
+            AAO_SupportCounter.rungFor(null),
+            'And BLANK IS RESERVED FOR NEVER-MEASURED. The whole distinction rides on null ' +
+            'versus zero, so this assertion is the other half of the one above.'
         );
-        System.assertEquals(null, AAO_SupportCounter.rungFor(null));
     }
 
     // ================================================================== each read moves one

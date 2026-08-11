@@ -11646,3 +11646,51 @@ Problems and Politics carry relationships rather than per-person values and noth
 projection writes an edge today.
 
 Report and rows: `review/pf0811-h0/`. Delivered into the project.
+
+## Session 81 · the forty-fourth stamp's queue · Matthew's three map defects, and a purge that moved one item
+
+Project Farma purged at Matthew's request before anything ran (map 3, claims 13, answers 8, pairs 90
+to zero), which is why item (b)'s one-time `pf0811-live` backfill is MOOT rather than skipped: those
+were the rows it was written for. The fresh run supersedes it. Suite 437, all AAO green.
+
+**(a) DETERMINISTIC PLACEMENT.** Presence rode read variance because a person earned a map row only
+by having CLAIMS. The roster does not come from the model. A roster placement leg now walks every
+participant coverage counts and places each RESOLVED one with derived Coverage, after the evidence
+loop (that loop can create a Contact, and a person resolved during the run should be placed in the
+same run). Internal-true cannot be reached by construction (the exclusion is in AAO_Coverage), a
+participant with no Contact is not placed (the map field is required and no Contact is faked), and a
+roster row asserts attendance only, every judgment dimension left null. REPORTED HONESTLY: it placed
+NOBODY on the fresh run (placedFromRoster=0) because all three resolved participants had answers, so
+the claim rests on two new tests rather than on the run.
+
+**(b) THE SUBJECT-CONTACT LINK, PROVEN 10 OF 10.** The join stamps the link from the participant's
+Contact and a person whose Contact is created BY THE RUN had none at join time, so Dan Lewis's page
+showed zero answers while his answers were Live. Backfill now runs the moment the identity ladder
+resolves a Contact. After the fresh run: 10 answers, 10 linked, 0 unlinked; Dan's participant
+carries 003WD00001QuqoFYAR. A REAL LAW FOUND BY RUNNING IT: the first cut also stamped CLAIMS and the
+org refused mid-projection, "AAO_Claim__c is insert only apart from retirement ... it is never
+edited". Honored, not worked around: the backfill touches answers only, which is the surface the
+contact page reads, and a claim's link repairs itself next run because the ladder writes the Contact
+back onto the participant.
+
+**(c) THE SENTIMENT SPECIMEN RECORDED, NOT TUNED.** `review/calibration/README.md` opened as the
+calibration set, specimen 1 carrying both pair refs and both verifier reasons verbatim from the wire
+(recovered from run logs, the pairs themselves being purged). The useful detail is the model's own
+hedge: "non-support or at least conditional/delayed support" on words about WHEN scope happens. No
+guidance text, prompt, example or threshold was touched; the file states its own rule that it records
+cases and never guidance.
+
+**(d) A COUNTED ZERO IS NEUTRAL.** `rungFor(0)` returns Neutral, `rungFor(null)` still null; the
+distinction rides on null versus zero, which the caller already has. Neutral verified present on the
+vendor picklist by describe before writing it. This REVERSES a standing law and two tests encoded the
+old one; both corrected in place with the superseded text and the overturning specimen kept.
+Not exercised on this run (Adam netted +1, not 0), which is stated rather than implied.
+
+**THE FRESH MAP** (`pf0811-fresh`): Adam Supporter / Political Structure / Brief; Dan Evaluator /
+Brief; Kayla Evaluator / Brief. Adam reads Supporter where the last run left him blank; that is a
+different run of a still-varying shape, not a fix, and the (c) specimen is why his Status was
+fragile. retryNotes: call 0 clean first attempt, no shard died, zero unverified; one stage error
+reported rather than hidden, the claim-immutability throw above, corrected and projection re-run
+(idempotent, same rows).
+
+Report and rows: `review/pf0811-fresh/`, calibration set at `review/calibration/`. Delivered.

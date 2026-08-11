@@ -51,10 +51,25 @@ public with sharing class AAO_SupportCounter {
     };
 
     /**
-     * The rungs, at their ruled positions. **Zero is deliberately absent.** Neutral is never
-     * written: it is the derived reading when nothing stands, which is the no-abstention
-     * ruling applied to the map, so a counter resting at zero leaves the field alone rather
-     * than asserting neutrality nobody voiced.
+     * The rungs, at their ruled positions.
+     *
+     * **A COUNTED ZERO IS NEUTRAL. A NULL COUNTER IS NEVER-MEASURED.** Matthew's ruling,
+     * forty-fourth stamp item 2, in his words: if plus one and minus one net to zero, that is
+     * NEUTRAL, not null; the machine weighed support and counter-support and they balance, so
+     * the map says Neutral with the evidence behind it, and blank is reserved for
+     * never-measured.
+     *
+     * This REVERSES this method's previous rule, which returned null at zero on the reasoning
+     * that neutral "is the derived reading when nothing stands". That conflated two different
+     * facts into one blank: nobody said anything about this person, and the machine read both
+     * directions and they cancelled. The distinction is carried by the counter itself rather
+     * than by a flag, because null and zero are already different values and the caller has
+     * both: `Derivation.supportCounter` stays null until a sentiment answer sets it.
+     *
+     * The specimen that produced the ruling is on the record: Adam Pfeiffer, run `pf0811-live`,
+     * one supportive establishment and one hedge upheld as non-support, netting zero and
+     * leaving Status blank on a person whose enthusiasm is in the transcript. Neutral is at
+     * least legible and carries its citations; blank read as erasure.
      */
     public static String rungFor(Integer counter) {
         if (counter == null) {
@@ -72,7 +87,7 @@ public with sharing class AAO_SupportCounter {
         if (counter < 0) {
             return 'Non-Supporter';
         }
-        return null;
+        return 'Neutral';
     }
 
     public static Boolean isState(String meaning) {

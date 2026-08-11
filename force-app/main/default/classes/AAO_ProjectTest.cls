@@ -124,22 +124,28 @@ private class AAO_ProjectTest {
     }
 
     @IsTest
-    static void neutralIsDerivedAndNeverWritten() {
+    static void aCountedZeroIsNeutralAndNeverMeasuredStaysBlank() {
         Id p = someone();
         System.assertEquals(
             null,
             AAO_Project.derive(new List<AAO_Answer__c>{}).support,
-            'Nothing established is a state of not knowing. Writing "Neutral" here would be ' +
-            'the map asserting a balance nobody voiced.'
+            'Nothing established is a state of NOT KNOWING, and it stays blank. This half of ' +
+            'the old law survives Matthew\'s ruling untouched.'
         );
+        // MATTHEW'S RULING, forty-fourth stamp item 2, reversing what this assertion read:
+        // "A counter resting at zero is Neutral, and Neutral is the derived reading rather
+        // than a value: the field is left alone." The specimen that overturned it is Adam
+        // Pfeiffer in run `pf0811-live`, one supportive establishment and one hedge upheld as
+        // non-support, netting zero and leaving his Status blank. Blank read as erasure on a
+        // person whose enthusiasm is in the transcript; Neutral is legible and cites both.
         System.assertEquals(
-            null,
+            'Neutral',
             AAO_Project.derive(
                     new List<AAO_Answer__c>{ ans(AAO_P8Codes.SENTIMENT, p, 'TRUE', 10, 0, 'SUPPORTER') }
                 )
                 .support,
-            'A counter resting at zero is Neutral, and Neutral is the derived reading rather ' +
-            'than a value: the field is left alone.'
+            'A COUNTED zero is Neutral: support and counter-support were both weighed and ' +
+            'they balance, which is a measurement and not an absence.'
         );
         System.assertEquals(
             null,
@@ -842,6 +848,124 @@ private class AAO_ProjectTest {
             'by the Source after-insert rather than by hand.'
         );
         return found[0];
+    }
+
+    /**
+     * A participant the ROSTER resolves to a Contact, with no answers of any kind.
+     *
+     * Built through the Source after-insert like the helper above, for the reason journalled
+     * there: participation is only ever written by `AAO_Participants.record`, and hand-inserting
+     * the junction was the same mistake twice.
+     */
+    private static AAO_Participant__c rosterParticipantWithContact(Fixture f, String email) {
+        AAO_Synthetic.MARK = true;
+        AAO_Source__c src = new AAO_Source__c(
+            AAO_Opportunity__c = f.oppId,
+            AAO_Account__c = f.acctId,
+            AAO_Origin__c = 'ingest',
+            AAO_Artifact_SHA256__c =
+                '0000000000000000000000000000000000000000000000000000000000000044',
+            AAO_Part_Index__c = 1,
+            AAO_Part_Count__c = 1,
+            AAO_Normalized_Text__c = 'someone\tOn the call and silent about everything.',
+            AAO_Diarization__c = 'Attributed',
+            AAO_Evidence_Occurred__c = Datetime.newInstanceGmt(2026, 8, 11, 15, 0, 0),
+            AAO_Speaker_Roster__c = JSON.serialize(
+                new Map<String, Object>{
+                    'speakers' => new List<Object>{
+                        new Map<String, Object>{
+                            'key' => 'quiet', 'display' => 'Test Person', 'email' => email
+                        }
+                    }
+                }
+            ),
+            AAO_Synthetic__c = true
+        );
+        insert src;
+        AAO_Synthetic.MARK = false;
+        AAO_Participant__c p = [
+            SELECT Id, AAO_Contact__c FROM AAO_Participant__c
+            WHERE AAO_Source__c = :src.Id LIMIT 1
+        ];
+        return p;
+    }
+
+    // ================================== presence must not ride read variance (44th stamp, 1)
+
+    @IsTest
+    static void aParticipantOnTheCallIsPLACEDEvenWhenTheModelEstablishedNothing() {
+        // MATTHEW'S RULING, forty-fourth stamp item 1. Kayla Stanley was on the call and fell
+        // off the map in TWO OF THREE identical probe runs, because a person earned a map row
+        // only by having claims, and claims come from the model. The roster does not: it is
+        // deterministic data on the Source. This is the assertion that presence stopped riding
+        // read variance, and it is the one an in-org run cannot make for us, because a run only
+        // exercises this leg when a resolved participant happens to have no answers at all.
+        Fixture f = fixture();
+        AAO_Participant__c quiet = rosterParticipantWithContact(f, 'quiet.person@example.invalid');
+        // Link it the way the roster ladder would, so the person is RESOLVED.
+        quiet.AAO_Contact__c = f.contactId;
+        update quiet;
+
+        System.assertEquals(
+            0,
+            [SELECT COUNT() FROM AAO_Answer__c WHERE AAO_Opportunity__c = :f.oppId],
+            'The whole point is that nothing was established about this person.'
+        );
+
+        Test.startTest();
+        AAO_Project.Outcome o = AAO_Project.run(f.oppId);
+        Test.stopTest();
+
+        System.assertEquals(
+            1, o.placedFromRoster, 'The roster placed exactly this person. ' + o
+        );
+        List<ALTF__Contact_Map_Details__c> rows = [
+            SELECT ALTF__Coverage__c, ALTF__Status__c, ALTF__Political__c, ALTF__Buyer_Role__c
+            FROM ALTF__Contact_Map_Details__c
+            WHERE ALTF__Opportunity__c = :f.oppId AND ALTF__Contact__c = :f.contactId
+        ];
+        System.assertEquals(1, rows.size(), 'A map row exists for someone on the call.');
+        System.assertEquals(
+            AAO_Coverage.BRIEF,
+            rows[0].ALTF__Coverage__c,
+            'Carrying the coverage the roster derives, which is the one thing being on a call ' +
+            'establishes.'
+        );
+        System.assertEquals(
+            null,
+            rows[0].ALTF__Status__c,
+            'And NOTHING ELSE. A roster placement asserts attendance, never a judgment: ' +
+            'filling the row out to look complete is the defect, not the feature.'
+        );
+        System.assertEquals(null, rows[0].ALTF__Political__c);
+        System.assertEquals(null, rows[0].ALTF__Buyer_Role__c);
+    }
+
+    @IsTest
+    static void anInternalParticipantIsNeverPlacedByTheRosterEither() {
+        // The thirty-seventh stamp's item 4 exclusion has to survive the new leg, or the
+        // deterministic placement would put our own sellers on the customer's map by a route
+        // the coverage guard was built to close.
+        Fixture f = fixture();
+        AAO_Participant__c ours = rosterParticipantWithContact(f, 'seller@example.invalid');
+        ours.AAO_Contact__c = f.contactId;
+        ours.AAO_Internal__c = true;
+        update ours;
+
+        Test.startTest();
+        AAO_Project.Outcome o = AAO_Project.run(f.oppId);
+        Test.stopTest();
+
+        System.assertEquals(0, o.placedFromRoster, 'Our own side is not placed. ' + o);
+        System.assertEquals(
+            0,
+            [
+                SELECT COUNT()
+                FROM ALTF__Contact_Map_Details__c
+                WHERE ALTF__Opportunity__c = :f.oppId
+            ],
+            'And no map row is written at all.'
+        );
     }
 
     private static AAO_Answer__c establish(

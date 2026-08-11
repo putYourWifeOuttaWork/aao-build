@@ -58,6 +58,15 @@ public with sharing class AAO_Project {
     // ===================================================================== the outcome
 
     public class PersonResult {
+        /**
+         * True when the ROSTER placed this person rather than the evidence: they were on the
+         * call and carry derived Coverage, and the machine established nothing else about them.
+         */
+        @AuraEnabled
+        public Boolean placedFromRoster = false;
+        /** Answers and claims whose subject-contact link this projection filled in. */
+        @AuraEnabled
+        public Integer linksBackfilled = 0;
         @AuraEnabled
         public Id contactId;
         @AuraEnabled
@@ -122,6 +131,12 @@ public with sharing class AAO_Project {
         public Integer unchanged = 0;
         /** People whose identity resolves to no Contact, so no map row can be reached. */
         public Integer unresolved = 0;
+        /**
+         * People placed by the ROSTER rather than by the evidence (forty-fourth stamp item 1).
+         * Reported separately because it is a different kind of claim: it asserts that somebody
+         * was on the call, never that the machine established anything about them.
+         */
+        public Integer placedFromRoster = 0;
         /** Contacts the create leg made for people the org had none for. */
         public Integer contactsCreated = 0;
         /** Criteria written into the vendor's own object, with their holder junctions. */
@@ -247,8 +262,9 @@ public with sharing class AAO_Project {
             // subjected to the criterion, so a deal whose only harvest was criteria has an
             // empty roster here and a full one below. Returning early would have made the
             // criteria write unreachable on exactly the run that is all criteria.
-            projectCriteria(opportunityId, accountId, o);
-            return o;
+            // NOT a return any more: the roster places people the evidence never mentioned,
+            // so a run whose model output was empty still writes the deal's coverage skeleton.
+            // Criteria are projected once, at the end, on every path.
         }
 
         List<AAO_Participant__c> coverageStamps = new List<AAO_Participant__c>();
@@ -303,6 +319,80 @@ public with sharing class AAO_Project {
             } else if (r.action == 'blocked') {
                 o.blocked++;
             } else if (r.action == 'unresolved') {
+                o.unresolved++;
+            } else {
+                o.unchanged++;
+            }
+        }
+
+        // ---- THE ROSTER PLACEMENT LEG. Forty-fourth stamp, item 1, Matthew's ruling ------
+        //
+        // **PRESENCE ON THE MAP MUST NOT RIDE READ VARIANCE.** Kayla Stanley was on the call
+        // and fell off the map in two of three identical probe runs, because a person earned a
+        // row only by having CLAIMS, and claims come from the model. The roster does not: it is
+        // deterministic data on the Source, and roster-to-Contact resolution is code. So every
+        // resolved external participant is placed with its derived Coverage whether or not the
+        // model established anything about them, and the evidence-driven loop above enriches
+        // rows that already exist.
+        //
+        // It runs AFTER that loop rather than before, and the ordering is deliberate: the loop
+        // may CREATE a Contact through the identity ladder, and a person resolved during the
+        // run should be placed in the same run rather than waiting for the next one.
+        //
+        // `occasions` is the roster, already filtered: mention rows never count coverage and
+        // Internal-true participants are excluded at the source (thirty-seventh stamp item 4),
+        // so neither can be placed from here. A participant with no Contact is not placed,
+        // because `ALTF__Contact_Map_Details__c.ALTF__Contact__c` is required and no Contact is
+        // ever faked; the create leg stays evidence-driven, which is where the ruling leaves it.
+        Set<Id> alreadyHandled = new Set<Id>();
+        for (PersonResult pr : o.people) {
+            if (pr.participantId != null) {
+                alreadyHandled.add(pr.participantId);
+            }
+        }
+        List<AAO_Participant__c> rosterRows = [
+            SELECT Id, AAO_Contact__c, AAO_Display_Name__c, AAO_Email__c, AAO_Roster_Key__c,
+                AAO_Source__c, AAO_Coverage_Projected_Value__c,
+                AAO_Coverage_Projected_Modstamp__c
+            FROM AAO_Participant__c
+            WHERE Id IN :occasions.keySet() AND AAO_Contact__c != null
+            ORDER BY AAO_Display_Name__c
+        ];
+        for (AAO_Participant__c person : rosterRows) {
+            if (alreadyHandled.contains(person.Id)) {
+                continue;
+            }
+            Derivation rd = new Derivation();
+            rd.occasions = occasions.get(person.Id);
+            rd.coverage = AAO_Coverage.valueFor(rd.occasions);
+            if (rd.coverage == null) {
+                // The silence law: zero occasions writes nothing, so a roster row nobody met
+                // still places nobody.
+                continue;
+            }
+            PersonResult rr = project(
+                opportunityId, accountId, new List<AAO_Answer__c>(), rd, person
+            );
+            rr.placedFromRoster = true;
+            o.placedFromRoster++;
+            o.writesByDimension.put(
+                AAO_P8Codes.DIM_COVERAGE, o.writesByDimension.get(AAO_P8Codes.DIM_COVERAGE) + 1
+            );
+            if (!rr.heldBack.contains('Coverage')) {
+                coverageStamps.add(new AAO_Participant__c(
+                    Id = person.Id,
+                    AAO_Coverage_Projected_Value__c = rd.coverage,
+                    AAO_Coverage_Projected_Modstamp__c = System.now()
+                ));
+            }
+            o.people.add(rr);
+            if (rr.action == 'created') {
+                o.created++;
+            } else if (rr.action == 'populated') {
+                o.populated++;
+            } else if (rr.action == 'blocked') {
+                o.blocked++;
+            } else if (rr.action == 'unresolved') {
                 o.unresolved++;
             } else {
                 o.unchanged++;
@@ -514,6 +604,41 @@ public with sharing class AAO_Project {
         return found.isEmpty() ? null : found[0];
     }
 
+    /**
+     * Stamp the resolved Contact onto every answer and claim of this participant that has none.
+     *
+     * Per person rather than bulked, for the same reason the identity ladder is: this runs only
+     * for the few people a deal had no Contact for, and paying two queries for each of those is
+     * cheaper than paying them for everybody. Rows that already carry a link are untouched, so
+     * this is idempotent and re-projection costs nothing.
+     */
+    private static Integer backfillSubjectContact(Id participantId, Id contactId) {
+        if (participantId == null || contactId == null) {
+            return 0;
+        }
+        Integer n = 0;
+        List<AAO_Answer__c> answers = [
+            SELECT Id FROM AAO_Answer__c
+            WHERE AAO_Participant__c = :participantId AND AAO_Subject_Contact__c = null
+        ];
+        for (AAO_Answer__c a : answers) {
+            a.AAO_Subject_Contact__c = contactId;
+        }
+        if (!answers.isEmpty()) {
+            update answers;
+            n += answers.size();
+        }
+        // CLAIMS ARE DELIBERATELY NOT TOUCHED, and the org refuses the attempt: "AAO_Claim__c
+        // is insert only apart from retirement ... A claim is one establishment from one piece
+        // of evidence, and it is never edited." The first cut of this backfill did try, and the
+        // validation rule caught it mid-projection, which is the immutability law doing its job.
+        // It costs nothing here: the contact page reads ANSWERS, which is the surface Matthew
+        // found empty, and the claim's link is repaired for future runs by the identity ladder
+        // writing the resolved Contact back onto the participant, so the next join stamps it
+        // from a participant that now has one.
+        return n;
+    }
+
     private static String nameOf(AAO_Answer__c a) {
         if (a.AAO_Participant__r != null &&
             String.isNotBlank(a.AAO_Participant__r.AAO_Display_Name__c)) {
@@ -534,11 +659,28 @@ public with sharing class AAO_Project {
         List<AAO_Answer__c> answers,
         Derivation d
     ) {
+        return project(opportunityId, accountId, answers, d, null);
+    }
+
+    /**
+     * `roster` is the participation row for a person the ROSTER places rather than the
+     * evidence: forty-fourth stamp item 1. It is null on the evidence-driven path, where the
+     * identity is read off the answers exactly as before, and non-null only when `answers` is
+     * empty, which is the case that could not previously be expressed at all.
+     */
+    private static PersonResult project(
+        Id opportunityId,
+        Id accountId,
+        List<AAO_Answer__c> answers,
+        Derivation d,
+        AAO_Participant__c roster
+    ) {
+        Boolean fromRoster = answers.isEmpty();
         PersonResult r = new PersonResult();
-        Id contactId = contactOf(answers[0]);
+        Id contactId = fromRoster ? roster.AAO_Contact__c : contactOf(answers[0]);
         r.contactId = contactId;
-        r.participantId = answers[0].AAO_Participant__c;
-        r.personName = nameOf(answers[0]);
+        r.participantId = fromRoster ? roster.Id : answers[0].AAO_Participant__c;
+        r.personName = fromRoster ? roster.AAO_Display_Name__c : nameOf(answers[0]);
         r.support = d.support;
         r.supportCounter = d.supportCounter;
         r.political = d.political;
@@ -574,7 +716,7 @@ public with sharing class AAO_Project {
             return r;
         }
         if (contactId == null) {
-            AAO_Participant__c person = participantOf(answers[0]);
+            AAO_Participant__c person = fromRoster ? roster : participantOf(answers[0]);
             if (person == null) {
                 r.action = 'unresolved';
                 r.reason =
@@ -590,6 +732,14 @@ public with sharing class AAO_Project {
                 contactId = res.contactId;
                 r.contactId = contactId;
                 r.reason = res.reason;
+                // THE SUBJECT-CONTACT BACKFILL. Forty-fourth stamp, item 3, Matthew's finding:
+                // Dan Lewis's contact page showed zero answers while his answers existed and
+                // were Live. The join stamps `AAO_Subject_Contact__c` from the participant's
+                // contact, and a person whose Contact is CREATED BY THIS RUN had none at join
+                // time, so the link was null forever and the evidence trail only walked one
+                // way. The ladder has just resolved it, so the rows are stamped here, which is
+                // the earliest moment the answer is true.
+                r.linksBackfilled = backfillSubjectContact(person.Id, contactId);
             } else {
                 r.action = 'unresolved';
                 r.reason =
@@ -668,7 +818,12 @@ public with sharing class AAO_Project {
             insert fresh;
             r.mapRowId = fresh.Id;
             r.action = 'created';
-            stampProjected(answers, d, null);
+            // No answers on the roster path means nothing to watermark here; the coverage
+            // watermark is stamped on the PARTICIPANT by run(), which is the only row a
+            // roster-placed person has.
+            if (!fromRoster) {
+                stampProjected(answers, d, null);
+            }
             // Everything else stays null on purpose: we establish what evidence establishes
             // and we do not fill a row out to look complete.
             return r;
@@ -690,7 +845,11 @@ public with sharing class AAO_Project {
             (d.political != null && row.ALTF__Political__c == d.political) ||
             (d.buyerRole != null && row.ALTF__Buyer_Role__c == d.buyerRole);
 
-        Datetime ours = lastProjected(answers);
+        // On the roster path the coverage watermark IS the last thing we projected for this
+        // person, because coverage is the only dimension a roster placement writes.
+        Datetime ours = fromRoster
+            ? roster.AAO_Coverage_Projected_Modstamp__c
+            : lastProjected(answers);
 
         // **A POPULATED VALUE WE CANNOT PROVE IS OURS IS THE HUMAN'S.** Found 7 August by the
         // watermark check on Matthew's own map edit: he set Fatema Choudray's Political Status
@@ -726,9 +885,19 @@ public with sharing class AAO_Project {
         // first contact and every contact after it, since no answer can ever carry a coverage
         // watermark. The two halves ship together or neither is correct.
         Map<String, Set<String>> ourValues = ourValuesByDimension(answers);
-        String recordedCoverage = coverageWatermark(answers) == null
-            ? null
-            : answers[0].AAO_Participant__r.AAO_Coverage_Projected_Value__c;
+        // On the roster path there are no answers to carry a watermark, so coverage's is read
+        // off the participation row directly. Without this a roster-placed person's own
+        // previous coverage write would be invisible to the guard below and would read as a
+        // human edit on the second projection, freezing the one dimension the row exists for.
+        Datetime coverageMark = fromRoster
+            ? roster.AAO_Coverage_Projected_Modstamp__c
+            : coverageWatermark(answers);
+        String recordedCoverage;
+        if (coverageMark != null) {
+            recordedCoverage = fromRoster
+                ? roster.AAO_Coverage_Projected_Value__c
+                : answers[0].AAO_Participant__r.AAO_Coverage_Projected_Value__c;
+        }
         if (String.isNotBlank(recordedCoverage)) {
             ourValues.put(AAO_P8Codes.DIM_COVERAGE, new Set<String>{ recordedCoverage });
         }
@@ -835,7 +1004,9 @@ public with sharing class AAO_Project {
             update patch;
         }
         if (wrote || matched) {
-            stampProjected(answers, d, retractedCodes);
+            if (!fromRoster) {
+                stampProjected(answers, d, retractedCodes);
+            }
         }
 
         r.action = wrote ? 'populated' : 'unchanged';

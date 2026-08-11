@@ -11776,3 +11776,33 @@ present and mapped: `ALTF__Insight_Card__c` carries `ALTF__Type__c` {Goal, Press
 Obstacle, Solution}, `ALTF__Short_Description__c` for the one-sentence face, `Long_Description__c`
 and `Note__c` for detail and citations, and `ALTF__Insight_Card_Contact__c` carries the
 person-to-insight link with types {Informer, Owner}.
+
+## Session 84 · the Problems harvest WORKS, and it broke the join on a governor ceiling
+
+**THE MEANINGS FIX IS PROVEN.** Same fixture, same shape, one declaration added: the harvest went
+from ZERO Problems pairs to **16 upheld**, beside 18 upheld People. The quotes are specific and
+on-topic, not filler: GOAL "hit 90 million company-wide sales target this year", "we're moving
+towards a key account model"; INIT "that's why we want to bring it into Salesforce and make it
+consistent", "establish one account planning and opportunity methodology the whole organization
+follows"; OBST "we tend to operate in silos across manufacturing networks for the same company",
+"some of my, let's say, elder statesmen that don't really adapt to cloud-based platforms". The
+question wording needs no design attention; it was never the wording.
+
+**AND THE JOIN FAILED: `System.LimitException: Too many SOQL queries: 101`.** Not a flake and not
+the new code: `AAO_PairCommit` calls `AAO_Commit.commitCandidate` once per candidate, which is a
+deliberate read-then-branch design documented in the class ("per pair rather than bulk-DML'd ... each
+is a read-then-branch decision against standing state"). It was inside the ceiling at 18 upheld and
+is outside it at 34. **Adding a family roughly doubles the join's query load, and the join was one
+family away from its ceiling the whole time.** This is the scalability ceiling earlier stamps parked,
+reached by ordinary use rather than by a stress test.
+
+**CARDS ARE NOT BUILT, and the stop is deliberate rather than a shortfall.** The queue said to build
+the card writer if quotes came back, and they did. But the writer reads claims and answers, and the
+join is what produces them, so with the join failing there is nothing for a card writer to read and
+nothing to verify it against. Bulkifying `AAO_Commit` is a real refactor of the one stage that
+decides what becomes a claim, on a People pipeline that currently works; starting it at the tail of a
+session and leaving it half-done is how a working pipeline gets broken. Named for the next stretch
+with the surface already mapped, and NOT attempted blind.
+
+Run `pf0811-pb2`, purged from `pf0811-prob`. The map projected from the claims that existed before
+the join died and is therefore partial; it is not offered as a result.

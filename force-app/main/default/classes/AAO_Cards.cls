@@ -31,12 +31,15 @@ public with sharing class AAO_Cards {
         public Integer contradictionsFlagged = 0;
         public Integer linksWritten = 0;
         public Integer linksHeld = 0;
+        /** Cards given a section membership, which is what makes them render at all. */
+        public Integer placedOnBoard = 0;
         public List<String> notes = new List<String>();
 
         public override String toString() {
             return 'cards: ' + created + ' created, ' + reinforced + ' reinforced, ' +
                 unchanged + ' unchanged, ' + contradictionsFlagged + ' contradictions flagged; ' +
-                'links: ' + linksWritten + ' written, ' + linksHeld + ' held' +
+                'links: ' + linksWritten + ' written, ' + linksHeld + ' held; placed on board: ' +
+                placedOnBoard +
                 (notes.isEmpty() ? '' : '\n  ' + String.join(notes, '\n  '));
         }
     }
@@ -55,21 +58,31 @@ public with sharing class AAO_Cards {
         o.opportunityId = opportunityId;
         Id accountId = [SELECT AccountId FROM Opportunity WHERE Id = :opportunityId].AccountId;
 
-        List<AAO_Answer__c> answers = [
-            SELECT Id, AAO_Verdict__c, AAO_Spans__c, AAO_Evidence_Occurred__c,
+        // THE GRAIN IS ONE CARD PER DISTINCT INSIGHT, forty-ninth stamp item 3(b).
+        //
+        // This reads PAIRS rather than answers, and the choice is the engineering call the stamp
+        // left to CODE inside the ruling. The answer key is subject plus contract, so every Goal
+        // one person voiced collapses into a single Goal answer: sixteen upheld establishments
+        // became four cards, and Adam's ninety-million target, key-account move and internal
+        // connectivity gap showed as one. A pair is one establishment from one stretch of words,
+        // which is exactly what a card is. The cost is honest and named: a pair is one read's
+        // proposal, so the accumulation an answer carries is not behind these rows; the CLAIM is
+        // still the receipt, and the verdict read here is the one call 3 upheld.
+        List<AAO_Pair__c> established = [
+            SELECT Id, AAO_Pair_Ref__c, AAO_Source__r.AAO_Evidence_Occurred__c,
                 AAO_Evidence_Contract__r.AAO_Proposition_Code__c,
-                AAO_Participant__c, AAO_Participant__r.AAO_Display_Name__c,
-                AAO_Participant__r.AAO_Internal__c, AAO_Participant__r.AAO_Contact__c,
-                AAO_Subject_Contact__c
-            FROM AAO_Answer__c
-            WHERE AAO_Opportunity__c = :opportunityId
-                AND AAO_Publication_State__c = 'Live'
-                AND AAO_Verdict__c = 'TRUE'
+                AAO_Person__c, AAO_Person__r.AAO_Display_Name__c,
+                AAO_Person__r.AAO_Internal__c, AAO_Person__r.AAO_Contact__c,
+                AAO_Located_Pair__r.AAO_Answer_Text__c
+            FROM AAO_Pair__c
+            WHERE AAO_Source__r.AAO_Opportunity__c = :opportunityId
+                AND AAO_Stage__c = :AAO_PairKey.IDENTIFIED
+                AND AAO_Verification__c = 'Upheld'
                 AND AAO_Evidence_Contract__r.AAO_Family__c = 'Problems'
-            ORDER BY AAO_Evidence_Occurred__c ASC, Id ASC
+            ORDER BY AAO_Source__r.AAO_Evidence_Occurred__c ASC, Id ASC
         ];
-        o.answersRead = answers.size();
-        if (answers.isEmpty()) {
+        o.answersRead = established.size();
+        if (established.isEmpty()) {
             return o;
         }
 
@@ -91,11 +104,16 @@ public with sharing class AAO_Cards {
         }
 
         List<ALTF__Insight_Card__c> fresh = new List<ALTF__Insight_Card__c>();
-        List<AAO_Answer__c> freshSource = new List<AAO_Answer__c>();
-        List<ALTF__Insight_Card__c> patches = new List<ALTF__Insight_Card__c>();
+        List<AAO_Pair__c> freshSource = new List<AAO_Pair__c>();
+        Map<Id, ALTF__Insight_Card__c> patchById = new Map<Id, ALTF__Insight_Card__c>();
         Map<String, Integer> seenThisRun = new Map<String, Integer>();
 
-        for (AAO_Answer__c a : answers) {
+        // THE FACE IS INFERRED, forty-ninth stamp item 3(a). One batched call over the whole
+        // harvest, so the model writes the headlines and the writer never puts a raw verbatim on
+        // the face again. The words themselves are untouched and go to `Long_Description`.
+        Map<String, String> headline = AAO_CardFace.infer(established);
+
+        for (AAO_Pair__c a : established) {
             String code = a.AAO_Evidence_Contract__r.AAO_Proposition_Code__c;
             String type = AAO_P8Codes.problemType(code);
             if (type == null) {
@@ -105,22 +123,27 @@ public with sharing class AAO_Cards {
             // OUR OWN SIDE NEVER BECOMES A CARD. Seller words never establish a buyer's problem,
             // which the contracts say and the join's internal-subject gate already enforces;
             // this is the belt beside that brace, because a card is customer-visible.
-            if (a.AAO_Participant__r != null && a.AAO_Participant__r.AAO_Internal__c == true) {
+            if (a.AAO_Person__r != null && a.AAO_Person__r.AAO_Internal__c == true) {
                 o.notes.add('Internal speaker establishment skipped: no card for our own side.');
                 continue;
             }
-            String words = firstSpanText(a.AAO_Spans__c);
+            String words = a.AAO_Located_Pair__r == null
+                ? null
+                : a.AAO_Located_Pair__r.AAO_Answer_Text__c;
             if (String.isBlank(words)) {
-                o.notes.add('Answer ' + a.Id + ' carries no span text; no card written.');
+                o.notes.add('Pair ' + a.AAO_Pair_Ref__c + ' carries no words; no card written.');
                 continue;
             }
-            String face = faceFrom(words);
+            String face = headline.containsKey(a.AAO_Pair_Ref__c)
+                ? headline.get(a.AAO_Pair_Ref__c)
+                : faceFrom(words);
             String key = meaningKey(type, face);
 
             if (byMeaning.containsKey(key)) {
                 // SAME TYPE, SAME MEANING IS REINFORCEMENT. The parent card is kept and its
                 // text is never rewritten; the count rides the note, which is the only field
-                // the reinforcement mechanics may touch.
+                // the reinforcement mechanics may touch. Human-authored cards are reinforced
+                // beside in exactly this way and never edited otherwise.
                 Integer n = seenThisRun.containsKey(key) ? seenThisRun.get(key) : 1;
                 n++;
                 seenThisRun.put(key, n);
@@ -131,11 +154,9 @@ public with sharing class AAO_Cards {
                     o.unchanged++;
                     continue;
                 }
-                patches.add(new ALTF__Insight_Card__c(
-                    Id = parent.Id,
-                    ALTF__Note__c = ('Said ' + n + ' times. ' + note + ' ' + reiteration).trim()
-                        .abbreviate(255)
-                ));
+                parent.ALTF__Note__c =
+                    ('Said ' + n + ' times. ' + note + ' ' + reiteration).trim().abbreviate(255);
+                patchById.put(parent.Id, parent);
                 o.reinforced++;
                 continue;
             }
@@ -169,9 +190,10 @@ public with sharing class AAO_Cards {
                 ));
             }
             update named;
+            attachToBoard(opportunityId, accountId, fresh, o);
         }
-        if (!patches.isEmpty()) {
-            update patches;
+        if (!patchById.isEmpty()) {
+            update patchById.values();
         }
 
         writeLinks(fresh, freshSource, o);
@@ -191,20 +213,18 @@ public with sharing class AAO_Cards {
      */
     private static void writeLinks(
         List<ALTF__Insight_Card__c> cards,
-        List<AAO_Answer__c> sources,
+        List<AAO_Pair__c> sources,
         Outcome o
     ) {
         List<ALTF__Insight_Card_Contact__c> links = new List<ALTF__Insight_Card_Contact__c>();
         for (Integer i = 0; i < cards.size(); i++) {
-            AAO_Answer__c a = sources[i];
-            Id contactId = a.AAO_Subject_Contact__c != null
-                ? a.AAO_Subject_Contact__c
-                : (a.AAO_Participant__r == null ? null : a.AAO_Participant__r.AAO_Contact__c);
+            AAO_Pair__c a = sources[i];
+            Id contactId = a.AAO_Person__r == null ? null : a.AAO_Person__r.AAO_Contact__c;
             if (contactId == null || cards[i].Id == null) {
                 o.linksHeld++;
                 o.notes.add(
                     'Link held: ' +
-                    (a.AAO_Participant__r == null ? 'a speaker' : a.AAO_Participant__r.AAO_Display_Name__c) +
+                    (a.AAO_Person__r == null ? 'a speaker' : a.AAO_Person__r.AAO_Display_Name__c) +
                     ' reaches no Contact, so the card stands with its evidence and the link waits.'
                 );
                 continue;
@@ -227,6 +247,81 @@ public with sharing class AAO_Cards {
             ));
         }
         update named;
+    }
+
+    /**
+     * SECTION MEMBERSHIP AT CARD BIRTH. Forty-ninth stamp item 2, and the defect it closes was
+     * invisible in exactly the way that matters: all four cards existed on the right deal with
+     * the right types and citations, and Matthew saw EMPTY LANES, because the vendor board
+     * renders a card only inside a section column. A card with no `ALTF__Insight_Card_Section__c`
+     * row is written, correct, and unreadable.
+     *
+     * The deal's existing section is reused where it has one; a deal with none gets one created,
+     * because a card that cannot be placed is the same silence in a new coat. Y coordinates
+     * continue below whatever already sits in the column rather than starting at one, so a rerun
+     * does not stack fresh cards on top of standing ones.
+     */
+    private static void attachToBoard(
+        Id opportunityId,
+        Id accountId,
+        List<ALTF__Insight_Card__c> cards,
+        Outcome o
+    ) {
+        List<ALTF__Insight_Section__c> sections = [
+            SELECT Id, ALTF__X_Coordinate__c
+            FROM ALTF__Insight_Section__c
+            WHERE ALTF__Opportunity__c = :opportunityId
+            ORDER BY ALTF__X_Coordinate__c ASC NULLS LAST, CreatedDate ASC
+        ];
+        ALTF__Insight_Section__c section;
+        if (sections.isEmpty()) {
+            section = new ALTF__Insight_Section__c(
+                ALTF__Opportunity__c = opportunityId,
+                ALTF__Account__c = accountId,
+                ALTF__Short_Description__c = 'Enter title',
+                ALTF__X_Coordinate__c = 1
+            );
+            insert section;
+            update new ALTF__Insight_Section__c(
+                Id = section.Id, Name = String.valueOf(section.Id).substring(0, 15)
+            );
+            o.notes.add('No section on this deal, so one was created: a card that cannot be ' +
+                'placed on the board is written and unreadable.');
+        } else {
+            section = sections[0];
+        }
+
+        AggregateResult[] taken = [
+            SELECT MAX(ALTF__Y_Coordinate__c) maxY
+            FROM ALTF__Insight_Card_Section__c
+            WHERE ALTF__Insight_Section__c = :section.Id
+        ];
+        Decimal nextY = taken.isEmpty() || taken[0].get('maxY') == null
+            ? 0
+            : (Decimal) taken[0].get('maxY');
+
+        List<ALTF__Insight_Card_Section__c> memberships =
+            new List<ALTF__Insight_Card_Section__c>();
+        for (ALTF__Insight_Card__c c : cards) {
+            nextY = nextY + 1;
+            memberships.add(new ALTF__Insight_Card_Section__c(
+                ALTF__Insight_Card__c = c.Id,
+                ALTF__Insight_Section__c = section.Id,
+                ALTF__X_Coordinate__c = section.ALTF__X_Coordinate__c == null
+                    ? 1
+                    : section.ALTF__X_Coordinate__c,
+                ALTF__Y_Coordinate__c = nextY
+            ));
+        }
+        insert memberships;
+        List<ALTF__Insight_Card_Section__c> named = new List<ALTF__Insight_Card_Section__c>();
+        for (ALTF__Insight_Card_Section__c m : memberships) {
+            named.add(new ALTF__Insight_Card_Section__c(
+                Id = m.Id, Name = String.valueOf(m.Id).substring(0, 15)
+            ));
+        }
+        update named;
+        o.placedOnBoard = memberships.size();
     }
 
     // ------------------------------------------------------------------------ internals
@@ -270,14 +365,15 @@ public with sharing class AAO_Cards {
     }
 
     /** Plain date and speaker, the ruled style. No record ids reach a human surface. */
-    private static String citation(AAO_Answer__c a) {
-        String who = a.AAO_Participant__r == null ||
-            String.isBlank(a.AAO_Participant__r.AAO_Display_Name__c)
+    private static String citation(AAO_Pair__c a) {
+        String who = a.AAO_Person__r == null ||
+            String.isBlank(a.AAO_Person__r.AAO_Display_Name__c)
             ? 'a participant'
-            : a.AAO_Participant__r.AAO_Display_Name__c;
-        String occurredOn = a.AAO_Evidence_Occurred__c == null
+            : a.AAO_Person__r.AAO_Display_Name__c;
+        String occurredOn = a.AAO_Source__r == null ||
+            a.AAO_Source__r.AAO_Evidence_Occurred__c == null
             ? 'a call'
-            : a.AAO_Evidence_Occurred__c.format('d MMMM yyyy');
+            : a.AAO_Source__r.AAO_Evidence_Occurred__c.format('d MMMM yyyy');
         return who + ', ' + occurredOn;
     }
 

@@ -11848,3 +11848,41 @@ than per contract, or the card writer reads PAIRS rather than answers and accept
 writing from proposals rather than from the accumulated thing. Reported, not chosen. The
 reinforcement mechanics are built and untested in the wild for the same reason: with one answer per
 type there was nothing for them to count.
+
+## Session 86 · the forty-ninth stamp · the finishing pass: cards born on the board, faces inferred, grain fixed
+
+All four items shipped. Suite 440, all AAO green. The Problems module is done to the ratified draft.
+
+**(a) SECTION MEMBERSHIP AT CARD BIRTH.** The invisible-cards defect: four correct cards on the
+right deal with the right types and citations, and Matthew saw EMPTY LANES, because the vendor board
+renders a card only inside a section column. `attachToBoard` reuses the deal's section, creates one
+where the deal has none, and continues Y coordinates BELOW whatever already sits in the column so a
+rerun does not stack fresh cards on standing ones. 10 of 10 placed.
+
+**(b) THE FACE IS INFERRED.** New `AAO_CardFace`: one batched call on the configured verify model,
+no thinking bought, keyed schema per pair ref. The prompt's load-bearing rules are SUMMARISE NEVER
+JUDGE (the type is settled and not the summariser's to revisit), ADD NOTHING (inventing detail here
+is the one failure nothing downstream can catch, because the face is what a seller reads and
+believes), and their terms not ours. The verbatim is untouched in `Long_Description`, so every face
+stays checkable against what was said. FAILURE IS NOT FATAL: the caller falls back to the
+deterministic first-sentence face. Two defects of my own, caught and fixed before Matthew read them:
+the first run's callout died on "uncommitted work pending" because the card purge ran first in the
+same transaction (purge and write are now separate transactions), and `abbreviate` appended the
+trailing ellipsis my own prompt forbids, so the bound now cuts at a word boundary instead.
+
+**(c) THE GRAIN IS FIXED, 4 cards became 10.** The writer reads PAIRS rather than answers, which is
+the engineering choice the stamp left to CODE inside the ruling: the answer key is subject plus
+contract, so it collapsed every Goal one person voiced into one. The cost is named rather than
+hidden: a pair is one read's proposal, so the accumulation an answer carries is not behind these
+rows; the claim is still the receipt and the verdict read is the one call 3 upheld. Adam's three
+distinct goals are now three cards.
+
+**(d) THE BOARD, rerun against the banked harvest** (cards purged, harvest kept): **10 cards, 10
+Informer links, 10 board placements, 0 held**. Three Goals, one Pressure, one Initiative, five
+Obstacles, each one line, each cited, each linked to the person who said it. Timings: 5,105 ms for
+the writer including the face call. Governors nowhere near: SOQL 5/100, DML 6/150, 60 rows, CPU 869.
+retryNotes: none.
+
+Reinforcement stayed at zero and that is now MEANINGFUL rather than untested: with the grain fixed
+every establishment was a distinct insight on this fixture, so nothing repeated. The mechanics are
+live and will count the first time a person says the same thing twice.

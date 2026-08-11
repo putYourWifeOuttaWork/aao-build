@@ -38,6 +38,51 @@ private class AAO_RunExportTest {
     }
 
     @IsTest
+    static void aRecordIsAlwaysExactlyOnePhysicalLineEvenWhenANoteCarriesATerminator() {
+        // THE THIRTY-SEVENTH STAMP'S EXPORT DEFECT, and it was never an escaping bug. A lone
+        // CARRIAGE RETURN reached a verification note in the org (em0806-a21/seq3 at index
+        // 114 of 238 characters, em0807-a22/poq5 at index 43 of 140). RFC 4180 PERMITS CR
+        // inside a quoted field, so the writer emitted it legally, and the line-oriented
+        // carrier that puts these files on disk read it as a record terminator and threw
+        // away the rest of the row: the note tail, the claim_id, the artifact_sha256, with
+        // no error anywhere. The following row then parsed into the wreck of that one, 27
+        // fields against a 15-field header, and its pair ref vanished from the export.
+        //
+        // This case was unreachable before: the fixture sets a verdict but never a NOTE, so
+        // no test had ever put a character of model-written prose through the writer.
+        Fixture f = fixture();
+        AAO_Pair__c p = [
+            SELECT Id FROM AAO_Pair__c
+            WHERE AAO_Run_Key__c = :f.runKey AND AAO_Stage__c = 'Identified'
+            LIMIT 1
+        ];
+        p.AAO_Verification_Note__c =
+            'Terms probed.\r\nDecision chain named.\rOwnership asserted.\nEnds here.';
+        update p;
+
+        String csv = AAO_RunExport.pairs(f.runKey);
+
+        System.assert(
+            !csv.contains('\r'),
+            'A bare CR inside a cell splits the record for any line-oriented reader. Got: ' +
+            csv
+        );
+        // Apex String.split takes a REGEX and '\n' matches LF only, so THIS assertion alone
+        // would have shipped green against the real defect. The CR assertion above is the
+        // one that catches it. Both are kept because they fail for different reasons.
+        System.assertEquals(
+            2,
+            csv.split('\n').size(),
+            'One record is one physical line: header plus one row. Got: ' + csv
+        );
+        System.assert(
+            csv.contains('Terms probed. Decision chain named. Ownership asserted. Ends here.'),
+            'The note survives with its terminators neutralised to spaces rather than being ' +
+            'truncated at the first one. Got: ' + csv
+        );
+    }
+
+    @IsTest
     static void theTimingReportNamesTheWorstSingleCalloutAndTheWorstTransaction() {
         AAO_RunExport.Timings sweep = new AAO_RunExport.Timings('call 1 sweep');
         sweep.calls.add(call(14867));

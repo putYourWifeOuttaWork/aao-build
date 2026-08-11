@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>AAO_Internal__c</fullName>
-    <description>Written by: the participant writer, from the internal-domain set. Read by: Coverage, whose questions all say "you or a team member" and therefore count OUR side, not the buyer's.</description>
+    <description>Written by: the participant writer, from the internal-domain set. Read by: AAO_Coverage.occasionsByPerson, which EXCLUDES Internal-true rows from both of its participant queries, so an internal person derives no coverage at all. The reason is grammatical: every guided question reads "have you or a team member met with THIS PERSON", making a team member the actor and never the subject, so scoring one answers a question the wizard does not ask. NOTE, because this description used to claim the read before the read existed: it was aspirational from 6 August until the thirty-eighth stamp shipped the exclusion, and AAO_Coverage genuinely never mentioned this field in that window. It does now, at both query sites, and they must stay in step.</description>
     <label>Internal</label>
     <type>Checkbox</type>
     <defaultValue>false</defaultValue>

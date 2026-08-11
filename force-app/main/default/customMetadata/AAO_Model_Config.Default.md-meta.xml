@@ -1,26 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  The one record. AAO_Extract reads "Default" by name and fails loudly if it is missing,
-  rather than falling back to a constant, because a fallback constant is exactly the
-  hardcoding this type exists to prevent.
-
-  Charter version is 1.0.0 because this is the first charter that reads anything. The 0.1.0
-  that came before it was the fixture: proposals authored by hand and staged by artifact
-  hash. Those two must never share a version string, or candidate rows from a run that read
-  a transcript become indistinguishable from rows a human wrote.
-
-  AAO_Anthropic_Beta__c is deliberately absent rather than present and empty. An omitted
-  field on a custom metadata record is null, and null is the normal case here.
-
-  Extraction is 1.1.0 as of session 8: the FALSE bar was tightened so that absence of a
-  confirmation can no longer be read as a denial. The version moved because the instructions
-  moved, which is the whole point of versioning a charter. Candidate rows written at 1.0.0
-  were produced by a charter that did not say that.
-
-  The blind reader is a second charter with its own version. It is the check that decides
-  whether cited spans actually establish an element, and its no overrides claimed coverage.
--->
-<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <label>Default</label>
     <protected>false</protected>
     <values>
@@ -28,12 +7,24 @@
         <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
-        <field>AAO_Charter_Version__c</field>
-        <value xsi:type="xsd:string">1.1.0</value>
+        <field>AAO_Anthropic_Beta__c</field>
+        <value xsi:nil="true"/>
     </values>
     <values>
-        <field>AAO_Charter__c</field>
-        <value xsi:type="xsd:string">AAO_Extract_Evidence</value>
+        <field>AAO_Bind_Charter_Version__c</field>
+        <value xsi:type="xsd:string">1.0.0</value>
+    </values>
+    <values>
+        <field>AAO_Bind_Charter__c</field>
+        <value xsi:type="xsd:string">AAO_Bind_Proposition</value>
+    </values>
+    <values>
+        <field>AAO_Bind_Group_Size__c</field>
+        <value xsi:type="xsd:double">24.0</value>
+    </values>
+    <values>
+        <field>AAO_Bind_Model__c</field>
+        <value xsi:type="xsd:string">claude-sonnet-5</value>
     </values>
     <values>
         <field>AAO_Blind_Charter_Version__c</field>
@@ -48,12 +39,44 @@
         <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
+        <field>AAO_Charter_Version__c</field>
+        <value xsi:type="xsd:string">1.1.0</value>
+    </values>
+    <values>
+        <field>AAO_Charter__c</field>
+        <value xsi:type="xsd:string">AAO_Extract_Evidence</value>
+    </values>
+    <values>
         <field>AAO_Effort__c</field>
         <value xsi:type="xsd:string">high</value>
     </values>
     <values>
         <field>AAO_Endpoint_Path__c</field>
         <value xsi:type="xsd:string">/v1/messages</value>
+    </values>
+    <values>
+        <field>AAO_Inventory_Charter_Version__c</field>
+        <value xsi:type="xsd:string">1.1.0</value>
+    </values>
+    <values>
+        <field>AAO_Inventory_Charter__c</field>
+        <value xsi:type="xsd:string">AAO_Inventory_Read</value>
+    </values>
+    <values>
+        <field>AAO_Inventory_Effort__c</field>
+        <value xsi:type="xsd:string">low</value>
+    </values>
+    <values>
+        <field>AAO_Inventory_Max_Output_Tokens__c</field>
+        <value xsi:type="xsd:double">12000.0</value>
+    </values>
+    <values>
+        <field>AAO_Inventory_Model__c</field>
+        <value xsi:type="xsd:string">claude-opus-5</value>
+    </values>
+    <values>
+        <field>AAO_Max_Findings_Per_Pass__c</field>
+        <value xsi:type="xsd:double">60.0</value>
     </values>
     <values>
         <field>AAO_Max_Output_Tokens__c</field>
@@ -68,144 +91,31 @@
         <value xsi:type="xsd:string">AAO_Anthropic</value>
     </values>
     <values>
+        <field>AAO_Probe__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
         <field>AAO_Timeout_Ms__c</field>
         <value xsi:type="xsd:double">120000.0</value>
-    </values>
-    <values>
-        <field>AAO_Max_Findings_Per_Pass__c</field>
-        <value xsi:type="xsd:double">60</value>
-    </values>
-    <!--
-      EXTRACT-BIND-VERIFY, Charters v2.4 §P7.3. Three stages, three models.
-
-      Stage 1 keeps claude-opus-5 and the high effort: it is the one call that reads the whole
-      artifact and the only stage where inference is the work.
-
-      Stage 2 is claude-sonnet-5. Separate from stage 3 by ruling, and separate in code:
-      AAO_Extract.requireSeparateModels throws if these two strings ever match.
-
-      Stage 3 is claude-haiku-4-5-20251001, which is the SMALLEST MODEL THIS CREDENTIAL
-      REACHES, established by probe from Apex in this sandbox on 3 August rather than assumed:
-      claude-3-5-haiku-20241022 returns 404 not_found_error through the same Named Credential.
-
-      GROUP SIZES ARE MEASURED, ruling 6. Probed from Apex, 3 August, twelve realistic items
-      per call, cold:
-        stage 2  claude-sonnet-5            12 items  13,610 ms  1,252 in / 1,188 out
-        stage 3  claude-haiku-4-5-20251001  12 items   6,444 ms    927 in /   428 out
-        stage 3  claude-haiku-4-5-20251001   2 items   4,983 ms    402 in /   136 out
-      The haiku pair gives a slope of ~146 ms per item on ~4,690 ms of fixed overhead, which
-      is generation-bound rather than item-bound. Sonnet is ~1,140 ms per item including 562
-      thinking tokens across the group.
-
-      Both sizes are set so the PREDICTED elapsed is under half the 120-second cumulative
-      per-transaction ceiling, because the variance that produced three timeouts on 3 August
-      is the reason a comfortable margin is not overcaution:
-        bind   24 items  predicted ~29 s
-        verify 60 items  predicted ~13 s
-      The run's per-stage elapsed either confirms these or falsifies them, and they move on
-      the measurement and not on the estimate.
-    -->
-    <values>
-        <field>AAO_Inventory_Model__c</field>
-        <value xsi:type="xsd:string">claude-opus-5</value>
-    </values>
-    <values>
-        <!--
-          MEASURED, and measured the hard way. The first B&V run on this shape timed out at
-          exactly 120.4 seconds with the shared 16,000-token bound: the callout went out 0.2 s
-          into the transaction and the platform killed it at the ceiling. At the ~84 output
-          tokens per second the strong model produces through this credential, 16,000 tokens is
-          ~190 s of generation and could never have fitted. 6,000 is ~71 s of generation plus
-          request latency, which leaves real margin against the variance that produced three
-          timeouts on 3 August. If the inventory truncates at 6,000 the call throws on
-          stop_reason=max_tokens and that is a finding to report, not a number to raise quietly.
-
-          MEASURED AGAIN AT 6,000, and it truncated: 78,567 ms, 18,696 in / 6,000 out,
-          cacheCreate 3,431, stop_reason=max_tokens. So the read FITS IN TIME and did not fit in
-          the bound. 6,000 tokens in 78.4 s of callout is ~76.5 output tokens per second, which
-          puts the absolute ceiling at ~9,180 tokens with no margin whatever.
-
-          Raised to 7,500 — about 98 s of generation, ~20 s of margin — ONCE, together with the
-          fix that put the ruled ~90-token evidence budget into the stage 1 prompt, where it had
-          been missing. This is the last raise available: 9,180 is the arithmetic wall and
-          nothing above ~8,000 leaves margin for the latency variance that produced three
-          timeouts on 3 August. If 7,500 truncates too, the finding is that extract-once on an
-          18,700-token artifact does not fit one bounded Apex callout, and that is design's to
-          rule on, not mine to dial around.
-
-          THE PARAGRAPH ABOVE IS WRONG AND IS KEPT BECAUSE IT IS WRONG. 7,500 did truncate,
-          and the conclusion drawn from it does not follow. Session 74 measured the same call
-          with thinking tokens broken out for the first time: 85,637 ms, 18,696 in / 7,500 out,
-          of which THINKING WAS 7,500. All of it. The read produced no content at all, so
-          nothing whatever is known about how large the inventory would have been, and
-          "extract-once does not fit one bounded callout" was never a finding this measurement
-          could support. The bound was never the constraint. The EFFORT was, and it lives in
-          AAO_Inventory_Effort__c below. 7,500 stays until a run that actually emits content
-          says what the real size is.
-        -->
-        <field>AAO_Inventory_Max_Output_Tokens__c</field>
-        <value xsi:type="xsd:double">12000</value>
-    </values>
-    <values>
-        <!--
-          MEASURED, session 74, and the measurement is the whole reason this field exists.
-
-          max_tokens bounds thinking and content TOGETHER. At the shared `high` this stage
-          spent 7,500 of 7,500 output tokens deliberating and emitted zero content — a
-          truncation with nothing behind it. Three sessions read that wall as evidence about
-          the size of the inventory; it was never evidence about anything but the effort.
-
-          Set from the sweep and not from taste. Blank would fall back to AAO_Effort__c,
-          which is the value that produced the failure, so it is not left blank.
-        -->
-        <field>AAO_Inventory_Effort__c</field>
-        <value xsi:type="xsd:string">low</value>
-    </values>
-    <values>
-        <field>AAO_Inventory_Charter__c</field>
-        <value xsi:type="xsd:string">AAO_Inventory_Read</value>
-    </values>
-    <values>
-        <!--
-          1.1.0, session 74. The version moved because the instructions moved, which is the
-          law this field exists to serve. 1.0.0 asked the finding stage to filter in a pass
-          built as find, bind, verify; five identical runs returned 8, 0, 0, 0 and 20 items
-          and three of them were well-formed EMPTY inventories. 1.1.0 adds the coverage rule.
-          Items produced at 1.0.0 were produced by a charter that did not say that.
-        -->
-        <field>AAO_Inventory_Charter_Version__c</field>
-        <value xsi:type="xsd:string">1.1.0</value>
-    </values>
-    <values>
-        <field>AAO_Bind_Model__c</field>
-        <value xsi:type="xsd:string">claude-sonnet-5</value>
-    </values>
-    <values>
-        <field>AAO_Bind_Charter__c</field>
-        <value xsi:type="xsd:string">AAO_Bind_Proposition</value>
-    </values>
-    <values>
-        <field>AAO_Bind_Charter_Version__c</field>
-        <value xsi:type="xsd:string">1.0.0</value>
-    </values>
-    <values>
-        <field>AAO_Bind_Group_Size__c</field>
-        <value xsi:type="xsd:double">24</value>
-    </values>
-    <values>
-        <field>AAO_Verify_Model__c</field>
-        <value xsi:type="xsd:string">claude-haiku-4-5-20251001</value>
-    </values>
-    <values>
-        <field>AAO_Verify_Charter__c</field>
-        <value xsi:type="xsd:string">AAO_Coextension_Reader</value>
     </values>
     <values>
         <field>AAO_Verify_Charter_Version__c</field>
         <value xsi:type="xsd:string">1.0.0</value>
     </values>
     <values>
+        <field>AAO_Verify_Charter__c</field>
+        <value xsi:type="xsd:string">AAO_Coextension_Reader</value>
+    </values>
+    <values>
         <field>AAO_Verify_Group_Size__c</field>
-        <value xsi:type="xsd:double">60</value>
+        <value xsi:type="xsd:double">60.0</value>
+    </values>
+    <values>
+        <field>AAO_Verify_Model__c</field>
+        <value xsi:type="xsd:string">claude-haiku-4-5-20251001</value>
+    </values>
+    <values>
+        <field>AAO_Verify_Temperature__c</field>
+        <value xsi:nil="true"/>
     </values>
 </CustomMetadata>

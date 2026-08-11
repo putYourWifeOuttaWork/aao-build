@@ -18,9 +18,31 @@
 public with sharing class AAO_RunExport {
     private static final String NL = '\n';
 
-    /** RFC 4180: quote every field, double the inner quotes. Offsets make it verifiable. */
+    /**
+     * RFC 4180: quote every field, double the inner quotes. Offsets make it verifiable.
+     *
+     * AND ONE RECORD IS ALWAYS ONE PHYSICAL LINE, which RFC 4180 does not require and which
+     * cost three exports before it was written down. The quoting below was never wrong: a
+     * lone CARRIAGE RETURN stored in a verification note travelled out of here correctly
+     * quoted, because the spec explicitly PERMITS CR and LF inside a quoted field. The
+     * line-oriented carrier that puts these files on disk then read that CR as a record
+     * terminator, kept the bytes before it, and discarded the rest of the row: the note
+     * tail, the claim_id and the artifact_sha256, silently and with no error. LEGALITY IS
+     * NOT SURVIVABILITY. Every consumer of these files counts rows by counting lines, so
+     * the writer now guarantees that identity instead of hoping for it.
+     *
+     * Measured, on the two corrupt records that still exist: `em0806-a21/seq3` carried one
+     * CR at index 114 of a 238-character note, and the CSV holds exactly `note[:114]`;
+     * `em0807-a22/poq5` carried one CR at index 43 of 140. Across all 403 identified pairs
+     * in the sandbox, 2 notes carry a CR and 0 carry an LF, which is why this went three
+     * runs without being seen.
+     *
+     * The '\r\n' pair collapses FIRST so a Windows terminator becomes one space and not two.
+     * `replace` is used rather than `replaceAll` because these are literals, not patterns.
+     */
     private static String q(Object v) {
         String s = v == null ? '' : String.valueOf(v);
+        s = s.replace('\r\n', ' ').replace('\r', ' ').replace('\n', ' ');
         return '"' + s.replace('"', '""') + '"';
     }
 

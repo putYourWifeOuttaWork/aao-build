@@ -11513,3 +11513,82 @@ minor non-material wording defect (s1 merge side is r2 for 9 of 11 pairs, not al
 r1q12 @23678 carry Merged on read A; changes no count). Corroboration-flag nuance verified: a23's 10
 merges yield only 8 flagged canonicals (r1q7 @8322 Refused, r1q8 @13107 None did not propagate the
 flag). Net: recall arithmetic solid; precision quality unavailable (a23) or non-generalizable (s1).
+
+## Session 79 · the thirty-eighth stamp's queue, five items · four shipped, one refused by the endpoint
+
+Inbox read from the bridge (`/Users/thefinalmachine/Downloads/claude/CODE-INBOX.md`, current through
+the thirty-eighth), per the thirty-seventh's channel ruling; repo `docs/` treated as snapshots.
+Analysis ran as four read-only workstreams each with an independent adversarial verifier; every
+number below was recomputed by a verifier from the file or org row it came from. Full suite 426
+tests, all AAO green (the single failure, `ConvertToOpportunityTest`, is not an AAO class, is not in
+this repo's source, and fails on an org validation rule about `AE_Summary__c`).
+
+**(a) THE GRADES ARE FOLDED.** 27 entries on a new `FARMA` fixture constant: 22 PASS as MUST_APPEAR,
+5 OVER as MUST_NOT_APPEAR. All 27 quotes byte-locate, verified from the calling runtime
+(`located=27 NOT_LOCATED=0`). The GRADE column carries only True/False; PASS, OVER, MIS and INTERNAL
+are derived by crossing grade with call-3 verdict, and the partition is total (5+22+5+7+5+36+3=83).
+Keys carry a `pf-` prefix because the key namespace is global and 11 Project Farma refs collide with
+live Emerson keys. THREE PARKS: the 7 wrongly-refused rows (the receipt names PASSes, OVER rows and
+the MIS specimen, and a wrongly-refused row is none of the three, though this class's own poq7/seq2
+precedent supports them, so it is one ruling away); the record's "row 31 inner-circle upheld" trap
+(row 31 is NOT an OVER, measured twice: False with no verdict in either run, so trapping it would
+manufacture a false positive); and the MIS specimen as a trap. Rows 61/62 are the SAME bytes and
+SAME contract, True for Kayla and False for Dan, and `Assertion` carries NO SUBJECT, so a trap would
+fire on the correct reading too. It rides with its refs as the stamp words it, and the structural
+gap goes to design.
+
+**(b) THE a23 COMPARISON RAN.** The Downloads adjudication sheet is still the stale 8 August copy
+with no section 11, so it ran from the derivation rule carried verbatim in the grading record,
+exactly as item 5(b) provides. The rule reconciles all three published aggregates exactly (32/35
+TRUE, 7/10 = 70.0 percent, 0/18), with the honest caveat that once the arm counts are 18/10/7 they
+follow by construction. THE SHARPEST FINDING: the two-read run reproduces BOTH of a23's known false
+upholds on BYTE-IDENTICAL ranges (r1q19 on deq1, r1q18 on deq2, both 5236-5378). The defect §11
+caught is still there. Against the truth: upheld 8 correct of 10 matched, refused 0 correct of 8
+matched. NOT like-for-like against a23's 70 percent (different 10 rows, subset selected by what the
+run re-located), and the run missed 4 of a23's 7 correctly-upheld rows, all Decision Criteria.
+Movement the first pass understated: of a23's 18 wrong refusals, 9 were revisited and 3 flipped to
+correct upholds.
+
+**(c) COVERAGE NOW EXCLUDES INTERNAL.** `AAO_Coverage` never mentioned the field (grep returned 0
+for the field and nothing at all for "internal"); the law is the wizard grammar at charters 604-610,
+where a team member is the ACTOR and never the subject. One conjunct on BOTH participant queries,
+both or neither (filter one and the other NPEs on `hashes.get(p.Id)`). Five participants carry the
+flag org-wide, none with a coverage watermark, Wendy 3 of 3 (twenty-second stamp item 9 provably
+repaired in data). ROW DELTA TODAY: NONE, stated as the headline, so correctness is shown by
+`AAO_CoverageTest`, new because coverage had NO test class and nothing anywhere asserted a
+coverage-derived value. The real value is a latent hazard removed: an Internal-true participant with
+a projecting answer could satisfy `placesAnybody()` on coverage alone and CREATE A CONTACT AND MAP
+ROW for our own seller on the customer's deal. One answer away. The field's description, which
+claimed a read that did not exist, is corrected.
+
+**(d) THE CSV WRITER IS FIXED, AND THE STAMP'S DIAGNOSIS WAS WRONG TWICE.** Not an escaping bug:
+`q()` has always been RFC 4180 correct (25 quote-bearing cells across five exports, all 15 fields).
+The cause is a bare CR (0x0D) in the verification note, emitted LEGALLY because RFC 4180 permits it
+inside a quoted field, then read as a record terminator by the line-oriented carrier. And the victim
+is the other row: buq9 is intact on disk; what was destroyed is buq8's OWN tail (note tail,
+claim_id, artifact_sha256). Decisive evidence, org against disk: a21/seq3 note is 238 chars with a
+CR at 114 and the CSV holds exactly `note[:114]`; a22/poq5 is 140 with a CR at 43 holding `note[:43]`.
+2 of 344 notes carry a CR, 0 carry an LF. Blast radius 4 files, not 3 (the project tree holds a
+byte-identical copy of p1's). Fix: one record is always one physical line. PROVEN on the real
+records: a21 36 rows to 37, seq3's note restored to 238, seq4 recovered; a22 44 to 45, poq5 to 140,
+poq6 recovered. `pf0808-p1` CANNOT be re-exported (COUNT 0 in org), so those two copies stay corrupt.
+PARKED: the CR is itself an upstream scar ("approvers <CR>elateding", "next steps <CR>outtheir"),
+and this fix HIDES that damage rather than surfacing it.
+
+**(e) THE TEMPERATURE-0 PROBE CANNOT RUN.** `temperature` is DEPRECATED on `claude-opus-5`, which is
+the model call 3 dispatches, confirmed by 400s carrying three request ids and by a direct capability
+matrix (opus-5 REFUSED, sonnet-5 REFUSED, haiku-4-5 ACCEPTED). The knob was built anyway because it
+is the reversible half, journalled on `StageResult` as `temp=`, and the org is back at nil baseline,
+verified. FIRST ATTEMPT MISSED: wiring `verifySpec()` looked right and the wire reported `temp=unset`
+with `model=claude-opus-5`, because §P8's call 3 builds from `inventorySpec()` and overrides it. The
+`temp=` journal field exists because of that miss. STRUCTURAL FINDING, parked with three costed
+options: EVERY §P8 stage builds from `inventorySpec()`, so the reader and the verifier are the SAME
+MODEL on the wire, while the config names haiku for verify and sonnet for bind, and
+`requireSeparateModels()` is called only from `AAO_EBV`, never from the §P8 path. Call 3's BLINDNESS
+still holds (structural in the schema); MODEL SEPARATION does not. There is no temperature-0 probe
+of call 3 that does not also change the verifier model, so N-of-M voting, already in reserve, is the
+remedy without that entanglement. retryNotes: call 0 failed the quote law twice and stopped the run,
+the named policy working; and `locateRead` is 1-indexed, which cost one read on the first attempt.
+
+Reports: `review/pf0811-queue/README.md`, `review/pf0811-t0/README.md`, rows in
+`review/pf0811-csvfix/`. All delivered into the project.

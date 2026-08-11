@@ -957,6 +957,13 @@ public with sharing class AAO_Pass {
             spec.stage = 'call3_verify';
             spec.charter = 'AAO_VerifyPairsCharter';
             spec.charterVersion = AAO_VerifyPairsCharter.VERSION;
+            // §P8's call 3 borrows the READ spec and overrides it, so it never saw the verify
+            // stage's configuration. The temperature has to be attached HERE, at the site that
+            // actually dispatches call 3, or a temperature-0 probe measures nothing: the first
+            // attempt at this wired `verifySpec()` and the wire still reported temp=unset,
+            // because that spec belongs to the older extract-bind-verify path. Reads keep their
+            // variance: `inventorySpec()` itself is never given a temperature.
+            spec.temperature = AAO_Extract.config().verifyTemperature;
 
             AAO_Extract.StageResult sr = AAO_Extract.callStage(
                 spec,

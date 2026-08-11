@@ -1175,4 +1175,79 @@ private class AAO_ExtractTest {
             'charter edits.'
         );
     }
+
+    // =================================================================== the temperature
+
+    private static Map<String, Object> bodyOf(String sent) {
+        return (Map<String, Object>) JSON.deserializeUntyped(sent);
+    }
+
+    private static AAO_Extract.StageSpec plainSpec() {
+        AAO_Extract.StageSpec s = new AAO_Extract.StageSpec();
+        s.stage = 'temptest';
+        s.model = 'claude-opus-5';
+        s.maxTokens = 64;
+        s.charter = 'probe';
+        s.charterVersion = '0';
+        return s;
+    }
+
+    private static Map<String, Object> okSchema() {
+        return new Map<String, Object>{
+            'type' => 'object',
+            'properties' => new Map<String, Object>{
+                'ok' => new Map<String, Object>{ 'type' => 'boolean' }
+            }
+        };
+    }
+
+    @IsTest
+    static void noTemperatureConfiguredMeansTheKeyIsNeverOnTheWire() {
+        // The baseline every measurement this project holds was taken against. A key with a
+        // default behind it is a DIFFERENT request from no key at all, so the null case must
+        // omit rather than send something reasonable-looking.
+        AAO_Extract.overrideConfig = testConfig();
+        SeqMock mock = new SeqMock(new List<String>{ envelope('{"ok":true}', 'end_turn') });
+        Test.setMock(HttpCalloutMock.class, mock);
+
+        Test.startTest();
+        AAO_Extract.callStage(plainSpec(), 'sys', new List<String>{ 'u' }, okSchema());
+        Test.stopTest();
+
+        System.assertEquals(
+            false,
+            bodyOf(mock.sent[0]).containsKey('temperature'),
+            'An unset temperature must not appear in the body at all. Sending a default ' +
+            'silently would change every request the baseline was measured on.'
+        );
+    }
+
+    @IsTest
+    static void aConfiguredTemperatureReachesTheBodyExactly() {
+        AAO_Extract.overrideConfig = testConfig();
+        AAO_Extract.StageSpec s = plainSpec();
+        s.temperature = 0;
+        SeqMock mock = new SeqMock(new List<String>{ envelope('{"ok":true}', 'end_turn') });
+        Test.setMock(HttpCalloutMock.class, mock);
+
+        Test.startTest();
+        AAO_Extract.StageResult r = AAO_Extract.callStage(
+            s, 'sys', new List<String>{ 'u' }, okSchema()
+        );
+        Test.stopTest();
+
+        Map<String, Object> body = bodyOf(mock.sent[0]);
+        System.assert(
+            body.containsKey('temperature'),
+            'A configured temperature must actually be on the wire. The first attempt at ' +
+            'this build wired the wrong spec and the run reported temp=unset, which is why ' +
+            'the value is journalled rather than assumed.'
+        );
+        System.assertEquals(0, Integer.valueOf(String.valueOf(body.get('temperature'))));
+        System.assertEquals(
+            0,
+            r.temperature,
+            'And the result carries what was sent, so a probe can evidence it.'
+        );
+    }
 }

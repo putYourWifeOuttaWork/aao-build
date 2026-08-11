@@ -75,6 +75,20 @@ public class AAO_Extract {
         public String inventoryEffort;
         public String inventoryCharter;
         public String inventoryCharterVersion;
+        /**
+         * Stage 3's sampling temperature, and stage 3's alone. Null means the key is never
+         * put on the wire, which is the baseline this project measured everything else
+         * against; sending a number the endpoint would otherwise have picked is a different
+         * request, not a neutral one, so the null case omits rather than defaults.
+         *
+         * It exists because the stability probe located the flicker: across three identical
+         * runs on the same frozen bytes, location held (42/42/43 located pairs) while upheld
+         * verdicts nearly tripled (8 to 21). The instability is downstream of locate, which
+         * makes call 3 the place where determinism is worth measuring. The reads are
+         * deliberately outside this field: their variance is the ruled recall hedge and
+         * removing it would be removing the thing the two-read shape is for.
+         */
+        public Decimal verifyTemperature;
         public String bindModel;
         public String bindCharter;
         public String bindCharterVersion;
@@ -107,6 +121,13 @@ public class AAO_Extract {
         public String charterVersion;
         /** Whether the first content block carries a cache breakpoint. */
         public Boolean cachePrefix = false;
+        /**
+         * Sampling temperature, sent only when a stage sets one. Null omits the key, the same
+         * discipline `effort` follows and for the same reason: a key with a default behind it
+         * is a different request from no key at all, and every measurement this project holds
+         * was taken without it.
+         */
+        public Decimal temperature;
     }
 
     /** What one stage call produced, with everything the journal needs to name it. */
@@ -121,6 +142,8 @@ public class AAO_Extract {
         public String charterVersion;
         public Long elapsedMs;
         public Integer promptChars;
+        /** What was actually on the wire, so a probe can evidence it rather than claim it. */
+        public Decimal temperature;
 
         public override String toString() {
             return stage +
@@ -129,6 +152,7 @@ public class AAO_Extract {
                 ' ms=' + elapsedMs +
                 ' ' + usage +
                 ' promptChars=' + promptChars +
+                (temperature == null ? ' temp=unset' : ' temp=' + temperature) +
                 ' stop=' + stopReason;
         }
     }
@@ -172,6 +196,9 @@ public class AAO_Extract {
         s.maxTokens = cfg.maxOutputTokens;
         s.charter = cfg.verifyCharter;
         s.charterVersion = cfg.verifyCharterVersion;
+        // Stage 3 only. Nothing upstream reads this, which is the point: the reads keep their
+        // variance because that variance is the recall hedge the two-read shape is built on.
+        s.temperature = cfg.verifyTemperature;
         return s;
     }
 
@@ -239,6 +266,7 @@ public class AAO_Extract {
 
         StageResult r = new StageResult();
         r.stage = spec.stage;
+        r.temperature = spec.temperature;
         r.rawText = c.text;
         r.usage = c.usage;
         r.modelRequested = spec.model;
@@ -289,7 +317,8 @@ public class AAO_Extract {
                 AAO_Verify_Model__c,
                 AAO_Verify_Charter__c,
                 AAO_Verify_Charter_Version__c,
-                AAO_Verify_Group_Size__c
+                AAO_Verify_Group_Size__c,
+                AAO_Verify_Temperature__c
             FROM AAO_Model_Config__mdt
             WHERE DeveloperName = 'Default'
             LIMIT 1
@@ -337,6 +366,8 @@ public class AAO_Extract {
         c.verifyGroupSize = r.AAO_Verify_Group_Size__c == null
             ? null
             : Integer.valueOf(r.AAO_Verify_Group_Size__c);
+        // Null stays null rather than becoming a number. See Config.verifyTemperature.
+        c.verifyTemperature = r.AAO_Verify_Temperature__c;
         return c;
     }
 
@@ -658,6 +689,11 @@ public class AAO_Extract {
             },
             'output_config' => outputConfig
         };
+        // Same rule as `effort` above: omitted rather than sent empty, so a run with no
+        // temperature configured puts the exact bytes on the wire it always has.
+        if (spec.temperature != null) {
+            body.put('temperature', spec.temperature);
+        }
 
         HttpRequest req = new HttpRequest();
         req.setEndpoint(cfg.endpoint());

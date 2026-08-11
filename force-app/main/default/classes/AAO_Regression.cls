@@ -41,6 +41,14 @@ public with sharing class AAO_Regression {
     public static final String EMERSON = 'ec8e717045f8701534963576ded2a736df5a27b5314721f20b6aa004d5f25a5f';
     public static final String BV = 'bv/biweekly-2026-06-24-nf1';
 
+    /**
+     * PROJECT FARMA, 30 July NF1, and the first REAL PRODUCTION SPEECH in this seed. The
+     * fixture is named by sha the way EMERSON is, because both check() and trapped() accept
+     * either a sha or a Source_Ref and the sha is the thing the exports carry.
+     */
+    public static final String FARMA =
+        '018cac1bb5a3425190678af890e7fc4a8794579353498c6ea67b18fd6690f7b6';
+
     public class Assertion {
         public String key;
         /** Artifact this was graded on. An assertion never travels between fixtures. */
@@ -272,6 +280,249 @@ public with sharing class AAO_Regression {
             'Graded Neutral, no pair.'));
         out.add(a(BV, MUST_NOT_APPEAR, 'trap-mentor-ashley', 'AAO_PS_1',
             'I think we can do both', null, 'Graded Neutral, no pair.'));
+
+        // ================================================ PROJECT FARMA · tg1 versus Pass 1
+        //
+        // THE THIRTY-EIGHTH STAMP'S FOLD, item 5(a): "fold the new grades into the regression
+        // set per the standing sixth-check law, new graded PASSes as assertions keyed contract
+        // plus byte range, the OVER rows as traps, the MIS specimen riding with its pair refs."
+        //
+        // Matthew graded all 83 establishment rows on 9 August against stored spans. The GRADE
+        // column carries exactly two values, True (34) and False (49); PASS, OVER, MIS and
+        // INTERNAL are all DERIVED by crossing the grade with the runs' call-3 verdicts, so the
+        // partition is computed rather than read off a label. It is total and exhaustive:
+        //   5 internal (our own seller, excluded from precision by construction)
+        //  22 PASS            True and upheld by at least one run   -> MUST_APPEAR, below
+        //   5 OVER            False and upheld by a run             -> MUST_NOT_APPEAR, below
+        //   7 wrongly refused True but refused by every run         -> PARKED, see the note
+        //   5 True, no call-3 verdict (merged or dropped)           -> not assertable
+        //  36 correct refusals False and refused                    -> nothing to assert
+        //   3 False, no call-3 verdict                              -> not assertable
+        // 5+22+5+7+5+36+3 = 83.
+        //
+        // KEYS CARRY A pf- PREFIX AND THEIR GRADED ROW NUMBER, and that is not decoration. The
+        // `key` namespace is global across the seed rather than scoped by fixture, and Project
+        // Farma's Pass-1 run reuses the Emerson sweep's pair-ref naming: buq2, buq3, buq5, buq6,
+        // buq7, buq8, deq2, deq6, poq1, seq2 and seq6 are all live Emerson keys already. Naming
+        // these by bare pair ref would put two assertions on two different fixtures behind one
+        // disposition line.
+
+        out.add(a(FARMA, MUST_APPEAR, 'pf-r3-adam-pfeiffer-br_eval', 'AAO_BR_EVAL',
+            'Just out of curiosity, the columns there, those are obviously ' +
+            'configurable. Where do we pull those? Because we have basically 8 ' +
+            'practice areas that are products within Salesforce.',
+            'Upheld',
+            'Graded PASS, row 3. Adam Pfeiffer, AAO_BR_EVAL, upheld by tg1 and ' +
+            'graded True by Matthew. Offsets tg1 26297-26476. Matthew: "Evaluator ' +
+            'should be overwriting user in this case. Not because it is later, but ' +
+            'because almost all evaluators are also users."'));
+        out.add(a(FARMA, MUST_APPEAR, 'pf-r4-adam-pfeiffer-br_eval', 'AAO_BR_EVAL',
+            'how would your kind of, you know, over the top layering of Altify into' +
+            ' our Salesforce instance, knowing that it\'s like broader than just ' +
+            'Project Pharma?',
+            'Upheld',
+            'Graded PASS, row 4. Adam Pfeiffer, AAO_BR_EVAL, upheld by p1 and ' +
+            'graded True by Matthew. Offsets p1 46193-46345.'));
+        out.add(a(FARMA, MUST_APPEAR, 'pf-r6-adam-pfeiffer-br_dm', 'AAO_BR_DM',
+            'It\'s going to be us, our recommendation, and really just, it\'ll go to ' +
+            'our president, Rich, and then ultimately there\'s going to be some sort' +
+            ' of a approval required from the Perkerwicz and Elmer.',
+            'Upheld',
+            'Graded PASS, row 6. Adam Pfeiffer, AAO_BR_DM, upheld by p1 and graded ' +
+            'True by Matthew. Offsets tg1 49882-50076 · p1 49882-50076.'));
+        out.add(a(FARMA, MUST_APPEAR, 'pf-r7-adam-pfeiffer-br_dm', 'AAO_BR_DM',
+            'It\'s going to be us, our recommendation, and really just, it\'ll go to ' +
+            'our president, Rich, and then ultimately there\'s going to be some sort' +
+            ' of a approval required from the Perkerwicz and Elmer.',
+            'Upheld',
+            'Graded PASS, row 7. Adam Pfeiffer, AAO_BR_DM, upheld by tg1 and graded' +
+            ' True by Matthew. Offsets tg1 49882-50076.'));
+        out.add(a(FARMA, MUST_APPEAR, 'pf-r12-adam-pfeiffer-br_eval', 'AAO_BR_EVAL',
+            'how user-friendly is it for, you know, anybody of any computer skill ' +
+            'level to go in and just sort of understand how that map gets built?',
+            'Upheld',
+            'Graded PASS, row 12. Adam Pfeiffer, AAO_BR_EVAL, upheld by tg1 and ' +
+            'graded True by Matthew. Offsets tg1 52379-52515.'));
+        out.add(a(FARMA, MUST_APPEAR, 'pf-r24-adam-pfeiffer-dc_n', 'AAO_DC_N',
+            'as long as it\'s bilateral, we can review it on our legal side and ' +
+            'that\'s fine if you want to share yours.',
+            'Upheld',
+            'Graded PASS, row 24. Adam Pfeiffer, AAO_DC_N, upheld by p1 and graded ' +
+            'True by Matthew. Offsets p1 63284-63389. Matthew: "Bilateral (what?)"'));
+        out.add(a(FARMA, MUST_APPEAR, 'pf-r25-adam-pfeiffer-dc_n', 'AAO_DC_N',
+            'if we were going to jump today, like you\'re the leader in the ' +
+            'clubhouse for sure. But there\'s also pricing and other things that ' +
+            'kind of make that contingent.',
+            'Upheld',
+            'Graded PASS, row 25. Adam Pfeiffer, AAO_DC_N, upheld by p1 and graded ' +
+            'True by Matthew. Offsets tg1 65233-65391 · p1 65228-65391.'));
+        out.add(a(FARMA, MUST_APPEAR, 'pf-r26-adam-pfeiffer-dc_n', 'AAO_DC_N',
+            'if we were going to jump today, like you\'re the leader in the ' +
+            'clubhouse for sure. But there\'s also pricing and other things that ' +
+            'kind of make that contingent.',
+            'Upheld',
+            'Graded PASS, row 26. Adam Pfeiffer, AAO_DC_N, upheld by tg1 and graded' +
+            ' True by Matthew. Offsets tg1 65233-65391. Matthew: "But duplicating ' +
+            'the “competitive pricing” so this criteria should be effected, “Budget' +
+            ' Limits Held” or something."'));
+        out.add(a(FARMA, MUST_APPEAR, 'pf-r34-adam-pfeiffer-pol_ps1', 'AAO_POL_PS1',
+            'If, if, if we get there, I think this is this is our implementation ' +
+            'team right here between Kalia and Dan and myself.',
+            'Upheld',
+            'Graded PASS, row 34. Adam Pfeiffer, AAO_POL_PS1, upheld by p1 and ' +
+            'graded True by Matthew. Offsets tg1 49256-49373 · p1 49256-49466.'));
+        out.add(a(FARMA, MUST_APPEAR, 'pf-r35-adam-pfeiffer-pol_ps2', 'AAO_POL_PS2',
+            'If, if, if we get there, I think this is this is our implementation ' +
+            'team right here between Kalia and Dan and myself.',
+            'Upheld',
+            'Graded PASS, row 35. Adam Pfeiffer, AAO_POL_PS2, upheld by tg1 and ' +
+            'graded True by Matthew. Offsets tg1 49256-49373 · p1 49256-49466.'));
+        out.add(a(FARMA, MUST_APPEAR, 'pf-r36-adam-pfeiffer-pol_ps1', 'AAO_POL_PS1',
+            'If, if, if we get there, I think this is this is our implementation ' +
+            'team right here between Kalia and Dan and myself.',
+            'Upheld',
+            'Graded PASS, row 36. Adam Pfeiffer, AAO_POL_PS1, upheld by tg1 and ' +
+            'graded True by Matthew. Offsets tg1 49256-49373. Matthew: "Hate seeing' +
+            ' 3…"'));
+        out.add(a(FARMA, MUST_APPEAR, 'pf-r41-adam-pfeiffer-ps_1', 'AAO_PS_1',
+            'So... I like that. So far, I mean, honestly, I like everything we\'ve ' +
+            'seen so far.',
+            'Upheld',
+            'Graded PASS, row 41. Adam Pfeiffer, AAO_PS_1, upheld by tg1 and graded' +
+            ' True by Matthew. Offsets tg1 45098-45179 · p1 45098-45179.'));
+        out.add(a(FARMA, MUST_APPEAR, 'pf-r47-adam-pfeiffer-ps_1', 'AAO_PS_1',
+            'full transparency, like if we were going to jump today, like you\'re ' +
+            'the leader in the clubhouse for sure. But there\'s also pricing and ' +
+            'other things that kind of make that contingent.',
+            'Upheld',
+            'Graded PASS, row 47. Adam Pfeiffer, AAO_PS_1, upheld by tg1 and graded' +
+            ' True by Matthew. Offsets tg1 65209-65391 · p1 65191-65314.'));
+        out.add(a(FARMA, MUST_APPEAR, 'pf-r50-dan-lewis-br_eval', 'AAO_BR_EVAL',
+            'Would we have to have Agent Force enabled for this to work, or is this' +
+            ' a separate add-on as well for your guys\' AI?',
+            'Upheld',
+            'Graded PASS, row 50. Dan Lewis, AAO_BR_EVAL, upheld by tg1 and graded ' +
+            'True by Matthew. Offsets tg1 17299-17414.'));
+        out.add(a(FARMA, MUST_APPEAR, 'pf-r51-dan-lewis-br_eval', 'AAO_BR_EVAL',
+            'Okay, is it an extra add-on to have the max AI ability or is that just' +
+            ' included?',
+            'Upheld',
+            'Graded PASS, row 51. Dan Lewis, AAO_BR_EVAL, upheld by p1 and graded ' +
+            'True by Matthew. Offsets tg1 19348-19428 · p1 19348-19428.'));
+        out.add(a(FARMA, MUST_APPEAR, 'pf-r52-dan-lewis-br_eval', 'AAO_BR_EVAL',
+            'Okay, is it an extra add-on to have the max AI ability or is that just' +
+            ' included?',
+            'Upheld',
+            'Graded PASS, row 52. Dan Lewis, AAO_BR_EVAL, upheld by tg1 and graded ' +
+            'True by Matthew. Offsets tg1 19348-19428.'));
+        out.add(a(FARMA, MUST_APPEAR, 'pf-r53-dan-lewis-br_eval', 'AAO_BR_EVAL',
+            'Okay, and the features are basically one-to-one, like whether you go ' +
+            'with Max AI Agent Force or use our own Cloud API.',
+            'Upheld',
+            'Graded PASS, row 53. Dan Lewis, AAO_BR_EVAL, upheld by p1 and graded ' +
+            'True by Matthew. Offsets p1 19613-19731. Matthew: "This is probably ' +
+            'partial…but I accept"'));
+        out.add(a(FARMA, MUST_APPEAR, 'pf-r55-dan-lewis-br_eval', 'AAO_BR_EVAL',
+            'over the next couple of weeks and comparing what you guys offer to ' +
+            'them and especially the pricing. I know we haven\'t got to that point, ' +
+            'but I think it would be good to kind of go over the pricing model',
+            'Upheld',
+            'Graded PASS, row 55. Dan Lewis, AAO_BR_EVAL, upheld by tg1 and graded ' +
+            'True by Matthew. Offsets tg1 51165-51367.'));
+        out.add(a(FARMA, MUST_APPEAR, 'pf-r71-kayla-stanley-br_eval', 'AAO_BR_EVAL',
+            'A',
+            'Upheld',
+            'Graded PASS, row 71. Kayla Stanley, AAO_BR_EVAL, upheld by p1 and ' +
+            'graded True by Matthew. Offsets p1 34110-34316.'));
+        out.add(a(FARMA, MUST_APPEAR, 'pf-r73-kayla-stanley-br_eval', 'AAO_BR_EVAL',
+            'And these insight maps are visible to multiple users. It\'s not just ' +
+            'like user specific.',
+            'Upheld',
+            'Graded PASS, row 73. Kayla Stanley, AAO_BR_EVAL, upheld by tg1 and ' +
+            'graded True by Matthew. Offsets tg1 39512-39599.'));
+        out.add(a(FARMA, MUST_APPEAR, 'pf-r77-kayla-stanley-pol_ps2', 'AAO_POL_PS2',
+            'I\'m sure we can get that turned on on our Salesforce side for tasks.',
+            'Upheld',
+            'Graded PASS, row 77. Kayla Stanley, AAO_POL_PS2, upheld by tg1 and ' +
+            'graded True by Matthew. Offsets tg1 44575-44643 · p1 44571-44643.'));
+        out.add(a(FARMA, MUST_APPEAR, 'pf-r82-rich-br_app', 'AAO_BR_APP',
+            'ultimately upon the recommendation from us and Rich, like that\'s kind ' +
+            'of just a formality, right?',
+            'Upheld',
+            'Graded PASS, row 82. Rich, AAO_BR_APP, upheld by tg1 and graded True ' +
+            'by Matthew. Offsets tg1 50222-50319.'));
+
+
+        out.add(a(FARMA, MUST_NOT_APPEAR, 'pf-trap-r13-adam-pfeiffer-br_app', 'AAO_BR_APP',
+            'as long as it\'s bilateral, we can review it on our legal side and ' +
+            'that\'s fine if you want to share yours.',
+            null,
+            'OVER, row 13. Adam Pfeiffer, AAO_BR_APP: a run upheld this and Matthew' +
+            ' graded it False. Offsets tg1 63284-63389. Matthew: "Informing of a ' +
+            'process, not claiming approval rights."'));
+        out.add(a(FARMA, MUST_NOT_APPEAR, 'pf-trap-r20-adam-pfeiffer-dc_f', 'AAO_DC_F',
+            'there\'s going to be some sort of a approval required from the ' +
+            'Perkerwicz and Elmer. There\'s an advisory committee for kind of new ' +
+            'platforms, especially those that leverage AI.',
+            null,
+            'OVER, row 20. Adam Pfeiffer, AAO_DC_F: a run upheld this and Matthew ' +
+            'graded it False. Offsets p1 49993-50168. Matthew: "No criteria ' +
+            'mentioned…"'));
+        out.add(a(FARMA, MUST_NOT_APPEAR, 'pf-trap-r37-adam-pfeiffer-pol_ic3', 'AAO_POL_IC3',
+            'It\'s going to be us, our recommendation, and really just, it\'ll go to ' +
+            'our president, Rich, and then ultimately there\'s going to be some sort' +
+            ' of a approval required from the Perkerwicz and Elmer.',
+            null,
+            'OVER, row 37. Adam Pfeiffer, AAO_POL_IC3: a run upheld this and ' +
+            'Matthew graded it False. Offsets p1 49882-50076. Matthew: "Just ' +
+            'because he knows the process doesn’t put in circle."'));
+        out.add(a(FARMA, MUST_NOT_APPEAR, 'pf-trap-r63-dan-lewis-ps_1', 'AAO_PS_1',
+            'So, so far, the feedback\'s been, from what I\'ve seen, has been pretty ' +
+            'good. And so, yeah, we\'re starting, I guess, with the best from the ' +
+            'rankings.',
+            null,
+            'OVER, row 63. Dan Lewis, AAO_PS_1: a run upheld this and Matthew ' +
+            'graded it False. Offsets tg1 50944-51091 · p1 50917-51019. Matthew: ' +
+            '"This is what feedback is, not his support."'));
+        out.add(a(FARMA, MUST_NOT_APPEAR, 'pf-trap-r64-dan-lewis-ps_1', 'AAO_PS_1',
+            'we\'ll be looking at other options',
+            null,
+            'OVER, row 64. Dan Lewis, AAO_PS_1: a run upheld this and Matthew ' +
+            'graded it False. Offsets p1 51100-51133. Matthew: "This is actually a ' +
+            'supportive motion, telling us what we need to know to win, not telling' +
+            ' us he prefers other solutions…"'));
+
+        // ---- PARKED, not built: the 7 wrongly-refused rows (1, 2, 16, 18, 38, 61, 72) -------
+        //
+        // These are graded True and refused by every run that verified them, so they are the
+        // most valuable regression content here: each one is an establishment the machine lost.
+        // They are NOT built, and the reason is the receipt rule. Item 5(a) names three things
+        // to fold, "graded PASSes", "the OVER rows", and "the MIS specimen", and a wrongly
+        // refused row is none of the three. The precedent for carrying them exists in this very
+        // class (poq7 and seq2 ride as MUST_APPEAR with expectedVerdict 'Upheld' for exactly
+        // this reason), so this is one ruling away from shipping, and it is design's ruling and
+        // not CODE's. Named here with their rows so the next stamp can say yes in one line.
+
+        // ---- THE MIS SPECIMEN, rows 61 and 62, riding with its pair refs -------------------
+        //
+        // THE FIRST GRADED MIS ON THE TWO-READ SHAPE, and it is an ATTRIBUTION error, not a
+        // location error. Both rows carry THE SAME WORDS and THE SAME CONTRACT:
+        //   quote  "I was just kind of curious on how much of A lift it's going to be for
+        //           Kayla to get approval from Perkerwicz and Elmer"
+        //   code   AAO_POL_PS2
+        //   refs   tg1 61110-61227 · p1 61110-61260
+        //   row 61 graded TRUE,  Matthew: "True for KAYLA not for Dan."
+        //   row 62 graded FALSE, Matthew: "False for dan"
+        // tg1 attributed to Dan Lewis what Pass 1 attributed to Kayla Stanley.
+        //
+        // IT IS DELIBERATELY NOT ENCODED AS AN ASSERTION, and the reason is a real limit worth
+        // recording: `Assertion` keys on fixture, contract code and byte range, and carries NO
+        // SUBJECT. A MUST_NOT_APPEAR on these bytes would fire on the CORRECT Kayla reading just
+        // as hard as on the wrong Dan one, because nothing in the match can tell them apart. So
+        // the specimen rides here with its refs, as the stamp words it, and the structural gap
+        // (the regression set cannot express a per-person grade) is reported for design rather
+        // than papered over with a trap that would manufacture false positives.
+
         return out;
     }
 

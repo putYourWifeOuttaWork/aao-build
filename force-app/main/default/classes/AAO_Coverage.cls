@@ -187,6 +187,14 @@ public with sharing class AAO_Coverage {
         // subject carrier for a person the call talked about) records who was TALKED
         // ABOUT, not who was met. Counting one would write Brief contact for a person
         // nobody has spoken to, which is an assertion from absence.
+        //
+        // AND OUR OWN SIDE NEVER COUNTS COVERAGE, for the same shape of reason. Every guided
+        // question reads "have you or a team member met with THIS PERSON": a team member is
+        // the ACTOR of the sentence and never its subject, so scoring an internal participant
+        // answers "have you met yourself", which no question in the set asks. This is the law
+        // the claim-subject gate already applies structurally to Support, Political and Buyer
+        // Role at the join; coverage is the one dimension that gate cannot reach, because it
+        // is computed and mints no pair. Written law the code diverged from until now.
         Map<Id, Set<String>> hashes = new Map<Id, Set<String>>();
         for (AAO_Participant__c p : [
             SELECT Id, AAO_Roster_Key__c, AAO_Contact__c,
@@ -196,6 +204,7 @@ public with sharing class AAO_Coverage {
             FROM AAO_Participant__c
             WHERE AAO_Opportunity__c = :opportunityId
                 AND (NOT AAO_Roster_Key__c LIKE 'mention:%')
+                AND AAO_Internal__c = false
         ]) {
             if (!hashes.containsKey(p.Id)) {
                 hashes.put(p.Id, new Set<String>());
@@ -210,14 +219,18 @@ public with sharing class AAO_Coverage {
         // measure nothing.
         Map<String, Set<String>> byIdentity = new Map<String, Set<String>>();
         Map<String, List<Id>> rowsByIdentity = new Map<String, List<Id>>();
-        // The same mention exclusion as the hash query above: the two row sets must be one
-        // set or the identity grouping dereferences a person the count never saw.
+        // The same mention AND internal exclusions as the hash query above: the two row sets
+        // must be one set or the identity grouping dereferences a person the count never saw.
+        // Both conjuncts ride here or neither does. Filter only this query and internal rows
+        // leave orphan entries in `hashes`; filter only that one and `hashes.get(p.Id)` below
+        // returns null and the addAll dereferences it.
         List<AAO_Participant__c> people = [
             SELECT Id, AAO_Roster_Key__c, AAO_Contact__c, AAO_Display_Name__c, AAO_Email__c,
                 AAO_Source__r.AAO_Account__c
             FROM AAO_Participant__c
             WHERE AAO_Opportunity__c = :opportunityId
                 AND (NOT AAO_Roster_Key__c LIKE 'mention:%')
+                AND AAO_Internal__c = false
         ];
         Map<Id, Id> alias = aliasByRow(people);
         for (AAO_Participant__c p : people) {

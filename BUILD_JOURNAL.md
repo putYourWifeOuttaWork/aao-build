@@ -12075,3 +12075,39 @@ Also folded in: the grid math and the meaning key now have tests, both asserting
 than the outputs. The meaning key's test asserts what it must NOT do, collapse paraphrase, since
 "completely different language is a different insight" was ruled and a writer guessing at sameness
 silently merges two things a person said.
+
+## Session 93 · the fifty-ninth stamp item (a) · the Owner links, and a face-drift defect the run exposed
+
+**I had missed the fifty-ninth stamp entirely** and ran from the fifty-eighth, where this was parked.
+The sixtieth corrected the read order. The evidence that closed the park is the vendor's own field
+description: *"informer (who told you about it) or an owner (someone who is impacted and/or
+responsible for the success of an initiative)"*. **Owner is the vendor's word for both**, the panel
+slots differ only in label, and my four parked options were moot: option (i) was right.
+
+**THE OWNER LINKS ARE WRITTEN, and the distribution is exactly the ruling:**
+
+    Initiative / Owner  = 9   (3 initiatives x 3 established Evaluators)
+    Goal / Owner        = 0   (no Decision Maker on the map)
+    Obstacle / Owner    = 0   (no Users on the map)
+    Pressure / Owner    = 0   (no Users on the map)
+
+The three zeros are the rule working, not a gap: **blank beats wrong**, and every Project Farma
+participant established Evaluator, so nobody qualifies as a Goal owner or an impacted User. Keyed
+entirely on ESTABLISHED map values, so nothing adds inference on top of inference. Human links are
+never touched: the leg adds links that do not exist and edits none, which is also what makes it
+idempotent. **Recorded honestly: the vendor link object carries no field we could watermark**, so
+"machine-written" cannot be stamped on the row; the protection is that nothing existing is modified
+or deleted.
+
+**THE DEFECT THIS RUN EXPOSED, and it is mine: THE CARD BOARD INFLATES ON RERUN.** The writer's
+dedup key is the INFERRED FACE, and the face is a fresh model call each time, so a face that comes
+back reworded reads as a new insight. This run: 12 cards became **14** (2 created, 10 reinforced),
+Obstacles 5 to 6 and Pressures 1 to 2, from the same banked harvest with nothing new established.
+I flagged face drift as a cost after the cascade rebuild; this run shows it actively duplicating.
+
+**The fix is to key dedup on something STABLE rather than on model prose** — the pair ref, or the
+verbatim the face was drawn from, both of which are byte-fixed — and to let the face be the display
+layer it was always meant to be. Not built at session tail on the surface Matthew is reviewing;
+named with its shape so the next stretch is short.
+
+**(c) the Run Inspector is not started.**

@@ -35,13 +35,16 @@ public with sharing class AAO_Cards {
         public Integer placedOnBoard = 0;
         /** Dated sections created for this run's calls. */
         public Integer sectionsCreated = 0;
+        /** Owner links written: responsible on initiatives, impacted on obstacles and pressures. */
+        public Integer ownerLinksWritten = 0;
         public List<String> notes = new List<String>();
 
         public override String toString() {
             return 'cards: ' + created + ' created, ' + reinforced + ' reinforced, ' +
                 unchanged + ' unchanged, ' + contradictionsFlagged + ' contradictions flagged; ' +
                 'links: ' + linksWritten + ' written, ' + linksHeld + ' held; placed on board: ' +
-                placedOnBoard + ' in ' + sectionsCreated + ' new section(s)' +
+                placedOnBoard + ' in ' + sectionsCreated + ' new section(s); owner links: ' +
+                ownerLinksWritten +
                 (notes.isEmpty() ? '' : '\n  ' + String.join(notes, '\n  '));
         }
     }
@@ -202,6 +205,7 @@ public with sharing class AAO_Cards {
         }
 
         writeLinks(fresh, freshSource, o);
+        writeOwnerLinks(opportunityId, o);
         return o;
     }
 
@@ -252,6 +256,116 @@ public with sharing class AAO_Cards {
             ));
         }
         update named;
+    }
+
+    /**
+     * THE OWNER LINKS: who is responsible for, or impacted by, each card.
+     *
+     * **`Owner` IS THE VENDOR'S OWN WORD FOR BOTH**, and that is evidence rather than inference.
+     * `ALTF__Insight_Card_Contact__c.ALTF__Type__c`'s description reads: *"informer (who told you
+     * about it) or an owner (someone who is impacted and/or responsible for the success of an
+     * initiative)"*. The panel slots differ only in label; they all bind this one link type. An
+     * earlier stretch parked this question rather than guess the mapping, and the field's own
+     * description turned out to be the missing byte.
+     *
+     * MATTHEW'S RULING ON WHO LINKS WHERE, fifty-ninth stamp, keyed on ESTABLISHED map values so
+     * nothing here adds a new inference on top of one:
+     *   INITIATIVES  responsible: Evaluator OR ABOVE, because they are engaged to evaluate,
+     *                approve or decide it.
+     *   OBSTACLES and PRESSURES  impacted: Users. (The functional-team half rides the card-time
+     *                model call in its own stretch; the role-based half is deterministic and
+     *                ships first.)
+     *   GOALS        owners ONLY: a Decision Maker, or a person explicitly stated as owner of
+     *                the metric. No one else is linked to a Goal, and where nobody qualifies the
+     *                slot stays EMPTY: blank beats wrong.
+     *
+     * **A HUMAN LINK IS NEVER TOUCHED.** This adds links that do not exist and edits none, which
+     * is also how it stays idempotent across reruns. Noted honestly: the vendor's link object
+     * carries no field we could watermark, so "machine-written" cannot be stamped on the row
+     * itself; the protection is that nothing existing is ever modified or deleted.
+     */
+    private static void writeOwnerLinks(Id opportunityId, Outcome o) {
+        // The ESTABLISHED role per person, read off the map the projection already wrote.
+        Map<Id, String> roleByContact = new Map<Id, String>();
+        for (ALTF__Contact_Map_Details__c m : [
+            SELECT ALTF__Contact__c, ALTF__Buyer_Role__c
+            FROM ALTF__Contact_Map_Details__c
+            WHERE ALTF__Opportunity__c = :opportunityId
+                AND ALTF__Contact__c != null
+                AND ALTF__Buyer_Role__c != null
+        ]) {
+            roleByContact.put(m.ALTF__Contact__c, m.ALTF__Buyer_Role__c);
+        }
+        if (roleByContact.isEmpty()) {
+            o.notes.add('No established buyer roles on the map, so no Owner links: the map is ' +
+                'what this reads and it knows nobody yet.');
+            return;
+        }
+
+        List<ALTF__Insight_Card__c> cards = [
+            SELECT Id, ALTF__Type__c FROM ALTF__Insight_Card__c
+            WHERE ALTF__Opportunity__c = :opportunityId
+        ];
+        Set<String> standing = new Set<String>();
+        for (ALTF__Insight_Card_Contact__c l : [
+            SELECT ALTF__Insight_Card__c, ALTF__Contact__c, ALTF__Type__c
+            FROM ALTF__Insight_Card_Contact__c
+            WHERE ALTF__Insight_Card__r.ALTF__Opportunity__c = :opportunityId
+        ]) {
+            standing.add(l.ALTF__Insight_Card__c + '|' + l.ALTF__Contact__c + '|' + l.ALTF__Type__c);
+        }
+
+        List<ALTF__Insight_Card_Contact__c> fresh = new List<ALTF__Insight_Card_Contact__c>();
+        for (ALTF__Insight_Card__c c : cards) {
+            for (Id contactId : roleByContact.keySet()) {
+                if (!ownerQualifies(c.ALTF__Type__c, roleByContact.get(contactId))) {
+                    continue;
+                }
+                String key = c.Id + '|' + contactId + '|Owner';
+                if (standing.contains(key)) {
+                    continue;
+                }
+                standing.add(key);
+                fresh.add(new ALTF__Insight_Card_Contact__c(
+                    ALTF__Insight_Card__c = c.Id,
+                    ALTF__Contact__c = contactId,
+                    ALTF__Type__c = 'Owner'
+                ));
+            }
+        }
+        if (fresh.isEmpty()) {
+            o.notes.add('No Owner links qualified: nobody on the map holds a role the ruling ' +
+                'links for these card types. Blank beats wrong.');
+            return;
+        }
+        insert fresh;
+        List<ALTF__Insight_Card_Contact__c> named = new List<ALTF__Insight_Card_Contact__c>();
+        for (ALTF__Insight_Card_Contact__c l : fresh) {
+            named.add(new ALTF__Insight_Card_Contact__c(
+                Id = l.Id, Name = String.valueOf(l.Id).substring(0, 15)
+            ));
+        }
+        update named;
+        o.ownerLinksWritten = fresh.size();
+    }
+
+    /** Matthew's assignment table, as a function. Anything not named here links nobody. */
+    @TestVisible
+    private static Boolean ownerQualifies(String cardType, String buyerRole) {
+        if (cardType == 'Initiative') {
+            // Evaluator OR ABOVE. The approver roles count where the map established them.
+            return buyerRole == 'Evaluator' || buyerRole == 'Decision Maker' ||
+                buyerRole == 'Approver' || buyerRole == 'Signature Approver';
+        }
+        if (cardType == 'Obstacle' || cardType == 'Pressure') {
+            return buyerRole == 'User';
+        }
+        if (cardType == 'Goal') {
+            // ONLY a Decision Maker deterministically. The stated-metric-owner case is words,
+            // not a role, so it rides the model leg and is not guessed at from a map value.
+            return buyerRole == 'Decision Maker';
+        }
+        return false;
     }
 
     /**

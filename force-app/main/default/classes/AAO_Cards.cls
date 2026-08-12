@@ -37,6 +37,8 @@ public with sharing class AAO_Cards {
         public Integer sectionsCreated = 0;
         /** Owner links written: responsible on initiatives, impacted on obstacles and pressures. */
         public Integer ownerLinksWritten = 0;
+        /** Our own duplicate cards retired: same evidence, face drifted between runs. */
+        public Integer spuriousRetired = 0;
         public List<String> notes = new List<String>();
 
         public override String toString() {
@@ -44,7 +46,7 @@ public with sharing class AAO_Cards {
                 unchanged + ' unchanged, ' + contradictionsFlagged + ' contradictions flagged; ' +
                 'links: ' + linksWritten + ' written, ' + linksHeld + ' held; placed on board: ' +
                 placedOnBoard + ' in ' + sectionsCreated + ' new section(s); owner links: ' +
-                ownerLinksWritten +
+                ownerLinksWritten + '; duplicates retired: ' + spuriousRetired +
                 (notes.isEmpty() ? '' : '\n  ' + String.join(notes, '\n  '));
         }
     }
@@ -105,9 +107,46 @@ public with sharing class AAO_Cards {
             FROM ALTF__Insight_Card__c
             WHERE ALTF__Opportunity__c = :opportunityId
         ];
+        // TWO LAYERS, AND BOTH ARE REQUIRED (sixty-first stamp item 2).
+        //
+        // LAYER 1, IDENTITY, byte-stable: a card is identified by the EVIDENCE it was drawn
+        // from, never by its face. The face is a fresh model call every run, so keying on it
+        // made a reworded face read as a new insight and the board inflated from 12 cards to 14
+        // on a harvest with nothing new established. Same evidence, same card, forever.
+        //
+        // LAYER 2, MEANING, unchanged and NOT replaced by layer 1: "the same problem restated in
+        // new words is reinforcement, not a new card". That compares DIFFERENT evidence, a later
+        // call saying the same thing in new words, and it is the reinforcement mechanic. A
+        // byte-only key would silently retire it and turn every restatement into a duplicate the
+        // first time a second call lands, so layer 1 sits BENEATH layer 2, never instead of it.
+        Map<String, ALTF__Insight_Card__c> byEvidence = new Map<String, ALTF__Insight_Card__c>();
         Map<String, ALTF__Insight_Card__c> byMeaning = new Map<String, ALTF__Insight_Card__c>();
+        List<ALTF__Insight_Card__c> spurious = new List<ALTF__Insight_Card__c>();
         for (ALTF__Insight_Card__c c : standing) {
             byMeaning.put(meaningKey(c.ALTF__Type__c, c.ALTF__Short_Description__c), c);
+            String v = verbatimOf(c.ALTF__Long_Description__c);
+            if (String.isBlank(v)) {
+                // No marker means this card is not one of ours. A human's card is never
+                // identified, never collapsed, never touched.
+                continue;
+            }
+            String ek = evidenceKey(c.ALTF__Type__c, v);
+            if (byEvidence.containsKey(ek)) {
+                // TWO OF OUR CARDS ON ONE PIECE OF EVIDENCE, which is the inflation this fix
+                // ends: the same words carded twice because the face was reworded between runs.
+                // The elder is the parent and stands; the younger is retired at the next write
+                // rather than deleted by hand. Deleting the CARD takes its own junctions with
+                // it, which is the safe direction; deleting junctions cascades the other way.
+                spurious.add(c);
+                continue;
+            }
+            byEvidence.put(ek, c);
+        }
+        if (!spurious.isEmpty()) {
+            delete spurious;
+            o.spuriousRetired = spurious.size();
+            o.notes.add(spurious.size() + ' duplicate card(s) retired: same evidence already ' +
+                'carded, the face had drifted between runs.');
         }
 
         List<ALTF__Insight_Card__c> fresh = new List<ALTF__Insight_Card__c>();
@@ -145,6 +184,15 @@ public with sharing class AAO_Cards {
             AAO_CardFace.Face inferred = headline.get(a.AAO_Pair_Ref__c);
             String face = inferred == null ? faceFrom(words) : inferred.face;
             String summary = inferred == null ? null : inferred.summary;
+
+            // LAYER 1 FIRST. This establishment already has a card, whatever the face says
+            // today. Nothing is written and nothing is counted as reinforcement: a rerun of the
+            // same words is not the buyer saying it twice.
+            String idKey = evidenceKey(type, words);
+            if (byEvidence.containsKey(idKey)) {
+                o.unchanged++;
+                continue;
+            }
             String key = meaningKey(type, face);
 
             if (byMeaning.containsKey(key)) {
@@ -182,6 +230,7 @@ public with sharing class AAO_Cards {
             fresh.add(card);
             freshSource.add(a);
             byMeaning.put(key, card);
+            byEvidence.put(idKey, card);
             seenThisRun.put(key, 1);
         }
 
@@ -689,6 +738,41 @@ public with sharing class AAO_Cards {
     private static String meaningKey(String type, String face) {
         String f = face == null ? '' : face.toLowerCase().replaceAll('[^a-z0-9 ]', '').trim();
         return type + '|' + f.replaceAll('\\s+', ' ');
+    }
+
+    /**
+     * LAYER 1's KEY: the card's TYPE plus the EVIDENCE it was drawn from.
+     *
+     * The verbatim is the byte-stable half. It is the located span's own text, so the same
+     * establishment yields the same string on every rerun no matter how the face is reworded,
+     * which is exactly the property the face lacks and the reason the board inflated.
+     */
+    @TestVisible
+    private static String evidenceKey(String type, String verbatim) {
+        String v = verbatim == null
+            ? ''
+            : verbatim.toLowerCase().replaceAll('[^a-z0-9 ]', '').replaceAll('\\s+', ' ').trim();
+        return type + '#' + v;
+    }
+
+    /**
+     * The verbatim back out of a card's details, so a standing card can be identified by the
+     * evidence behind it. Reads the layer this writer itself wrote, which is why the marker is a
+     * fixed phrase rather than a guess at prose.
+     */
+    @TestVisible
+    private static String verbatimOf(String details) {
+        if (String.isBlank(details)) {
+            return null;
+        }
+        String marker = 'In their words: "';
+        Integer at = details.indexOf(marker);
+        if (at < 0) {
+            return null;
+        }
+        String tail = details.substring(at + marker.length());
+        Integer close = tail.lastIndexOf('"');
+        return close <= 0 ? tail : tail.substring(0, close);
     }
 
     /** Plain date and speaker, the ruled style. No record ids reach a human surface. */

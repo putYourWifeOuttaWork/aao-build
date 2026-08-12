@@ -12111,3 +12111,35 @@ layer it was always meant to be. Not built at session tail on the surface Matthe
 named with its shape so the next stretch is short.
 
 **(c) the Run Inspector is not started.**
+
+## Session 94 · the sixty-first stamp item (a) · two-layer dedup, and the board self-corrected 14 to 12
+
+Suite 449, all AAO green. **(b) the Run Inspector is not started.**
+
+**TWO LAYERS, BOTH KEPT, layer 1 BENEATH layer 2 rather than instead of it.**
+
+- **Layer 1, IDENTITY:** a card is identified by the EVIDENCE it was drawn from, not by its face.
+  The verbatim carries it: it is the located span's own text, so the same establishment yields the
+  same key on every rerun however the face is reworded. That is precisely the property the face
+  lacks and the reason the board inflated.
+- **Layer 2, MEANING:** untouched. A later call restating the same problem in new words is
+  DIFFERENT evidence, and the ruled behaviour there is reinforcement. A byte-only key would have
+  silently retired that law and duplicated every restatement the first time a second call landed.
+
+**THE BOARD SELF-CORRECTED, exactly as the stamp said it should: 14 cards to 12 at the next write,
+then 12 to 12.** The two spurious cards were resolved back to their parents rather than deleted by
+hand: both pairs were the same words carded twice with drifted faces ("Resourcing pressure
+(non-sales driven)" beside "Resourcing pressure outside sales"; "Inconsistent processes by owner"
+beside "Processes inconsistent by owner"). The collapse keeps the ELDER as the parent and retires
+the younger, and it deletes the CARD so its own junctions follow, which is the safe direction the
+cascade incident taught.
+
+**A HUMAN CARD CANNOT BE REACHED BY ANY OF THIS.** Identity is read off the "In their words" layer
+this writer itself wrote, so a hand-typed card yields no evidence key, is never identified, and is
+never collapsed. Asserted rather than assumed.
+
+**THE RERUN-IDEMPOTENCE PROOF, run in-org and now a test:** same harvest twice, 12 and 12, 12
+establishments unchanged, zero created, zero reinforced. A rerun of the same words is not the buyer
+saying it twice, so it is counted `unchanged` and not as reinforcement. Three new tests carry the
+laws, including the one that would have caught the inflation and the one that asserts layer 2
+SURVIVES layer 1.

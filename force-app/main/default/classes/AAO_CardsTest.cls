@@ -55,6 +55,65 @@ private class AAO_CardsTest {
         );
     }
 
+    // ============================== the two layers, sixty-first stamp: identity beneath meaning
+
+    @IsTest
+    static void theSAMEEVIDENCEISTHESAMECARDHOWEVERTHEFACEISREWORDED() {
+        // THE TEST THAT WOULD HAVE CAUGHT THE INFLATION. The face is a fresh model call every
+        // run, so keying identity on it made a reworded face read as a new insight: 12 cards
+        // became 14 from a harvest with nothing new established. Identity is the EVIDENCE.
+        String words = 'I\'d say our key pressures are, well, number one, like resourcing';
+        System.assertEquals(
+            AAO_Cards.evidenceKey('Pressure', words),
+            AAO_Cards.evidenceKey('Pressure', words),
+            'Same words, same key, forever.'
+        );
+        // Two runs, two different faces, one piece of evidence: still one card.
+        System.assertNotEquals(
+            AAO_Cards.meaningKey('Pressure', 'Resourcing pressure (non-sales driven)'),
+            AAO_Cards.meaningKey('Pressure', 'Resourcing pressure outside sales'),
+            'The FACES differ, which is exactly what fooled the old single-layer key...'
+        );
+        System.assertEquals(
+            AAO_Cards.evidenceKey('Pressure', words),
+            AAO_Cards.evidenceKey('Pressure', words.toUpperCase()),
+            '...and the evidence key is unmoved by it.'
+        );
+    }
+
+    @IsTest
+    static void layerTwoSURVIVESSoARestatementIsStillReinforcementNotADuplicate() {
+        // The meaning layer is NOT replaced by identity. A later call restating the same problem
+        // in new words is DIFFERENT evidence, and the ruled behaviour is reinforcement. A
+        // byte-only key would silently retire that and duplicate every restatement.
+        System.assertNotEquals(
+            AAO_Cards.evidenceKey('Obstacle', 'we operate in silos'),
+            AAO_Cards.evidenceKey('Obstacle', 'the teams are siloed from each other'),
+            'Different words are different evidence, so identity cannot see them as one...'
+        );
+        System.assertEquals(
+            AAO_Cards.meaningKey('Obstacle', 'Silos across the org'),
+            AAO_Cards.meaningKey('Obstacle', 'silos  across   the ORG'),
+            '...and the meaning layer is what catches the restatement.'
+        );
+    }
+
+    @IsTest
+    static void aCardWithNoMarkerIsNOTOURSAndIsNeverIdentifiedOrCollapsed() {
+        // A human-authored card carries no "In their words" layer, so it yields no evidence key
+        // and the collapse cannot reach it. Human cards are never touched.
+        System.assertEquals(null, AAO_Cards.verbatimOf('A card someone typed by hand.'));
+        System.assertEquals(null, AAO_Cards.verbatimOf(null));
+        System.assertEquals(
+            'we tend to operate in silos',
+            AAO_Cards.verbatimOf(
+                'They work in isolation.\n\nSource: Adam, 30 July 2026.\n\n' +
+                'In their words: "we tend to operate in silos"'
+            ),
+            'And ours round-trips, which is what makes identity readable off a standing card.'
+        );
+    }
+
     // ======================================================= the grid, fifty-third stamp math
 
     @IsTest

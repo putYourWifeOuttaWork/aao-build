@@ -12048,3 +12048,30 @@ ours to do.
 
 **(b) the call-type intake title and (c) the Run Inspector v1 are NOT started.** Item (a) was ordered
 first and its answer changes what (a) can be; both remaining items are named and unblocked.
+
+## Session 92 · the fifty-seventh stamp item (b) · the call-type comes from the meeting title, never from a guess
+
+Suite 446, all AAO green (six new tests). **(c) the Run Inspector is NOT started.**
+
+**THE MEETING TITLE.** New `AAO_Source__c.AAO_Meeting_Title__c`, carried verbatim from the source
+system and NEVER derived from the transcript, with that prohibition written into the field's own
+description so nobody later "improves" it by inferring one. `AAO_Cards.sectionTitle` reads it, and
+the precedence is explicit: an explicit callType passed by a caller wins (so a migration can name
+its own section), else the source's recorded title, else the date alone.
+
+**PROJECT FARMA'S SECTION STAYS "30 July 2026" AND THAT IS THE CORRECT OUTCOME.** Its transcript is
+a hand-carried ECI paste; `AAO_IntakeECI.Result` carries normalized text, speaker keys and counts,
+and no meeting metadata, because the paste had none. I did not set a title on that Source to make
+the feature look done: writing "Discovery Call" onto a row whose source system never said so is
+exactly the inference the ruling exists to avoid. The mechanism is proven by test instead, six of
+them, including the fallback and the blank-string case.
+
+**What the population leg still needs, named plainly:** a source-system connector. Teams and Gong
+both carry a meeting title; this repo has no connector to either, so the field is written by
+whatever builds the Source when that connector exists. The field, the read, the precedence and the
+fallback are all live now, so that connector has one place to put it and nothing else changes.
+
+Also folded in: the grid math and the meaning key now have tests, both asserting the laws rather
+than the outputs. The meaning key's test asserts what it must NOT do, collapse paraphrase, since
+"completely different language is a different insight" was ruled and a writer guessing at sameness
+silently merges two things a person said.

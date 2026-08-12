@@ -73,6 +73,7 @@ public with sharing class AAO_Cards {
         List<AAO_Pair__c> established = [
             SELECT Id, AAO_Pair_Ref__c, AAO_Source__c,
                 AAO_Source__r.AAO_Evidence_Occurred__c, AAO_Source__r.AAO_Source_Ref__c,
+                AAO_Source__r.AAO_Meeting_Title__c,
                 AAO_Evidence_Contract__r.AAO_Proposition_Code__c,
                 AAO_Person__c, AAO_Person__r.AAO_Display_Name__c,
                 AAO_Person__r.AAO_Internal__c, AAO_Person__r.AAO_Contact__c,
@@ -386,7 +387,15 @@ public with sharing class AAO_Cards {
     private static String sectionTitle(AAO_Source__c src, String callType) {
         Datetime occurred = src == null ? null : src.AAO_Evidence_Occurred__c;
         String d = occurred == null ? 'Undated call' : occurred.format('d MMMM yyyy');
-        return String.isBlank(callType) ? d : d + ': ' + callType;
+        // THE MEETING TITLE, carried by intake from the source system and never inferred
+        // (fifty-seventh stamp item 2). An explicit callType still wins where a caller passes
+        // one; otherwise the source's own title is used; otherwise the date alone, which is the
+        // ruled fallback and is honest rather than a shortfall.
+        String label = callType;
+        if (String.isBlank(label) && src != null) {
+            label = src.AAO_Meeting_Title__c;
+        }
+        return String.isBlank(label) ? d : d + ': ' + label.trim();
     }
 
     /**

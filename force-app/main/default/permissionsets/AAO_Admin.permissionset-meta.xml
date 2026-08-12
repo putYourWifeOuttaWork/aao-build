@@ -240,6 +240,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>AAO_Source__c.AAO_Meeting_Title__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>AAO_Evidence_Contract__c.AAO_Elements__c</field>
         <readable>true</readable>
     </fieldPermissions>

@@ -12143,3 +12143,38 @@ establishments unchanged, zero created, zero reinforced. A rerun of the same wor
 saying it twice, so it is counted `unchanged` and not as reinforcement. Three new tests carry the
 laws, including the one that would have caught the inflation and the one that asserts layer 2
 SURVIVES layer 1.
+
+## Session 95 · the sixty-second stamp · THE RUN INSPECTOR IS BUILT, and the walk-back lands on the real words 45 of 45
+
+Suite 452, all AAO green (three new tests).
+
+**THE BUILD.** `AAO_RunInspector` plus the `aaoRunInspector` LWC on the Opportunity. Pick a run
+(defaults to the latest, which is what a tester wants), read the stage counts in THE PIPELINE'S OWN
+VOCABULARY so this and a run report read alike, click any establishment and walk it back:
+**value to answer to claim to pair to byte-located quote to source.**
+
+**THE REFUSALS SIT BESIDE THE UPHELD VALUES, in their own column, not below and not filtered out.**
+That is the design rather than a nicety: a surface showing only what stood tells a reviewer what the
+machine believes and not whether to believe it. The stage list carries "Refused" with its meaning
+written in, "This is where trust is earned", and a test asserts that wording survives, because if a
+later session drops the stage the counts still add up and the surface quietly stops earning trust.
+
+**THE PROOF THAT MATTERS: 45 of 45 offsets resolve EXACTLY to their quoted words.** Every trace's
+`substring(startOffset, endOffset)` against the frozen transcript equals the quote it carries. That
+is the difference between a citation and an assertion, and it is now checkable by anyone with the
+component open rather than by a session running SOQL.
+
+Live on Project Farma, run `pf0811-goal`: 3 runs offered, Located 60, Identified 60, Upheld 24,
+Refused 21, map rows 3, cards 12. A worked walk-back from the run: Dan Lewis, `AAO_BR_EVAL`,
+EVALUATOR, bytes 51165-51367 of `projectfarma/2026-07-30-nf1`, and a refusal reading *"the words
+describe an approval process involving the president and others, but do not establish that this
+person retains the right to review, approve or veto"*.
+
+**READ-ONLY BY CONSTRUCTION, and asserted rather than promised:** a test greps the class body for
+every DML verb and `Database.`, so a later session cannot add a write path and leave the name
+promising otherwise. An inspector that could change what it inspects is not an inspector.
+
+Two smaller things carried deliberately: the run picker groups in Apex rather than SOQL, because the
+board work already met a vendor field that throws on GROUP BY at runtime rather than compile time;
+and upheld and refused are told apart by their column heading as well as by colour, so the
+distinction survives a reader who cannot see the difference.

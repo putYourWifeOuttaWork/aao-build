@@ -1,0 +1,30 @@
+.stage-tile {
+    border: 1px solid #dddbda;
+    border-radius: 0.25rem;
+    padding: 0.5rem;
+    height: 100%;
+}
+.stage-count { font-size: 1.5rem; font-weight: 700; }
+.stage-name { font-weight: 600; }
+.stage-meaning { font-size: 0.75rem; color: #3e3e3c; }
+
+.trace {
+    border-left: 3px solid #dddbda;
+    padding: 0.35rem 0.5rem;
+    margin-bottom: 0.35rem;
+    cursor: pointer;
+}
+.trace:hover { background: #f3f2f2; }
+/* Upheld and refused are told apart by colour AND by their column heading, never by colour
+   alone, so the distinction survives a reader who cannot see the difference. */
+.trace.upheld { border-left-color: #2e844a; }
+.trace.refused { border-left-color: #ba0517; }
+.trace-head { font-size: 0.75rem; font-weight: 600; }
+.trace-quote {
+    font-size: 0.8rem;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+.walkback { border-top: 1px solid #dddbda; padding-top: 0.75rem; }

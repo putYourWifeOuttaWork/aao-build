@@ -1,0 +1,92 @@
+<template>
+    <lightning-card title="Run Inspector" icon-name="utility:search">
+        <div class="slds-var-p-horizontal_medium">
+            <template if:true={error}>
+                <div class="slds-text-color_error slds-var-m-bottom_small">{error}</div>
+            </template>
+
+            <template if:false={hasRuns}>
+                <p class="slds-text-body_regular">
+                    No runs have touched this opportunity yet.
+                </p>
+            </template>
+
+            <template if:true={hasRuns}>
+                <lightning-combobox
+                    label="Run"
+                    value={runKey}
+                    options={runOptions}
+                    onchange={handleRunChange}
+                ></lightning-combobox>
+
+                <!-- The stages, in the pipeline's own vocabulary so this and a run report read alike. -->
+                <div class="slds-grid slds-wrap slds-var-m-top_medium">
+                    <template for:each={view.stages} for:item="s">
+                        <div key={s.stage} class="slds-col slds-size_1-of-3 slds-var-p-around_x-small">
+                            <div class="stage-tile">
+                                <div class="stage-count">{s.count}</div>
+                                <div class="stage-name">{s.stage}</div>
+                                <div class="stage-meaning">{s.meaning}</div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <template if:true={view.note}>
+                    <p class="slds-text-body_small slds-var-m-top_small">{view.note}</p>
+                </template>
+
+                <div class="slds-grid slds-wrap slds-var-m-top_medium">
+                    <!-- UPHELD -->
+                    <div class="slds-col slds-size_1-of-2 slds-var-p-right_small">
+                        <h3 class="slds-text-heading_small">Upheld</h3>
+                        <template for:each={upheld} for:item="t">
+                            <div key={t.id} data-id={t.id} onclick={handleSelect} class="trace upheld">
+                                <div class="trace-head">{t.person} &middot; {t.contractCode}</div>
+                                <div class="trace-quote">{t.quote}</div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- REFUSED, beside rather than below: this is where trust is earned. -->
+                    <div class="slds-col slds-size_1-of-2 slds-var-p-left_small">
+                        <h3 class="slds-text-heading_small">Refused</h3>
+                        <template for:each={refused} for:item="t">
+                            <div key={t.id} data-id={t.id} onclick={handleSelect} class="trace refused">
+                                <div class="trace-head">{t.person} &middot; {t.contractCode}</div>
+                                <div class="trace-quote">{t.quote}</div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- THE WALK-BACK -->
+                <template if:true={hasSelection}>
+                    <div class="walkback slds-var-m-top_medium">
+                        <h3 class="slds-text-heading_small">Walk-back</h3>
+                        <dl class="slds-dl_horizontal">
+                            <dt class="slds-dl_horizontal__label">Value</dt>
+                            <dd class="slds-dl_horizontal__detail">{selected.value}</dd>
+                            <dt class="slds-dl_horizontal__label">Verdict</dt>
+                            <dd class="slds-dl_horizontal__detail">{selected.verdict}</dd>
+                            <dt class="slds-dl_horizontal__label">Person</dt>
+                            <dd class="slds-dl_horizontal__detail">{selected.person}</dd>
+                            <dt class="slds-dl_horizontal__label">Question asked</dt>
+                            <dd class="slds-dl_horizontal__detail">{selected.question}</dd>
+                            <dt class="slds-dl_horizontal__label">Their words</dt>
+                            <dd class="slds-dl_horizontal__detail">&ldquo;{selected.quote}&rdquo;</dd>
+                            <dt class="slds-dl_horizontal__label">Located at</dt>
+                            <dd class="slds-dl_horizontal__detail">{selectedRange}</dd>
+                            <dt class="slds-dl_horizontal__label">Source</dt>
+                            <dd class="slds-dl_horizontal__detail">{selected.sourceRef}</dd>
+                            <template if:true={selected.refusalNote}>
+                                <dt class="slds-dl_horizontal__label">Why</dt>
+                                <dd class="slds-dl_horizontal__detail">{selected.refusalNote}</dd>
+                            </template>
+                        </dl>
+                    </div>
+                </template>
+            </template>
+        </div>
+    </lightning-card>
+</template>

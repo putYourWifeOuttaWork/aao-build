@@ -12021,3 +12021,30 @@ refused by the writer's internal check exactly as ruled. Notable movement beside
 rather than a Goal, which is the type-matching judgment doing its job on a near neighbour.
 
 Writer 25,148 ms including the inferred-face call, SOQL 6/100, DML 6/150, 72 rows. retryNotes: none.
+
+## Session 91 · the fifty-seventh stamp · PEOPLE IS CLOSED, and the link model stops leg (i) where it stands
+
+**PEOPLE CLOSED, recorded.** Matthew accepts the flicker: the measured run-to-run variance ships as
+the shape, because real maps accrue over many calls, values never overwrite with blanks, human edits
+win forever, and the grading loop demonstrably improved the machine. The forty-third stamp's open
+disposition resolves. Nothing is tuned against any probe; the probe instruments stay for regression.
+
+**QUEUE ITEM (a), THE READ THE STAMP ORDERED BEFORE ANY WRITE, done and decisive.**
+`ALTF__Insight_Card_Contact__c.ALTF__Type__c` carries exactly two values, **Informer and Owner**.
+There is no `Responsible` and no `Impacted`. `ALTF__Insight_Card_Edge__c` links cards to cards and
+sections and reaches no Contact at all. So the ruled deterministic leg cannot be written as ruled:
+**responsible has a plausible home and impacted has none.**
+
+Responsible probably maps to `Owner`: the Goal panel asks "Who is the Decision Maker responsible for
+this Goal?" and the card object carries no field of its own to back that question, so the slot is
+most likely an Owner link. That is an inference from two facts, and inference is precisely what the
+stamp told me to report rather than act on, so **nothing was written**. Writing impacted people as
+`Owner` would assert that the people an obstacle lands on are accountable for it, which is a
+different claim and a wrong one.
+
+Four options with their costs are in `review/pf0812-links/README.md`, none chosen. The org-ownership
+rails hold throughout: data rows on their objects, never metadata, so adding a picklist value is not
+ours to do.
+
+**(b) the call-type intake title and (c) the Run Inspector v1 are NOT started.** Item (a) was ordered
+first and its answer changes what (a) can be; both remaining items are named and unblocked.

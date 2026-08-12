@@ -12178,3 +12178,38 @@ Two smaller things carried deliberately: the run picker groups in Apex rather th
 board work already met a vendor field that throws on GROUP BY at runtime rather than compile time;
 and upheld and refused are told apart by their column heading as well as by colour, so the
 distinction survives a reader who cannot see the difference.
+
+## Session 96 · the sixty-fourth stamp · the Inspector OPENED IN A BROWSER, and one defect was not what it looked like
+
+Suite 452, all AAO green. **The Inspector renders, the picker fills, and a walk-back opens to the
+quote. Verified on screen, not from the controller.**
+
+**DEFECT TWO, THE NULL GUARD: real, fixed.** The two wires resolve independently, so there is a
+moment where the run list has arrived and the view has not; the template read `view.stages` in that
+moment and threw. Nothing that depends on the view renders until the view exists, and the interval
+now shows a spinner. The consequence was worse than the error and is the reason it matters: the
+empty-state message and the thrown error appeared TOGETHER, so the surface said "nothing to see"
+while failing to show what was there.
+
+**DEFECT ONE, THE RUN LOOKUP: NOT WHAT IT LOOKED LIKE, and I checked before changing anything.**
+The stamp diagnosed the controller's join as wrong. The DEPLOYED controller already used the
+stamp's exact join, `AAO_Pair__c` through `AAO_Source__r.AAO_Opportunity__c`, verified by reading
+the class body out of the org. Nothing about run lookup was changed. **The single root cause was the
+null guard**: the JS threw before the run list could paint, so "no runs have touched this
+opportunity" was the first-pass empty state frozen on screen by the error behind it. One defect
+wearing two faces. Fixing the guard alone made the picker fill.
+
+**WHAT THE BROWSER SHOWED**, run `pf0811-goal` selected by default:
+Located 60, Identified 60, Upheld 24, Refused 21, map rows 3, cards 12; both columns populated;
+zero console errors.
+
+**THE WALK-BACK, opened on screen:** Jennae Jizdeortega, `AAO_PB_GOAL`, verdict Upheld, question
+*"Did this person, in their own words, state an outcome they or their organization want to
+achieve?"*, their words *"hit 90 million company-wide sales target this year"*, located at bytes
+**2680-2730** of `projectfarma/2026-07-30-nf1`, with the verifier's reason beneath it. Those bytes
+were then read back out of the frozen transcript independently and return exactly those words.
+
+**THE LAW THIS COST, and it was mine to learn:** a capability is unverified until tried from the
+runtime that will make the call, and for UI that runtime is the browser. Controller-proven is not
+rendered-proven. I reported the Inspector built while naming that I had not opened it; the naming
+was right and the reporting-done was premature.

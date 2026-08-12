@@ -19,9 +19,16 @@
                     onchange={handleRunChange}
                 ></lightning-combobox>
 
+                <template if:true={loading}>
+                    <div class="slds-var-m-top_medium">
+                        <lightning-spinner alternative-text="Loading run" size="small"></lightning-spinner>
+                    </div>
+                </template>
+
                 <!-- The stages, in the pipeline's own vocabulary so this and a run report read alike. -->
+                <template if:true={hasView}>
                 <div class="slds-grid slds-wrap slds-var-m-top_medium">
-                    <template for:each={view.stages} for:item="s">
+                    <template for:each={stages} for:item="s">
                         <div key={s.stage} class="slds-col slds-size_1-of-3 slds-var-p-around_x-small">
                             <div class="stage-tile">
                                 <div class="stage-count">{s.count}</div>
@@ -32,8 +39,8 @@
                     </template>
                 </div>
 
-                <template if:true={view.note}>
-                    <p class="slds-text-body_small slds-var-m-top_small">{view.note}</p>
+                <template if:true={note}>
+                    <p class="slds-text-body_small slds-var-m-top_small">{note}</p>
                 </template>
 
                 <div class="slds-grid slds-wrap slds-var-m-top_medium">
@@ -85,6 +92,7 @@
                             </template>
                         </dl>
                     </div>
+                </template>
                 </template>
             </template>
         </div>

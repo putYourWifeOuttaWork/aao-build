@@ -53,6 +53,33 @@ export default class AaoRunInspector extends LightningElement {
         return this.runs && this.runs.length > 0;
     }
 
+    /**
+     * THE GUARD. The two wires resolve independently, so there is a moment where the run list
+     * has arrived and the view has not. The template reads `view.stages` in that moment, and
+     * reading `stages` off undefined threw the component error Matthew saw.
+     *
+     * The consequence was worse than the error: the empty-state message and the thrown error
+     * appeared TOGETHER, so the surface told him there was nothing to see while simultaneously
+     * failing to show what was there. A surface that does not know it is broken is the thing
+     * this guard exists to prevent, so nothing that depends on the view renders until the view
+     * is actually here.
+     */
+    get hasView() {
+        return !!(this.view && this.view.stages);
+    }
+
+    get stages() {
+        return this.hasView ? this.view.stages : [];
+    }
+
+    get note() {
+        return this.hasView ? this.view.note : null;
+    }
+
+    get loading() {
+        return this.hasRuns && !this.hasView && !this.error;
+    }
+
     get upheld() {
         return (this.view && this.view.upheld) || [];
     }

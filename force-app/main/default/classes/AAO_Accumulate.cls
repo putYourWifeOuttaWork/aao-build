@@ -21,7 +21,7 @@ public class AAO_Accumulate {
     public static final List<String> REPLAY_GOVERNED = new List<String>{
         'AAO_Verdict__c',
         'AAO_Spans__c',
-        'AAO_Element_Coverage__c',
+        'AAO_Element_Completeness__c',
         'AAO_Interpretation__c',
         'AAO_Established_By__c',
         'AAO_Charter_Version__c',
@@ -50,8 +50,8 @@ public class AAO_Accumulate {
         answer.AAO_Spans__c = AAO_Model.serializeSpans(
             mergeSpans(answer.AAO_Spans__c, claim.AAO_Spans__c)
         );
-        answer.AAO_Element_Coverage__c = AAO_Model.serializeCoverage(
-            mergeCoverage(answer.AAO_Element_Coverage__c, claim.AAO_Element_Coverage__c)
+        answer.AAO_Element_Completeness__c = AAO_Model.serializeCoverage(
+            mergeCoverage(answer.AAO_Element_Completeness__c, claim.AAO_Element_Completeness__c)
         );
 
         // THE VERDICT IS MONOTONE OVER EVIDENCE STRENGTH, never last-write-wins. Ruled
@@ -181,7 +181,7 @@ public class AAO_Accumulate {
     }
 
     /**
-     * The routing law on Candidate.AAO_Element_Coverage__c: full coverage writes the
+     * The routing law on Candidate.AAO_Element_Completeness__c: full coverage writes the
      * proposed verdict, partial writes UNVERIFIED with the spans that exist, none writes
      * nothing. Returns null where nothing should be written.
      *
@@ -199,11 +199,23 @@ public class AAO_Accumulate {
         List<String> contractElements
     ) {
         if (accumulated.isNone()) {
+            // Nothing was said about this proposition, so nothing is written. Silence stays
+            // silence; this is the one thing completeness still decides.
             return null;
         }
-        if (accumulated.isFull(contractElements)) {
-            return proposedVerdict;
-        }
-        return 'UNVERIFIED';
+        // COMPLETENESS IS DATA, NEVER A GATE. Matthew's ruling at the sixty-ninth stamp: the
+        // blind verifier decides truth and element completeness is recorded beside it. The
+        // retired branch returned UNVERIFIED for incomplete coverage, which let a read-side
+        // judgment override the checker; the layering the architecture rests on is call 1
+        // finds, call 3 judges, and no read-side hedge outranks the verifier.
+        //
+        // What completeness still does, and it is not nothing: it rides on the answer as a
+        // QUALITY reading, it is what the join-side union accumulates across utterances, and
+        // it is what the Inspector can show a reader. It simply stops deciding.
+        //
+        // `contractElements` stays in the signature deliberately. It is what `isFull` needs to
+        // compute completeness for the row, and removing the parameter would make a later
+        // session reintroduce the gate by rebuilding the lookup rather than finding it here.
+        return proposedVerdict;
     }
 }

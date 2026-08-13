@@ -115,7 +115,7 @@ public class AAO_Live {
                 Name,
                 AAO_Verdict__c,
                 AAO_Established_By__c,
-                AAO_Element_Coverage__c,
+                AAO_Element_Completeness__c,
                 AAO_Evidence_Contract__r.AAO_Proposition_Code__c
             FROM AAO_Answer__c
             WHERE AAO_Opportunity__c = :oppId
@@ -130,7 +130,7 @@ public class AAO_Live {
                 ' by ' +
                 a.AAO_Established_By__c +
                 ' coverage=' +
-                a.AAO_Element_Coverage__c
+                a.AAO_Element_Completeness__c
             );
         }
 

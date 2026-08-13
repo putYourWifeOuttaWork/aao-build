@@ -459,10 +459,24 @@ public with sharing class AAO_Project {
             return;
         }
 
-        // WHOLE ONLY, and the verdict on the naming answer is what says so.
+        // WHOLE ONLY, AND THIS GATE NOW READS COMPLETENESS DIRECTLY.
+        //
+        // **A HELD DECISION MUST NOT CHANGE AS A SIDE EFFECT OF AN UNRELATED RULING.** This
+        // read the naming answer's VERDICT, which worked only because a partial used to write
+        // UNVERIFIED. Matthew's uphold-governs ruling at the sixty-ninth stamp made an upheld
+        // partial read TRUE — and this gate would then have let PARTIAL CRITERIA REACH THE
+        // VENDOR OBJECT, silently reversing the standing partial law ("whole criteria only;
+        // partials' fate is Matthew's after the measurement, held"). Neither the sixty-ninth
+        // nor the seventieth stamp mentions criteria, so nothing ruled that reversal.
+        //
+        // The gate therefore keeps its meaning by reading the thing it always meant: element
+        // COMPLETENESS, which the same ruling makes the proper home for exactly this. Both
+        // conditions now stand explicitly — the verifier must have upheld it AND the elements
+        // must be whole — so a refusal still never reaches a customer-visible row either.
         Map<Id, String> verdictByCriterion = new Map<Id, String>();
+        Map<Id, String> completenessByCriterion = new Map<Id, String>();
         for (AAO_Answer__c a : [
-            SELECT AAO_Criterion__c, AAO_Verdict__c
+            SELECT AAO_Criterion__c, AAO_Verdict__c, AAO_Element_Completeness__c
             FROM AAO_Answer__c
             WHERE AAO_Criterion__c IN :byId.keySet()
                 AND AAO_Subject_Type__c = 'Decision_Criterion'
@@ -470,6 +484,16 @@ public with sharing class AAO_Project {
                 AND AAO_Evidence_Contract__r.AAO_Proposition_Code__c = :AAO_P8Codes.CRITERION_NAMING
         ]) {
             verdictByCriterion.put(a.AAO_Criterion__c, a.AAO_Verdict__c);
+            completenessByCriterion.put(a.AAO_Criterion__c, a.AAO_Element_Completeness__c);
+        }
+        List<String> namingElements = new List<String>();
+        for (AAO_Evidence_Contract__c ec : [
+            SELECT AAO_Elements__c, AAO_Element_Count__c FROM AAO_Evidence_Contract__c
+            WHERE AAO_Proposition_Code__c = :AAO_P8Codes.CRITERION_NAMING
+                AND AAO_Contract_State__c != 'Superseded'
+            LIMIT 1
+        ]) {
+            namingElements = AAO_ExtractCharter.elementIds(ec);
         }
 
         List<AAO_Criterion__c> toWrite = new List<AAO_Criterion__c>();
@@ -480,7 +504,10 @@ public with sharing class AAO_Project {
                 o.criteriaAlreadyProjected++;
                 continue;
             }
-            if (verdictByCriterion.get(c.Id) != 'TRUE') {
+            Boolean upheld = verdictByCriterion.get(c.Id) == 'TRUE';
+            Boolean whole = namingElements.isEmpty() ||
+                AAO_Model.parseCoverage(completenessByCriterion.get(c.Id)).isFull(namingElements);
+            if (!upheld || !whole) {
                 o.criteriaHeldPartial++;
                 continue;
             }
@@ -1380,6 +1407,15 @@ public with sharing class AAO_Project {
 
     /** Exposed for the harness assertions: derive without writing anything. */
     public static Derivation derive(List<AAO_Answer__c> answers) {
+        // One query for every span's own occurred clock, so a citation can carry the date the
+        // words were SAID rather than the answer's latest. Resolved here rather than per
+        // citation because a per-call lookup on a buying group is a governor bill for nothing.
+        return derive(answers, occurredBySource(answers));
+    }
+
+    public static Derivation derive(
+        List<AAO_Answer__c> answers, Map<Id, Datetime> occurredBySource
+    ) {
         Derivation d = new Derivation();
 
         Set<String> politicalPlacements = new Set<String>();
@@ -1417,17 +1453,17 @@ public with sharing class AAO_Project {
                     d.supportCounter = Integer.valueOf(a.AAO_Support_Counter__c);
                 }
                 d.supportAsOf = later(d.supportAsOf, a.AAO_Evidence_Occurred__c);
-                supportCitations.add(citation(a));
+                supportCitations.add(citation(a, occurredBySource));
             } else if (dim == AAO_P8Codes.DIM_POLITICAL) {
                 politicalPlacements.add(AAO_P8Codes.politicalPlacement(code));
                 d.politicalAsOf = later(d.politicalAsOf, a.AAO_Evidence_Occurred__c);
-                politicalCitations.add(citation(a));
+                politicalCitations.add(citation(a, occurredBySource));
             } else if (dim == AAO_P8Codes.DIM_BUYER_ROLE) {
                 rolesEstablished.add(AAO_P8Codes.buyerRole(code));
                 // EVERY DIMENSION LINE CARRIES ITS CITATION (thirtieth stamp item 4): the
                 // Buyer Role line used to render bare while Support and Political carried
                 // date and speaker. Captured here the same way, newest last.
-                buyerRoleCitations.add(citation(a));
+                buyerRoleCitations.add(citation(a, occurredBySource));
             } else if (dim == AAO_P8Codes.DIM_CRITERIA) {
                 criteriaAnswers.add(a);
             }
@@ -1643,22 +1679,98 @@ public with sharing class AAO_Project {
         return String.join(plain, '\n').abbreviate(NOTE_MAX);
     }
 
-    /** Plain date and speaker. No record id ever reaches a human surface. */
-    private static String citation(AAO_Answer__c a) {
+    /**
+     * Plain date and speaker, ONE PER SPAN. No record id ever reaches a human surface.
+     *
+     * **AN ACCUMULATED ESTABLISHMENT IS NEVER RENDERED AS ONE STATEMENT.** Matthew's ruling at
+     * the seventieth stamp: completeness accumulates across utterances, and the integrity
+     * condition that makes that honest is that every element keeps its own words, its own
+     * speaker and THE DATE IT WAS SAID. A reader must be able to see that this was assembled
+     * over time, and when each part was said.
+     *
+     * **THE DEFECT THIS CLOSES, found by reading this method against that ruling.** It took
+     * `spans[0].speaker` and paired it with the ANSWER'S occurred date — and the answer's clock
+     * only ever moves FORWARDS, so an establishment carrying March's words and June's words
+     * credited March's speaker with June's date. That is a citation for a moment that never
+     * happened, assembled out of two that did. It is harmless on today's fixture because every
+     * span shares one source, which is exactly why it survived; it becomes wrong the first time
+     * a second call lands, and Matthew's ruling makes that case law rather than hypothetical.
+     *
+     * Rendering is deduped and date-ordered, so the single-source case reads exactly as before
+     * ("Dan Lewis, 30 July 2026") and the accumulated case reads as what it is
+     * ("Adam Pfeiffer, 3 March 2026; Adam Pfeiffer, 12 June 2026").
+     */
+    @TestVisible
+    private static String citation(AAO_Answer__c a, Map<Id, Datetime> occurredBySource) {
         // D2, session 74: this read spans[0] unconditionally, so the person credited on a
         // customer-visible note could be taken from a span the blind reader had refused.
-        // Harmless where every span shares a speaker; not guaranteed, and not something to
-        // leave resting on that. Filter first, then take the first survivor.
+        // Filter first, then render what survives.
         List<AAO_Model.Span> spans = AAO_Model.upheld(
             AAO_Model.parseSpans(a.AAO_Spans__c).spans
         );
-        String who = spans.isEmpty() || String.isBlank(spans[0].speaker)
-            ? 'on the call'
-            : spans[0].speaker;
-        String occurredOn = a.AAO_Evidence_Occurred__c == null
-            ? ''
-            : ', ' + a.AAO_Evidence_Occurred__c.formatGmt('d MMMM yyyy');
-        return who + occurredOn;
+        if (spans.isEmpty()) {
+            // NO SPANS STILL CARRIES THE DATE. Caught by the note test: an early return of the
+            // bare phrase dropped the answer's own occurred clock, which is the only date there
+            // is when there are no spans to carry their own. Losing a date is a smaller error
+            // than attaching the wrong one, and it is still an error.
+            return 'on the call' + (a.AAO_Evidence_Occurred__c == null
+                ? ''
+                : ', ' + a.AAO_Evidence_Occurred__c.formatGmt('d MMMM yyyy'));
+        }
+        // Sorted by the SPAN'S OWN date, so the parts read in the order they were said rather
+        // than in the order the join happened to commit them.
+        Map<String, Datetime> whenByLine = new Map<String, Datetime>();
+        for (AAO_Model.Span s : spans) {
+            Datetime said = s.sourceId == null || occurredBySource == null
+                ? null
+                : occurredBySource.get((Id) s.sourceId);
+            // The answer's own clock is the fallback ONLY where the span's source is unknown,
+            // and only then, because it is the latest date on the answer rather than this
+            // span's date and using it by default is the defect above.
+            if (said == null) {
+                said = a.AAO_Evidence_Occurred__c;
+            }
+            String who = String.isBlank(s.speaker) ? 'on the call' : s.speaker;
+            String line = who + (said == null ? '' : ', ' + said.formatGmt('d MMMM yyyy'));
+            if (!whenByLine.containsKey(line)) {
+                whenByLine.put(line, said);
+            }
+        }
+        List<String> lines = new List<String>(whenByLine.keySet());
+        for (Integer i = 0; i < lines.size(); i++) {
+            for (Integer j = i + 1; j < lines.size(); j++) {
+                Datetime x = whenByLine.get(lines[i]);
+                Datetime y = whenByLine.get(lines[j]);
+                if (x != null && y != null && y < x) {
+                    String t = lines[i];
+                    lines[i] = lines[j];
+                    lines[j] = t;
+                }
+            }
+        }
+        return String.join(lines, '; ');
+    }
+
+    /** The occurred clock per Source, so every span can carry the date IT was said. */
+    private static Map<Id, Datetime> occurredBySource(List<AAO_Answer__c> answers) {
+        Set<Id> sourceIds = new Set<Id>();
+        for (AAO_Answer__c a : answers) {
+            for (AAO_Model.Span s : AAO_Model.parseSpans(a.AAO_Spans__c).spans) {
+                if (String.isNotBlank(s.sourceId)) {
+                    sourceIds.add((Id) s.sourceId);
+                }
+            }
+        }
+        Map<Id, Datetime> out = new Map<Id, Datetime>();
+        if (sourceIds.isEmpty()) {
+            return out;
+        }
+        for (AAO_Source__c s : [
+            SELECT Id, AAO_Evidence_Occurred__c FROM AAO_Source__c WHERE Id IN :sourceIds
+        ]) {
+            out.put(s.Id, s.AAO_Evidence_Occurred__c);
+        }
+        return out;
     }
 
     // -------------------------------------------------------------------- internals

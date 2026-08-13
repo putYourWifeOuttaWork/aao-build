@@ -98,7 +98,12 @@ private class AAO_FlagsTest {
         ]
         .Id;
 
-        // After pass one the answer is UNVERIFIED. Partial evidence is not establishment.
+        // CORRECTED IN PLACE, seventieth stamp. This asserted the red still STANDING after pass
+        // one, on the retired rule that partial coverage writes UNVERIFIED and so establishes
+        // nothing. Matthew ruled THE UPHOLD GOVERNS at the sixty-ninth: pass one's words were
+        // upheld, so they establish, and an establishment is what clears a red. THE LAW THE
+        // ASSERTION PROTECTED IS UNCHANGED and is still asserted here — only an ESTABLISHMENT
+        // clears a red, and nothing else does — which is why the assertion moves rather than goes.
         AAO_Flag__c f = [
             SELECT AAO_State__c, AAO_Cause__c
             FROM AAO_Flag__c
@@ -106,9 +111,9 @@ private class AAO_FlagsTest {
             LIMIT 1
         ];
         System.assertEquals(
-            'Standing',
+            'Cleared',
             f.AAO_State__c,
-            'UNVERIFIED holds the red. Evidence that does not establish does not clear.'
+            'An upheld establishment clears the red, and only an establishment does.'
         );
 
         Test.startTest();
@@ -143,7 +148,7 @@ private class AAO_FlagsTest {
 
         Id oppId = [SELECT Id FROM Opportunity WHERE Name = :AAO_Demo.OPP_NEGATIVE LIMIT 1].Id;
         AAO_Answer__c a = [
-            SELECT AAO_Verdict__c, AAO_Element_Coverage__c
+            SELECT AAO_Verdict__c, AAO_Element_Completeness__c
             FROM AAO_Answer__c
             WHERE AAO_Opportunity__c = :oppId
             LIMIT 1
@@ -151,7 +156,7 @@ private class AAO_FlagsTest {
         System.assertEquals('UNVERIFIED', a.AAO_Verdict__c);
         System.assertEquals(
             true,
-            AAO_Model.parseCoverage(a.AAO_Element_Coverage__c)
+            AAO_Model.parseCoverage(a.AAO_Element_Completeness__c)
                 .isFull(new List<String>{ 'e1', 'e2', 'e3' }),
             'Every element was covered.'
         );

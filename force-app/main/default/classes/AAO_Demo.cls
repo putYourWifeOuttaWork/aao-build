@@ -301,7 +301,7 @@ public class AAO_Demo {
                     Name,
                     AAO_Verdict__c,
                     AAO_Established_By__c,
-                    AAO_Element_Coverage__c,
+                    AAO_Element_Completeness__c,
                     AAO_Evidence_Occurred__c,
                     AAO_Evidence_Contract__r.AAO_Proposition_Code__c
                 FROM AAO_Answer__c
@@ -317,7 +317,7 @@ public class AAO_Demo {
                     ' by ' +
                     a.AAO_Established_By__c +
                     ' coverage=' +
-                    a.AAO_Element_Coverage__c
+                    a.AAO_Element_Completeness__c
                 );
             }
             for (AAO_Claim__c cl : [

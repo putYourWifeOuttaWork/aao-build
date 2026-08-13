@@ -259,7 +259,7 @@ public class AAO_SolutionRoute {
             AAO_Account__c = accountId,
             AAO_Subject_Type__c = 'Opportunity',
             AAO_Proposed_Verdict__c = 'TRUE',
-            AAO_Element_Coverage__c = AAO_Model.serializeCoverage(
+            AAO_Element_Completeness__c = AAO_Model.serializeCoverage(
                 AAO_Model.newCoverage(
                     AAO_ExtractCharter.elementIds(ec),
                     new List<String>()

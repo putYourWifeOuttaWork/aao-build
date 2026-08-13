@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>AAO_Element_Coverage__c</fullName>
-    <description>JSON. Written by: Commit. Read by: What is covered and what is missing. The flag over partial coverage reads this.</description>
+    <description>SUPERSEDED by AAO_Element_Completeness__c at the sixty-ninth stamp, which carries the same meaning under a word that does not collide with the vendor's. RETIRED IN PLACE AND NOT DELETED: deleting a field destroys its data, and this one holds the completeness record of every establishment made before the rename. Nothing writes it and nothing reads it from that stamp onward. It is history.</description>
     <label>Element Coverage</label>
     <type>LongTextArea</type>
     <length>32768</length>

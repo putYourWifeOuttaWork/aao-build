@@ -145,7 +145,7 @@ public class AAO_Commit {
                 AAO_Criterion__c,
                 AAO_Proposed_Verdict__c,
                 AAO_Spans__c,
-                AAO_Element_Coverage__c,
+                AAO_Element_Completeness__c,
                 AAO_Interpretation__c,
                 AAO_Charter__c,
                 AAO_Charter_Version__c,
@@ -216,6 +216,31 @@ public class AAO_Commit {
         return byContact;
     }
 
+    /**
+     * Did this claim carry an element the standing answer did not already have?
+     *
+     * Set arithmetic on element ids, deterministic, in Apex. No model is asked and no state
+     * reaches a prompt, which is the property that lets completeness accumulate across
+     * utterances without touching call 3's blindness.
+     */
+    @TestVisible
+    private static Boolean advancesCompleteness(
+        AAO_Answer__c existing, AAO_Model.Coverage accumulated
+    ) {
+        if (existing == null || accumulated == null) {
+            return false;
+        }
+        Set<String> had = new Set<String>(
+            AAO_Model.parseCoverage(existing.AAO_Element_Completeness__c).covered
+        );
+        for (String e : accumulated.covered) {
+            if (!had.contains(e)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static Result commitCandidate(Id candidateId, Set<String> internalDomains) {
         AAO_Candidate__c cand = candidateCache.containsKey(candidateId)
             ? candidateCache.get(candidateId)
@@ -263,8 +288,8 @@ public class AAO_Commit {
         AAO_Answer__c existing = readExisting(answerKey);
 
         AAO_Model.Coverage accumulated = AAO_Accumulate.mergeCoverage(
-            existing == null ? null : existing.AAO_Element_Coverage__c,
-            cand.AAO_Element_Coverage__c
+            existing == null ? null : existing.AAO_Element_Completeness__c,
+            cand.AAO_Element_Completeness__c
         );
         // The contract says what full coverage is. Asking the proposal would be asking
         // the thing being judged.
@@ -389,9 +414,26 @@ public class AAO_Commit {
             // moves no answer value, because guidance orders a person's criteria by what
             // they have pressed most recently and most often, and that is a count of
             // exactly these rows.
-            claimOutcome = 'Reinforced';
-            if (r.candidateOutcome == null) {
-                r.candidateOutcome = 'Reinforced';
+            //
+            // **UNLESS IT COMPLETED SOMETHING, and that exception is a written law rather than
+            // a nicety.** The sixty-ninth stamp names three axes apart and forbids collapsing
+            // them: COMPLETENESS is which parts of the question these words answer,
+            // CORROBORATION is whether both reads found it, REINFORCEMENT is how many times a
+            // person said it. A later utterance that carries a MISSING ELEMENT is a completeness
+            // event, not a repetition — the person advanced the requirement rather than pressing
+            // the same point again — and counting it as reinforcement inflates a number guidance
+            // ORDERS BY. That is the same lie the pair watermark exists to prevent, arriving
+            // through a different door.
+            //
+            // Surfaced by the uphold-governs ruling rather than created by it: while the first
+            // claim read UNVERIFIED the verdicts differed, so this branch never fired on a
+            // completing utterance and the conflation was unreachable. The accumulation fixture
+            // caught it the moment both claims read TRUE.
+            if (!advancesCompleteness(existing, accumulated)) {
+                claimOutcome = 'Reinforced';
+                if (r.candidateOutcome == null) {
+                    r.candidateOutcome = 'Reinforced';
+                }
             }
         }
 
@@ -495,7 +537,7 @@ public class AAO_Commit {
                 AAO_Verdict__c,
                 AAO_Basis__c,
                 AAO_Spans__c,
-                AAO_Element_Coverage__c,
+                AAO_Element_Completeness__c,
                 AAO_Interpretation__c,
                 AAO_Established_By__c,
                 AAO_Charter_Version__c,
@@ -556,7 +598,7 @@ public class AAO_Commit {
             AAO_Spans__c = cand.AAO_Spans__c,
             // The claim freezes the coverage as adjudicated on this pass, which is the
             // accumulated view, because that is what the verdict was decided on.
-            AAO_Element_Coverage__c = AAO_Model.serializeCoverage(accumulated),
+            AAO_Element_Completeness__c = AAO_Model.serializeCoverage(accumulated),
             AAO_Interpretation__c = cand.AAO_Interpretation__c,
             // The claim inherits the candidate's family. Hardcoding Transcript here was
             // safe only while every candidate had a Source; route P writes one that does

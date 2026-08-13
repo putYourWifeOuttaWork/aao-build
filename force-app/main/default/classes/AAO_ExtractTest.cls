@@ -276,12 +276,12 @@ private class AAO_ExtractTest {
         );
 
         AAO_Candidate__c cand = [
-            SELECT AAO_Element_Coverage__c, AAO_Proposed_Verdict__c, AAO_Charter_Version__c
+            SELECT AAO_Element_Completeness__c, AAO_Proposed_Verdict__c, AAO_Charter_Version__c
             FROM AAO_Candidate__c
             WHERE AAO_Source__c = :src.Id AND AAO_Outcome__c NOT IN ('Abstained', 'Not_Returned')
             LIMIT 1
         ];
-        AAO_Model.Coverage cov = AAO_Model.parseCoverage(cand.AAO_Element_Coverage__c);
+        AAO_Model.Coverage cov = AAO_Model.parseCoverage(cand.AAO_Element_Completeness__c);
         System.assertEquals(2, cov.covered.size(), 'Two elements were cited.');
         System.assertEquals(
             new List<String>{ 'e3' },
@@ -346,12 +346,12 @@ private class AAO_ExtractTest {
         System.assertEquals('AAO_T1', o.spanDrops[0].contractCode);
 
         AAO_Candidate__c cand = [
-            SELECT AAO_Element_Coverage__c, AAO_Spans__c
+            SELECT AAO_Element_Completeness__c, AAO_Spans__c
             FROM AAO_Candidate__c
             WHERE AAO_Source__c = :src.Id AND AAO_Outcome__c NOT IN ('Abstained', 'Not_Returned')
             LIMIT 1
         ];
-        AAO_Model.Coverage cov = AAO_Model.parseCoverage(cand.AAO_Element_Coverage__c);
+        AAO_Model.Coverage cov = AAO_Model.parseCoverage(cand.AAO_Element_Completeness__c);
         System.assertEquals(
             new List<String>{ 'e1' },
             cov.covered,
@@ -817,12 +817,12 @@ private class AAO_ExtractTest {
         );
 
         AAO_Candidate__c cand = [
-            SELECT AAO_Element_Coverage__c, AAO_Proposed_Verdict__c
+            SELECT AAO_Element_Completeness__c, AAO_Proposed_Verdict__c
             FROM AAO_Candidate__c
             WHERE AAO_Source__c = :src.Id AND AAO_Outcome__c NOT IN ('Abstained', 'Not_Returned')
             LIMIT 1
         ];
-        AAO_Model.Coverage cov = AAO_Model.parseCoverage(cand.AAO_Element_Coverage__c);
+        AAO_Model.Coverage cov = AAO_Model.parseCoverage(cand.AAO_Element_Completeness__c);
         System.assertEquals(
             new List<String>{ 'e1', 'e2' },
             cov.covered,
@@ -954,12 +954,12 @@ private class AAO_ExtractTest {
         Test.stopTest();
 
         AAO_Candidate__c cand = [
-            SELECT AAO_Element_Coverage__c
+            SELECT AAO_Element_Completeness__c
             FROM AAO_Candidate__c
             WHERE AAO_Source__c = :src.Id AND AAO_Outcome__c NOT IN ('Abstained', 'Not_Returned')
             LIMIT 1
         ];
-        AAO_Model.Coverage cov = AAO_Model.parseCoverage(cand.AAO_Element_Coverage__c);
+        AAO_Model.Coverage cov = AAO_Model.parseCoverage(cand.AAO_Element_Completeness__c);
         System.assertEquals(
             new List<String>{ 'e1' },
             cov.covered,

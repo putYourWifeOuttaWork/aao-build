@@ -683,7 +683,7 @@ public class AAO_Pipeline {
             AAO_Subject_Contact__c = personId,
             AAO_Proposed_Verdict__c = p.proposedVerdict,
             AAO_Spans__c = AAO_Model.serializeSpans(p.spans),
-            AAO_Element_Coverage__c = AAO_Model.serializeCoverage(
+            AAO_Element_Completeness__c = AAO_Model.serializeCoverage(
                 AAO_Model.newCoverage(p.covered, p.missing)
             ),
             AAO_Interpretation__c = p.interpretation,

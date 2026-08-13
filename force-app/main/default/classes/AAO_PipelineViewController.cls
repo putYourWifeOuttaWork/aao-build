@@ -723,7 +723,7 @@ public with sharing class AAO_PipelineViewController {
     private static void buildAnswers(Snapshot s, String scopeField, Id scopeId) {
         Integer total = countOf('AAO_Answer__c', scopeField, scopeId);
         String soql =
-            'SELECT Id, Name, AAO_Verdict__c, AAO_Element_Coverage__c, AAO_Established_By__c, ' +
+            'SELECT Id, Name, AAO_Verdict__c, AAO_Element_Completeness__c, AAO_Established_By__c, ' +
             'AAO_Publication_State__c, AAO_Subject_Contact__c, AAO_Subject_Type__c, ' +
             'AAO_Projected_Value__c, AAO_Projected_Modstamp__c, AAO_Opportunity__c, ' +
             'AAO_Subject_Contact__r.Name, AAO_Subject_Contact__r.Title, ' +
@@ -770,7 +770,7 @@ public with sharing class AAO_PipelineViewController {
             // this screen inventing an answer.
             r.rung = (r.dimension != null && r.projected) ? a.AAO_Projected_Value__c : null;
 
-            AAO_Model.Coverage cov = AAO_Model.parseCoverage(a.AAO_Element_Coverage__c);
+            AAO_Model.Coverage cov = AAO_Model.parseCoverage(a.AAO_Element_Completeness__c);
             r.covered = cov.covered.isEmpty() ? '—' : String.join(cov.covered, ', ');
             r.missing = cov.missing.isEmpty() ? '—' : String.join(cov.missing, ', ');
             r.complete = cov.isFull(

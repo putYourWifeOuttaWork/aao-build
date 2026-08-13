@@ -12338,3 +12338,68 @@ swallowing is right for production, it costs debuggability, and the tests have t
 **Owed and named:** the card writer's leg is unwired (`STAGE_CARDS` is declared, `AAO_Cards.run`
 wants the same overload projection got); split events are always zero because no caller reports a
 split yet.
+
+## Session 99 · the seventieth stamp · the uphold governs, completeness accumulates, and two consequences nobody had named
+
+Suite **470, 469 pass**, the one failure the standing org-resident non-AAO
+`ConvertToOpportunityTest`. Report and rows in `review/pf0813-uphold/`.
+
+**THE UNION WAS ALREADY BUILT.** `AAO_Accumulate.mergeCoverage` has unioned covered element ids
+across claims since accumulation was written, and because the merge happens per ANSWER, and an
+answer is keyed subject-plus-contract, it is same-subject-same-contract BY CONSTRUCTION rather than
+by a check that could be forgotten. The seed's two-transcript fixture is exactly Matthew's shape, so
+the ruling is provable on a fixture written long before it: two tests now pin the union moving, never
+losing what it had, and THE SPANS NOT BEING MERGED (two spans, two Sources, each keeping its own
+quote and offsets). No model reads state; call 3's blindness is untouched.
+
+**THE CITATION WAS NOT HONOURING THE INTEGRITY CONDITION, and that was a real defect.** It took
+`spans[0].speaker` and paired it with the ANSWER'S occurred clock, which only moves forwards, so an
+establishment carrying March's and June's words credited MARCH'S SPEAKER WITH JUNE'S DATE — a
+citation for a moment that never happened, assembled out of two that did. Harmless today because
+every span shares one source, which is exactly why it survived; Matthew's ruling makes accumulation
+law, so it breaks the first time a second call lands. Every span now carries the date IT was said,
+resolved from its own Source. A regression I introduced doing it, caught by the note test: an answer
+with NO spans lost its date entirely.
+
+**THE UPHOLD GOVERNS, 4 of 22 proposals change** (`r2q6`, `r1q9`, `r2q33`, `r2q32`), three of them
+on single-element contracts where "Partial" was never expressible.
+
+**TWO CONSEQUENCES THE STAMP DID NOT NAME, and both needed deciding rather than absorbing.**
+**(a) A COMPLETING UTTERANCE WAS BEING COUNTED AS REINFORCEMENT.** While the first claim read
+UNVERIFIED the verdicts differed, so the reinforcement branch never fired on a completing utterance
+and the conflation was unreachable; the moment both read TRUE the accumulation fixture came back
+Reinforced where it had been two establishments. That collapses two of the three axes the
+sixty-ninth stamp named apart and forbade collapsing, and REINFORCEMENT IS A COUNT GUIDANCE ORDERS
+BY, so inflating it with completions is the same lie the pair watermark exists to prevent arriving
+through a different door. A claim carrying an element the standing answer did not have ADVANCED the
+requirement and is Established. **(b) THE RULING WAS ABOUT TO REVERSE A HELD DECISION ON A
+CUSTOMER-VISIBLE VENDOR OBJECT.** The criteria gate read the naming answer's VERDICT, which worked
+only because a partial used to write UNVERIFIED; under the ruling partial criteria would have
+started reaching `ALTF__Decision_Criteria__c`, silently reversing "whole criteria only; partials'
+fate is Matthew's, held". Neither stamp mentions criteria and nothing ruled that. The gate now reads
+COMPLETENESS, which is what it always meant. That forced the other half of the sixty-eighth stamp's
+self-contradiction closed too: the join stamped `covered = every element, missing = []`
+UNCONDITIONALLY, so completeness was always complete and the gate would have been useless. It now
+records what the read actually found, and on a multi-element hedge records only the element the span
+is offered for rather than inventing a split.
+
+**THE RENAME**, `AAO_Element_Coverage__c` to `AAO_Element_Completeness__c` across three objects and
+19 Apex classes, zero references remaining. The old field is RETIRED IN PLACE AND NOT DELETED
+because deleting a field destroys its data. Backfilled 41 answers and 128 candidates; **104 claims
+were NOT backfilled and that is the law rather than an omission** — claims are insert-only, so their
+history stays on the retired field, which is precisely why retiring beats deleting. Two mechanical
+facts banked: a long text area cannot be filtered in SOQL, and a universally-required field cannot
+appear in a permission set's field permissions.
+
+**NINE TESTS CORRECTED IN PLACE, none deleted**, each naming the ruling and where its protection now
+lives. `claimsCannotBeEdited` looked alarming and was not: it set a verdict to TRUE that already
+read TRUE, so the update moved no field and the handler correctly allowed a no-op. CLAIM
+IMMUTABILITY IS INTACT; the setup went stale. And `verdictRoutesOnCoverage`'s guard is not lost — it
+MOVED UPSTREAM AND GOT STRICTER, from correcting a wrong record at read time to writing a right one.
+
+**WHAT HAS NOT CHANGED, stated so the report cannot be over-read: the two UNVERIFIED answers on
+Project Farma still read UNVERIFIED.** Their claims were born under the old rule, claims are
+insert-only, a replay rebuilds from those same claims, and committed pairs are watermarked so a
+rerun skips them. The ruling governs FROM THE NEXT PASS; correcting the live rows needs a purge and
+rerun, which is Matthew's call. The fix is proven by the suite and by the row-level measurement, and
+not on this deal's live map.

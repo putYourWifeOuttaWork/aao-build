@@ -57,6 +57,25 @@ public with sharing class AAO_Cards {
      * Reads answers rather than pairs on purpose: an answer is the established thing, carries the
      * accumulation, and is what survives a rerun. A pair is one read's proposal.
      */
+    /**
+     * The card writer with its run named, so its leg reaches the run receipt.
+     *
+     * The last stage of the pass to get one, and it was owed and named rather than forgotten:
+     * `AAO_Receipt.STAGE_CARDS` has been declared and unwired since the sixty-seventh stamp.
+     * An overload rather than a changed signature, the same shape projection took, because the
+     * writer is keyed on the DEAL — it writes the board's current state from standing pairs, not
+     * one run's output — and the run key is telemetry here saying which pass paid for the time.
+     */
+    public static Outcome run(Id opportunityId, String runKey) {
+        Long startedAt = System.currentTimeMillis();
+        Outcome o = run(opportunityId);
+        AAO_Receipt.record(
+            runKey, AAO_Receipt.sourceForRun(runKey), AAO_Receipt.STAGE_CARDS,
+            System.currentTimeMillis() - startedAt, o.created + o.reinforced + o.unchanged
+        );
+        return o;
+    }
+
     public static Outcome run(Id opportunityId) {
         if (opportunityId == null) {
             throw new CardException('Cannot write cards with no opportunity.');

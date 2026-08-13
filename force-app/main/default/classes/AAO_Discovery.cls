@@ -694,7 +694,7 @@ public class AAO_Discovery {
         List<AAO_Answer__c> answers = [
             SELECT
                 AAO_Verdict__c,
-                AAO_Element_Coverage__c,
+                AAO_Element_Completeness__c,
                 AAO_Evidence_Contract__r.AAO_Proposition_Code__c,
                 AAO_Evidence_Contract__r.AAO_Question_Record_Id__c
             FROM AAO_Answer__c

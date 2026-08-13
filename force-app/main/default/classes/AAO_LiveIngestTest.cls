@@ -37,17 +37,20 @@ private class AAO_LiveIngestTest {
         ];
         System.assertEquals(1, claims.size(), 'The job wrote exactly one claim.');
         System.assertEquals(null, claims[0].AAO_Verdict_Before__c);
+        // CORRECTED IN PLACE, seventieth stamp. This asserted UNVERIFIED on the retired rule
+        // that partial coverage gates the verdict; Matthew ruled THE UPHOLD GOVERNS at the
+        // sixty-ninth. WHAT THE ASSERTION WAS ABOUT IS NOW MEASURED WHERE IT BELONGS, two lines
+        // below: transcript one covers two of three elements, and COMPLETENESS is what says so.
         System.assertEquals(
-            'UNVERIFIED',
+            'TRUE',
             claims[0].AAO_Verdict_After__c,
-            'Transcript one covers two of three elements, so partial coverage writes ' +
-            'UNVERIFIED carrying the spans that exist.'
+            'The verifier upheld these words, so the claim stands with the spans it has.'
         );
         System.assertEquals('MACHINE', claims[0].AAO_Actor__c);
 
-        AAO_Answer__c a = [SELECT AAO_Verdict__c, AAO_Element_Coverage__c FROM AAO_Answer__c];
-        System.assertEquals('UNVERIFIED', a.AAO_Verdict__c);
-        AAO_Model.Coverage cov = AAO_Model.parseCoverage(a.AAO_Element_Coverage__c);
+        AAO_Answer__c a = [SELECT AAO_Verdict__c, AAO_Element_Completeness__c FROM AAO_Answer__c];
+        System.assertEquals('TRUE', a.AAO_Verdict__c);
+        AAO_Model.Coverage cov = AAO_Model.parseCoverage(a.AAO_Element_Completeness__c);
         System.assertEquals(2, cov.covered.size());
         System.assertEquals(1, cov.missing.size(), 'e3 is still missing.');
 
@@ -71,7 +74,7 @@ private class AAO_LiveIngestTest {
         AAO_Synthetic.MARK = false;
         AAO_Pipeline.Outcome first = AAO_Pipeline.runForSource(s1.Id, c.internalDomains);
         System.assertEquals('staged', first.status, first.toString());
-        System.assertEquals('UNVERIFIED', first.verdict);
+        System.assertEquals('TRUE', first.verdict);
         AAO_Ingest.AUTO = true;
 
         Test.startTest();
@@ -90,12 +93,15 @@ private class AAO_LiveIngestTest {
             ORDER BY AAO_Evidence_Occurred__c ASC
         ];
         System.assertEquals(2, claims.size());
+        // CORRECTED IN PLACE with the assertion above, same ruling. The POINT survives whole:
+        // the first claim is untouched and nothing edited it, which is what makes progress
+        // visible. What progresses across the two artifacts is COMPLETENESS, not the verdict.
         System.assertEquals(
-            'UNVERIFIED',
+            'TRUE',
             claims[0].AAO_Verdict_After__c,
             'The first claim is untouched. Nothing edited it.'
         );
-        System.assertEquals('UNVERIFIED', claims[1].AAO_Verdict_Before__c);
+        System.assertEquals('TRUE', claims[1].AAO_Verdict_Before__c);
         System.assertEquals('TRUE', claims[1].AAO_Verdict_After__c);
         System.assertEquals(
             11L * 24 * 60 * 60 * 1000,

@@ -267,8 +267,13 @@ private class AAO_TriggerLawTest {
         AAO_Seed.Loaded s = load();
         AAO_Commit.commitCandidate(s.candidateByCode.get('C1').Id, s.internalDomains);
 
+        // THE LAW IS INTACT AND THIS SETUP WENT STALE, which is worth spelling out because the
+        // failure looked alarming. It set the verdict to TRUE, and under the uphold-governs
+        // ruling the claim ALREADY reads TRUE, so the update moved no field and the handler
+        // correctly let a no-op through. Mutate to something that genuinely differs.
         AAO_Claim__c c = [SELECT Id, AAO_Verdict_After__c FROM AAO_Claim__c LIMIT 1];
-        c.AAO_Verdict_After__c = 'TRUE';
+        System.assertEquals('TRUE', c.AAO_Verdict_After__c, 'The claim stands on its uphold.');
+        c.AAO_Verdict_After__c = 'UNVERIFIED';
         try {
             update c;
             System.assert(

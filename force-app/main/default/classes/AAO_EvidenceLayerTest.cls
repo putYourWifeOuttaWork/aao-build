@@ -300,13 +300,13 @@ private class AAO_EvidenceLayerTest {
             'No element covered writes nothing.'
         );
         System.assertEquals(
-            'UNVERIFIED',
+            'TRUE',
             AAO_Accumulate.verdictFor(
                 AAO_Model.newCoverage(new List<String>{ 'e1' }, new List<String>{ 'e2' }),
                 'TRUE',
                 new List<String>{ 'e1', 'e2' }
             ),
-            'Partial coverage writes UNVERIFIED with the spans that exist.'
+            'The verifier upheld it, so it stands TRUE with the spans that exist; completeness rides beside it.'
         );
         System.assertEquals(
             'TRUE',
@@ -317,27 +317,35 @@ private class AAO_EvidenceLayerTest {
             )
         );
 
-        // THE DEFECT, now a test. A proposal that covers one element of three and sends
-        // an empty missing list used to route its verdict straight through, because the
-        // routing law believed the proposal about what full meant.
+        // CORRECTED IN PLACE, seventieth stamp. These two asserted that `verdictFor` routes an
+        // incomplete proposal to UNVERIFIED. Matthew ruled at the sixty-ninth that COMPLETENESS
+        // IS NOT A GATE, so it no longer routes on completeness at all and returns what the
+        // verifier upheld.
+        //
+        // **THE DEFECT THE FIRST ONE GUARDED IS NOT LOST — IT MOVED UPSTREAM AND GOT STRICTER.**
+        // "An empty missing list is a claim by the proposer, not a fact" is now enforced where
+        // the record is WRITTEN rather than where it was read: `AAO_PairCommit` no longer stamps
+        // every element covered by default, so a one-of-three proposal is recorded as one of
+        // three with two missing. The old guard let a wrong record stand and corrected for it at
+        // read time; the record is simply right now, which is the better place for it.
         System.assertEquals(
-            'UNVERIFIED',
+            'TRUE',
             AAO_Accumulate.verdictFor(
                 AAO_Model.newCoverage(new List<String>{ 'e1' }, new List<String>()),
                 'TRUE',
                 new List<String>{ 'e1', 'e2', 'e3' }
             ),
-            'An empty missing list is a claim by the proposer, not a fact. The contract ' +
-            'names three elements and one is covered, so this is partial.'
+            'The uphold governs; completeness rides on the answer rather than gating it.'
         );
         System.assertEquals(
-            'UNVERIFIED',
+            'TRUE',
             AAO_Accumulate.verdictFor(
                 AAO_Model.newCoverage(new List<String>{ 'e1' }, new List<String>()),
                 'TRUE',
                 new List<String>()
             ),
-            'A contract naming no elements cannot be fully covered by anything.'
+            'And a contract naming no elements is a MINT-TIME data defect rather than something ' +
+            'to catch by quietly unverifying every establishment made against it.'
         );
     }
 }

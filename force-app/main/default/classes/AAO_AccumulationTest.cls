@@ -77,23 +77,36 @@ private class AAO_AccumulationTest {
             'processing time. Both were processed inside one transaction.'
         );
 
-        // ---- 2. the first claim still reads UNVERIFIED, and nothing edited it
+        // ---- 2. the first claim stands on its own uphold, and nothing edited it
+        //
+        // CORRECTED IN PLACE, seventieth stamp. This assertion used to read UNVERIFIED, on the
+        // brief's original rule that partial coverage writes UNVERIFIED. Matthew ruled at the
+        // sixty-ninth that THE UPHOLD GOVERNS and completeness is data rather than a gate, so
+        // the first claim now reads TRUE on the strength of the verifier that upheld it. What
+        // the original point protected — that progress is VISIBLE and nothing edits a standing
+        // claim — is unchanged and asserted below: the claim is immutable, and the thing that
+        // visibly progresses is COMPLETENESS, which is what item 3 now measures.
         System.assertEquals(
             null,
             claims[0].AAO_Verdict_Before__c,
             'The first claim created the answer, so there was nothing before it.'
         );
         System.assertEquals(
-            'UNVERIFIED',
+            'TRUE',
             claims[0].AAO_Verdict_After__c,
-            'Partial coverage writes UNVERIFIED carrying the spans that exist.'
+            'The verifier upheld these words, so the claim stands TRUE with the spans it has.'
         );
         System.assertEquals('MACHINE', claims[0].AAO_Actor__c);
         System.assertEquals('Transcript', claims[0].AAO_Basis__c);
         System.assertEquals('Established', claims[0].AAO_Outcome__c);
 
+        // CORRECTED IN PLACE with the assertion above, and for the same reason: the answer the
+        // second claim arrived at already stood TRUE on the first claim's uphold. The POINT of
+        // this assertion is untouched — a claim records the state it found, so the ledger can be
+        // replayed and audited — and that is what still fails if the before-state stops being
+        // written at all.
         System.assertEquals(
-            'UNVERIFIED',
+            'TRUE',
             claims[1].AAO_Verdict_Before__c,
             'The second claim records what the answer was when it arrived.'
         );
@@ -124,7 +137,7 @@ private class AAO_AccumulationTest {
                 AAO_Answer_Key__c,
                 AAO_Verdict__c,
                 AAO_Spans__c,
-                AAO_Element_Coverage__c,
+                AAO_Element_Completeness__c,
                 AAO_Established_By__c,
                 AAO_Last_Claim__c,
                 AAO_Evidence_Occurred__c
@@ -159,7 +172,7 @@ private class AAO_AccumulationTest {
             'Two spans from transcript one plus three from transcript two.'
         );
 
-        AAO_Model.Coverage cov = AAO_Model.parseCoverage(answer.AAO_Element_Coverage__c);
+        AAO_Model.Coverage cov = AAO_Model.parseCoverage(answer.AAO_Element_Completeness__c);
         System.assert(
             cov.isFull(new List<String>{ 'e1', 'e2', 'e3' }),
             'Coverage completed; missing was ' + cov.missing
@@ -243,8 +256,27 @@ private class AAO_AccumulationTest {
 
     // ============================================== progress is visible, restated
 
+    /**
+     * COMPLETENESS ACCUMULATES ACROSS UTTERANCES, and this is the specimen.
+     *
+     * Matthew's ruling at the seventieth stamp: *"If March's words satisfy one element and
+     * June's different-but-related words satisfy the missing one, the requirement is complete
+     * and the value reads complete."* This fixture is exactly that shape — two transcripts
+     * eleven days apart, the first covering one element and the second the other — so the union
+     * is provable on a fixture that already existed rather than on one written to pass.
+     *
+     * **THE UNION IS DETERMINISTIC AND HAPPENS AT THE JOIN.** No model reads state, call 3
+     * stays blind, and the accumulation is set arithmetic on element ids in
+     * `AAO_Accumulate.mergeCoverage`. This test pins that it happens ACROSS CLAIMS, which is
+     * the same thing as across utterances, and only within one answer, which is by construction
+     * one subject against one contract.
+     *
+     * CORRECTED IN PLACE, seventieth stamp: this was `replayingOnlyTheFirstClaimGivesUnverified`
+     * and asserted the VERDICT moving UNVERIFIED to TRUE. Under the uphold-governs ruling the
+     * verdict no longer moves, so what it measures now is the thing that actually accumulates.
+     */
     @IsTest
-    static void replayingOnlyTheFirstClaimGivesUnverified() {
+    static void completenessACCUMULATESACROSSUTTERANCESANDTHEVERDICTSTANDSONITSUPHOLD() {
         AAO_Seed.Loaded s = load();
 
         Test.startTest();
@@ -259,15 +291,96 @@ private class AAO_AccumulationTest {
         );
         Test.stopTest();
 
+        AAO_Answer__c one = afterOne.values()[0];
+        AAO_Answer__c two = afterTwo.values()[0];
+
         System.assertEquals(
-            'UNVERIFIED',
-            afterOne.values()[0].AAO_Verdict__c,
-            'One transcript in, the answer stands at UNVERIFIED.'
+            'TRUE', one.AAO_Verdict__c,
+            'One transcript in, the verifier had already upheld it, so it stands TRUE.'
         );
+        System.assertEquals('TRUE', two.AAO_Verdict__c, 'And it still does.');
+
+        AAO_Model.Coverage first = AAO_Model.parseCoverage(one.AAO_Element_Completeness__c);
+        AAO_Model.Coverage both = AAO_Model.parseCoverage(two.AAO_Element_Completeness__c);
+        System.assert(
+            both.covered.size() > first.covered.size(),
+            'THE UNION IS THE THING THAT MOVES: the second utterance adds the missing element. ' +
+            'Got ' + first.covered + ' then ' + both.covered
+        );
+        for (String e : first.covered) {
+            System.assert(
+                both.covered.contains(e),
+                'A union never loses what it had. Missing ' + e + ' from ' + both.covered
+            );
+        }
+
+        // THE INTEGRITY CONDITION. An accumulated establishment is never one merged quote: every
+        // element keeps its own span, and a reader must be able to see it was assembled and when.
+        List<AAO_Model.Span> spans = AAO_Model.parseSpans(two.AAO_Spans__c).spans;
+        System.assert(
+            spans.size() >= 2,
+            'Both utterances keep their own span rather than being stitched into one. Got ' +
+            spans.size()
+        );
+        Set<String> sources = new Set<String>();
+        for (AAO_Model.Span sp : spans) {
+            sources.add(sp.sourceId);
+            System.assert(
+                String.isNotBlank(sp.quote), 'Every span carries its own words.'
+            );
+            System.assertNotEquals(
+                null, sp.startOffset, 'And its own offsets, so its date is resolvable from it.'
+            );
+        }
+        System.assert(
+            sources.size() >= 2,
+            'Cross-source accumulation is expected; the spans name their own Sources. Got ' +
+            sources
+        );
+    }
+
+    /**
+     * COMPLETENESS IS NOT REINFORCEMENT, and the sixty-ninth stamp forbids collapsing them.
+     *
+     * Its words: "COMPLETENESS is which parts of the question these words answer... REINFORCEMENT
+     * is how many times a person said it (the card counter). Collapsing any of them into the
+     * others is how a completeness measure silently becomes a confidence score, which nobody
+     * ruled and nobody could audit."
+     *
+     * A later utterance carrying a MISSING element advanced the requirement; it did not press the
+     * same point again. Reinforcement is a count guidance ORDERS BY, so inflating it with
+     * completions is a lie about how often somebody pressed something — the same lie the pair
+     * watermark exists to prevent, arriving through a different door.
+     *
+     * This was unreachable until the uphold-governs ruling: while the first claim read UNVERIFIED
+     * the two verdicts differed, so the reinforcement branch never fired on a completing
+     * utterance at all.
+     */
+    @IsTest
+    static void aCOMPLETINGUTTERANCEISESTABLISHEDANDNEVERREINFORCEMENT() {
+        AAO_Seed.Loaded s = load();
+
+        Test.startTest();
+        Id oppId = runTheTwoPasses(s);
+        Test.stopTest();
+
+        List<AAO_Claim__c> claims = [
+            SELECT AAO_Outcome__c, AAO_Element_Completeness__c
+            FROM AAO_Claim__c
+            WHERE AAO_Opportunity__c = :oppId
+            ORDER BY AAO_Evidence_Occurred__c ASC
+        ];
+        System.assertEquals(2, claims.size());
         System.assertEquals(
-            'TRUE',
-            afterTwo.values()[0].AAO_Verdict__c,
-            'The second transcript completes it.'
+            'Established',
+            claims[1].AAO_Outcome__c,
+            'The second utterance carried the missing element, so it ESTABLISHED rather than ' +
+            'repeated. Reinforcement here would inflate a count guidance orders by.'
+        );
+        System.assert(
+            AAO_Model.parseCoverage(claims[1].AAO_Element_Completeness__c).covered.size() >
+                AAO_Model.parseCoverage(claims[0].AAO_Element_Completeness__c).covered.size(),
+            'And the reason it is not reinforcement is visible in the row: it added an element.'
         );
     }
 

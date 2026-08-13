@@ -168,7 +168,18 @@ public class AAO_PairCommitTest {
     }
 
     @IsTest
-    static void aPartialPairProposesUnverifiedSoItAccruesAndPlacesNobody() {
+    static void aVOICEDHEDGENOLONGEROVERRIDESTHEBLINDUPHOLD() {
+        // CORRECTED IN PLACE, seventieth stamp, and the correction is the ruling rather than a
+        // repair. This test used to assert that a Partial coverage label proposes UNVERIFIED —
+        // `aPartialPairProposesUnverifiedSoItAccruesAndPlacesNobody`, encoding "Partial is the
+        // instructed default under doubt". Matthew ruled at the sixty-ninth stamp that THE
+        // UPHOLD GOVERNS: the blind verifier decides truth and element completeness is recorded
+        // as data, never as a verdict gate. A read-side hedge outranking the checker inverted
+        // the layering the architecture rests on, and on the twelve single-element contracts
+        // "Partial" was not even expressible.
+        //
+        // What the old test protected is NOT lost and is asserted below: the accrual still
+        // carries its receipts, and the writer still places nobody except on TRUE.
         Fixture f = fixture();
         pair(f, 'p1', 'AAO_POL_IC1', 'Inner Circle', 'Partial', 'Identified', 'Upheld', f.participantId);
 
@@ -177,24 +188,28 @@ public class AAO_PairCommitTest {
         Test.stopTest();
 
         AAO_Answer__c a = [
-            SELECT AAO_Verdict__c, AAO_Spans__c
+            SELECT AAO_Verdict__c, AAO_Spans__c, AAO_Element_Completeness__c
             FROM AAO_Answer__c
             WHERE AAO_Opportunity__c = :f.oppId
         ];
         System.assertEquals(
-            'UNVERIFIED',
+            'TRUE',
             a.AAO_Verdict__c,
-            'Partial is the instructed default under doubt, and a partial accrues safely and ' +
-            'places nobody.'
+            'The verifier upheld these words, so the answer reads TRUE whatever the read voiced.'
         );
         System.assert(
             a.AAO_Spans__c != null && a.AAO_Spans__c.contains('escalate'),
-            'It carries its receipts. Got: ' + a.AAO_Spans__c
+            'It still carries its receipts. Got: ' + a.AAO_Spans__c
+        );
+        System.assert(
+            String.isNotBlank(a.AAO_Element_Completeness__c),
+            'And completeness is still RECORDED, which is the half that survives the ruling. ' +
+            'Got: ' + a.AAO_Element_Completeness__c
         );
         System.assertEquals(
-            null,
+            'Inner Circle',
             AAO_Project.run(f.oppId).people[0].political,
-            'And the writer places nobody on it: derive() places only on TRUE.'
+            'An upheld establishment now places, which is the visible consequence of the ruling.'
         );
     }
 

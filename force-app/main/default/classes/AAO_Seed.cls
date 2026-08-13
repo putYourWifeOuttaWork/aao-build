@@ -339,7 +339,7 @@ public class AAO_Seed {
                     AAO_Subject_Type__c = (String) c.get('subjectType'),
                     AAO_Proposed_Verdict__c = (String) c.get('proposedVerdict'),
                     AAO_Spans__c = AAO_Model.serializeSpans(spans),
-                    AAO_Element_Coverage__c = AAO_Model.serializeCoverage(
+                    AAO_Element_Completeness__c = AAO_Model.serializeCoverage(
                         AAO_Model.newCoverage(
                             strings((List<Object>) c.get('covered')),
                             strings((List<Object>) c.get('missing'))

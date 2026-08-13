@@ -118,8 +118,11 @@ private class AAO_PipelineViewControllerTest {
         // ---- claims, in occurred order, before -> after
         System.assertEquals(2, s.claims.size());
         System.assertEquals('—', s.claims[0].before, 'Nothing preceded the first claim.');
-        System.assertEquals('UNVERIFIED', s.claims[0].after);
-        System.assertEquals('UNVERIFIED', s.claims[1].before);
+        // CORRECTED IN PLACE, seventieth stamp: the uphold governs, so both claims stand TRUE.
+        // The speaker-downgrade path further down this class still asserts UNVERIFIED and still
+        // passes, which is the check that the ruling retired ONE gate and not the others.
+        System.assertEquals('TRUE', s.claims[0].after);
+        System.assertEquals('TRUE', s.claims[1].before);
         System.assertEquals('TRUE', s.claims[1].after);
         System.assert(
             s.claims[0].snippet.contains('funding is approved'),
@@ -223,8 +226,14 @@ private class AAO_PipelineViewControllerTest {
         AAO_PipelineViewController.AnswerRow a = flat(s)[0];
         System.assertEquals(2, a.claims.size(), 'Both claims stand behind the one answer.');
         System.assertEquals(true, a.hasLineage);
-        System.assertEquals('UNVERIFIED', a.claims[0].after, 'Occurred order, oldest first.');
+        // CORRECTED IN PLACE, seventieth stamp: both claims now read TRUE because each was
+        // upheld, so the ORDER can no longer be read off the verdicts. It is asserted on the
+        // occurred clock instead, which is what "oldest first" was always about.
+        System.assertEquals('TRUE', a.claims[0].after, 'Each claim stands on its own uphold.');
         System.assertEquals('TRUE', a.claims[1].after);
+        System.assert(
+            a.claims[0].occurred < a.claims[1].occurred, 'Occurred order, oldest first.'
+        );
     }
 
     // -------------------------------------------------------- F · publication honesty

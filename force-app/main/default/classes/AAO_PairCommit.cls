@@ -18,11 +18,15 @@
  *   Participant (addendum 18); the Contact travels beside it where identity has resolved to
  *   one, and null is a legitimate answer that must survive to projection rather than stopping
  *   the write here.
- * - **Coverage decides the proposed verdict, not the span set.** A `Full` pair proposes TRUE
- *   and a `Partial` pair proposes UNVERIFIED, because §P8 makes partial the instructed default
- *   under doubt and says a partial accrues safely and PLACES NOBODY. Encoding a partial as
- *   full-coverage-with-a-weaker-verdict is what makes that true: it accumulates its receipts on
- *   the answer, and `AAO_Project.derive` places only on TRUE.
+ * - **THE UPHOLD DECIDES THE PROPOSED VERDICT.** *(Corrected in place at the seventieth stamp.
+ *   This paragraph used to read "Coverage decides the proposed verdict": a `Full` pair proposed
+ *   TRUE and a `Partial` pair proposed UNVERIFIED, on the rule that partial is the instructed
+ *   default under doubt. Matthew ruled at the sixty-ninth that the blind verifier decides truth
+ *   and completeness is recorded as data, never as a verdict gate, because a read-side hedge
+ *   outranking the checker inverts the layering this whole pass rests on.)* Only upheld pairs
+ *   reach the candidate builder, so the proposal is TRUE and element COMPLETENESS travels beside
+ *   it. What the old rule protected is unchanged: a partial accrues its receipts on the answer,
+ *   and completeness is what accumulates across utterances by union at the join.
  * - **The span is byte-located already.** Call 1 found the offsets in the frozen artifact, so
  *   the writer's own span check re-verifies rather than discovers, which is exactly what a
  *   second independent check is for.
@@ -504,9 +508,44 @@ public with sharing class AAO_PairCommit {
         span.element = elements.isEmpty() ? null : elements[0];
         span.verification = 'UPHELD';
 
+        // ELEMENT COMPLETENESS, RECORDED HONESTLY. This used to stamp `covered = every element
+        // the contract declares, missing = []` UNCONDITIONALLY, so the row said "complete" no
+        // matter what the read found — the self-contradiction the sixty-eighth stamp named,
+        // where one candidate claimed full completeness in one field and unverified-for-
+        // incompleteness in another.
+        //
+        // It mattered little while completeness gated nothing. It matters now: with the verdict
+        // off it (Matthew's uphold-governs ruling) completeness is the ONLY honest record of
+        // which parts of a question the words answered, it is what the join-side union
+        // accumulates across utterances, and it is what the criteria path reads to keep partial
+        // criteria off a customer-visible vendor row.
+        //
+        // The three cases, and none of them guesses:
+        //   ONE ELEMENT — a pair exists, so the single element is covered. "Partial" is not
+        //     expressible on a one-element question and is not recorded as if it were.
+        //   MULTI-ELEMENT, read said Full — every element covered, on the read's own word.
+        //   MULTI-ELEMENT, read said Partial — only the element this span is offered for. Call 1
+        //     does not say WHICH of the three a criteria naming span answers, so this records
+        //     the one the span is attributed to and leaves the rest missing rather than
+        //     inventing a split or claiming the lot.
         AAO_Model.Coverage cov = new AAO_Model.Coverage();
-        cov.covered = new List<String>(elements);
-        cov.missing = new List<String>();
+        String propositionCode = p.AAO_Evidence_Contract__r.AAO_Proposition_Code__c;
+        Boolean readSaidFull = located.AAO_Coverage__c == 'Full' ||
+            !AAO_LocateCharter.takesCoverage(propositionCode);
+        if (elements.size() <= 1 || readSaidFull) {
+            cov.covered = new List<String>(elements);
+            cov.missing = new List<String>();
+        } else {
+            cov.covered = span.element == null
+                ? new List<String>()
+                : new List<String>{ span.element };
+            cov.missing = new List<String>();
+            for (String e : elements) {
+                if (!cov.covered.contains(e)) {
+                    cov.missing.add(e);
+                }
+            }
+        }
 
         // COVERAGE DECIDES THE VERDICT WHERE THE QUESTION TAKES COVERAGE, and **sentiment
         // does not** (§P8.4, and Addendum 19's first ruling). A sentiment read is whole: the
@@ -522,17 +561,25 @@ public with sharing class AAO_PairCommit {
         // sentiment establishment to UNVERIFIED, which is why the counter stood at zero for
         // everyone and the map carried no Support value. A category error asked as a question
         // gets a wrong answer; asked as an if-else, it gets a silent one.
-        String code = p.AAO_Evidence_Contract__r.AAO_Proposition_Code__c;
-        String proposed;
-        if (!AAO_LocateCharter.takesCoverage(code)) {
-            proposed = 'TRUE';
-        } else {
-            // Full carries every element the proposition names and proposes TRUE; Partial
-            // carries some, is the instructed default under doubt, and proposes UNVERIFIED -
-            // a finding with its receipts that satisfies no condition and places nobody.
-            // True-or-nothing means FALSE is never proposed from this path at all.
-            proposed = located.AAO_Coverage__c == 'Full' ? 'TRUE' : 'UNVERIFIED';
-        }
+        // THE UPHOLD GOVERNS. Matthew's ruling, sixty-ninth stamp: "Where the blind verifier
+        // upheld the words, the answer reads TRUE; element completeness is recorded as data,
+        // never as a verdict gate."
+        //
+        // **WHAT THIS LINE USED TO DO, AND WHY IT WAS WRONG TWICE OVER.** It read
+        // `located.AAO_Coverage__c`, which is CALL 1's OWN VOICED LABEL, and proposed
+        // UNVERIFIED whenever the read had hedged. So a read-side hedge decided the verdict and
+        // a later uphold by the blind verifier could not overturn it — the reader outranking
+        // the checker, which inverts the layering the whole architecture rests on. It was also
+        // INCOHERENT WITH ITS OWN ROW: this method stamps element completeness as covered-every
+        // -element four lines below, so the candidate said "complete" in one field and
+        // "unverified for incompleteness" in another. And on the twelve single-element
+        // contracts "some of it" is not even expressible: either the element is covered or
+        // there is no pair. Eight of fifty-one such pairs came back Partial on one fixture.
+        //
+        // Only pairs the verifier UPHELD reach this method (the eligibility filter above
+        // refuses every other disposition), so the proposal is TRUE and completeness travels
+        // beside it as data rather than as a gate.
+        String proposed = 'TRUE';
 
         return new AAO_Candidate__c(
             AAO_Evidence_Contract__c = p.AAO_Evidence_Contract__c,
@@ -561,7 +608,7 @@ public with sharing class AAO_PairCommit {
                 : p.AAO_Person__r.AAO_Contact__c,
             AAO_Proposed_Verdict__c = proposed,
             AAO_Spans__c = AAO_Model.serializeSpans(new List<AAO_Model.Span>{ span }),
-            AAO_Element_Coverage__c = AAO_Model.serializeCoverage(cov),
+            AAO_Element_Completeness__c = AAO_Model.serializeCoverage(cov),
             // What the words voice. For sentiment this IS the state the counter reads.
             AAO_Interpretation__c = located.AAO_Meaning__c,
             AAO_Charter__c = p.AAO_Charter__c,

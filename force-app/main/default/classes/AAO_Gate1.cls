@@ -323,7 +323,7 @@ public class AAO_Gate1 {
                 SELECT
                     AAO_Evidence_Contract__r.AAO_Proposition_Code__c,
                     AAO_Proposed_Verdict__c,
-                    AAO_Element_Coverage__c,
+                    AAO_Element_Completeness__c,
                     AAO_Spans__c,
                     AAO_Outcome__c,
                     AAO_Abstention_Reason__c,
@@ -368,7 +368,7 @@ public class AAO_Gate1 {
                 } else {
                     gotVerdict = actual.AAO_Proposed_Verdict__c;
                     AAO_Model.Coverage cov = AAO_Model.parseCoverage(
-                        actual.AAO_Element_Coverage__c
+                        actual.AAO_Element_Completeness__c
                     );
                     gotCovered = joinSorted(cov.covered);
                 }
@@ -444,13 +444,13 @@ public class AAO_Gate1 {
             SELECT
                 AAO_Evidence_Contract__r.AAO_Proposition_Code__c,
                 AAO_Verdict__c,
-                AAO_Element_Coverage__c,
+                AAO_Element_Completeness__c,
                 AAO_Established_By__c
             FROM AAO_Answer__c
             WHERE AAO_Opportunity__c = :oppId
             ORDER BY AAO_Evidence_Contract__r.AAO_Proposition_Code__c
         ]) {
-            AAO_Model.Coverage cov = AAO_Model.parseCoverage(a.AAO_Element_Coverage__c);
+            AAO_Model.Coverage cov = AAO_Model.parseCoverage(a.AAO_Element_Completeness__c);
             out.add(
                 '  ' +
                 a.AAO_Evidence_Contract__r.AAO_Proposition_Code__c +

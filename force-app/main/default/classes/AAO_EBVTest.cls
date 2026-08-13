@@ -498,7 +498,7 @@ private class AAO_EBVTest {
         for (AAO_Candidate__c cd : [
             SELECT
                 AAO_Proposed_Verdict__c,
-                AAO_Element_Coverage__c,
+                AAO_Element_Completeness__c,
                 AAO_Interpretation__c,
                 AAO_Outcome__c,
                 AAO_Evidence_Contract__r.AAO_Proposition_Code__c
@@ -520,7 +520,7 @@ private class AAO_EBVTest {
             refused.AAO_Interpretation__c.startsWith('blind reader refused:'),
             'The reason a claim was refused must be legible on the row, not only in a log.'
         );
-        AAO_Model.Coverage cov = AAO_Model.parseCoverage(refused.AAO_Element_Coverage__c);
+        AAO_Model.Coverage cov = AAO_Model.parseCoverage(refused.AAO_Element_Completeness__c);
         System.assertEquals(0, cov.covered.size(), 'Coverage needs an affirmative yes.');
     }
 

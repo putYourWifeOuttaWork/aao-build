@@ -226,7 +226,7 @@ public class AAO_MapRoute {
             AAO_Account__c = opp.AccountId,
             AAO_Subject_Type__c = 'Opportunity',
             AAO_Proposed_Verdict__c = r.verdict,
-            AAO_Element_Coverage__c = AAO_Model.serializeCoverage(
+            AAO_Element_Completeness__c = AAO_Model.serializeCoverage(
                 AAO_Model.newCoverage(new List<String>{ ELEMENT }, new List<String>())
             ),
             AAO_Interpretation__c = r.note +

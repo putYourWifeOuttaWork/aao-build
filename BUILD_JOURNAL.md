@@ -12592,3 +12592,46 @@ headline is false.
 
 **retryNotes: none.** Two compile fixes, both mine: `AAO_PassContracts.Spec` has no no-argument
 constructor, and `AAO_Created_Row__c` carries no `AAO_Synthetic__c`.
+
+## Session 104 · the Emerson stacked run · reinforcement fires for the first time, and 7 of its 17 are wrong
+
+Two calls, one deal, in occurred order, on a purged surface, sources taken BY FROZEN HASH rather
+than by query because the freeze list exists precisely because the two 29 July rows are
+"permanently indistinguishable by stamp". Report and rows in `review/em0813-stack/`.
+
+**THE HEADLINE, and only a real multi-call run could have surfaced it. REINFORCEMENT FIRED FOR THE
+FIRST TIME SINCE THE FIFTIETH STAMP: 20 Established, 17 Reinforced — AND 7 OF THE 17 QUOTE BYTE
+RANGES ALREADY ON THE ANSWER.** Identical source, identical offsets, identical words; Neeraja
+Chimata's `AAO_PB_GOAL` carries two claims both quoting `23993-24064`. The sixty-second stamp
+already ruled this distinction for cards ("a rerun of the same words is not the buyer saying it
+twice"), and two READS of one transcript finding one utterance is the same thing wearing a different
+coat. Reinforcement is a count guidance ORDERS BY. **WHY THE MERGE DID NOT STOP IT is what makes
+this a ruling rather than a fix:** the twenty-seventh stamp's merge key deliberately lets same-bytes
+different-meaning pairs BOTH ride to call 3, which is correct at verify; nobody priced the join,
+where the subject-plus-contract answer key collapses those two meanings onto one answer so the
+second claim reads as a repetition. Three options with costs are parked; nothing built.
+
+**WHAT THE RUN PROVED, each measured.** PER-CALL BOARD SECTIONS: two calls, two sections, 6 cards
+under "17 June 2026" and 4 under "29 July 2026". THE MAP FIRMS UP OVER CALLS: Jefferson Vargas and
+Ryan Couture moved Brief contact to MULTIPLE CONTACTS by appearing on both calls, Neeraja stayed
+Brief on one — the thesis People closed on, working on real speech. THE MENTIONED-PERSON CREATION
+LEG FIRED: **Fatima**, the a23 dropped-row specimen waiting since the twenty-second stamp, created
+from the 29 July call and landing at Buyer Role `Signature Approver`. HUMAN PRECEDENCE HELD
+unprompted on three rows. And **CALL 0 READ `DUAL` ON THE 17 JUNE FIXTURE** — what gate assertion 1
+has wanted since the tenth stamp, when it read OPPORTUNITY and failed and the fourteenth stamp split
+the scope read to fix it. That ruling is now proven on the fixture that motivated it.
+
+**WHAT IT DID NOT PROVE: CROSS-CALL COMPLETENESS ACCUMULATION IS STILL UNEXERCISED ON REAL SPEECH.**
+Zero answers carry spans from more than one call. The union works and is proven by test; these two
+calls never produced a partial establishment a later call completed. And NO ACCURACY READING, as
+reported before the run: half the evidence is the training set.
+
+**retryNotes, in full.** Call 0 flaked on the 17 June call and STOPPED THE RUN — the fourth instance
+and the first to fail twice, so the thirty-fourth stamp's policy did exactly what it was built to
+do rather than routing on an unchecked scope; retried as a fresh stage and it cleared. **My driver
+ran projection and cards in ONE transaction on call 1**, so the face-inference callout hit
+"uncommitted work pending" and the writer fell back to deterministic faces non-fatally as designed
+— six cards faced with raw verbatim, one literally "No, I don't." Fixed by deleting card-first and
+regenerating from the untouched harvest, the fifty-second stamp's recovery working. Both verify
+buckets in one transaction is a callout after DML and the platform refuses it; one bucket per
+transaction, drained with the loop the serial-driver caveat now documents.

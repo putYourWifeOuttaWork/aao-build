@@ -112,6 +112,8 @@ public with sharing class AAO_PairCommit {
         }
         Outcome o = new Outcome();
         o.runKey = runKey;
+        // The join is code seconds rather than model seconds, so nothing measures it for free.
+        Long startedAt = System.currentTimeMillis();
 
         List<AAO_Pair__c> pairs = [
             SELECT
@@ -298,6 +300,13 @@ public with sharing class AAO_PairCommit {
         }
         o.verdictsRebuilt = rebuildVerdicts(touchedAnswers);
         o.countersRebuilt = rebuildCounters(sentimentPeople.keySet());
+        // THE JOIN'S GOVERNOR LINE IS THE ONE THAT HAS ACTUALLY BITTEN TWICE (SOQL 101 at the
+        // forty-eighth stamp, DML 81 of 150 at the sixteenth), so it is the leg most worth
+        // having on a row rather than in a report nobody reruns.
+        AAO_Receipt.record(
+            runKey, AAO_Receipt.sourceForRun(runKey), AAO_Receipt.STAGE_JOIN,
+            System.currentTimeMillis() - startedAt, o.claimsWritten
+        );
         return o;
     }
 

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>THE RUN RECEIPT. One row per Source per pass, confirmed at the twenty-ninth stamp and built at the sixty-seventh. It does two jobs nothing else can. (1) THE DID-WE-READ-IT RECORD: with no abstention rows anywhere, a transcript with zero claims is otherwise indistinguishable between never-read and read-and-nothing-established, and the row existing is what tells them apart. (2) THE PERMANENT TELEMETRY HOME: per-stage wall milliseconds, calls made, governor consumption, split events, COLD or WARM, charter and normalizer versions, all measured in the same transaction as the work they describe. It justifies itself against the enterprise install budget as one thin object with a bounded row count (one per Source per pass) that retires to Data 360 with the claims chain. IT IS TELEMETRY AND NEVER EVIDENCE: nothing in the pipeline reads it to decide anything, and a receipt that fails to write never fails a run.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <label>AAO Run Receipt</label>
+    <nameField>
+        <displayFormat>RCPT-{00000000}</displayFormat>
+        <label>AAO Run Receipt Name</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>AAO Run Receipts</pluralLabel>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

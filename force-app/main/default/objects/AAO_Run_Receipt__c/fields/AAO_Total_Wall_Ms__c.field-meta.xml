@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Total_Wall_Ms__c</fullName>
+    <description>Summed stage wall milliseconds across the pass. SERIAL, and it is not the same number as elapsed clock time where stages run concurrently, which is why the legs carry their own numbers and this is a roll-up rather than the truth. Written by: AAO_Receipt.</description>
+    <label>Total Wall Ms</label>
+    <precision>12</precision>
+    <scale>0</scale>
+    <type>Number</type>
+    <required>false</required>
+</CustomField>

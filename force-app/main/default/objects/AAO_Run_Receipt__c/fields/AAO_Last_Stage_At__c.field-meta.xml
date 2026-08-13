@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Last_Stage_At__c</fullName>
+    <description>When the most recent stage of this pass finished. THE LAST-EVIDENCE-CONSIDERED TIMESTAMP FEEDS FROM THIS (twenty-ninth stamp), which is what a flag needs to say how stale its own silence is. Written by: AAO_Receipt.</description>
+    <label>Last Stage At</label>
+    <type>DateTime</type>
+    <required>false</required>
+</CustomField>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Synthetic__c</fullName>
+    <description>Test-authored, marked at birth so a suite cannot leave rows a report would count as a real pass. The same mark every AAO object carries. Written by: AAO_Receipt, from AAO_Synthetic.MARK.</description>
+    <label>Synthetic</label>
+    <defaultValue>false</defaultValue>
+    <type>Checkbox</type>
+</CustomField>

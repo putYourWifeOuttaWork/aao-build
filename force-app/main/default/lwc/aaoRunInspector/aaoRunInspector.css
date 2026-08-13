@@ -122,3 +122,29 @@
     cursor: pointer;
 }
 .refused-toggle:hover { text-decoration: underline; }
+
+/* THE PERFORMANCE PANEL. Numbers the run journalled, nothing recomputed here. */
+.perf-summary {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.35rem 0;
+}
+/* Wide content scrolls inside itself rather than pushing the page sideways. */
+.perf-scroll { overflow-x: auto; margin-bottom: 0.4rem; }
+.perf-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.7rem;
+    white-space: nowrap;
+}
+.perf-table th {
+    text-align: left;
+    font-weight: 600;
+    color: #706e6b;
+    border-bottom: 1px solid #dddbda;
+    padding: 0.2rem 0.5rem 0.2rem 0;
+}
+.perf-table td { padding: 0.2rem 0.5rem 0.2rem 0; border-bottom: 1px solid #f0efef; }
+/* A CEILING WE DO NOT PRINT IS A CEILING WE DISCOVER AT TWENTY-FIVE. Past 80 percent of any
+   governor the row is marked, so nobody has to divide in their head. */
+.perf-row_near td { background: #fef5e7; font-weight: 600; }

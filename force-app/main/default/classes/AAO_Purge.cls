@@ -55,6 +55,8 @@ public with sharing class AAO_Purge {
         public Integer candidates = 0;
         public Integer answers = 0;
         public Integer pairs = 0;
+        /** Run receipts. Telemetry for the purged runs, and enumerable by the same keys. */
+        public Integer receipts = 0;
         public Integer participantsCleared = 0;
         public List<String> kept = new List<String>();
         public List<String> keys = new List<String>();
@@ -67,6 +69,7 @@ public with sharing class AAO_Purge {
                 'candidates deleted       ' + candidates,
                 'answers deleted          ' + answers,
                 'pairs deleted            ' + pairs,
+                'receipts deleted         ' + receipts,
                 'participants cleared     ' + participantsCleared + ' (coverage watermarks)',
                 'keys: ' + String.join(keys, ', ')
             };
@@ -184,6 +187,15 @@ public with sharing class AAO_Purge {
             ];
             delete pairs;
             o.pairs = pairs.size();
+
+            // THE RECEIPT IS RUN-KEYED, SO IT IS ENUMERABLE AS OURS AND GOES WITH THE RUN.
+            // Leaving it would leave telemetry claiming a pass whose every row is gone, which
+            // is the opposite of the did-we-read-it record's job.
+            List<AAO_Run_Receipt__c> receipts = [
+                SELECT Id FROM AAO_Run_Receipt__c WHERE AAO_Run_Key__c IN :runKeys
+            ];
+            delete receipts;
+            o.receipts = receipts.size();
         } finally {
             ACTIVE = false;
             RUN_KEYS = new Set<String>();

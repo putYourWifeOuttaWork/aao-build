@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Callouts__c</fullName>
+    <description>Model calls made across the pass. The arithmetic the twenty-seventh stamp set the target against: a clean transcript is call 0, two reads, zero resolution calls and call 3 batched, so the count follows unresolved people rather than pairs or headcount. Written by: AAO_Receipt.</description>
+    <label>Callouts</label>
+    <precision>6</precision>
+    <scale>0</scale>
+    <type>Number</type>
+    <required>false</required>
+</CustomField>

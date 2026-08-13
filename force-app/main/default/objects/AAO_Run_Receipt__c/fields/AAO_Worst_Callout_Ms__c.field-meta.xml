@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Worst_Callout_Ms__c</fullName>
+    <description>The single slowest model callout of the whole pass, which is the number that gets measured against the 120-second per-transaction ceiling and the 90-second split trigger. A standing obligation on every run report since the twenty-eighth stamp, now recorded rather than retyped. Written by: AAO_Receipt.</description>
+    <label>Worst Callout Ms</label>
+    <precision>12</precision>
+    <scale>0</scale>
+    <type>Number</type>
+    <required>false</required>
+</CustomField>

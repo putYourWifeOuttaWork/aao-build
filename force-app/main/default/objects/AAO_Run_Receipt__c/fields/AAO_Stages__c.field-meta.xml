@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Stages__c</fullName>
+    <description>The per-stage legs as a JSON array, one entry per stage of the pass, in the order they ran: stage, wall milliseconds, callouts and worst single callout, SOQL, DML, DML rows, CPU and heap against their limits, COLD or WARM, split events, and what the stage produced. EVERY NUMBER IS READ IN THE SAME TRANSACTION AS THE WORK IT DESCRIBES, because a limit reading taken from another transaction is a reading of nothing. Written by: AAO_Receipt. Read by: the Run Inspector's performance panel, which shows these and never recomputes.</description>
+    <label>Stages</label>
+    <type>LongTextArea</type>
+    <length>32768</length>
+    <visibleLines>12</visibleLines>
+</CustomField>

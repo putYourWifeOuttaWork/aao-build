@@ -109,6 +109,26 @@ export default class AaoRunInspector extends LightningElement {
         return this.hasView ? this.view.performanceNote : null;
     }
 
+    get performanceSummary() {
+        return this.hasView ? this.view.performanceSummary : null;
+    }
+
+    /**
+     * The journalled legs, or an empty list. NOTHING HERE COMPUTES A NUMBER: every value on a
+     * line was measured in the transaction that did the work, and the only thing added is the
+     * class that marks a governor past 80 percent of its ceiling.
+     */
+    get performanceLines() {
+        if (!this.hasView || !this.view.performance) {
+            return [];
+        }
+        return this.view.performance.map((p, i) => ({
+            ...p,
+            key: `${i}-${p.stage}`,
+            rowClass: p.nearACeiling ? 'perf-row perf-row_near' : 'perf-row'
+        }));
+    }
+
     get hasPeople() {
         return this.hasView && this.view.people && this.view.people.length > 0;
     }

@@ -54,6 +54,11 @@ public with sharing class AAO_Pass {
         r.parsed = AAO_LocateCharter.parse(r.call.rawText, codes);
         r.located = AAO_Locate.locate(src, r.parsed.pairs, runKey, version, idByCode);
         AAO_Locate.write(r.located);
+        AAO_Receipt.record(
+            runKey, sourceId, AAO_Receipt.STAGE_LOCATE,
+            new List<AAO_Extract.StageResult>{ r.call },
+            r.located == null ? null : r.located.rows.size(), 0
+        );
         return r;
     }
 
@@ -97,6 +102,20 @@ public with sharing class AAO_Pass {
      * its home is the receipt §P8.0 owes and does not have. Recorded rather than parked on a
      * field that would make a per-run fact look like a per-Source one.
      */
+    /**
+     * Call 0 with its run named, so its leg reaches the receipt.
+     *
+     * An overload rather than a changed signature: `resolve(sourceId)` is what every existing
+     * driver and test calls, and a resolution belongs to a RUN rather than to a Source — the
+     * comment below has said so since the receipt was only a gap. Callers that know their run key
+     * pass it and get call 0's wall time journalled; callers that do not lose nothing they had.
+     */
+    public static ResolveRun resolve(Id sourceId, String runKey) {
+        ResolveRun r = resolve(sourceId);
+        AAO_Receipt.record(runKey, sourceId, AAO_Receipt.STAGE_RESOLVE, r.call);
+        return r;
+    }
+
     public static ResolveRun resolve(Id sourceId) {
         AAO_Source__c src = source(sourceId);
         ResolveRun r = new ResolveRun();
@@ -505,6 +524,10 @@ public with sharing class AAO_Pass {
         run.discardNotes.addAll(loc.discardNotes);
         run.pairsByFamily.put('read' + readIndex, loc.rows.size());
         AAO_Locate.write(loc);
+        AAO_Receipt.record(
+            runKey, sourceId, AAO_Receipt.STAGE_LOCATE + ' read ' + readIndex,
+            run.calls, loc.rows.size(), 0
+        );
         return run;
     }
 
@@ -1021,6 +1044,12 @@ public with sharing class AAO_Pass {
             stamp.add(row);
         }
         update stamp;
+        AAO_Receipt.record(
+            runKey, AAO_Receipt.sourceForRun(runKey),
+            AAO_Receipt.STAGE_VERIFY + (bucket == null ? '' : ' ' + bucket) +
+                (shardCount != null && shardCount > 1 ? ' shard ' + shardIndex : ''),
+            new List<AAO_Extract.StageResult>{ r.call }, r.upheld + r.refused, 0
+        );
         return r;
     }
 
@@ -1162,6 +1191,10 @@ public with sharing class AAO_Pass {
             ));
         }
         insert r.rows;
+        AAO_Receipt.record(
+            runKey, sourceId, AAO_Receipt.STAGE_IDENTIFY,
+            new List<AAO_Extract.StageResult>{ r.call }, r.rows.size(), 0
+        );
         return r;
     }
 

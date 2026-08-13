@@ -243,6 +243,24 @@ public with sharing class AAO_Project {
      * one person's blocked pair must not stop another person's write. The volumes here are a
      * buying group, not a data load.
      */
+    /**
+     * Projection with its run named, so its leg reaches the receipt.
+     *
+     * An overload rather than a changed signature: projection is keyed on the DEAL, because it
+     * writes the deal's current state from the standing ledger rather than from one run's output.
+     * The run key is therefore telemetry here and nothing else — it says which pass paid for this
+     * projection's time, and it changes nothing about what gets written.
+     */
+    public static Outcome run(Id opportunityId, String runKey) {
+        Long startedAt = System.currentTimeMillis();
+        Outcome o = run(opportunityId);
+        AAO_Receipt.record(
+            runKey, AAO_Receipt.sourceForRun(runKey), AAO_Receipt.STAGE_PROJECT,
+            System.currentTimeMillis() - startedAt, o.dimensionWrites()
+        );
+        return o;
+    }
+
     public static Outcome run(Id opportunityId) {
         if (opportunityId == null) {
             throw new ProjectException('Cannot project with no opportunity.');

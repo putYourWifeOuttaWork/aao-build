@@ -12280,3 +12280,61 @@ renders: `substring(startOffset, endOffset)` on the frozen transcript equals the
 of 45, 0 mismatches. The older runs render clean too, `pf0808-i1` and `pf0808-h1`, every title in
 words, zero defects, and both honestly reading **Claims written 0** because their claims were
 removed when the map was purged at the forty-first stamp.
+
+## Session 98 · the sixty-seventh stamp · the UNVERIFIED answer traced to ONE LINE, and the run receipt built at last
+
+Suite **469, 468 pass**, the one failure the standing org-resident non-AAO `ConvertToOpportunityTest`.
+Report and rows in `review/pf0812-receipt/`.
+
+**(a) THE DIAGNOSIS, AND THE STAMP'S HYPOTHESIS IS WRONG.** Design supposed a sibling pair that never
+received a verdict, the catch-up-pass shape. **There is no sibling.** Dan's Obstacle answer has
+exactly ONE claim behind it and that claim was born UNVERIFIED, verdict_before null, coverage full.
+No monotonicity violation, no clobber; the answer machinery is correct throughout and is not where
+this comes from. Traced instead to `AAO_PairCommit.cls:524`,
+`proposed = located.AAO_Coverage__c == 'Full' ? 'TRUE' : 'UNVERIFIED'` — **a READ-SIDE COVERAGE
+HEDGE FROM CALL 1 DOWNGRADES AN ESTABLISHMENT THE BLIND VERIFIER THEN UPHELD, and the uphold does not
+overturn it.** Two UNVERIFIED answers on the deal, not one; the second is Adam's `AAO_DC_N`.
+
+**THE SHARP PART: `Partial` ON A ONE-ELEMENT CONTRACT CANNOT MEAN ANYTHING.** `AAO_PB_OBST` declares
+exactly one element, so either it is covered or there is no pair; there is no "some of it". Measured
+across `pf0811-goal`: **8 of the 51 coverage-taking pairs on single-element contracts came back
+Partial**, a hedge the charter's own "PARTIAL IS THE DEFAULT UNDER DOUBT" invites and the join reads
+as a downgrade. And the same candidate row contradicts itself: `AAO_PairCommit` stamps
+`covered = [every declared element], missing = []` unconditionally, so one row says FULLY COVERED in
+one field and UNVERIFIED in another. **Why it looked arbitrary:** Adam voiced four Obstacles, three
+proposing TRUE, so his answer accrues TRUE; Dan voiced one, it proposed UNVERIFIED, so his reads
+UNVERIFIED — two identically-shaped establishments landing differently because one person said more
+things. Four options with costs are parked; the wording of the coverage instruction is design's.
+**It does NOT dissolve the card-versus-answer question**, which stands exactly as design framed it.
+
+**(b) THE RUN RECEIPT IS BUILT**, `AAO_Run_Receipt__c` plus `AAO_Receipt`, one row per Source per
+pass keyed `runKey|sourceId`, merging a leg per stage across the pass's several transactions. Wired
+into call 0, both reads, resolution, call 3 per bucket and shard, the join and projection, all
+through NEW OVERLOADS so no existing signature moved. The purge takes the receipt with the run.
+Three decisions carry their reasons in the code: **TELEMETRY, NEVER EVIDENCE**, so every entry point
+swallows its own failures because a lost timing is a small loss and a lost run that made seven model
+calls is not; **limits read on the first line**, so a leg carries the stage's consumption and not the
+receipt's, asserted by test; and **WARM anywhere makes the pass WARM**, taking the weaker claim per
+the twenty-eighth stamp. The did-we-read-it half is real too: a pass with zero claims still has a
+receipt, and a run that never happened has none, both asserted.
+
+**VERIFIED ON THE PAGE IN BOTH STATES, and then I DELETED MY OWN EVIDENCE.** The panel rendered four
+legs, roll-ups reconciling (60.200 s serial, 3 calls, worst 31.200 s, WARM, three charter versions,
+the normalizer stamp copied off the Source), zero console errors. **Then I removed the row**, because
+`pf0811-goal` ran before the writer existed and those wall times were ones I TYPED, not ones the pass
+journalled — leaving them would have put a fabricated measurement on a real run key where a later
+session would read it as real, which is the exact thing this object exists to prevent. Delete reach
+checked first: no child relationships, nothing cascades. The reloaded page then shows the other state
+correctly, saying the run journalled nothing and why. **No real pass has written a receipt yet; the
+first genuine one arrives with the next pass, and I am not reporting otherwise.**
+
+**A DEFECT MY OWN ERROR POLICY HID.** The merge query did not select `AAO_Receipt_Key__c`, so the
+upsert on that external id threw on the way out — and the swallow-and-log policy hid the throw, so
+the second stage of every pass silently REPLACED the first instead of merging. Three tests failed
+with three different-looking symptoms and only the ones asserting on the ROW'S CONTENTS could have
+caught it, because the call returns null by design. The trade is real and I would make it again:
+swallowing is right for production, it costs debuggability, and the tests have to compensate.
+
+**Owed and named:** the card writer's leg is unwired (`STAGE_CARDS` is declared, `AAO_Cards.run`
+wants the same overload projection got); split events are always zero because no caller reports a
+split yet.

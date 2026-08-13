@@ -121,6 +121,27 @@ public with sharing class AAO_RunInspector {
         @AuraEnabled public List<Trace> refused = new List<Trace>();
     }
 
+    /**
+     * One stage's performance, as the run journalled it. Never recomputed on the page.
+     *
+     * Every string here is composed in Apex rather than in the template for the reason the
+     * counts are: a page that stitched "23 of 100" out of two numbers would be presenting
+     * telemetry, and presenting telemetry is how a number acquires a meaning nobody measured.
+     */
+    public class PerfLine {
+        @AuraEnabled public String stage;
+        @AuraEnabled public String wall;
+        @AuraEnabled public String callouts;
+        @AuraEnabled public String soql;
+        @AuraEnabled public String dml;
+        @AuraEnabled public String cpu;
+        @AuraEnabled public String heap;
+        @AuraEnabled public String cache;
+        @AuraEnabled public String produced;
+        /** True where any governor crossed 80 percent of its ceiling. Flagged, per the law. */
+        @AuraEnabled public Boolean nearACeiling = false;
+    }
+
     public class RunView {
         @AuraEnabled public String runKey;
         @AuraEnabled public List<Step> pipeline = new List<Step>();
@@ -133,6 +154,8 @@ public with sharing class AAO_RunInspector {
         /** False where the run journalled no per-stage performance anywhere this page can read. */
         @AuraEnabled public Boolean performanceJournalled = false;
         @AuraEnabled public String performanceNote;
+        @AuraEnabled public String performanceSummary;
+        @AuraEnabled public List<PerfLine> performance = new List<PerfLine>();
         @AuraEnabled public List<String> defects = new List<String>();
     }
 
@@ -191,7 +214,7 @@ public with sharing class AAO_RunInspector {
     public static RunView inspect(Id opportunityId, String runKey) {
         RunView v = new RunView();
         v.runKey = runKey;
-        v.performanceNote = PERFORMANCE_NOT_JOURNALLED;
+        readPerformance(v, opportunityId, runKey);
         if (String.isBlank(runKey)) {
             v.note = 'No run selected.';
             drawPipeline(v, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -343,6 +366,84 @@ public with sharing class AAO_RunInspector {
             v.note = String.join(notes, ' ');
         }
         return v;
+    }
+
+    // ------------------------------------------------------------------------ performance
+
+    /**
+     * The performance panel, read off the run's receipt and NEVER computed here.
+     *
+     * The sixty-sixth stamp's constraint is the whole design of this method: *"showing only
+     * numbers the run actually journalled, nothing recomputed or estimated on the page"*. So a
+     * run with no receipt gets a sentence saying so rather than a plausible number derived from
+     * record timestamps, and a run with a receipt gets exactly its own legs back.
+     *
+     * A pass that predates the receipt object keeps that honest answer forever, which is correct:
+     * those runs genuinely journalled nothing, and back-filling them would be inventing history.
+     */
+    private static void readPerformance(RunView v, Id opportunityId, String runKey) {
+        AAO_Run_Receipt__c receipt = AAO_Receipt.forRun(opportunityId, runKey);
+        if (receipt == null) {
+            v.performanceJournalled = false;
+            v.performanceNote = PERFORMANCE_NOT_JOURNALLED;
+            return;
+        }
+        List<AAO_Receipt.Leg> legs = AAO_Receipt.legsOf(receipt);
+        if (legs.isEmpty()) {
+            v.performanceJournalled = false;
+            v.performanceNote = 'This run has a receipt carrying no stage legs.';
+            return;
+        }
+        v.performanceJournalled = true;
+        v.performanceNote = null;
+        v.performanceSummary =
+            receipt.AAO_Stage_Count__c + ' stages · ' +
+            ms(receipt.AAO_Total_Wall_Ms__c) + ' serial · ' +
+            receipt.AAO_Callouts__c + ' model calls · worst callout ' +
+            ms(receipt.AAO_Worst_Callout_Ms__c) + ' of the 120 s ceiling · ' +
+            (String.isBlank(receipt.AAO_Cache_State__c) ? 'cache unknown' : receipt.AAO_Cache_State__c);
+        for (AAO_Receipt.Leg leg : legs) {
+            PerfLine p = new PerfLine();
+            p.stage = leg.stage;
+            p.wall = ms(leg.wallMs);
+            p.callouts = leg.callouts == null || leg.callouts == 0
+                ? 'none'
+                : leg.callouts + (leg.worstCalloutMs == null || leg.worstCalloutMs == 0
+                    ? ''
+                    : ', worst ' + ms(leg.worstCalloutMs));
+            p.soql = of(leg.soql, leg.soqlLimit);
+            p.dml = of(leg.dml, leg.dmlLimit);
+            p.cpu = of(leg.cpuMs, leg.cpuLimit) + ' ms';
+            p.heap = of(leg.heap, leg.heapLimit) + ' bytes';
+            p.cache = leg.cache;
+            p.produced = leg.produced == null ? '' : String.valueOf(leg.produced);
+            // A CEILING WE DO NOT PRINT IS A CEILING WE DISCOVER AT TWENTY-FIVE. The join has
+            // reached 100 of 100 on SOQL once already, so crossing 80 percent is marked here
+            // rather than left for a reader to divide in their head.
+            p.nearACeiling = near(leg.soql, leg.soqlLimit) || near(leg.dml, leg.dmlLimit) ||
+                near(leg.cpuMs, leg.cpuLimit) || near(leg.heap, leg.heapLimit);
+            v.performance.add(p);
+        }
+    }
+
+    private static String ms(Object raw) {
+        if (raw == null) {
+            return '—';
+        }
+        Long n = raw instanceof Decimal ? ((Decimal) raw).longValue() : (Long) raw;
+        return n >= 1000 ? (n / 1000) + '.' + Math.mod(n, 1000).format().leftPad(3, '0') + ' s'
+            : n + ' ms';
+    }
+
+    private static String of(Integer used, Integer cap) {
+        if (used == null) {
+            return '—';
+        }
+        return used + (cap == null ? '' : ' of ' + cap);
+    }
+
+    private static Boolean near(Integer used, Integer cap) {
+        return used != null && cap != null && cap > 0 && (used * 100 / cap) >= 80;
     }
 
     // ------------------------------------------------------------------------ the drawing
@@ -742,19 +843,19 @@ public with sharing class AAO_RunInspector {
     private static final String STAGE_CARDS = 'Insight cards standing on this deal, all runs.';
 
     /**
-     * THE PERFORMANCE TOGGLE'S HONEST ANSWER, and it is a finding rather than a shrug.
+     * THE HONEST ANSWER FOR A RUN THAT JOURNALLED NOTHING, and it stays honest forever.
      *
-     * The sixty-sixth stamp asks for per-stage wall time and governor consumption behind a toggle,
-     * "showing only numbers the run actually journalled, nothing recomputed on the page". Nothing
-     * in the org journals them: the run receipt object was confirmed at the twenty-ninth stamp and
-     * has never been built, so per-stage timings live only in each run's report under `review/`.
-     * The page therefore says so plainly rather than deriving a number from record timestamps,
-     * which would be exactly the recomputation the stamp forbids.
+     * The receipt object exists as of the sixty-seventh stamp, so runs from here carry their own
+     * numbers. Runs from BEFORE it do not, and this is what they say. Back-filling them would be
+     * inventing history, and deriving a timing from record timestamps would be exactly the
+     * recomputation the sixty-sixth stamp forbade. A surface that cannot say "this was never
+     * measured" will eventually say something worse.
      */
     @TestVisible
     private static final String PERFORMANCE_NOT_JOURNALLED =
-        'No per-stage performance is journalled in the org for any run. The run receipt object ' +
-        'confirmed at the twenty-ninth stamp was never built, so wall time and governor ' +
-        'consumption exist only in each run\'s written report. Deriving them here from record ' +
-        'timestamps would be a number recomputed on the page, which this stamp forbids.';
+        'This run journalled no per-stage performance. The run receipt object was built at the ' +
+        'sixty-seventh stamp, so passes from that point carry their own wall time and governor ' +
+        'consumption; earlier passes measured nothing, and their numbers exist only in each ' +
+        'run\'s written report. Deriving them here from record timestamps would be a number ' +
+        'recomputed on the page, which is not what this panel is for.';
 }

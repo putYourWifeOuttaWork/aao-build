@@ -42,7 +42,41 @@
                         <button class="link-button" onclick={togglePerformance}>{performanceLabel}</button>
                     </div>
                     <template if:true={showPerformance}>
-                        <div class="perf-panel">{performanceNote}</div>
+                        <!-- ONLY WHAT THE RUN JOURNALLED. A pass from before the receipt object
+                             existed says so and shows nothing, rather than offering a number
+                             recomputed from record timestamps. -->
+                        <template if:true={performanceNote}>
+                            <div class="perf-panel">{performanceNote}</div>
+                        </template>
+                        <template if:true={performanceSummary}>
+                            <div class="perf-summary">{performanceSummary}</div>
+                            <div class="perf-scroll">
+                                <table class="perf-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Stage</th><th>Wall</th><th>Callouts</th>
+                                            <th>SOQL</th><th>DML</th><th>CPU</th><th>Heap</th>
+                                            <th>Cache</th><th>Produced</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template for:each={performanceLines} for:item="p">
+                                            <tr key={p.key} class={p.rowClass}>
+                                                <td>{p.stage}</td>
+                                                <td>{p.wall}</td>
+                                                <td>{p.callouts}</td>
+                                                <td>{p.soql}</td>
+                                                <td>{p.dml}</td>
+                                                <td>{p.cpu}</td>
+                                                <td>{p.heap}</td>
+                                                <td>{p.cache}</td>
+                                                <td>{p.produced}</td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </template>
                     </template>
 
                     <template if:true={note}>

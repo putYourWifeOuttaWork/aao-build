@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Opportunity__c</fullName>
+    <description>The deal, denormalised off the Source so the Run Inspector can find a run's receipt in one query from the record page. Written by: AAO_Receipt. Read by: AAO_RunInspector.</description>
+    <label>Opportunity</label>
+    <referenceTo>Opportunity</referenceTo>
+    <relationshipLabel>AAO Run Receipts</relationshipLabel>
+    <relationshipName>AAO_Run_Receipts</relationshipName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <type>Lookup</type>
+    <required>false</required>
+</CustomField>

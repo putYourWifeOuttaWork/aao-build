@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Split_Events__c</fullName>
+    <description>How many times a stage completed its remaining work in a continuation rather than in one transaction. The twenty-ninth stamp requires every split to journal itself, "in the report now, in the receipt when it exists"; this is that field. Written by: AAO_Receipt.</description>
+    <label>Split Events</label>
+    <precision>6</precision>
+    <scale>0</scale>
+    <type>Number</type>
+    <required>false</required>
+</CustomField>

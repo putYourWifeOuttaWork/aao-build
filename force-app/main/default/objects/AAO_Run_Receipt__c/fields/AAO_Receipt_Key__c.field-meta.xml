@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Receipt_Key__c</fullName>
+    <description>The identity: run key, then the Source id. One row per Source per pass, and the key is what makes that a guarantee rather than a convention. Unique and external so each stage of a multi-transaction pass merges into the same row instead of minting a second one. Written by: AAO_Receipt. Read by: nothing in the pipeline, ever.</description>
+    <label>Receipt Key</label>
+    <type>Text</type>
+    <length>80</length>
+    <caseSensitive>false</caseSensitive>
+    <unique>true</unique>
+    <externalId>true</externalId>
+    <required>true</required>
+</CustomField>

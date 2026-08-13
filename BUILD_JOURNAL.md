@@ -12403,3 +12403,52 @@ insert-only, a replay rebuilds from those same claims, and committed pairs are w
 rerun skips them. The ruling governs FROM THE NEXT PASS; correcting the live rows needs a purge and
 rerun, which is Matthew's call. The fix is proven by the suite and by the row-level measurement, and
 not on this deal's live map.
+
+## Session 100 · the purge ran, the rerun blocked at call 2, and Project Farma is bare
+
+**Matthew authorized a purge and full rerun. The purge ran and is verified. The rerun stopped four
+stages in and THE DEAL NOW HAS NO MAP ROWS AND NO CARDS**, which cannot be undone by hand because
+the harvest it would be restored from is what the purge removed. Stated first because it is the
+thing that matters most. Report and rows in `review/pf0813-uphold-rerun/`.
+
+**THE PURGE, reach checked before anything was deleted.** `ALTF__Insight_Card__c` carries 70 child
+relationships, so deleting the 12 cards took their 12 placements and 21 contact links BY CASCADE —
+the fifty-second stamp's lesson applied in the correct direction, having once been paid for in the
+wrong one. Both sections survive, including Matthew's empty "Enter title" column. Then 292 pairs, 23
+claims, 23 candidates, 13 answers and 3 map rows across the three historic run keys; watermark guard
+passed; three retired criteria kept and reported; seeds, Emerson and the other 126 map rows on other
+deals untouched.
+
+**CALLS 0 AND 1 RAN CLEAN.** Call 0 cleared first try, no cold-flake, 11.6 s, scope OPPORTUNITY.
+Read 1 located 32 COLD; read 2 located 35 **WARM at 27,534 cache-read tokens**, which is the cache
+prefix reorder doing exactly what it was approved for. 67 located, 2 no-match, 0 crossing turns.
+
+**THE FIRST GENUINE RUN RECEIPT EXISTS**, written by the pass rather than seeded by hand: 3 stages,
+92,659 ms serial, 3 callouts, worst 40,676 ms against the 120-second ceiling, WARM, normalizer
+`NF1+raw:75917ba2`. Every timing in the report came off that receipt rather than out of a log. The
+sixty-seventh stamp's build proving itself on real traffic.
+
+**CALL 2 BLOCKED THE RUN, and it is diagnosed to the wire rather than guessed at.** Handed 67 pairs
+it disposed 1; `assertOneForOne` threw, which is the guard working. NOT batch size: 15 and 5 both
+return 1. **NOT TRUNCATION**: `stop=end_turn`, out=324, thinking=100 — the model finished of its own
+accord. It is the generation DEGENERATING INTO DUPLICATES: handed 3 refs it returned 4 entries with
+one ref repeated and a blank basis, and the pair key's unique index collapses the repeat, so two
+independent mechanisms each caught half of it. The schema was checked and is correct.
+
+**AND I RE-VERIFIED A CAPABILITY CLAIM IN OUR OWN COMMENT RATHER THAN TRUSTING IT.**
+`AAO_IdentifyCharter` records that structured outputs reject an array `minItems` other than 0 or 1,
+measured 5 August. A capability claim is unverified until tried from the runtime, and platform limits
+move, so it was asked again: **still refused**, request id `req_011Cdzv8W2273F78HtUSV7i8`. The
+comment was right and is now right on a second measurement eight days later.
+
+**Nothing this session touched call 2** — its charter, schema and prompt are byte-identical to the
+last successful pass on 11 August.
+
+**PARKED, NOT BUILT, and the deal stays bare because of that choice.** Call 3 and the card-face call
+do not have this problem because they use a KEYED object with every key in `required`, so the
+envelope is enforced structurally; call 2 is the one keyed-grain call still using an array with a
+prose description. Converting it is the obvious candidate and it is a mid-run change to a model
+call's contract, which the thirty-first stamp's working mode says an execution session PARKS and
+which this project has already paid for once. Four options with costs are on the bridge. **The 67
+located pairs are banked, so whichever is ruled the resumed run starts at stage 4 and does not
+re-pay calls 0 or 1.**

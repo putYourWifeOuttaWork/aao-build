@@ -12213,3 +12213,70 @@ were then read back out of the frozen transcript independently and return exactl
 runtime that will make the call, and for UI that runtime is the browser. Controller-proven is not
 rendered-proven. I reported the Inspector built while naming that I had not opened it; the naming
 was right and the reporting-done was premature.
+
+## Session 97 · the sixty-sixth stamp · the Inspector READS OUT IN WORDS, and the drawn path caught my own overstatement
+
+Suite **461, 460 pass**, the one failure the standing org-resident non-AAO `ConvertToOpportunityTest`.
+All AAO green. Twelve tests on this component now, up from three. Report and rows in
+`review/pf0812-inspector-v2/`.
+
+**ROW TITLES CARRY WORDS AND NO INVENTION WAS NEEDED.** Every live contract already holds
+`AAO_Proposition_Short__c` in plain language, so the code never reaches a title again. The title is
+FAMILY PLUS ESTABLISHED VALUE as ruled, and the value comes from the machine's own record of it
+rather than from a fresh reading of the code: an upheld row takes the claim's
+`AAO_Interpretation__c`, a refused row takes the located pair's VOICED MEANING, which is the value
+the read proposed and the verifier then declined. **A criterion titles with its NAME**, the
+eighteenth stamp's law reaching the surface: "Criterion: Bilateral NDA before sharing" rather than
+the "Criterion: Criterion" the claim's own interpretation word yields, which says nothing at all.
+
+**ROWS GROUP UNDER THE PERSON THEY ARE ABOUT**, externals alphabetical and our own seller last, each
+group collapsible and carrying its count so collapsing loses nothing. **THE DETAIL OPENS UNDER ITS
+OWN ROW**, one at a time, in its own component, because the same panel has to open under an upheld
+row and a refused one and two copies of the thing a reviewer reads most closely would drift.
+**REFUSALS COLLAPSE BEHIND A CONTROL THAT NAMES THEIR COUNT**, and the sixty-third stamp's law is
+defaulted rather than weakened: the total rides the stepper before anybody expands anything, and the
+Verified step keeps its meaning line under test.
+
+**THE ORDER IS DRAWN, twice.** At run grain, seven steps left to right in the pipeline's real
+sequence with the numbers the run produced. At establishment grain, the numbered path that value
+took, **every step rendered including the ones that did not happen**, greyed and carrying their
+reason, because a path with its dead steps removed reads as a success that simply ended, which is a
+lie about a refusal.
+
+**THE PERFORMANCE TOGGLE REPORTS A GAP RATHER THAN A NUMBER, and that is the honest build.** Nothing
+in the org journals per-stage wall time or governors: the run receipt object was confirmed at the
+twenty-ninth stamp and never built, so those numbers live only in each run's written report.
+Deriving a stage timing from record timestamps would be a number recomputed on the page, which the
+stamp forbids, so the toggle says exactly what is missing and why. The receipt object is parked with
+options and costs, and it now has a second consumer beside the did-we-read-it record.
+
+**THE DRAWN PATH CAUGHT MY OWN OVERSTATEMENT WITHIN AN HOUR OF EXISTING.** My first internal-speaker
+reason read "the join refuses them and no card or map row follows". The page then rendered Jennae's
+GOAL with `Wrote the claim: Established as Goal` and `Ledgered the answer: Answer stands TRUE`
+above the greyed projection step. **The join plainly wrote both.** On the Problems family the
+internal refusal happens at the CARD WRITER, downstream of both. The reason now names the OUTCOME,
+which is measured, and not the stage, which was inferred and wrong; a test asserts the string never
+names the join again. Inference dressed as evidence is the exact failure this project's evidence law
+exists to prevent, and this time the surface caught it against its author rather than a reader
+catching it weeks later.
+
+**OPENED ON THE PAGE, per the standing law, and here is what it showed.** Project Farma, run
+`pf0811-goal` default-selected, **zero console errors on a clean load** with the capture mechanism
+itself proven live so the zero is a measurement rather than a silence. Stepper: 1 call, 60 located,
+60 identified, 24 upheld / 21 refused, 23 claims, 13 answers, 3 map rows and 12 cards. Five people:
+Adam 16/9, Dan 5/3, Kayla 1/5, **Rich 0 established and 1 refused, appearing on his refusals alone
+as ruled**, and Jennae marked internal. 24 rows visible, 21 refusals behind their counts. Every
+interaction exercised by clicking the real DOM rather than by setting state: second row closes the
+first, clicking an open row closes it, a collapsed person keeps their count, the refused control
+flips to "hide".
+
+**THE WALK-BACK OPENED ON SCREEN**, Dan Lewis · Obstacle, bytes 5473-5612 of
+`projectfarma/2026-07-30-nf1`, through all eight steps to `An insight card on the board: "Need
+organized information flow"`. The card at step 8 is found by the CARD WRITER'S OWN layer-1 identity
+key, so the page reads the identity the writer wrote rather than guessing at a match.
+
+**THE 45-OF-45 OFFSET PROOF STANDS ON THE NEW SURFACE**, re-measured against every trace the page
+renders: `substring(startOffset, endOffset)` on the frozen transcript equals the quote carried, 45
+of 45, 0 mismatches. The older runs render clean too, `pf0808-i1` and `pf0808-h1`, every title in
+words, zero defects, and both honestly reading **Claims written 0** because their claims were
+removed when the map was purged at the forty-first stamp.

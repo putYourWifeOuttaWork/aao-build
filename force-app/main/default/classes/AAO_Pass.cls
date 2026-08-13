@@ -1073,8 +1073,19 @@ public with sharing class AAO_Pass {
      * silently scoped: mentioned-person candidates need the shadow-creation path, which is
      * the gates' work and is not built.
      */
+    /**
+     * The default batch is THE MEASURED KEYED-CALL CAP, not a number large enough to mean
+     * "all of them".
+     *
+     * It used to default to 1000, which was harmless while call 2's schema was an array and
+     * merely optimistic. Since the schema became KEYED (13 August, Matthew's ruling) the
+     * grammar ceiling binds here exactly as it binds call 3, so a caller handing 67 pairs
+     * would build a schema with 67 required properties and 400 at the gateway. Defaulting to
+     * the cap makes the safe thing the easy thing; the caller still drives the loop, which is
+     * the contract this method has always had.
+     */
     public static IdentifyRun identify(Id sourceId, String runKey) {
-        return identify(sourceId, runKey, 1000);
+        return identify(sourceId, runKey, MAX_UNITS_PER_KEYED_CALL);
     }
 
     /**

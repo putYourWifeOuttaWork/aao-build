@@ -12452,3 +12452,54 @@ call's contract, which the thirty-first stamp's working mode says an execution s
 which this project has already paid for once. Four options with costs are on the bridge. **The 67
 located pairs are banked, so whichever is ruled the resumed run starts at stage 4 and does not
 re-pay calls 0 or 1.**
+
+## Session 101 · call 2 converted to the keyed shape, the join split built, and Project Farma is whole again
+
+Matthew ruled option (a). Suite **470, 469 pass** plus seven new assertions on the keyed shape; the
+lone failure is the standing org-resident non-AAO `ConvertToOpportunityTest`. Report and rows in
+`review/pf0813-uphold-rerun/RERUN.md`.
+
+**THE CONVERSION.** `AAO_IdentifyCharter.schema` is now KEYED: one property per pair ref, every ref
+in `required`, `additionalProperties` false. A short return, a repeat and an invented ref are all
+INEXPRESSIBLE rather than merely forbidden — the shape call 3 and the card face have always used,
+which is why neither ever had this failure. VERSION bumped to `identify-2.0.0` so a run's rows name
+which shape produced them, and `AAO_Pass.identify`'s default batch changed from 1000 to
+`MAX_UNITS_PER_KEYED_CALL`, because a keyed schema with 67 required properties would 400 at the
+gateway and the safe thing should be the easy thing. **It worked first try and every time after:
+15, 15, 15, 15, 7, every batch returning exactly what it was handed.** THE ONE-FOR-ONE GUARD WAS
+KEPT, NOT RETIRED: the schema is the gateway's promise and the guard is our own check of it, and the
+day a promise stops being kept is exactly the day nobody is watching.
+
+**A SECOND WALL ON THE WAY THROUGH, and it was already ruled.** The join threw `Too many SOQL
+queries: 101` at 39 upheld. That is the sixteenth stamp's join wall met by ordinary use for the
+second time — the forty-eighth met it at 34 and bulkified `readExisting`, `pf0811-goal` then joined
+24 inside the ceiling, and this run went over. **The bulkification bought about ten more pairs and a
+ceiling is still a ceiling.** Built rather than parked because the bytes are quotable and it was
+ruled and never built: `AAO_PairCommit.run(runKey, domains, maxPairs)` bounds one transaction and
+the caller loops, safe by construction because the pair watermark already makes the join resumable.
+Measured at 12: SOQL 40, 37, 35, 15 of 100 and DML 51, 47, 46, 18 of 150. One note worth keeping:
+the first version named its local `batch`, and APEX IS CASE-INSENSITIVE, so it silently shadowed the
+static `BATCH` and the comparison became Integer against List. It failed to compile, which is the
+good version of that mistake.
+
+**THE RUN, OFF ITS OWN RECEIPT: 21 stages, 331.433 s serial, 15 model calls, worst callout 40.676 s
+of the 120-second ceiling, WARM.** Every number in the report came off the receipt rather than out of
+a log — the sixty-seventh stamp's object doing its job on a complete pass for the first time, and the
+Inspector's performance panel now reads `perfJournalled=true` with 21 lines where it reported a gap
+two sessions ago.
+
+**THE DEAL IS WHOLE AGAIN**: 3 map rows (Adam Supporter / Political Structure / Brief; Dan Evaluator
+/ Brief; Kayla Brief), 39 upheld, 28 refused, 13 cards, 13 placements, 14 card contacts, 3 decision
+criteria. **0 new sections** — the writer reused the dated section by date prefix, which is the
+human-title-survives fix working, and the "Enter title" column is untouched. **THE UPHOLD-GOVERNS
+RULING IS LIVE ON THE MAP: zero answers read anything but TRUE**, including both that motivated the
+stretch (Adam's `AAO_DC_N` and Dan's `AAO_PB_OBST`, each previously UNVERIFIED).
+
+**retryNotes, in full and including the one I cannot explain:** one resolution invocation of six
+produced no output and was NOT diagnosed — the next proceeded normally and the counts reconcile
+exactly, so nothing was lost, but I did not capture its cause and will not claim one. Verify needed
+re-driving because the shard driver assumes CONCURRENT shards: each slices the currently-unverified
+set, so run serially shard 1 slices an already-smaller set and leaves a remainder; 18 were left and
+drained in two more rounds, costing 2 extra calls. Not a pipeline defect, a serial-driver caveat.
+The join threw once at SOQL 101 before the split existed, rolled back whole, re-ran clean. Call 0
+did not flake.

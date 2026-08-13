@@ -110,6 +110,40 @@ public with sharing class AAO_PairCommit {
      * decision against standing state, and one person's refusal must not stop another's write.
      * A buying group's worth of rows, not a data load.
      */
+    /**
+     * THE CALLER-SIDE JOIN SPLIT, ruled at the sixteenth stamp and built here on the day the
+     * wall was hit by ordinary use.
+     *
+     * Its authorising bytes, sixteenth stamp: *"The caller-side join split moves AHEAD of the
+     * production-transcript runs. The DML wall (~33 pairs at 81/150) sits where a dense
+     * enterprise call plausibly lands."* And the forty-eighth, on the SOQL side of the same
+     * wall: *"its mitigations (caller-side join split, bulkified single projection) are already
+     * ruled."*
+     *
+     * **THE WALL, MEASURED RATHER THAN PREDICTED THIS TIME.** The forty-eighth stamp met it at
+     * 34 upheld and bulkified `readExisting` to get back under; `pf0811-goal` then joined 24
+     * upheld inside the ceiling. On 13 August a purged rerun produced 28 upheld and the join
+     * threw `Too many SOQL queries: 101`. So the bulkification bought roughly ten more pairs
+     * and the ceiling is still a ceiling, exactly as both stamps said it would be.
+     *
+     * The split is safe by construction because the pair watermark already makes the join
+     * resumable: a pair that became a claim is skipped on the next pass, so the caller simply
+     * calls again until `pairsEligible` reaches zero. Nothing about the read-then-branch
+     * semantics changes; only how many of them one transaction attempts.
+     */
+    public static Outcome run(String runKey, Set<String> internalDomains, Integer maxPairs) {
+        BATCH = maxPairs;
+        try {
+            return run(runKey, internalDomains);
+        } finally {
+            BATCH = null;
+        }
+    }
+
+    /** The current transaction's pair budget, or null for "everything eligible". */
+    @TestVisible
+    private static Integer BATCH = null;
+
     public static Outcome run(String runKey, Set<String> internalDomains) {
         if (String.isBlank(runKey)) {
             throw new JoinException('Cannot join pairs with no run key.');
@@ -185,6 +219,25 @@ public with sharing class AAO_PairCommit {
                 continue;
             }
             eligible.add(p);
+        }
+        // The split is applied AFTER eligibility so the outcome's own counts still describe the
+        // whole run: a reader sees how many pairs were eligible and how many this transaction
+        // took, rather than a truncated view that looks like the run was smaller than it was.
+        if (BATCH != null && eligible.size() > BATCH) {
+            // Named `thisTransaction` rather than `batch`: APEX IS CASE-INSENSITIVE, so a local
+            // `batch` silently shadows the static `BATCH` and the comparison below becomes
+            // Integer against List. It failed to compile, which is the good version of that
+            // mistake; the bad version is a language where it would have compiled.
+            List<AAO_Pair__c> thisTransaction = new List<AAO_Pair__c>();
+            for (Integer i = 0; i < BATCH; i++) {
+                thisTransaction.add(eligible[i]);
+            }
+            o.refusals.add(
+                'Caller-side split: ' + eligible.size() + ' pairs eligible, ' + BATCH +
+                ' taken this transaction. Call again until pairs eligible reaches zero; the ' +
+                'pair watermark makes the join resumable.'
+            );
+            eligible = thisTransaction;
         }
 
         // THE NEVER-PROJECTED RULE, Addendum 17, wired here at last. A pair whose words and

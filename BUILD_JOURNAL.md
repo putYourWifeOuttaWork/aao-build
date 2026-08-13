@@ -12547,3 +12547,48 @@ between me and the row was wrong, not the row.
 way, both mine and both mechanical: an empty custom-metadata string value is invalid, and a record
 file missing `xmlns:xsd` fails with a bare `UNKNOWN_EXCEPTION` naming nothing — found by diffing
 against a working record rather than by guessing at it.
+
+## Session 103 · the seventy-eighth stamp's owed queue, the LOR write proven, and a premise that does not hold
+
+Suite **490, 489 pass**, the lone failure the standing org-resident non-AAO
+`ConvertToOpportunityTest`. Report in `review/pf0813-owed/`, satellite in `review/comparison/`.
+
+**(a) THE NO-ELEMENT MINT GUARD.** Refuses at mint, names the contract, defaults nothing. THE WRONG
+PLACE FOR IT IS THE INSTRUCTIVE PART: before the uphold-governs ruling a zero-element contract was
+caught BY ACCIDENT, because `isFull` returned false on an empty element list and every establishment
+against such a contract quietly read UNVERIFIED forever. That looked like a guard and was not one —
+no error, no name, and it punished the EVIDENCE for a defect in the QUESTION.
+
+**(b) THE SERIAL-DRIVER CAVEAT** written into `plannedVerifyShards`'s own header rather than a report
+nobody rereads, with the measured numbers: fired together the four slices partition one set exactly;
+fired serially they took 15, 11, 8, 6 and left 18 of 67 unverified with no error anywhere. The
+comment states the loop that is correct under both shapes.
+
+**(c) THE MACHINE-VERSUS-HUMAN SATELLITE**, caveat printed above the table, never a grade. One thing
+it can now say that it could not in July: THE MACHINE MOVED TOWARD THE HUMAN ON ADAM WITHOUT ANYBODY
+TUNING TOWARD HER — Evaluator became **Approver**, one rung below her Decision Maker rather than two,
+because the never-blank procedure writes the highest-ranked established value and `AAO_BR_APP` was
+already upheld. It still declines Decision Maker on both men, which is correct: nobody in that room
+said they decide.
+
+**(d) THE LOR JUNCTION WRITE, TRIED RATHER THAN DESCRIBED.** Describe said createable and updateable;
+A DESCRIBE IS NOT A TRY, so the row was actually created and updated (`Vendor` then `Credible
+Source`) behind the create-leg record. Both work. The object carries 64 child relationships, which
+any future delete must check. **THEN I REMOVED THE ROW**: it carried no evidence, and leaving it
+would have put a fabricated Level of Relationship on a real person's Contact — the same error as the
+hand-seeded receipt. The create-leg record stays, disowned with its reason.
+
+**THE PREMISE UNDER THE EMERSON STACKED RUN DOES NOT HOLD, and it was cheaper to measure than to
+discover mid-run.** The stamp says "three frozen graded calls on one clean deal". The freeze list and
+the org say TWO calls on that deal, and one of them is `emerson/aspentech-2026-06-17-nf1`, THE
+TRAINING SET — "everything was calibrated against it; its precision no longer predicts anything". The
+third frozen fixture is Black & Veatch, a different account and deal, so it cannot stack. It does not
+kill the run: two calls exercise accumulation, reinforcement, per-call sections and the
+maps-firm-up thesis, all of which are MECHANICAL and untouched by training-set status. It kills any
+ACCURACY reading from it. The deal is also not clean (743 pairs, 66 claims, 17 answers standing) and
+a stacked run wants a purge that removes the harvest behind those claims. NOT STARTED: beginning a
+thirty-call run and a purge on a premise I had just measured as wrong would produce a report whose
+headline is false.
+
+**retryNotes: none.** Two compile fixes, both mine: `AAO_PassContracts.Spec` has no no-argument
+constructor, and `AAO_Created_Row__c` carries no `AAO_Synthetic__c`.

@@ -770,6 +770,23 @@ public with sharing class AAO_Pass {
      * The shard count a bucket's verify REQUIRES, derived from its unverified-claim count
      * against the measured cap. The caller drives exactly this many concurrent shards; it
      * never picks a number itself.
+     *
+     * **THIS NUMBER IS ONLY CORRECT FOR SHARDS THAT RUN CONCURRENTLY, and a serial driver that
+     * ignores that will silently leave pairs unverified.** Measured on `pf0813-uphold`, 13
+     * August: each shard slices the set that is unverified WHEN IT RUNS, so fired together the
+     * four slices partition one set and cover it. Fired one after another, shard 0 verifies its
+     * slice and commits, shard 1 then slices an ALREADY-SMALLER set and takes a smaller share,
+     * and so on — 15, 11, 8, 6 where four equal slices were planned, leaving 18 of 67 pairs
+     * unverified with no error anywhere. It took two further rounds to drain.
+     *
+     * This is not a pipeline defect: the express lane fires the shards together and the
+     * partition is exact. It is a contract on the CALLER, so it is written here rather than in
+     * a report nobody reruns.
+     *
+     * **A SERIAL DRIVER MUST RE-ASK AND RE-DRIVE UNTIL THE BUCKET IS EMPTY** — recompute this
+     * number, take shard 0 of the new count, repeat while it returns anything. That loop is
+     * correct under both execution shapes, so a driver that cannot guarantee concurrency should
+     * simply always use it.
      */
     public static Integer plannedVerifyShards(String runKey, String bucket) {
         Boolean wantSentiment = bucket == 'sentiment';

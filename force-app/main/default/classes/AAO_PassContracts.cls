@@ -432,6 +432,28 @@ public with sharing class AAO_PassContracts {
                     ' characters; the contract key composes from at most 18.'
                 );
             }
+            // A CONTRACT THAT DECLARES NO ELEMENTS CANNOT MINT. Design's ruling at the
+            // seventy-first stamp, on a defect CODE surfaced at the seventieth: elements are
+            // HOW COMPLETENESS IS EXPRESSED, so a contract without them cannot express it.
+            //
+            // **The guard belongs at mint and nowhere else, and the wrong place is instructive.**
+            // Before Matthew's uphold-governs ruling, a zero-element contract was caught by
+            // accident: `isFull` returned false for an empty element list, so every establishment
+            // made against such a contract quietly read UNVERIFIED forever. That looked like a
+            // guard and was not one — it produced no error, named no contract, and punished the
+            // evidence for a defect in the question. Once completeness stopped gating the
+            // verdict, the accident stopped happening and the real gap showed.
+            //
+            // Refused loudly, by name, with no silent default: minting nothing is recoverable in
+            // a minute, and a live contract nobody can measure completeness against is not.
+            if (sp.elements == null || sp.elements.isEmpty()) {
+                throw new ContractException(
+                    'Proposition "' + sp.code + '" declares no elements, so nothing can ever ' +
+                    'say how much of it a set of words answers. Elements are how completeness ' +
+                    'is expressed; a contract without them is a mint-time data defect, not a ' +
+                    'question with an empty answer. Nothing was minted.'
+                );
+            }
             String hash = AAO_ContractKey.contentHash(sp.proposition, sp.guidance);
             rows.add(new AAO_Evidence_Contract__c(
                 AAO_Proposition_Code__c = sp.code,

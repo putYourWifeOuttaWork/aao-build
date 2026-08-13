@@ -199,4 +199,45 @@ private class AAO_PassContractsTest {
         }
         return m;
     }
+
+    @IsTest
+    static void aCONTRACTTHATDECLARESNOELEMENTSCANNOTMINT() {
+        // Design's ruling, seventy-first stamp: elements are HOW COMPLETENESS IS EXPRESSED, so a
+        // contract without them cannot express it and is a mint-time data defect.
+        //
+        // **THE WRONG PLACE FOR THIS GUARD IS THE INSTRUCTIVE PART, and it is why this test says
+        // "cannot mint" rather than "reads UNVERIFIED".** Before the uphold-governs ruling, a
+        // zero-element contract was caught by accident: `isFull` returned false on an empty
+        // element list, so every establishment made against such a contract quietly read
+        // UNVERIFIED forever. That produced no error, named no contract, and punished the
+        // EVIDENCE for a defect in the QUESTION. When completeness stopped gating the verdict
+        // the accident stopped, and the real gap showed.
+        // Asserted on the SHIPPED SEED rather than on a hand-built broken spec: `Spec` has no
+        // no-argument constructor and `mint()` runs the shipped list, so there is no lawful way
+        // to hand it a bad one — which is itself part of why the guard belongs at mint. What
+        // matters is that every live contract satisfies it and that minting refuses if one
+        // stops, since a contract minted without elements would pass every other check we have.
+        for (AAO_PassContracts.Spec live : AAO_PassContracts.specs()) {
+            System.assert(
+                live.elements != null && !live.elements.isEmpty(),
+                'Every shipped contract declares at least one element. "' + live.code +
+                '" declares none, and minting would now refuse the whole seed.'
+            );
+        }
+    }
+
+    @IsTest
+    static void theMINTGUARDNAMESTHECONTRACTANDDEFAULTSNOTHING() {
+        // A refusal that does not name what it refused is a refusal nobody can act on, and a
+        // guard that quietly supplied a default element would be inventing the question.
+        ApexClass body = [SELECT Body FROM ApexClass WHERE Name = 'AAO_PassContracts' LIMIT 1];
+        System.assert(
+            body.Body.contains('declares no elements'),
+            'The guard exists and says what is wrong.'
+        );
+        System.assert(
+            body.Body.contains('Nothing was minted'),
+            'And says what it did about it, so a caller is never left guessing at partial state.'
+        );
+    }
 }

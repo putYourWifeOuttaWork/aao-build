@@ -6,6 +6,14 @@
  */
 public class AAO_Accumulate {
     /**
+     * The claim outcome for evidence that overlaps what already stands on the answer. Named
+     * here rather than typed as a literal at each site, because it has to agree with the
+     * restricted picklist on `AAO_Claim__c.AAO_Outcome__c` and a typo would be a runtime
+     * failure at the join rather than a compile failure here.
+     */
+    public static final String CORROBORATED = 'Corroborated';
+
+    /**
      * The fields replay is answerable for. Anything not on this list is either derived
      * elsewhere or cannot be reconstructed at all, and asserting on it would make the
      * replay test fail for reasons that are not replay's business.
@@ -65,7 +73,7 @@ public class AAO_Accumulate {
         // discarded: its spans and its coverage merge above, its claim is written, and it is
         // on the record as evidence considered. What it may not do is take a standing
         // establishment down with it.
-        if (claim.AAO_Outcome__c != 'Reinforced' && !weakens(answer, claim)) {
+        if (movesTheAnswer(claim) && !weakens(answer, claim)) {
             answer.AAO_Verdict__c = claim.AAO_Verdict_After__c;
             answer.AAO_Interpretation__c = claim.AAO_Interpretation__c;
             answer.AAO_Established_By__c = claim.AAO_Actor__c;
@@ -83,6 +91,81 @@ public class AAO_Accumulate {
         ) {
             answer.AAO_Evidence_Occurred__c = claim.AAO_Evidence_Occurred__c;
         }
+    }
+
+    /**
+     * Whether this claim is allowed to move what the answer says, as opposed to only adding
+     * itself to the evidence behind it.
+     *
+     * Two outcomes accrue without moving anything, and they are different facts wearing the
+     * same shape: REINFORCED is the person saying it again, CORROBORATED is a second read
+     * finding the same utterance. Both write their claim, both merge their spans, neither
+     * touches the verdict or the interpretation. The sixty-ninth stamp's law that the three
+     * axes never collapse is why they are two values rather than one.
+     */
+    @TestVisible
+    private static Boolean movesTheAnswer(AAO_Claim__c claim) {
+        return claim.AAO_Outcome__c != 'Reinforced' && claim.AAO_Outcome__c != CORROBORATED;
+    }
+
+    /**
+     * DOES THIS CLAIM'S EVIDENCE OVERLAP EVIDENCE ALREADY STANDING ON THE ANSWER?
+     *
+     * The eightieth stamp's ruling, and it is the twenty-seventh stamp's merge key pointed at
+     * the join: **a claim reinforces only where its spans intersect NO span already standing on
+     * the answer, compared within the same Source. Any intersection, not only identity, and not
+     * only containment.**
+     *
+     * WHY THE RULE WAS NEEDED, measured on Emerson: seven answers carried two claims quoting
+     * IDENTICAL byte ranges, because the two comprehensive reads found one utterance twice and
+     * read a different voiced meaning off it. The twenty-seventh stamp deliberately lets those
+     * both ride to call 3 blind, which is right at verify; nobody priced the JOIN, where the
+     * answer key is subject plus contract and the two meanings collapse onto one answer. The
+     * second claim then read as the buyer pressing the point again, and the reinforcement count
+     * is a number guidance ORDERS BY.
+     *
+     * **CROSS-SOURCE NEEDS NO SPECIAL CASE and that is not an accident of the implementation.**
+     * Byte offsets are per-artifact, so a March claim and a June claim can carry the same
+     * numbers and mean different words. Comparing only within a Source therefore delivers the
+     * rejected option (b), a different occasion, for free — while keeping what (b) would have
+     * destroyed: a person who presses the same point three times in one call did press it three
+     * times, at three different offsets, and every one of them still counts.
+     *
+     * Half-open ranges, the same arithmetic the resolution stage's own merge uses, so the two
+     * places that test overlap cannot drift into disagreeing about what overlap means.
+     */
+    public static Boolean intersectsStanding(String standingSpansJson, String incomingSpansJson) {
+        List<AAO_Model.Span> standing = AAO_Model.parseSpans(standingSpansJson).spans;
+        if (standing.isEmpty()) {
+            return false;
+        }
+        for (AAO_Model.Span incoming : AAO_Model.parseSpans(incomingSpansJson).spans) {
+            for (AAO_Model.Span held : standing) {
+                if (overlaps(held, incoming)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Two spans overlap where they name the same artifact and their ranges touch.
+     *
+     * A null offset is NOT an overlap. A span that cannot say where it is cannot be shown to
+     * be the same words as another, and the safe direction on an unknown is to let the claim
+     * count: undercounting reinforcement hides a real press, and this rule exists to stop
+     * OVERcounting, so its own uncertainty resolves the other way.
+     */
+    private static Boolean overlaps(AAO_Model.Span a, AAO_Model.Span b) {
+        if (a.sourceId == null || b.sourceId == null || a.sourceId != b.sourceId) {
+            return false;
+        }
+        if (a.startOffset == null || a.endOffset == null ||
+            b.startOffset == null || b.endOffset == null) {
+            return false;
+        }
+        return a.startOffset < b.endOffset && b.startOffset < a.endOffset;
     }
 
     /**

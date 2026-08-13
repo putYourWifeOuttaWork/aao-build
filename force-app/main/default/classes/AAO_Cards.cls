@@ -101,7 +101,12 @@ public with sharing class AAO_Cards {
                 AAO_Evidence_Contract__r.AAO_Proposition_Code__c,
                 AAO_Person__c, AAO_Person__r.AAO_Display_Name__c,
                 AAO_Person__r.AAO_Internal__c, AAO_Person__r.AAO_Contact__c,
-                AAO_Located_Pair__r.AAO_Answer_Text__c
+                AAO_Located_Pair__r.AAO_Answer_Text__c,
+                // THE BYTE RANGE, selected off the LOCATED row because the identified
+                // disposition carries none: layer 1 tests OVERLAP now, not equality, and
+                // overlap is arithmetic on offsets rather than a comparison of strings.
+                AAO_Located_Pair__r.AAO_Start_Offset__c,
+                AAO_Located_Pair__r.AAO_End_Offset__c
             FROM AAO_Pair__c
             WHERE AAO_Source__r.AAO_Opportunity__c = :opportunityId
                 AND AAO_Stage__c = :AAO_PairKey.IDENTIFIED
@@ -113,6 +118,19 @@ public with sharing class AAO_Cards {
         if (established.isEmpty()) {
             return o;
         }
+
+        // THE FACE CALL RUNS BEFORE ANY DML IN THIS METHOD, and the position is load-bearing
+        // rather than tidy. A callout after DML throws "uncommitted work pending", and the
+        // duplicate-retirement below is a DELETE. While the collapse only fired on exact
+        // repeats it almost never had anything to delete, so the ordering was wrong and
+        // unreachable at the same time; extending layer 1 to overlaps makes it reachable on the
+        // very next Emerson write. Found by reading the order rather than by the run failing,
+        // which is the cheaper way to find it.
+        //
+        // THE FACE IS INFERRED, forty-ninth stamp item 3(a). One batched call over the whole
+        // harvest, so the model writes the headlines and the writer never puts a raw verbatim on
+        // the face again. The words themselves are untouched and go to `Long_Description`.
+        Map<String, AAO_CardFace.Face> headline = AAO_CardFace.infer(established);
 
         // ---- read before write: the deal's standing cards, ours and theirs ------------------
         //
@@ -138,9 +156,39 @@ public with sharing class AAO_Cards {
         // call saying the same thing in new words, and it is the reinforcement mechanic. A
         // byte-only key would silently retire it and turn every restatement into a duplicate the
         // first time a second call lands, so layer 1 sits BENEATH layer 2, never instead of it.
+        //
+        // **LAYER 1 TESTS OVERLAP, NOT EQUALITY (eightieth stamp), and the specimen is why.**
+        // Two Obstacle cards stood on the 29 July Emerson call, both Jefferson Vargas: one drawn
+        // from bytes 9775-10048 and one from 9919-10048, the second quote a literal SUBSTRING of
+        // the first. One utterance, two reads, two boundaries, two cards on a board a customer
+        // would read. An equality key lets that through; an intersection key catches it. Same
+        // rule, same arithmetic and same reason as the answer counter's, because a card and a
+        // reinforcement count are two readings of the one question "how many distinct things did
+        // this person say".
         Map<String, ALTF__Insight_Card__c> byEvidence = new Map<String, ALTF__Insight_Card__c>();
         Map<String, ALTF__Insight_Card__c> byMeaning = new Map<String, ALTF__Insight_Card__c>();
         List<ALTF__Insight_Card__c> spurious = new List<ALTF__Insight_Card__c>();
+
+        // The evidence a standing card was drawn from, recovered by matching its stored verbatim
+        // back to the pair that wrote it. The CARD carries no offsets - putting engineering
+        // numbers in a customer-facing detail field would be the wrong trade - so the harvest is
+        // where the range comes from, and the harvest is the source of truth anyway.
+        Map<String, AAO_Pair__c> pairByEvidence = new Map<String, AAO_Pair__c>();
+        for (AAO_Pair__c a : established) {
+            String type = AAO_P8Codes.problemType(a.AAO_Evidence_Contract__r.AAO_Proposition_Code__c);
+            String words = a.AAO_Located_Pair__r == null
+                ? null
+                : a.AAO_Located_Pair__r.AAO_Answer_Text__c;
+            if (type == null || String.isBlank(words)) {
+                continue;
+            }
+            String ek = evidenceKey(type, words);
+            if (!pairByEvidence.containsKey(ek)) {
+                pairByEvidence.put(ek, a);
+            }
+        }
+
+        List<Held> held = new List<Held>();
         for (ALTF__Insight_Card__c c : standing) {
             byMeaning.put(meaningKey(c.ALTF__Type__c, c.ALTF__Short_Description__c), c);
             String v = verbatimOf(c.ALTF__Long_Description__c);
@@ -150,22 +198,28 @@ public with sharing class AAO_Cards {
                 continue;
             }
             String ek = evidenceKey(c.ALTF__Type__c, v);
-            if (byEvidence.containsKey(ek)) {
-                // TWO OF OUR CARDS ON ONE PIECE OF EVIDENCE, which is the inflation this fix
-                // ends: the same words carded twice because the face was reworded between runs.
-                // The elder is the parent and stands; the younger is retired at the next write
-                // rather than deleted by hand. Deleting the CARD takes its own junctions with
-                // it, which is the safe direction; deleting junctions cascades the other way.
+            Held overlap = overlapping(held, c.ALTF__Type__c, pairByEvidence.get(ek));
+            if (byEvidence.containsKey(ek) || overlap != null) {
+                // TWO OF OUR CARDS ON ONE UTTERANCE, which is the inflation this fix ends: the
+                // same words carded twice because the face was reworded between runs, or the two
+                // reads drew different boundaries around one sentence. The elder is the parent
+                // and stands; the younger is retired at the next write rather than deleted by
+                // hand. Deleting the CARD takes its own junctions with it, which is the safe
+                // direction; deleting junctions cascades the other way.
                 spurious.add(c);
                 continue;
             }
             byEvidence.put(ek, c);
+            Held h = heldFor(c.ALTF__Type__c, pairByEvidence.get(ek));
+            if (h != null) {
+                held.add(h);
+            }
         }
         if (!spurious.isEmpty()) {
             delete spurious;
             o.spuriousRetired = spurious.size();
-            o.notes.add(spurious.size() + ' duplicate card(s) retired: same evidence already ' +
-                'carded, the face had drifted between runs.');
+            o.notes.add(spurious.size() + ' duplicate card(s) retired: the same utterance was ' +
+                'already carded, by identical words or by an overlapping byte range.');
         }
 
         List<ALTF__Insight_Card__c> fresh = new List<ALTF__Insight_Card__c>();
@@ -173,10 +227,6 @@ public with sharing class AAO_Cards {
         Map<Id, ALTF__Insight_Card__c> patchById = new Map<Id, ALTF__Insight_Card__c>();
         Map<String, Integer> seenThisRun = new Map<String, Integer>();
 
-        // THE FACE IS INFERRED, forty-ninth stamp item 3(a). One batched call over the whole
-        // harvest, so the model writes the headlines and the writer never puts a raw verbatim on
-        // the face again. The words themselves are untouched and go to `Long_Description`.
-        Map<String, AAO_CardFace.Face> headline = AAO_CardFace.infer(established);
         String decisionMaker = decisionMakerOn(opportunityId);
 
         for (AAO_Pair__c a : established) {
@@ -206,10 +256,19 @@ public with sharing class AAO_Cards {
 
             // LAYER 1 FIRST. This establishment already has a card, whatever the face says
             // today. Nothing is written and nothing is counted as reinforcement: a rerun of the
-            // same words is not the buyer saying it twice.
+            // same words is not the buyer saying it twice, and neither is a second read drawing
+            // a wider or narrower boundary around one sentence.
             String idKey = evidenceKey(type, words);
             if (byEvidence.containsKey(idKey)) {
                 o.unchanged++;
+                continue;
+            }
+            Held collides = overlapping(held, type, a);
+            if (collides != null) {
+                o.unchanged++;
+                o.notes.add('Pair ' + a.AAO_Pair_Ref__c + ' overlaps bytes already carded (' +
+                    collides.startOffset + '-' + collides.endOffset + '); one utterance, one ' +
+                    'card. No card written.');
                 continue;
             }
             String key = meaningKey(type, face);
@@ -250,6 +309,13 @@ public with sharing class AAO_Cards {
             freshSource.add(a);
             byMeaning.put(key, card);
             byEvidence.put(idKey, card);
+            // AND THE RANGE IS CLAIMED IMMEDIATELY, before the next establishment is read. The
+            // CFO pair was written in ONE batch from one harvest, so a check that only consulted
+            // cards standing before the run would have let it through again.
+            Held h = heldFor(type, a);
+            if (h != null) {
+                held.add(h);
+            }
             seenThisRun.put(key, 1);
         }
 
@@ -744,6 +810,79 @@ public with sharing class AAO_Cards {
         }
         Integer cut = w.substring(0, FACE_MAX).lastIndexOf(' ');
         return (cut > 40 ? w.substring(0, cut) : w.substring(0, FACE_MAX)).trim();
+    }
+
+    /**
+     * A byte range on one artifact that already carries a card of this type. Layer 1's real
+     * unit: not a string, a stretch of somebody's speech.
+     */
+    @TestVisible
+    private class Held {
+        public String type;
+        public Id sourceId;
+        public Integer startOffset;
+        public Integer endOffset;
+    }
+
+    /** The range behind an establishment, or null where the harvest cannot say. */
+    private static Held heldFor(String type, AAO_Pair__c a) {
+        if (a == null || a.AAO_Located_Pair__r == null) {
+            return null;
+        }
+        return heldOf(
+            type,
+            a.AAO_Source__c,
+            a.AAO_Located_Pair__r.AAO_Start_Offset__c,
+            a.AAO_Located_Pair__r.AAO_End_Offset__c
+        );
+    }
+
+    /** The same, from the values themselves, so the arithmetic is testable without DML. */
+    @TestVisible
+    private static Held heldOf(String type, Id sourceId, Decimal startOffset, Decimal endOffset) {
+        if (startOffset == null || endOffset == null) {
+            return null;
+        }
+        Held h = new Held();
+        h.type = type;
+        h.sourceId = sourceId;
+        h.startOffset = Integer.valueOf(startOffset);
+        h.endOffset = Integer.valueOf(endOffset);
+        return h;
+    }
+
+    /**
+     * The card already standing on these bytes, or null.
+     *
+     * SAME TYPE AND SAME SOURCE, both load-bearing. Same type, because one utterance can
+     * legitimately carry an Obstacle and a Goal and those are two cards by construction, which
+     * is a grading question and not a duplicate. Same source, because byte offsets are
+     * per-artifact, so two calls carrying the same numbers are two different sentences - which
+     * is also what makes a genuine restatement on a later call reach layer 2, where the
+     * reinforcement mechanic lives.
+     *
+     * A range the harvest cannot supply returns null and the card is written. Undercounting a
+     * board hides an insight; this rule exists to stop DOUBLE-counting, so its own uncertainty
+     * resolves toward writing.
+     */
+    private static Held overlapping(List<Held> held, String type, AAO_Pair__c a) {
+        return overlapping(held, heldFor(type, a));
+    }
+
+    @TestVisible
+    private static Held overlapping(List<Held> held, Held mine) {
+        if (mine == null) {
+            return null;
+        }
+        for (Held h : held) {
+            if (h.type != mine.type || h.sourceId != mine.sourceId) {
+                continue;
+            }
+            if (h.startOffset < mine.endOffset && mine.startOffset < h.endOffset) {
+                return h;
+            }
+        }
+        return null;
     }
 
     /**

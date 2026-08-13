@@ -114,6 +114,90 @@ private class AAO_CardsTest {
         );
     }
 
+    // ============================ layer 1 tests OVERLAP, not equality (eightieth stamp)
+
+    /**
+     * THE SPECIMEN, from the 29 July Emerson call and reproduced in its own numbers.
+     *
+     * Two Obstacle cards stood on the board, both Jefferson Vargas: `a0pWD0000043HgMYAU` from
+     * bytes 9775-10048 ("Because with this dollar amount, it's going to go to CFO...") and
+     * `a0pWD0000043HgNYAU` from 9919-10048 ("that's where we've seen roadblocks in the past
+     * because CFO gets it..."). The second quote is a LITERAL SUBSTRING of the first: one
+     * utterance, two reads, two boundaries, two cards a customer would read as two problems.
+     *
+     * An equality key lets that through and did. Intersection catches it.
+     */
+    @IsTest
+    static void theCFOPAIRISONEUTTERANCEANDIDENTITYWOULDHAVEMISSEDIT() {
+        Id src = AAO_FakeId.of(AAO_Source__c.SObjectType);
+        AAO_Cards.Held wider = AAO_Cards.heldOf('Obstacle', src, 9775, 10048);
+        AAO_Cards.Held narrower = AAO_Cards.heldOf('Obstacle', src, 9919, 10048);
+
+        System.assertNotEquals(
+            null,
+            AAO_Cards.overlapping(new List<AAO_Cards.Held>{ wider }, narrower),
+            'Containment is intersection. This is the card that should never have been written.'
+        );
+        System.assertEquals(
+            null,
+            AAO_Cards.overlapping(new List<AAO_Cards.Held>{}, narrower),
+            'And with nothing standing there is nothing to collide with.'
+        );
+    }
+
+    @IsTest
+    static void overlapIsSCOPEDBYTYPEANDBYSOURCE() {
+        Id src = AAO_FakeId.of(AAO_Source__c.SObjectType);
+        Id other = AAO_FakeId.of(AAO_Source__c.SObjectType);
+        AAO_Cards.Held obstacle = AAO_Cards.heldOf('Obstacle', src, 100, 200);
+
+        System.assertEquals(
+            null,
+            AAO_Cards.overlapping(
+                new List<AAO_Cards.Held>{ obstacle },
+                AAO_Cards.heldOf('Goal', src, 100, 200)
+            ),
+            'ONE UTTERANCE CAN CARRY TWO TYPES, and those are two cards by construction. ' +
+            'Whether a want read as an Obstacle is right is a GRADING question and Matthew\'s; ' +
+            'it is not this rule\'s to suppress.'
+        );
+        System.assertEquals(
+            null,
+            AAO_Cards.overlapping(
+                new List<AAO_Cards.Held>{ obstacle },
+                AAO_Cards.heldOf('Obstacle', other, 100, 200)
+            ),
+            'Byte offsets are per-artifact, so the same numbers on another call are another ' +
+            'sentence. This is also what lets a genuine restatement reach layer 2.'
+        );
+        System.assertEquals(
+            null,
+            AAO_Cards.overlapping(
+                new List<AAO_Cards.Held>{ obstacle },
+                AAO_Cards.heldOf('Obstacle', src, 200, 300)
+            ),
+            'Half-open: adjacent is the next sentence, not the same one.'
+        );
+    }
+
+    @IsTest
+    static void aRangeTheHarvestCannotSupplyWRITESRATHERTHANSUPPRESSES() {
+        Id src = AAO_FakeId.of(AAO_Source__c.SObjectType);
+        System.assertEquals(
+            null, AAO_Cards.heldOf('Obstacle', src, null, 200),
+            'No offsets, no claim about sameness.'
+        );
+        System.assertEquals(
+            null,
+            AAO_Cards.overlapping(
+                new List<AAO_Cards.Held>{ AAO_Cards.heldOf('Obstacle', src, 100, 200) },
+                null
+            ),
+            'And an unknown resolves toward writing the card: undercounting a board hides an ' +
+            'insight, and this rule exists to stop DOUBLE-counting.'
+        );
+    }
+
     // ======================================================= the grid, fifty-third stamp math
 
     @IsTest

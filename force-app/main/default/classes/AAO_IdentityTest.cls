@@ -289,6 +289,156 @@ private class AAO_IdentityTest {
         );
     }
 
+    // ============================== match aggressively, create conservatively (80th stamp)
+
+    /**
+     * THE GIVEN-NAME RUNG. Speech is full of lone first names; a roster string's lone token is a
+     * surname. Same parser, opposite reading, so this rung searches BOTH and the ladder stops
+     * depending on which class of input happened to arrive.
+     */
+    @IsTest
+    static void aSingleSpokenTokenLinksToAGivenNameOnTheAccount() {
+        Fixture f = fixture();
+        AAO_Settings.overrideForTest.put(AAO_Settings.CONTACT_CREATION, true);
+        // "Mapped Buyer" is seeded on the account. The transcript said only "Mapped".
+        AAO_Participant__c p = participant(f, 'mention:mapped', 'Mapped', null);
+
+        Test.startTest();
+        AAO_Identity.Resolution r = AAO_Identity.resolve(p, f.acctId, f.oppId);
+        Test.stopTest();
+
+        System.assertEquals('resolved', r.action, r.toString());
+        System.assertEquals(
+            f.contactId, r.contactId,
+            'It linked the person who already exists rather than minting a second one. Before ' +
+            'this rung, rung 3 searched LastName only and this created.'
+        );
+        System.assertEquals(
+            1,
+            [SELECT COUNT() FROM Contact WHERE AccountId = :f.acctId],
+            'And nothing was created.'
+        );
+    }
+
+    /**
+     * A SINGLE TOKEN CAN LINK AND CAN NEVER CREATE, with the toggle ON, which is the whole
+     * point: this is a bar rather than a configuration.
+     *
+     * The measured case, eightieth stamp: Contact `003WD00001RCfLzYAL`, LastName "Fatima", no
+     * first name, no email, no title, created onto Emerson Electric Co. and then writing
+     * `Signature Approver` at rank 5 onto a relationship map a seller reads. Fatema Choudray,
+     * VP Premier Sales Performance, was already on that account and is the same human.
+     */
+    @IsTest
+    static void aSingleTokenNEVERCREATESEVENWITHTHETOGGLEON() {
+        Fixture f = fixture();
+        AAO_Settings.overrideForTest.put(AAO_Settings.CONTACT_CREATION, true);
+        AAO_Participant__c p = participant(f, 'mention:jacob', 'Jacob', null);
+
+        Test.startTest();
+        AAO_Identity.Resolution r = AAO_Identity.resolve(p, f.acctId, f.oppId);
+        Test.stopTest();
+
+        System.assertEquals('shadowed', r.action, r.toString());
+        System.assertEquals(
+            'Single_Token',
+            [SELECT AAO_Reason__c FROM AAO_Shadow_Person__c WHERE Id = :r.shadowPersonId]
+                .AAO_Reason__c
+        );
+        System.assertEquals(
+            0,
+            [SELECT COUNT() FROM Contact WHERE LastName = 'Jacob'],
+            'ONE WORD NEVER MINTS A PERSON. The twenty-fourth stamp believed the LastName ' +
+            'requirement guaranteed this; it never did, because one token satisfies the schema.'
+        );
+    }
+
+    /**
+     * FATEMA IS THE ACCEPTANCE CASE, and this test records the honest limit rather than a
+     * flattering one.
+     *
+     * The rung matches EXACTLY, as every rung on this ladder always has. The ASR heard "Fatima"
+     * and the CRM carries "Fatema", one character apart, so the rung returns zero and does NOT
+     * link them. Fuzzy matching is not ruled and is not invented here: a resolver that guesses
+     * at near-spellings attaches a call's worth of evidence to whoever sorted closest. What
+     * protects this row is the creation bar, and the assertion that matters is that no twin
+     * exists afterwards.
+     */
+    @IsTest
+    static void theMISHEARDSPELLINGDOESNOTLINKANDCRUCIALLYDOESNOTCREATE() {
+        Fixture f = fixture();
+        AAO_Settings.overrideForTest.put(AAO_Settings.CONTACT_CREATION, true);
+        insert new Contact(
+            FirstName = 'Fatema', LastName = 'Choudray', AccountId = f.acctId,
+            Title = 'VP, Premier Sales Performance'
+        );
+        AAO_Participant__c p = participant(f, 'mention:fatima', 'Fatima', null);
+
+        Test.startTest();
+        AAO_Identity.Resolution r = AAO_Identity.resolve(p, f.acctId, f.oppId);
+        Test.stopTest();
+
+        System.assertEquals(
+            'shadowed', r.action,
+            'One character apart is not a match, and this ladder does not guess. ' + r.toString()
+        );
+        System.assertEquals(
+            0,
+            [SELECT COUNT() FROM Contact WHERE LastName = 'Fatima'],
+            'AND THE DEFECT IS CLOSED WHERE IT ACTUALLY BIT: no twin is minted. Fatema keeps ' +
+            'being the only Fatema on the account.'
+        );
+        System.assert(
+            r.reason.contains('Fatema'),
+            'The reason names the measured case so the next reader knows why the bar exists. ' +
+            'Got: ' + r.reason
+        );
+    }
+
+    @IsTest
+    static void twoPeopleAnsweringToOneSpokenWordHOLDANDARENEVERPICKED() {
+        Fixture f = fixture();
+        AAO_Settings.overrideForTest.put(AAO_Settings.CONTACT_CREATION, true);
+        // One carries it as a given name, one as a family name. Both answer to the word.
+        insert new List<Contact>{
+            new Contact(FirstName = 'Sam', LastName = 'Ladva', AccountId = f.acctId),
+            new Contact(FirstName = 'Rita', LastName = 'Sam', AccountId = f.acctId)
+        };
+        AAO_Participant__c p = participant(f, 'mention:sam', 'Sam', null);
+
+        Test.startTest();
+        AAO_Identity.Resolution r = AAO_Identity.resolve(p, f.acctId, f.oppId);
+        Test.stopTest();
+
+        System.assertEquals('shadowed', r.action, r.toString());
+        System.assertEquals(
+            'Ambiguous',
+            [SELECT AAO_Reason__c FROM AAO_Shadow_Person__c WHERE Id = :r.shadowPersonId]
+                .AAO_Reason__c,
+            'More than one is AMBIGUOUS and holds. Never pick.'
+        );
+    }
+
+    /**
+     * A REAL FULL NAME STILL CREATES. The bar is on one token, not on creation, and a test
+     * that only proved things stopped happening would not notice if it had stopped them all.
+     */
+    @IsTest
+    static void theCREATELEGSTILLRUNSFORAWHOLENAME() {
+        Fixture f = fixture();
+        AAO_Settings.overrideForTest.put(AAO_Settings.CONTACT_CREATION, true);
+        AAO_Participant__c p = participant(f, 'dan', 'Lewis, Dan', null);
+
+        Test.startTest();
+        AAO_Identity.Resolution r = AAO_Identity.resolve(p, f.acctId, f.oppId);
+        Test.stopTest();
+
+        System.assertEquals('created', r.action, r.toString());
+        Contact made = [SELECT FirstName, LastName FROM Contact WHERE Id = :r.contactId];
+        System.assertEquals('Dan', made.FirstName);
+        System.assertEquals('Lewis', made.LastName);
+    }
+
     // ---------------------------------------------------------------------- fixtures
 
     private class Fixture {

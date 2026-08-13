@@ -384,6 +384,133 @@ private class AAO_AccumulationTest {
         );
     }
 
+    // ============================================ reinforcement counts distinct utterances
+
+    /**
+     * THE EIGHTIETH STAMP'S RULING, at the grain it was ruled for.
+     *
+     * Seven Emerson answers carried two claims quoting IDENTICAL byte ranges, because the two
+     * comprehensive reads found one utterance twice and read a different voiced meaning off it.
+     * Both rode to call 3 blind, which the twenty-seventh stamp intends; the answer key then
+     * collapsed them onto one row and the second read as the buyer pressing the point again.
+     *
+     * The clone below is that shape exactly: the same words, the same contract, the same
+     * subject, a second row. It must write its claim, keep its spans, and NOT move the counter.
+     */
+    @IsTest
+    static void twoREADSOFONEUTTERANCEISCORROBORATEDANDNEVERREINFORCED() {
+        AAO_Seed.Loaded s = load();
+        AAO_Candidate__c first = [
+            SELECT Id, AAO_Evidence_Contract__c, AAO_Source__c, AAO_Basis__c, AAO_Opportunity__c,
+                AAO_Account__c, AAO_Subject_Type__c, AAO_Proposed_Verdict__c, AAO_Spans__c,
+                AAO_Element_Completeness__c, AAO_Charter__c, AAO_Charter_Version__c
+            FROM AAO_Candidate__c
+            WHERE Id = :s.candidateByCode.get('C1').Id
+        ];
+        AAO_Candidate__c secondRead = first.clone(false, true, false, false);
+        secondRead.AAO_Stage__c = 'Adjudicated';
+        secondRead.AAO_Outcome__c = 'Pending';
+        secondRead.AAO_Publication_State__c = 'Live';
+        insert secondRead;
+
+        Test.startTest();
+        AAO_Commit.commitCandidate(first.Id, s.internalDomains);
+        AAO_Commit.commitCandidate(secondRead.Id, s.internalDomains);
+        Test.stopTest();
+
+        List<AAO_Claim__c> claims = [
+            SELECT AAO_Outcome__c, AAO_Verdict_After__c, AAO_Spans__c
+            FROM AAO_Claim__c
+            WHERE AAO_Evidence_Contract__c = :first.AAO_Evidence_Contract__c
+                AND AAO_Opportunity__c = :first.AAO_Opportunity__c
+            ORDER BY CreatedDate ASC, Id ASC
+        ];
+        System.assertEquals(
+            2, claims.size(),
+            'NOTHING IS DELETED AND NOTHING IS REFUSED. Both claims stand as evidence; only ' +
+            'the counter changes.'
+        );
+        System.assertEquals('Established', claims[0].AAO_Outcome__c);
+        System.assertEquals(
+            AAO_Accumulate.CORROBORATED,
+            claims[1].AAO_Outcome__c,
+            'Two reads of one sentence is not the buyer saying it twice. Got: ' +
+            claims[1].AAO_Outcome__c
+        );
+        System.assertEquals(
+            'TRUE', claims[1].AAO_Verdict_After__c,
+            'And it is still an upheld establishment. Corroboration is a counter fact, not a ' +
+            'downgrade.'
+        );
+    }
+
+    /**
+     * THE RULE ITSELF, at every boundary it has, because "any intersection" is a claim about
+     * arithmetic and the arithmetic is where it can be got wrong.
+     *
+     * The containment case is the one identity would miss, and it is not hypothetical: the CFO
+     * card pair on the 29 July Emerson call is bytes 9775-10048 and 9919-10048, one quote a
+     * literal substring of the other.
+     */
+    @IsTest
+    static void intersectionIsANYOVERLAPWITHINONESOURCEANDNEVERACROSSTWO() {
+        Id src1 = AAO_FakeId.of(AAO_Source__c.SObjectType);
+        Id src2 = AAO_FakeId.of(AAO_Source__c.SObjectType);
+
+        System.assertEquals(
+            true, AAO_Accumulate.intersectsStanding(spans(src1, 100, 200), spans(src1, 100, 200)),
+            'Identical ranges intersect. The seven Emerson answers are this case.'
+        );
+        System.assertEquals(
+            true, AAO_Accumulate.intersectsStanding(spans(src1, 9775, 10048), spans(src1, 9919, 10048)),
+            'CONTAINMENT INTERSECTS, and this is the case identity misses: one read drew a ' +
+            'wider boundary around the same sentence.'
+        );
+        System.assertEquals(
+            true, AAO_Accumulate.intersectsStanding(spans(src1, 100, 200), spans(src1, 150, 250)),
+            'A partial overlap is an overlap. Neither contains the other and it is still one ' +
+            'stretch of speech read twice.'
+        );
+        System.assertEquals(
+            false, AAO_Accumulate.intersectsStanding(spans(src1, 100, 200), spans(src1, 200, 300)),
+            'ADJACENT IS NOT OVERLAPPING. Ranges are half-open, so a span starting where ' +
+            'another ends is the next sentence, and the next sentence is a real second press.'
+        );
+        System.assertEquals(
+            false, AAO_Accumulate.intersectsStanding(spans(src1, 100, 200), spans(src2, 100, 200)),
+            'CROSS-SOURCE NEVER INTERSECTS, and that is the ruling delivering the rejected ' +
+            'option (b) for free: byte offsets are per-artifact, so a later call always counts.'
+        );
+        System.assertEquals(
+            false, AAO_Accumulate.intersectsStanding(null, spans(src1, 100, 200)),
+            'An answer with nothing standing on it cannot be corroborated by anything.'
+        );
+    }
+
+    /**
+     * A person who presses the same point three times in one call DID press it three times, and
+     * the ruling keeps that deliberately: option (b), requiring a different occasion, was
+     * rejected for exactly this reason.
+     */
+    @IsTest
+    static void aSecondPressINTHESAMECALLSTILLCOUNTS() {
+        Id src = AAO_FakeId.of(AAO_Source__c.SObjectType);
+        System.assertEquals(
+            false,
+            AAO_Accumulate.intersectsStanding(spans(src, 100, 200), spans(src, 4000, 4090)),
+            'Different words, same call, same person: real signal, and it must keep counting.'
+        );
+    }
+
+    private static String spans(Id sourceId, Integer startOffset, Integer endOffset) {
+        AAO_Model.Span sp = new AAO_Model.Span();
+        sp.sourceId = sourceId;
+        sp.startOffset = startOffset;
+        sp.endOffset = endOffset;
+        sp.quote = 'words';
+        return AAO_Model.serializeSpans(new List<AAO_Model.Span>{ sp });
+    }
+
     // ================================================ also worth running, cheaply
 
     /**

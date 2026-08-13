@@ -61,6 +61,11 @@
                 <label>Reinforced</label>
             </value>
             <value>
+                <fullName>Corroborated</fullName>
+                <default>false</default>
+                <label>Corroborated</label>
+            </value>
+            <value>
                 <fullName>Contention_Raised</fullName>
                 <default>false</default>
                 <label>Contention_Raised</label>

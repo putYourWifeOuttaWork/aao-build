@@ -142,12 +142,12 @@ public with sharing class AAO_ResolveDesignator {
 
         return designatorKind == Kind.TITLE
             ? byTitle(designator, accountId, opportunityId, o)
-            : byName(designator, accountId, o);
+            : byName(designator, accountId, opportunityId, o);
     }
 
     // ------------------------------------------------------------------ the name rungs
 
-    private static Outcome byName(String designator, Id accountId, Outcome o) {
+    private static Outcome byName(String designator, Id accountId, Id opportunityId, Outcome o) {
         // A SINGLE SPOKEN TOKEN IS CHECKED BEFORE THE PARSER, and finding out why cost a red
         // test worth keeping in the record.
         //
@@ -161,7 +161,7 @@ public with sharing class AAO_ResolveDesignator {
         // verified only against the input it was written for. So a single token is searched
         // as EITHER given or family name, account-bound, and never picked between.
         if (!designator.trim().contains(' ')) {
-            return bySingleToken(designator.trim(), accountId, o);
+            return bySingleToken(designator.trim(), accountId, opportunityId, o);
         }
 
         AAO_PersonName.Parsed name = AAO_PersonName.parse(designator);
@@ -200,15 +200,46 @@ public with sharing class AAO_ResolveDesignator {
      * the account, and STILL never picking. Two matches on one account is AMBIGUOUS, which is
      * the honest answer and the one the Identification flag exists for.
      */
-    private static Outcome bySingleToken(String token, Id accountId, Outcome o) {
+    private static Outcome bySingleToken(
+        String token, Id accountId, Id opportunityId, Outcome o
+    ) {
         o.rungsTried.add('single token as given or family name, within the account');
-        List<Contact> hits = [
-            SELECT Id FROM Contact
-            WHERE AccountId = :accountId
-                AND (FirstName = :token OR LastName = :token)
-            LIMIT 3
-        ];
-        return settle(hits, 'single token within the account', o);
+        Map<Id, Contact> hits = new Map<Id, Contact>(
+            [
+                SELECT Id FROM Contact
+                WHERE AccountId = :accountId
+                    AND (FirstName = :token OR LastName = :token)
+                LIMIT 3
+            ]
+        );
+
+        // THE MAP-ROW LEG, added at the eightieth stamp so the two ladders scope this rung the
+        // same way. Somebody already placed on this deal is a candidate even where their
+        // Contact hangs off another account, exactly as the title rung has always read it.
+        o.rungsTried.add('single token on the account or opportunity map rows');
+        Set<Id> mapped = new Set<Id>();
+        try {
+            for (ALTF__Contact_Map_Details__c m : [
+                SELECT ALTF__Contact__c FROM ALTF__Contact_Map_Details__c
+                WHERE ALTF__Account__c = :accountId OR ALTF__Opportunity__c = :opportunityId
+            ]) {
+                if (m.ALTF__Contact__c != null && !hits.containsKey(m.ALTF__Contact__c)) {
+                    mapped.add(m.ALTF__Contact__c);
+                }
+            }
+        } catch (Exception e) {
+            o.rungsTried.add('map rows unreadable (' + e.getTypeName() + '), treated as absence');
+        }
+        if (!mapped.isEmpty()) {
+            hits.putAll(
+                [
+                    SELECT Id FROM Contact
+                    WHERE Id IN :mapped AND (FirstName = :token OR LastName = :token)
+                    LIMIT 3
+                ]
+            );
+        }
+        return settle(hits.values(), 'single token within the account', o);
     }
 
     // ------------------------------------------------------------------ the title rung

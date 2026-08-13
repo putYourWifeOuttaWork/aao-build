@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>AAO_Outcome__c</fullName>
-    <description>Written by: Commit. Read by: Reinforcement writes a claim without moving the answer, which is what makes how often has this been pressed countable.</description>
+    <description>Written by: Commit. Read by: Reinforcement writes a claim without moving the answer, which is what makes how often has this been pressed countable. Corroborated is the same shape for a claim whose spans intersect one already standing on the answer within the same Source (eightieth stamp): it stands as evidence and moves nothing, and it is deliberately NOT Reinforced, because two reads finding one utterance is not the buyer saying it twice.</description>
     <label>Outcome</label>
     <type>Picklist</type>
     <required>true</required>
@@ -18,6 +18,11 @@
                 <fullName>Reinforced</fullName>
                 <default>false</default>
                 <label>Reinforced</label>
+            </value>
+            <value>
+                <fullName>Corroborated</fullName>
+                <default>false</default>
+                <label>Corroborated</label>
             </value>
             <value>
                 <fullName>Downgraded</fullName>

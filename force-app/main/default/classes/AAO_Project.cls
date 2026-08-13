@@ -770,7 +770,7 @@ public with sharing class AAO_Project {
                     'deleted lands here.';
                 return r;
             }
-            AAO_Identity.Resolution res = AAO_Identity.resolve(person, accountId);
+            AAO_Identity.Resolution res = AAO_Identity.resolve(person, accountId, opportunityId);
             r.identity = res.action;
             r.shadowPersonId = res.shadowPersonId;
             if (res.reachesTheMap()) {

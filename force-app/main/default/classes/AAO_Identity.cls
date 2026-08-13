@@ -19,6 +19,20 @@
  * account resolves to neither: the writer refuses and the person holds at shadow stage, which
  * is a real state rather than a failure. Picking would attach a call's worth of evidence to
  * whichever row sorted first.
+ *
+ * **MATCH AGGRESSIVELY, CREATE CONSERVATIVELY** (eightieth stamp, and the twenty-first stamp
+ * before it in those words). The two halves pull in opposite directions on purpose. Matching
+ * costs a query and its failure mode is a held pair; creating costs a permanent row in somebody
+ * else's CRM and its failure mode is a duplicate human. So this ladder searches wider than it
+ * used to and mints narrower: a single spoken token is searched as a given OR family name
+ * across the account and the deal's map rows, and it can LINK but can never CREATE.
+ *
+ * **THERE ARE TWO LADDERS IN THIS SYSTEM AND ONLY ONE OF THEM CAN CREATE.** This one, and
+ * `AAO_ResolveDesignator` at the resolution stage. That is not duplication for its own sake -
+ * they answer at different moments with different inputs - but it is a hazard with a measured
+ * cost: the given-name rung existed on the resolution ladder and not on this one, so the rung
+ * that would have looked did not run on the path that mints. Any rung added to either is
+ * considered for both.
  */
 public with sharing class AAO_Identity {
     /** resolved | created | shadowed */
@@ -50,6 +64,16 @@ public with sharing class AAO_Identity {
      *                  person is one person across that account's deals.
      */
     public static Resolution resolve(AAO_Participant__c p, Id accountId) {
+        return resolve(p, accountId, null);
+    }
+
+    /**
+     * The deal is passed so the given-name rung can see the deal's own map rows, which is the
+     * eightieth stamp's scope in its own words: "matched against given names scoped to the
+     * account and the deal's map rows". An overload rather than a changed signature, so every
+     * existing caller keeps working and only the projection, which knows the deal, opts in.
+     */
+    public static Resolution resolve(AAO_Participant__c p, Id accountId, Id opportunityId) {
         Resolution r = new Resolution();
 
         // RUNG 1. Already linked. Ingest resolved it, or a human did.
@@ -84,24 +108,61 @@ public with sharing class AAO_Identity {
             String.isBlank(p.AAO_Display_Name__c) ? p.AAO_Roster_Key__c : p.AAO_Display_Name__c
         );
 
+        // A SINGLE SPOKEN TOKEN IS ITS OWN RUNG, and the eightieth stamp is the receipt for it.
+        //
+        // WHAT HAPPENED: a designator of one word, "Fatima", reached this ladder from the
+        // resolution stage. `AAO_PersonName.parse` reads one token as a SURNAME, which is right
+        // for the input it was built for - a roster string's bare token is a family name - so
+        // rung 3 searched `LastName = 'Fatima'`, found nothing, and rung 4 CREATED a Contact
+        // with no first name, no email and no title on a customer-named account. Fatema
+        // Choudray, VP Premier Sales Performance, was already sitting on that same account,
+        // seeded, and is the same human. Her machine-minted twin then wrote `Signature
+        // Approver`, rank 5, onto the relationship map a seller reads.
+        //
+        // TWO MECHANISMS FAILED. This ladder had no rung that matched a bare given name (the
+        // resolution stage's ladder does; two ladders, one of them creation-capable, and the
+        // rung was on the other one). And the twenty-fourth stamp's free structural guard did
+        // not hold: its reasoning was that a Contact requires a LastName so "CFO" can never
+        // create, which is true of titles and NOT true of one spoken first name, because one
+        // token parses into LastName and satisfies the schema. The guard was believed to mean
+        // only a real full name can create. It never meant that.
+        Boolean oneToken = name.ok() && String.isBlank(name.first);
+        if (oneToken && accountId != null) {
+            // MATCH AGGRESSIVELY. Given OR family name, because a lone spoken token is far more
+            // often somebody's first name, scoped to the account and to the deal's map rows,
+            // and STILL never picking between two.
+            List<Contact> byToken = givenOrFamily(name.last, accountId, opportunityId);
+            if (byToken.size() == 1) {
+                r.contactId = byToken[0].Id;
+                r.action = 'resolved';
+                r.rung = 'single token as given or family name, within the account';
+                linkBack(p, r.contactId);
+                return r;
+            }
+            if (byToken.size() > 1) {
+                return shadow(
+                    p, accountId, name, 'Ambiguous',
+                    byToken.size() + ' people on this account answer to "' + name.last +
+                    '" as a given or family name, and one spoken word cannot separate them. ' +
+                    'Held for the Identification flag; a link guessed under ambiguity is ' +
+                    'worse than no link at all.',
+                    r
+                );
+            }
+        }
+
         // RUNG 3. Name, and ONLY within the account, and only where it is unambiguous. A name
         // is not an identifier and this rung knows it: the account bound keeps the search off
         // every namesake in the org, and two hits refuse rather than pick.
-        if (name.ok() && accountId != null && String.isNotBlank(name.last)) {
+        if (name.ok() && accountId != null && String.isNotBlank(name.last) && !oneToken) {
             String last = name.last;
-            List<Contact> byName = String.isBlank(name.first)
-                ? [
-                      SELECT Id FROM Contact
-                      WHERE AccountId = :accountId AND LastName = :last
-                      LIMIT 2
-                  ]
-                : [
-                      SELECT Id FROM Contact
-                      WHERE AccountId = :accountId
-                          AND LastName = :last
-                          AND FirstName = :name.first
-                      LIMIT 2
-                  ];
+            List<Contact> byName = [
+                SELECT Id FROM Contact
+                WHERE AccountId = :accountId
+                    AND LastName = :last
+                    AND FirstName = :name.first
+                LIMIT 2
+            ];
             if (byName.size() == 1) {
                 r.contactId = byName[0].Id;
                 r.action = 'resolved';
@@ -119,6 +180,27 @@ public with sharing class AAO_Identity {
         // RUNG 4. CREATE, where the toggle allows it and a name parses deterministically.
         if (!name.ok()) {
             return shadow(p, accountId, name, 'Unresolvable', name.refusedBecause, r);
+        }
+
+        // CREATE CONSERVATIVELY · A SINGLE-TOKEN DESIGNATOR CAN LINK BUT NEVER CREATE.
+        //
+        // This completes the twenty-fourth stamp's guard by that guard's own logic rather than
+        // adding a new rule beside it: the point was always that only a real full name reaches
+        // creation, and the LastName requirement was mistaken for a mechanism that guaranteed
+        // it. One word is a thing somebody said, not a person's name on a record a seller will
+        // read for years, and a wrong spelling of it is permanent in their CRM. So ladder-zero
+        // on one token HOLDS with its evidence and its reason.
+        if (oneToken) {
+            return shadow(
+                p, accountId, name, 'Single_Token',
+                'All this person has is one spoken word, "' + name.last + '", which matched ' +
+                'nobody on the account by given or family name. A single token may LINK and ' +
+                'may never CREATE: a transcript spelling minted as a Contact carries the ' +
+                'transcriber\'s error into the CRM permanently, and "Fatima" for Fatema ' +
+                'Choudray is the measured case. Held with its evidence for the ' +
+                'Identification flag.',
+                r
+            );
         }
         if (!AAO_Settings.mayCreateContacts()) {
             return shadow(
@@ -171,6 +253,60 @@ public with sharing class AAO_Identity {
         return shadow(
             p, accountId, name, 'Create_Failed', String.join(errs, ' | '), r
         );
+    }
+
+    /**
+     * THE GIVEN-NAME RUNG's search: one token as a given OR family name, scoped to the account
+     * and to the deal's own map rows.
+     *
+     * The map-row leg is Matthew's own sketch from the title rung, applied here for the same
+     * reason: somebody already placed on this deal is a candidate even where their Contact
+     * hangs off a different account, because being on the map is a stronger statement about
+     * relevance than an AccountId is.
+     *
+     * **EXACT MATCHING, DELIBERATELY, and the limit is stated rather than papered over.** This
+     * rung compares strings the way the ladder has always compared them. It therefore does NOT
+     * link "Fatima" to "Fatema", which is the very row that occasioned it: the ASR heard one
+     * spelling and the CRM carries another, one character apart. Fuzzy matching is not ruled and
+     * is not invented here, because a resolver that guesses at near-spellings attaches a call's
+     * worth of evidence to whoever sorted closest. What protects that row is the creation bar
+     * below, not this rung.
+     */
+    @TestVisible
+    private static List<Contact> givenOrFamily(String token, Id accountId, Id opportunityId) {
+        Map<Id, Contact> hits = new Map<Id, Contact>(
+            [
+                SELECT Id FROM Contact
+                WHERE AccountId = :accountId
+                    AND (FirstName = :token OR LastName = :token)
+                LIMIT 3
+            ]
+        );
+
+        Set<Id> mapped = new Set<Id>();
+        try {
+            for (ALTF__Contact_Map_Details__c m : [
+                SELECT ALTF__Contact__c FROM ALTF__Contact_Map_Details__c
+                WHERE ALTF__Account__c = :accountId OR ALTF__Opportunity__c = :opportunityId
+            ]) {
+                if (m.ALTF__Contact__c != null && !hits.containsKey(m.ALTF__Contact__c)) {
+                    mapped.add(m.ALTF__Contact__c);
+                }
+            }
+        } catch (Exception e) {
+            // An unreadable or unlicensed vendor table is absence, never an error. The account
+            // leg above still answered.
+        }
+        if (!mapped.isEmpty()) {
+            hits.putAll(
+                [
+                    SELECT Id FROM Contact
+                    WHERE Id IN :mapped AND (FirstName = :token OR LastName = :token)
+                    LIMIT 3
+                ]
+            );
+        }
+        return hits.values();
     }
 
     // ------------------------------------------------------------------ the shadow

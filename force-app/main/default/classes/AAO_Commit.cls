@@ -429,7 +429,31 @@ public class AAO_Commit {
             // claim read UNVERIFIED the verdicts differed, so this branch never fired on a
             // completing utterance and the conflation was unreachable. The accumulation fixture
             // caught it the moment both claims read TRUE.
-            if (!advancesCompleteness(existing, accumulated)) {
+            //
+            // AND REINFORCEMENT COUNTS DISTINCT UTTERANCES, ruled at the eightieth stamp from
+            // seven measured Emerson answers whose two claims quoted IDENTICAL byte ranges. The
+            // two comprehensive reads found one utterance twice and read a different voiced
+            // meaning off it; the twenty-seventh stamp lets both ride to call 3 on purpose, and
+            // the answer key then collapses them onto one row here. The claim still stands as
+            // evidence and its spans still merge - **nothing is deleted and nothing is refused**
+            // - but it is CORROBORATED rather than Reinforced, because two reads of one sentence
+            // is not the buyer saying it twice, which the sixty-second stamp already ruled at
+            // the card grain in exactly those words.
+            //
+            // The order of these three is the sixty-ninth stamp's three axes in priority order:
+            // COMPLETENESS first (the words advanced the requirement), then CORROBORATION (the
+            // same words seen again), then REINFORCEMENT (new words for a standing point).
+            if (advancesCompleteness(existing, accumulated)) {
+                // Established, untouched. A completing utterance is not a repetition.
+            } else if (AAO_Accumulate.intersectsStanding(existing.AAO_Spans__c, cand.AAO_Spans__c)) {
+                claimOutcome = AAO_Accumulate.CORROBORATED;
+                if (r.candidateOutcome == null) {
+                    r.candidateOutcome = AAO_Accumulate.CORROBORATED;
+                }
+                r.note = 'Corroborated: these words intersect evidence already standing on ' +
+                    'this answer within the same source. The claim stands; the reinforcement ' +
+                    'count does not move.';
+            } else {
                 claimOutcome = 'Reinforced';
                 if (r.candidateOutcome == null) {
                     r.candidateOutcome = 'Reinforced';

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Dimension__c</fullName>
+    <description>Which map dimension this value belongs to, in AAO_P8Codes' own vocabulary: "buyer role" or "political". Support and sentiment are deliberately absent: they keep their counter arithmetic and a net zero reads Neutral, per the forty-fourth stamp, so ranking them would be a second mechanism for a question that already has one.</description>
+    <label>Dimension</label>
+    <type>Text</type>
+    <length>40</length>
+    <required>true</required>
+    <unique>false</unique>
+</CustomField>

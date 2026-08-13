@@ -12503,3 +12503,47 @@ set, so run serially shard 1 slices an already-smaller set and leaves a remainde
 drained in two more rounds, costing 2 extra calls. Not a pipeline defect, a serial-driver caveat.
 The join threw once at SOQL 101 before the split existed, rolled back whole, re-ran clean. Call 0
 did not flake.
+
+## Session 102 · the seventy-seventh stamp · the never-blank procedure, and the ranks became configuration
+
+Suite **488, 487 pass**, the lone failure the standing org-resident non-AAO
+`ConvertToOpportunityTest`. Report in `review/pf0813-neverblank/`.
+
+**ACCEPTANCE MET ON THE BOARD, both halves.** Adam Pfeiffer's Buyer Role reads **Approver**, with
+`Also established, outranked by Approver: Evaluator - Adam Pfeiffer, 30 July 2026` in his note. He
+had `AAO_BR_EVAL` and `AAO_BR_APP` both established; Approver ranks 3, Evaluator 2. Kayla's blanks
+are correct and are the ruling's one unwritten path: she has no buyer-role or political answers at
+all, so the set is empty and silence stays silence. **Re-projection alone was enough**, no fresh
+pass: 0 created, 1 populated, 2 unchanged.
+
+**`AAO_MapValues` OWNS EVERY BRANCH**, and returns null only for an empty set. That negative property
+is the whole point, so the tests walk the branches one at a time rather than asserting it once: empty
+is blank; one value is always written INCLUDING an unranked one; several write the highest-ranked; an
+unranked value sorts below every ranked one but stays eligible; only-unranked takes the vendor
+picklist order; and a value nothing knows is still written.
+
+**THE RANKS ARE CONFIGURATION NOW**, on `AAO_Map_Value__mdt`, ten seeded rows. An org may relabel a
+slot — production displays the stored `Signature Approver` as "Decision Maker and Approver" — so an
+org whose words differ can state what its words mean rather than have our ranking silently mean
+something else on its map. THE CODE READS AND WRITES STORED VALUES ONLY, and a test greps the class
+body for every value string to prove no label is hardcoded in logic. **The unranked tiebreak reads
+the vendor's own picklist BY DESCRIBE** rather than from configuration, because a customer's picklist
+order is a fact about their org and asking the schema is the only way to know it that cannot drift.
+
+**The hold branch in `AAO_Project` is now unreachable and was left standing anyway**: if the
+procedure ever regains a way to answer nothing, that records it happened instead of writing a silent
+blank nobody can trace.
+
+**Two tests corrected in place.** `aCollisionTOUCHINGanUnrankedRoleSTILLREFUSES` was LITERALLY this
+acceptance case, asserting the hold on Evaluator-plus-Approver; what it protected is not lost and is
+asserted on the outranked list instead of on a refusal line.
+
+**ONE THING I GOT WRONG, and it was my reading rather than the code.** I reported the note as missing
+its Buyer Role line and was a step away from calling it a defect. The note is MULTI-LINE and my grep
+was showing only its first line; read properly, all four lines were present and correct. The tooling
+between me and the row was wrong, not the row.
+
+**retryNotes: none.** No model calls. Projection SOQL 18/100, DML 10/150. Two deploy failures on the
+way, both mine and both mechanical: an empty custom-metadata string value is invalid, and a record
+file missing `xmlns:xsd` fails with a bare `UNKNOWN_EXCEPTION` naming nothing — found by diffing
+against a working record rather than by guessing at it.

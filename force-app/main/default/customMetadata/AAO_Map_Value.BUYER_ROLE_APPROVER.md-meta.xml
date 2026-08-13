@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Approver</label>
+    <protected>false</protected>
+    <values>
+        <field>AAO_Dimension__c</field>
+        <value xsi:type="xsd:string">buyer role</value>
+    </values>
+    <values>
+        <field>AAO_Stored_Value__c</field>
+        <value xsi:type="xsd:string">Approver</value>
+    </values>
+    <values>
+        <field>AAO_Rank__c</field>
+        <value xsi:type="xsd:double">3</value>
+    </values>
+</CustomMetadata>

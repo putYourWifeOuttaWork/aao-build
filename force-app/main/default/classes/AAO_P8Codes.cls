@@ -112,6 +112,17 @@ public with sharing class AAO_P8Codes {
      * "anything the ladder cannot rank": it keeps the refusal-note hold. Guessing where an
      * Approver sits against a Decision Maker would be this file inventing a ruling.
      */
+    /**
+     * SUPERSEDED BY CONFIGURATION at the seventy-seventh stamp, and kept only as the fallback
+     * for an org whose seed carries no ranks at all. The ranks now live on
+     * `AAO_Map_Value__mdt` because they are a methodology statement an org must be able to
+     * state, and because a relabelled slot needs somewhere to say what its words mean.
+     *
+     * Matthew's original ordering is preserved here whole, with his reasoning, because it is
+     * what the seed ships: an Evaluator outranks a User *"not because it is later, but because
+     * almost all evaluators are also users"*. The ladder is about which role SUBSUMES the
+     * other, never about which establishment arrived last.
+     */
     private static final List<String> BUYER_ROLE_LADDER = new List<String>{
         'Decision Maker',
         'Evaluator',
@@ -119,34 +130,28 @@ public with sharing class AAO_P8Codes {
     };
 
     /**
-     * The highest-ranked established Buyer Role, or NULL where the ladder cannot rank the set.
+     * The Buyer Role to write, given everything established. **NEVER NULL FOR A NON-EMPTY SET.**
      *
-     * Null is the signal to hold: the caller keeps the collision refusal rather than picking.
-     * That is the difference between this and `politicalCeiling`, which ranks a closed
-     * vocabulary and can always answer.
+     * *(Corrected in place, seventy-seventh stamp. This used to return null on any set touching
+     * a role the ladder did not rank, and the caller then held the field and wrote a refusal
+     * note instead. That was right while nothing ranked Approver or Signature Approver; it left
+     * Adam Pfeiffer's Buyer Role BLANK on a live map with two roles established behind it, and
+     * Matthew ruled the blank out: one established value is written, several write the
+     * highest-ranked, and an unranked value never causes a blank.)*
+     *
+     * The procedure itself lives in `AAO_MapValues` so that one place owns every branch of it.
      */
     public static String buyerRoleCeiling(Set<String> roles) {
-        if (roles == null || roles.isEmpty()) {
-            return null;
-        }
-        for (String role : roles) {
-            if (!BUYER_ROLE_LADDER.contains(role)) {
-                // One unrankable role and the whole set holds. A partial ranking would project
-                // a value while silently dropping a role nobody ruled on.
-                return null;
-            }
-        }
-        for (String rung : BUYER_ROLE_LADDER) {
-            if (roles.contains(rung)) {
-                return rung;
-            }
-        }
-        return null;
+        return AAO_MapValues.decide(DIM_BUYER_ROLE, roles);
     }
 
-    /** Whether the ladder ranks this role at all. Used to explain a hold. */
+    /**
+     * Whether the SEED ranks this role, which is now a question about configuration rather
+     * than about a constant. It no longer explains a hold, because there are no holds: an
+     * unranked value sorts below every ranked one and is still written where it stands alone.
+     */
     public static Boolean ranksBuyerRole(String role) {
-        return role != null && BUYER_ROLE_LADDER.contains(role);
+        return role != null && AAO_MapValues.rankOf(DIM_BUYER_ROLE, role) != null;
     }
 
     /**
@@ -221,15 +226,11 @@ public with sharing class AAO_P8Codes {
      * alone rather than written `Unknown`.
      */
     public static String politicalCeiling(Set<String> placements) {
-        if (placements == null || placements.isEmpty()) {
-            return null;
-        }
-        for (String rung : POLITICAL_CEILING) {
-            if (placements.contains(rung)) {
-                return rung;
-            }
-        }
-        return null;
+        // Same procedure, same guarantee. This dimension could always answer because its
+        // vocabulary was closed and fully ranked; it now answers from the same configured
+        // ranks, so an org that adds a placement gets a ranking it can state rather than a
+        // silent fall-through.
+        return AAO_MapValues.decide(DIM_POLITICAL, placements);
     }
 
     // -------------------------------------------------------------------- the guard

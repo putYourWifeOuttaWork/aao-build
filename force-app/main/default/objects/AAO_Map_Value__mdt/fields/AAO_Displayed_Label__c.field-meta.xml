@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Displayed_Label__c</fullName>
+    <description>What this org's map DISPLAYS for the stored value. Blank means the label and the stored value are the same word, which is our seed's default. Where they differ (production shows the stored Signature Approver as "Decision Maker and Approver"), this is how the org says so, and it is read by humans and by reports rather than by projection logic.</description>
+    <label>Displayed Label</label>
+    <type>Text</type>
+    <length>255</length>
+    <required>false</required>
+    <unique>false</unique>
+</CustomField>

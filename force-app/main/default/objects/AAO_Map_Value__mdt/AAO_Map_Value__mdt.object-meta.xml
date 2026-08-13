@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>THE LABEL-TO-VALUE MAP AND THE RANKS, configuration on the People charter rather than constants in code. Matthew's ruling, seventy-seventh stamp: an org may RELABEL a slot (production displays the stored value Signature Approver as "Decision Maker and Approver"), so an org whose words differ must be able to state what its words mean rather than have our ranking silently mean something else on its map. One row per stored value per dimension, carrying the rank the never-blank procedure sorts by and the label this org displays it as. THE CODE READS AND WRITES STORED VALUES ONLY; the label exists so a human reading a map and a human reading this table are talking about the same slot. No label string is ever hardcoded in logic, and a test asserts it.</description>
+    <label>AAO Map Value</label>
+    <pluralLabel>AAO Map Values</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

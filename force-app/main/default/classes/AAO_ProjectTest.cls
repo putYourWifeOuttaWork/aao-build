@@ -310,12 +310,20 @@ private class AAO_ProjectTest {
     }
 
     @IsTest
-    static void aCollisionTOUCHINGanUnrankedRoleSTILLREFUSES() {
-        // THE HOLD SURVIVES exactly where the ruling leaves it: "the refusal-note hold is
-        // superseded for ladder-resolvable collisions and STAYS FOR ANYTHING THE LADDER CANNOT
-        // RANK." Only three roles were ranked. Approver and Signature Approver were not, and
-        // deciding where an Approver sits against a Decision Maker would be this code inventing
-        // a ruling nobody gave it.
+    static void aPREVIOUSLYUNRANKEDROLEISNOWWRITTENANDNOTHINGISHELD() {
+        // CORRECTED IN PLACE, seventy-seventh stamp, AND THIS IS THE ACCEPTANCE CASE.
+        //
+        // It used to be `aCollisionTOUCHINGanUnrankedRoleSTILLREFUSES` and asserted the hold, on
+        // the forty-fifth stamp's ruling that the hold "stays for anything the ladder cannot
+        // rank". That was right while only three roles were ranked. It also left Adam Pfeiffer's
+        // Buyer Role BLANK on a live map with Evaluator and Approver both established behind it,
+        // and Matthew ruled the blank out: *"If the set has MORE THAN ONE: WRITE THE
+        // HIGHEST-RANKED."* Approver ranks 3, Evaluator 2, so Approver is written and Evaluator
+        // rides the note.
+        //
+        // What the old test protected is NOT lost: nothing established is discarded, and the
+        // surface still says so. That is asserted below, on the outranked list rather than on a
+        // refusal line.
         Id p = someone();
         AAO_Project.Derivation d = AAO_Project.derive(
             new List<AAO_Answer__c>{
@@ -324,17 +332,36 @@ private class AAO_ProjectTest {
             }
         );
         System.assertEquals(
-            null, d.buyerRole, 'One unrankable role and the whole set holds. Got: ' + d.buyerRole
-        );
-        System.assertEquals(new List<String>{ 'Approver', 'Evaluator' }, d.buyerRoleCollision);
-        System.assert(
-            d.buyerRoleOutranked.isEmpty(),
-            'And nothing is reported as outranked, because nothing was ranked.'
+            'Approver', d.buyerRole,
+            'Approver outranks Evaluator in the seed, so it is written rather than held.'
         );
         System.assert(
-            d.note != null && d.note.contains('Approver, Evaluator'),
-            'The refusal still says so on the surface the seller reads. Got: ' + d.note
+            d.buyerRoleCollision.isEmpty(),
+            'There is no collision to report, because the procedure answered. Got: ' +
+            d.buyerRoleCollision
         );
+        System.assertEquals(
+            new List<String>{ 'Evaluator' }, d.buyerRoleOutranked,
+            'And the established role it outranked is kept, not dropped.'
+        );
+        System.assert(
+            d.note != null && d.note.contains('outranked by Approver: Evaluator'),
+            'The note carries it on the surface the seller reads. Got: ' + d.note
+        );
+    }
+
+    @IsTest
+    static void nothingESTABLISHEDISTHEONLYBLANK() {
+        // The one path the ruling leaves unwritten, asserted so a later session cannot widen it.
+        Id p = someone();
+        AAO_Project.Derivation d = AAO_Project.derive(
+            new List<AAO_Answer__c>{ ans(AAO_P8Codes.SENTIMENT, p, 'TRUE', 10, 2, 'SUPPORTER') }
+        );
+        System.assertEquals(
+            null, d.buyerRole, 'No buyer-role evidence, so no buyer role. Silence stays silence.'
+        );
+        System.assert(d.buyerRoleOutranked.isEmpty());
+        System.assert(d.buyerRoleCollision.isEmpty(), 'And it is not reported as a collision.');
     }
 
     @IsTest

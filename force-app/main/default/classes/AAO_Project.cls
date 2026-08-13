@@ -1516,22 +1516,27 @@ public with sharing class AAO_Project {
         // nothing ranked the roles; it is wrong now that something does, and Adam Pfeiffer's
         // row is the acceptance case. The hold survives only where the ladder genuinely cannot
         // answer, which is any set touching Approver or Signature Approver.
+        // THE HOLD IS GONE, and its absence is the seventy-seventh stamp's whole point. The
+        // procedure returns null only for an EMPTY set, which never reaches this line because
+        // the caller does not call it with nothing. Every other set yields a value, so a person
+        // with evidence never carries a blank Buyer Role again.
         String ceiling = AAO_P8Codes.buyerRoleCeiling(established);
-        List<String> several = new List<String>(established);
-        several.sort();
         if (ceiling == null) {
+            // Unreachable by construction and left standing rather than deleted: if the
+            // procedure ever regains a way to answer nothing, this records that it happened
+            // instead of writing a silent blank nobody can trace.
+            List<String> several = new List<String>(established);
+            several.sort();
             d.buyerRoleCollision = several;
             return;
         }
         d.buyerRole = ceiling;
-        // The roles the ladder outranked are NOT discarded: they were established by evidence
+        // The roles the procedure outranked are NOT discarded: they were established by evidence
         // and the note carries them with their citations, which is what makes a projected
-        // Evaluator still auditable back to the User words.
-        for (String role : several) {
-            if (role != ceiling) {
-                d.buyerRoleOutranked.add(role);
-            }
-        }
+        // Approver still auditable back to the Evaluator words.
+        d.buyerRoleOutranked = AAO_MapValues.outranked(
+            AAO_P8Codes.DIM_BUYER_ROLE, established
+        );
     }
 
     /**

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Element_Completeness__c</fullName>
+    <description>RENAMED FROM AAO_Element_Coverage__c, sixty-ninth stamp: &quot;coverage&quot; is the VENDOR&apos;s word on the map for how well a person is known, and reusing it for how much of a question the words answer collides on the one surface sellers read. MEASURES COMPLETENESS: which elements of the proposition these words answer. DATA, NEVER A GATE (seventieth stamp) - the blind verifier decides truth, and completeness accumulates across utterances by deterministic union at the join. Keep apart from CORROBORATION (both reads found it) and REINFORCEMENT (how many times a person said it).</description>
+    <label>Element Completeness</label>
+    <length>32768</length>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>6</visibleLines>
+</CustomField>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Synthetic__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Demo and test rows, so a real org&apos;s data and a fixture can never be counted together.</description>
+    <label>Synthetic</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

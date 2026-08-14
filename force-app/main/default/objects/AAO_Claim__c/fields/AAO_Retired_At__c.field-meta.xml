@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Retired_At__c</fullName>
+    <description>When the retirement happened. A third clock beside evidence-occurred and recorded-at: the claim&apos;s two clocks say when the words were spoken and when we processed them, and neither can say when we decided the establishment was wrong.</description>
+    <label>Retired At</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>DateTime</type>
+</CustomField>

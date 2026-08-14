@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Answer_Key__c</fullName>
+    <caseSensitive>true</caseSensitive>
+    <description>Written by: AAO_AnswerTrigger via AAO_AnswerKey, frozen composer over subject type plus the populated lookup plus the contract. Read by: The failure detector for the read-before-write that human precedence depends on. DUPLICATE_VALUE is a merge path, never an error path.</description>
+    <externalId>true</externalId>
+    <label>Answer Key</label>
+    <length>120</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>true</unique>
+</CustomField>

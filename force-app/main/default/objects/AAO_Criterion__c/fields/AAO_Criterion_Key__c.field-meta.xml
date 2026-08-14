@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Criterion_Key__c</fullName>
+    <caseSensitive>false</caseSensitive>
+    <description>Opportunity id plus a content hash of the criterion text, normalized for case and whitespace only. Unique, so the same criterion voiced on three calls is ONE criterion carrying three claims rather than three criteria carrying one each - which is what makes reinforcement countable, since guidance orders a person&apos;s criteria by what they have pressed most recently and most often. Scoped to the opportunity because a criterion is a deal artifact: every one of the 402 rows in production carries an Opportunity despite the schema making it optional.</description>
+    <externalId>true</externalId>
+    <label>Criterion Key</label>
+    <length>80</length>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>true</unique>
+</CustomField>

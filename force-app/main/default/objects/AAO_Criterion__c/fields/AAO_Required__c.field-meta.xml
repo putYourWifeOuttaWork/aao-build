@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Required__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Gate language only, and the default is unchecked. Strength of feeling is not a gate. Written from an AAO_DC_R answer on this same criterion. NOTE the standing ruling that travels with it: a criterion never raises a flag, however required the buyer says it is - letting one go red would be the machine deciding what is do-or-die.</description>
+    <label>Required</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

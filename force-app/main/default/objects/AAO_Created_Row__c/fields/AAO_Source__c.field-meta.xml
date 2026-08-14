@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Source__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>The Source whose evidence prompted the creation, where one exists. Nullable: the back-filled first row predates the record.</description>
+    <label>Source</label>
+    <referenceTo>AAO_Source__c</referenceTo>
+    <relationshipLabel>Created Rows</relationshipLabel>
+    <relationshipName>Created_Rows</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

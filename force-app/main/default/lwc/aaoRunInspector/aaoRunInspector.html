@@ -1,0 +1,165 @@
+<template>
+    <lightning-card title="Run Inspector" icon-name="utility:search">
+        <div class="slds-var-p-horizontal_medium slds-var-p-bottom_medium">
+            <template if:true={error}>
+                <div class="slds-text-color_error slds-var-m-bottom_small">{error}</div>
+            </template>
+
+            <template if:false={hasRuns}>
+                <p class="slds-text-body_regular">
+                    No runs have touched this opportunity yet.
+                </p>
+            </template>
+
+            <template if:true={hasRuns}>
+                <lightning-combobox
+                    label="Run"
+                    value={runKey}
+                    options={runOptions}
+                    onchange={handleRunChange}
+                ></lightning-combobox>
+
+                <template if:true={loading}>
+                    <div class="slds-var-m-top_medium">
+                        <lightning-spinner alternative-text="Loading run" size="small"></lightning-spinner>
+                    </div>
+                </template>
+
+                <template if:true={hasView}>
+                    <!-- THE ORDER IS DRAWN. The pipeline's real sequence, in plain names, each
+                         step carrying the number the run actually produced. -->
+                    <div class="stepper">
+                        <template for:each={pipeline} for:item="s">
+                            <div key={s.label} class="step">
+                                <div class="step-count">{s.countLabel}</div>
+                                <div class="step-name">{s.label}</div>
+                                <div class="step-meaning">{s.meaning}</div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div class="perf-bar">
+                        <button class="link-button" onclick={togglePerformance}>{performanceLabel}</button>
+                    </div>
+                    <template if:true={showPerformance}>
+                        <!-- ONLY WHAT THE RUN JOURNALLED. A pass from before the receipt object
+                             existed says so and shows nothing, rather than offering a number
+                             recomputed from record timestamps. -->
+                        <template if:true={performanceNote}>
+                            <div class="perf-panel">{performanceNote}</div>
+                        </template>
+                        <template if:true={performanceSummary}>
+                            <div class="perf-summary">{performanceSummary}</div>
+                            <div class="perf-scroll">
+                                <table class="perf-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Stage</th><th>Wall</th><th>Callouts</th>
+                                            <th>SOQL</th><th>DML</th><th>CPU</th><th>Heap</th>
+                                            <th>Cache</th><th>Produced</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template for:each={performanceLines} for:item="p">
+                                            <tr key={p.key} class={p.rowClass}>
+                                                <td>{p.stage}</td>
+                                                <td>{p.wall}</td>
+                                                <td>{p.callouts}</td>
+                                                <td>{p.soql}</td>
+                                                <td>{p.dml}</td>
+                                                <td>{p.cpu}</td>
+                                                <td>{p.heap}</td>
+                                                <td>{p.cache}</td>
+                                                <td>{p.produced}</td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </template>
+                    </template>
+
+                    <template if:true={note}>
+                        <p class="slds-text-body_small slds-var-m-top_x-small">{note}</p>
+                    </template>
+
+                    <template if:true={defects}>
+                        <template for:each={defects} for:item="d">
+                            <p key={d} class="defect">{d}</p>
+                        </template>
+                    </template>
+
+                    <!-- ROWS GROUP BY PERSON, because that is how the map reads and because
+                         "what do we know about this person, and how" is the question a reviewer
+                         arrives with. -->
+                    <template for:each={groups} for:item="g">
+                        <div key={g.key} class="person">
+                            <button class={g.headClass} data-name={g.name} onclick={togglePerson}>
+                                <lightning-icon
+                                    icon-name={g.toggleIcon}
+                                    size="xx-small"
+                                    class="slds-var-m-right_x-small"
+                                ></lightning-icon>
+                                <span class="person-name">{g.name}</span>
+                                <span class="person-count">{g.countLabel}</span>
+                            </button>
+
+                            <template if:true={g.internalMark}>
+                                <div class="person-internal">{g.internalMark}</div>
+                            </template>
+
+                            <template if:true={g.expanded}>
+                                <template for:each={g.rows} for:item="t">
+                                    <div key={t.id} class="row-wrap">
+                                        <div
+                                            class={t.rowClass}
+                                            data-id={t.id}
+                                            title={t.shortName}
+                                            onclick={handleSelect}
+                                        >
+                                            <span class="row-title">{t.title}</span>
+                                            <span class="row-verdict">{t.verdict}</span>
+                                        </div>
+                                        <!-- THE DETAIL OPENS UNDER ITS OWN ROW, pushing the rows
+                                             below it down, so the reader never loses their place. -->
+                                        <template if:true={t.open}>
+                                            <c-aao-trace-detail trace={t}></c-aao-trace-detail>
+                                        </template>
+                                    </div>
+                                </template>
+
+                                <!-- REFUSALS COLLAPSED UNTIL ASKED FOR. The count is a control and
+                                     is visible before anybody asks; the Verified step above carries
+                                     the run's total and its meaning line either way. -->
+                                <template if:true={g.hasRefused}>
+                                    <button
+                                        class="refused-toggle"
+                                        data-name={g.name}
+                                        onclick={toggleRefused}
+                                    >{g.refusedLabel}</button>
+
+                                    <template for:each={g.refusedRows} for:item="t">
+                                        <div key={t.id} class="row-wrap">
+                                            <div
+                                                class={t.rowClass}
+                                                data-id={t.id}
+                                                title={t.shortName}
+                                                onclick={handleSelect}
+                                            >
+                                                <span class="row-title">{t.title}</span>
+                                                <span class="row-verdict">{t.verdict}</span>
+                                            </div>
+                                            <template if:true={t.open}>
+                                                <c-aao-trace-detail trace={t}></c-aao-trace-detail>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </template>
+                            </template>
+                        </div>
+                    </template>
+                </template>
+            </template>
+        </div>
+    </lightning-card>
+</template>

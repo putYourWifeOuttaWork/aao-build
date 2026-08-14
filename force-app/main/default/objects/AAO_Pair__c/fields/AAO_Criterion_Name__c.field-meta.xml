@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Criterion_Name__c</fullName>
+    <description>Written by: call 1, only on AAO_DC_N naming pairs. Read by: the join, which keys the criterion on opportunity plus this name. A CRITERION&apos;S IDENTITY IS ITS NAME, ruled 8 August 2026 (a23, refined at the twenty-seventh stamp): a descriptive word or words stating the condition that must be true for the buyer to make the positive decision, derived from the establishing words. &quot;Annual total cost&quot; is the specimen. This is a derived label and not evidence: the verbatim establishing words stay on AAO_Answer_Text__c under the byte check, and this field is what the vendor Subject displays. Null on every non-naming pair. Capped at 255 because the vendor Subject holds 255 and a clipped name is a name nobody chose.</description>
+    <externalId>false</externalId>
+    <label>Criterion Name</label>
+    <length>255</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

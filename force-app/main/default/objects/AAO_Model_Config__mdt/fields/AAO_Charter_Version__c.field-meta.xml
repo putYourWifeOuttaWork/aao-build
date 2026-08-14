@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Charter_Version__c</fullName>
+    <description>Written by: a human, in this record, and bumped whenever the prompt or the output schema changes in any way that could change what the model proposes. Read by: AAO_Extract, stamped onto every Candidate. This is the grain abstention analysis groups by, so a silent prompt edit under a fixed version corrupts every rate computed across the boundary.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Written by: a human, in this record, and bumped whenever the prompt or the output schema changes in any way that could change what the model proposes. Read by: AAO_Extract, stamped onto every Candidate. This is the grain abstention analysis groups by, so a silent prompt edit under a fixed version corrupts every rate computed across the boundary.</inlineHelpText>
+    <label>CharterVersion</label>
+    <length>20</length>
+    <required>true</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

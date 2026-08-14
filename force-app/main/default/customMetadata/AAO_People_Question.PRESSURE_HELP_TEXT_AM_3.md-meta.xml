@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>PRESSURE_HELP_TEXT_AM_3</label>
+    <protected>false</protected>
+    <values>
+        <field>AAO_Org_Override__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>AAO_Provenance__c</field>
+        <value xsi:type="xsd:string">Label</value>
+    </values>
+    <values>
+        <field>AAO_Question_Key__c</field>
+        <value xsi:type="xsd:string">PRESSURE_HELP_TEXT_AM_3</value>
+    </values>
+    <values>
+        <field>AAO_Sequence__c</field>
+        <value xsi:type="xsd:double">48.0</value>
+    </values>
+    <values>
+        <field>AAO_Shipped_Text__c</field>
+        <value xsi:type="xsd:string">Is the pressure connected to a compelling event?</value>
+    </values>
+</CustomMetadata>

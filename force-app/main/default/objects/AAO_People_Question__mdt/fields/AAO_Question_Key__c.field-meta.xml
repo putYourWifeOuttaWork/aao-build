@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Question_Key__c</fullName>
+    <description>The upstream label name this question corresponds to, e.g. AM_OM_SUPPORT_GUIDED_QUESTION_1. IDENTITY, NOT A DEPENDENCY: it is a stable name we keep so the family guard can assert a shape and so anyone comparing our text to Altify&apos;s can find the counterpart. Nothing reads ALTF at runtime and nothing keys on a package version, per LAW #1.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Question Key</label>
+    <length>120</length>
+    <required>true</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

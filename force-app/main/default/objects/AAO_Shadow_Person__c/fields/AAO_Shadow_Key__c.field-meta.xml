@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Shadow_Key__c</fullName>
+    <caseSensitive>false</caseSensitive>
+    <description>Written by: the create leg. Account id plus the lowercased email, or the account id plus the roster key where no email exists. Unique, so two runs over the same person on the same account produce one shadow rather than two. The key is per ACCOUNT rather than per opportunity, because a person is one person across that account&apos;s deals; stance is per scope and lives on the Answer, but identity is not.</description>
+    <externalId>true</externalId>
+    <label>Shadow Key</label>
+    <length>180</length>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>true</unique>
+</CustomField>

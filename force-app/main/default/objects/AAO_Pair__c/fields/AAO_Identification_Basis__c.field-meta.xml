@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Identification_Basis__c</fullName>
+    <description>Written by: call 2. Read by: a human auditing an identification. One sentence, per the schema: spoken by them, said about them by name, answered when addressed. It carries no identity in free text; the identity is the lookup.</description>
+    <externalId>false</externalId>
+    <label>Identification Basis</label>
+    <length>255</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

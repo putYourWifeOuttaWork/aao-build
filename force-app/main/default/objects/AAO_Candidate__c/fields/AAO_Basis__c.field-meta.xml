@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Basis__c</fullName>
+    <description>Written by: whoever proposes. Read by: the evidence-family law. Which family of evidence this row rests on, and therefore which shape it must have: Transcript needs a Source and spans, State needs neither and needs cited rows instead, Both needs everything. Ruled 47, 1 Aug 2026. Not required at field level on purpose: candidates written before the field exists must stay updatable, and the law is enforced on insert by AAO_EvidenceFamily rather than by the schema, so that a refusal can explain itself.</description>
+    <label>Basis</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>State</fullName>
+                <default>false</default>
+                <label>State</label>
+            </value>
+            <value>
+                <fullName>Transcript</fullName>
+                <default>false</default>
+                <label>Transcript</label>
+            </value>
+            <value>
+                <fullName>Both</fullName>
+                <default>false</default>
+                <label>Both</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

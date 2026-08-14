@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Cited_Source__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Written by: the Coverage route. Read by: the live record, for the current-state half of then-and-now. The frozen half is AAO_Snapshot__c.</description>
+    <label>Cited Source</label>
+    <referenceTo>AAO_Source__c</referenceTo>
+    <relationshipLabel>AAO Claim Bases</relationshipLabel>
+    <relationshipName>AAO_Cited_Claim_Bases</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

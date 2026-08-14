@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Voiced_By__c</fullName>
+    <deleteConstraint>Restrict</deleteConstraint>
+    <description>THE OWNER, never the key. Addendum 20: the person stays on the row as owner. The criterion is the subject because a person naming three criteria is three criteria, and keying on the person would collapse them onto one answer - which is the exact defect this ruling closes. The holder junction at projection is written from here, and it is also the citation for that person&apos;s Buyer Role: someone saying it has to integrate with our SAP instance is that person exercising decision authority.</description>
+    <label>Voiced By</label>
+    <referenceTo>AAO_Participant__c</referenceTo>
+    <relationshipLabel>AAO Criteria Voiced</relationshipLabel>
+    <relationshipName>AAO_Criteria_Voiced</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>DECISION_ORIENTATION_BUSINESS</label>
+    <protected>false</protected>
+    <values>
+        <field>AAO_Org_Override__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>AAO_Provenance__c</field>
+        <value xsi:type="xsd:string">UI_Capture</value>
+    </values>
+    <values>
+        <field>AAO_Question_Key__c</field>
+        <value xsi:type="xsd:string">DECISION_ORIENTATION_BUSINESS</value>
+    </values>
+    <values>
+        <field>AAO_Sequence__c</field>
+        <value xsi:type="xsd:double">55.0</value>
+    </values>
+    <values>
+        <field>AAO_Shipped_Text__c</field>
+        <value xsi:type="xsd:string">This person sees the big picture and considers the overall business impact your solution will have on their company&apos;s current and future state.</value>
+    </values>
+</CustomMetadata>

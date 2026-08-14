@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Bounded_Path__c</fullName>
+    <description>Written by: the cardinality guard. WHICH creation path hit its bound. Named rather than numbered, because &quot;something produced too many rows&quot; is not actionable and &quot;the People pass on this deal would have produced 54 findings&quot; is.</description>
+    <externalId>false</externalId>
+    <label>Bounded Path</label>
+    <length>80</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

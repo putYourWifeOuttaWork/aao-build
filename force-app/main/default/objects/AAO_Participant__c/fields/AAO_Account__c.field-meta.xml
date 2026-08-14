@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Account__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Written by: the participant writer, denormalized from the Source. Read by: coverage scoping, so a per-deal count is one query rather than a traversal.</description>
+    <label>Account</label>
+    <referenceTo>Account</referenceTo>
+    <relationshipLabel>AAO Participants</relationshipLabel>
+    <relationshipName>AAO_Participants</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

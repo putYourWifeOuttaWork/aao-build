@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Active__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Written by: a human, in this record. Read by: AAO_Extract, which refuses to call out when false. The switch that stops model calls without a deploy.</description>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Written by: a human, in this record. Read by: AAO_Extract, which refuses to call out when false. The switch that stops model calls without a deploy.</inlineHelpText>
+    <label>Active</label>
+    <type>Checkbox</type>
+</CustomField>

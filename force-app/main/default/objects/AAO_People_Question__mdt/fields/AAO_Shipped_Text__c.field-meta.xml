@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Shipped_Text__c</fullName>
+    <description>OUR text, shipped with the package. Byte-exact as authored. DeveloperControlled, so an upgrade replaces it and a subscriber cannot edit it — which is what makes it a dependable default rather than a value that drifts silently per org.</description>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Shipped Text</label>
+    <length>1024</length>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
+</CustomField>

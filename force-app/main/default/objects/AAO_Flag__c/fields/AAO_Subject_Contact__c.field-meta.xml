@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Subject_Contact__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Written by: Raise. Read by: Contention&apos;s subject. The flag still belongs to the deal, never to a person.</description>
+    <label>Subject Contact</label>
+    <referenceTo>Contact</referenceTo>
+    <relationshipLabel>AAO Flag Subjects</relationshipLabel>
+    <relationshipName>AAO_Flag_Subjects</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

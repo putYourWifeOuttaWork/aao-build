@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Inventory_Effort__c</fullName>
+    <description>Written by: a human, in this record, from measurement. Read by: AAO_Extract.inventorySpec, sent as output_config.effort on STAGE 1 ONLY. Blank falls back to AAO_Effort__c. It exists because session 74 measured the stage that shares that field and found the sharing was the defect: at effort=high the stage 1 read spent 7,500 of 7,500 output tokens on thinking and emitted ZERO content, three sessions after the shared value was first blamed on size. max_tokens bounds thinking and content together, so on this stage effort is not a quality dial, it is what decides whether any content is produced at all. Part of what produced a given result and therefore part of what has to be recorded alongside it.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Stage 1 only. Blank falls back to Effort. Measured, never guessed: at high the read spent its entire output budget thinking and returned no inventory.</inlineHelpText>
+    <label>Inventory Effort</label>
+    <length>20</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

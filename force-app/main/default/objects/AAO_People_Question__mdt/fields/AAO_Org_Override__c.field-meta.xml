@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Org_Override__c</fullName>
+    <description>THE ORG&apos;S text, and null until somebody sets it. SubscriberControlled, so an upgrade never touches it and we cannot overwrite what a customer wrote. Null is not a value: the reader prefers this only where it is populated, so an untouched org silently gets the shipped default and a customised org silently gets its own words, with no flag and no migration.</description>
+    <fieldManageability>SubscriberControlled</fieldManageability>
+    <label>Org Override</label>
+    <length>1024</length>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
+</CustomField>

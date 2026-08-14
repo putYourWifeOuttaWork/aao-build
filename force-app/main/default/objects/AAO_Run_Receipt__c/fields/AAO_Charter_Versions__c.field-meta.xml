@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Charter_Versions__c</fullName>
+    <description>Every charter and version that ran on this pass, one per line, as the calls themselves reported them. A run whose numbers cannot be attributed to a charter version cannot be compared with another run, which is what makes this telemetry rather than trivia. Written by: AAO_Receipt.</description>
+    <label>Charter Versions</label>
+    <length>4096</length>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>6</visibleLines>
+</CustomField>

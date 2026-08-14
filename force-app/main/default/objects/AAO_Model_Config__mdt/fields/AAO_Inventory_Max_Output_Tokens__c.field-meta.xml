@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Inventory_Max_Output_Tokens__c</fullName>
+    <description>The hard output bound on stage 1, owed since session 72 and set from measurement rather than comfort. THE CEILING IS A TIME BUDGET AND max_tokens IS THE ONLY DIAL THAT BOUNDS IT: at the ~84 output tokens per second measured for the strong model through this credential (measurement 71: 7,339 tokens in 87,805 ms), 16,000 tokens is about 190 seconds of generation, which cannot fit a 120-second per-transaction ceiling under any circumstances. The shared AAO_Max_Output_Tokens__c stays 16,000 for the small stages where it is harmless. A truncated response still throws on stop_reason=max_tokens; a bound that truncates is a reported finding, and an unbounded call is a guaranteed timeout.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Hard output bound for stage 1, derived from the measured generation rate and the 120-second callout ceiling. Not a comfort value.</inlineHelpText>
+    <label>InventoryMaxOutputTokens</label>
+    <precision>6</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

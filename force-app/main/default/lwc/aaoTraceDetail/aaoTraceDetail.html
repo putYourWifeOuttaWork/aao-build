@@ -1,0 +1,34 @@
+<template>
+    <div class="detail">
+        <!-- The contract's own plain-language name, per the ruling: the title carries family and
+             value, and the full proposition name lives here and on the row's hover. -->
+        <div class="detail-head">
+            <span class="detail-short">{trace.shortName}</span>
+            <span class="detail-code">{trace.contractCode}</span>
+        </div>
+
+        <template if:true={internalMark}>
+            <div class="detail-internal">{internalMark}</div>
+        </template>
+
+        <template if:true={hasQuote}>
+            <blockquote class="detail-quote">&ldquo;{trace.quote}&rdquo;</blockquote>
+            <div class="detail-where">{trace.range} &middot; {trace.sourceRef}</div>
+        </template>
+
+        <template if:true={hasWhy}>
+            <div class="detail-why"><span class="detail-why-label">Verifier</span> {trace.refusalNote}</div>
+        </template>
+
+        <!-- THE PATH THIS VALUE TOOK. Every hop, in words rather than object names. -->
+        <ol class="path">
+            <template for:each={steps} for:item="s">
+                <li key={s.key} class={s.css}>
+                    <span class="path-n">{s.n}</span>
+                    <span class="path-label">{s.label}</span>
+                    <span class="path-text">{s.text}</span>
+                </li>
+            </template>
+        </ol>
+    </div>
+</template>

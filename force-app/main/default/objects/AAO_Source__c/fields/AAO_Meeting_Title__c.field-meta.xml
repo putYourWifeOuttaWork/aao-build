@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Meeting_Title__c</fullName>
+    <description>THE MEETING TITLE AS THE SOURCE SYSTEM RECORDED IT, carried verbatim and never inferred. Written by: intake, where the source system supplies one (Teams and Gong both do). Read by: AAO_Cards.sectionTitle, which titles a call&apos;s board section &quot;Date: Meeting Title&quot;. Matthew&apos;s ruling, fifty-seventh stamp: the call type comes from the meeting title rather than from a model reading the transcript, because the source system already knows it and inferring a call type would be a judgment nobody asked for on a customer-visible column heading. BLANK IS HONEST AND EXPECTED: a hand-carried paste carries no metadata, and the section then titles by date alone, which is the ruled fallback. Nothing derives this field from the transcript, ever.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The meeting title from the source system (Teams, Gong), carried verbatim. Blank where the source carried none; the board section then titles by date alone.</inlineHelpText>
+    <label>Meeting Title</label>
+    <length>255</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

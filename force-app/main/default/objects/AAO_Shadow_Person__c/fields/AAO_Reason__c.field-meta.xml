@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Reason__c</fullName>
+    <description>WHY THIS ROW EXISTS RATHER THAN A CONTACT, and the causes are not the same fact. Toggle_Off is the customer&apos;s configuration and is expected-unavailable rather than an error; Create_Failed is a real refusal by the org and belongs in the admin error log. Unresolvable means the ladder found nothing to match and no name could be parsed. Ambiguous means the ladder found MORE THAN ONE and refused to pick, which is the Identification flag&apos;s case. Single_Token means all we have is one spoken word: it may link and it may never create, because one token satisfies the LastName schema without being anybody&apos;s full name (eightieth stamp).</description>
+    <label>Reason</label>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Toggle_Off</fullName>
+                <default>false</default>
+                <label>Toggle_Off</label>
+            </value>
+            <value>
+                <fullName>Create_Failed</fullName>
+                <default>false</default>
+                <label>Create_Failed</label>
+            </value>
+            <value>
+                <fullName>Unresolvable</fullName>
+                <default>false</default>
+                <label>Unresolvable</label>
+            </value>
+            <value>
+                <fullName>Ambiguous</fullName>
+                <default>false</default>
+                <label>Ambiguous</label>
+            </value>
+            <value>
+                <fullName>Single_Token</fullName>
+                <default>false</default>
+                <label>Single_Token</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

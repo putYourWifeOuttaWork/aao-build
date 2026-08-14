@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Located_Pair__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Written by: call 2. Read by: the one-for-one-for-one arithmetic, and every read that needs the words behind an identification. The self-lookup that makes the ledger two rows. Null on a Located row and required on an Identified row, enforced in the trigger. A pair never points at another Identified row: the ledger is two rows deep and never a chain. SetNull rather than Restrict because the platform refuses a restricting self-lookup; the delete law in AAO_PairTriggerHandler is the actual guard, and it refuses the delete outright.</description>
+    <label>Located Pair</label>
+    <referenceTo>AAO_Pair__c</referenceTo>
+    <relationshipLabel>AAO Identifications</relationshipLabel>
+    <relationshipName>AAO_Identifications</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

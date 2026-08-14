@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Endpoint_Path__c</fullName>
+    <description>Written by: a human, in this record. Read by: AAO_Extract. The path appended to the named credential, normally /v1/messages.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Written by: a human, in this record. Read by: AAO_Extract. The path appended to the named credential, normally /v1/messages.</inlineHelpText>
+    <label>EndpointPath</label>
+    <length>120</length>
+    <required>true</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

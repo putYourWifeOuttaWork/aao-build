@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Projected_Criterion_Id__c</fullName>
+    <description>THE VENDOR ROW THIS PROJECTED INTO, written by the writer at the instant it lands and never reconstructed. It is what stops a second pass writing the criterion again: ALTF__Decision_Criteria__c carries no external id to upsert against, so the only record that we already wrote one is the one we keep. A watermark is written by the writer or it does not exist.</description>
+    <externalId>false</externalId>
+    <label>Projected Criterion Id</label>
+    <length>18</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

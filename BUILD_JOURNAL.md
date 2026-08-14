@@ -79,3 +79,59 @@ At Matthew's direction, install everything the device needs. Nothing was elevate
 3. `sf` authenticated to the sandbox, then `sf project retrieve`, then the live-query check (126 AAO classes, every one LastModified 2026-08-13T22:41Z, diff clean), then a second commit carrying the source.
 4. The 17 outstanding manifest documents, `aao-unseen-corpus-record-v1_0.md` first per this session's finding.
 5. Then the eighty-fourth stamp's queue in its order.
+
+---
+
+## 2026-08-14 · Session 1, continued · THE SOURCE IS BACK · retrieve verified against the org
+
+Matthew reports no Time Machine backup, so the sandbox is the only source of truth and the eighty-third stamp's no-remote branch runs in full. Authorizing bytes: eighty-third stamp item 4.
+
+### The org, queried before anything was pulled
+
+`00DWD00000DV7iT2AT`, Name `Altify`, **`IsSandbox = true`**, InstanceName USA758S, Enterprise Edition. Authorized as `matt.weisberg@altify.com.aossb2` against `https://altify--aossb2.sandbox.my.salesforce.com`, API version 67.0. Production was never authenticated and needs no auth from a build machine, ever. `sfdx-project.json` carries `sfdcLoginUrl: https://test.salesforce.com` so this project cannot quietly default at production later.
+
+### The acceptance check, a live query and never a list
+
+- **126 AAO Apex classes.** Matches the eighty-second stamp's number exactly.
+- **All 126 modified inside a three-second window**, `MIN(LastModifiedDate) = 2026-08-13T22:41:50Z`, `MAX = 2026-08-13T22:41:53Z`. One deployment, which is the `6fde84a` deploy the ledger names. The stamp's "every one LastModified 2026-08-13T22:41Z" holds.
+
+### Retrieved to `force-app/`, counted on disk against the org census
+
+| Type | On disk | Org census |
+|---|---|---|
+| ApexClass `AAO_*` | 126 | 126 |
+| ApexTrigger | 9 | 9 |
+| CustomObject (incl. 4 `__mdt`) | 17 | 17 |
+| CustomMetadata records | 68 | 68 |
+| LightningComponentBundle | 3 | 3 |
+| StaticResource | 4 | 4 |
+| FlexiPage | 5 | 5 |
+| CustomTab | 5 | 5 |
+| PermissionSet | 1 | 1 |
+
+700 files total. The 68 custom metadata records break down as 56 `AAO_People_Question`, **10 `AAO_Map_Value`**, 1 `AAO_Model_Config`, 1 `AAO_Setting`. The ten Map_Value rows are the seventy-eighth stamp's "six buyer-role, four political", recovered intact. `AAO_Created_Row__c` — the create-leg record — is among the 17 objects.
+
+### Two process findings, both from checking rather than trusting
+
+1. **The first retrieve pulled nothing and exited 0.** `force-app/` did not exist, so the CLI raised `MissingPackageDirectoryError` and still returned exit code 0 to the shell. Taking the exit code as the answer would have produced an empty tree committed as a re-baseline. **Standing consequence: a retrieve is verified by counting what landed on disk against the org, never by its exit status.**
+2. **The metadata census caught two types the retrieve filter had missed.** A wildcard filter list is a guess about what exists; `sf org list metadata` per type is the fact. `FlexiPage` (5) and `CustomTab` (5) were absent from the first filter set and are in the tree only because the census ran. Same law as always: enumerate, then verify against the enumeration.
+
+### RECOVERY, larger than expected · THE FROZEN FIXTURE BYTES ARE IN THE ORG AND THEY SELF-VERIFY
+
+The static resources carry normalized NF1 fixture bytes, and **their SHA-256 prefixes match hashes this ledger already quotes**, so they are verifiable today without the corpus record:
+
+| Static resource | Bytes | SHA-256 (first 16) | Ledger citation |
+|---|---|---|---|
+| `AAO_Emerson_0617_NF1.txt` | 42,784 | `ec8e717045f87015` | Seventh stamp: "everything was calibrated on `ec8e7170`, so it is now the training set" |
+| `AAO_Emerson_Transcript.txt` | 19,774 | `9e9740060bd348a1` | Fifteenth stamp: "run `emerson/aspentech-2026-07-29-nf1` (`9e974006`)" |
+| `AAO_BV_Transcript_NF1.txt` | 43,129 | `2bed419d1079cdde` | Black and Veatch NF1; no hash quoted in the ledger, so this one still needs the corpus record |
+| `AAO_Seed.json` | 13,307 | `569073ad8c49649d` | The seed, carrying the internal-domain list per the eighty-first stamp |
+
+Two of the four are now confirmed against the ledger's own bytes by independent hash rather than by filename. This narrows what the missing corpus record is needed for; it does not remove the need for it, since the Black and Veatch hash and every counting status still live only there.
+
+### Owed, superseding the list above
+
+1. `gh auth login` by Matthew, then the private remote and the push. **The history still exists on exactly one machine, which is the condition that caused this journal to start over.** Highest-value open item.
+2. The 17 outstanding manifest documents, `aao-unseen-corpus-record-v1_0.md` first.
+3. Run the test suite; 500 of 501 with the standing non-AAO failure is the expected shape. Report deltas, not greens.
+4. Then the eighty-fourth stamp's queue in its order: the per-leg resolution diff report (report only); the LOR contracts and the read-only measurement run.

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Disowned__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Marked where we no longer stand behind the created row. The row itself is never deleted by us - a human holding facts we do not have decides that - so disowning is a mark and a report, and this checkbox is the mark.</description>
+    <label>Disowned</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

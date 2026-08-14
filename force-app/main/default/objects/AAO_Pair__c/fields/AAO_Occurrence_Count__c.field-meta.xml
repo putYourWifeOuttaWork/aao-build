@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Occurrence_Count__c</fullName>
+    <description>Written by: byte location. Read by: any reader deciding how much care an anchor needs. How many matches the verbatim string had in the whole artifact. Occurrence 1 of 1 and occurrence 1 of 3 are different facts and the second is the one where the words were said more than once. Zero matches never produces a row at all.</description>
+    <externalId>false</externalId>
+    <label>Occurrence Count</label>
+    <precision>4</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

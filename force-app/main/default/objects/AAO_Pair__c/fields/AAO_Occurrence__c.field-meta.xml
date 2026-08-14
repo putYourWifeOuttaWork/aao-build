@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Occurrence__c</fullName>
+    <description>Written by: byte location. Read by: the sidecar timestamp lookup and any per-turn context window. WHICH MATCH THIS IS, one-based. Required by ruling: a verbatim string matching more than once anchors every occurrence, so a pair must say which one it is or the timestamp and the surrounding turns are ambiguous. On the 17 June fixture it will almost always be 1, which is not an argument for leaving it off.</description>
+    <externalId>false</externalId>
+    <label>Occurrence</label>
+    <precision>4</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Coverage_Projected_Value__c</fullName>
+    <description>The coverage value THIS SYSTEM last wrote to the vendor map row for this person, recorded by the writer at the moment it wrote it. Coverage is computed rather than extracted, so it has no Answer row and therefore no AAO_Projected_Value__c of its own; without this field the writer wrote a value and recorded nothing, and a value we cannot prove is ours reads as a human edit forever. Ruled 8 August: a watermark is written by the writer or it does not exist, and that law had never reached the one dimension that keeps no answer.</description>
+    <externalId>false</externalId>
+    <label>Coverage Projected Value</label>
+    <length>40</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

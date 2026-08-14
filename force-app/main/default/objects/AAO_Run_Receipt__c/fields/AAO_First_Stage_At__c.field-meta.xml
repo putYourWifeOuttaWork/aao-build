@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_First_Stage_At__c</fullName>
+    <description>When the first stage of this pass finished. With the last-stage stamp it bounds the pass in wall-clock time across its several transactions, which no single transaction can measure from inside itself. Written by: AAO_Receipt.</description>
+    <label>First Stage At</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>DateTime</type>
+</CustomField>

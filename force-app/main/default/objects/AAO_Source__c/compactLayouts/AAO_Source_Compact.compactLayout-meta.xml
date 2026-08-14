@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Source_Compact</fullName>
+    <fields>AAO_Diarization__c</fields>
+    <fields>AAO_Evidence_Occurred__c</fields>
+    <fields>AAO_Origin__c</fields>
+    <fields>AAO_Source_Ref__c</fields>
+    <label>AAO Source Compact</label>
+</CompactLayout>

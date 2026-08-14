@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Ceiling__c</fullName>
+    <description>Written by: the cardinality guard, from Model Config. The bound in force AT THE TIME, frozen on the flag: raising the ceiling later must not silently rewrite why an older run abstained.</description>
+    <externalId>false</externalId>
+    <label>Ceiling</label>
+    <precision>9</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Verification_Note__c</fullName>
+    <description>Written by: call 3. Read by: the refusal grading, which is how a call-3 charter earns a change. The reader&apos;s reason in its own words. One row per pair means one note per pair with nothing to overwrite.</description>
+    <label>Verification Note</label>
+    <length>32768</length>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>6</visibleLines>
+</CustomField>

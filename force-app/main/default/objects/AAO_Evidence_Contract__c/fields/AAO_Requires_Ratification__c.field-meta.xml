@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Requires_Ratification__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Written by: Ratification. Read by: Per-proposition override.</description>
+    <label>Requires Ratification</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

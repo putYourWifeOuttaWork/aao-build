@@ -1,0 +1,54 @@
+/* The only rules here are the ones SLDS has no utility for. Everything else is SLDS. */
+
+.aao-flow {
+    letter-spacing: 0.02em;
+}
+
+/* Projection is off, and it has to look off rather than merely say so. The class is applied
+   from the component now, driven by whether any projection row exists. */
+.aao-off {
+    opacity: 0.45;
+    filter: grayscale(100%);
+}
+
+.aao-snippet {
+    font-style: italic;
+}
+
+.aao-panel {
+    height: 100%;
+}
+
+/* J · the run banner. Only the active state earns colour, so a quiet banner stays quiet. */
+.aao-banner {
+    border-left: 3px solid #c9c9c9;
+}
+
+.aao-banner_active {
+    border-left-color: #fe9339;
+    background-color: #fff9f4;
+}
+
+/* F · publication honesty. A held answer has to LOOK dead, not merely say Held at the end of
+   a grey line. It is never hidden and never counted as live. */
+.aao-held {
+    opacity: 0.5;
+    filter: grayscale(100%);
+}
+
+/* B · lineage. Indented and ruled so an expanded row reads as belonging to its parent. */
+.aao-lineage {
+    border-left: 2px solid #dddbda;
+    margin-left: 0.5rem;
+    background-color: #fafaf9;
+}
+
+.aao-toggle {
+    color: #0176d3;
+    text-decoration: underline;
+}
+
+/* E · the person header is the thing an adjudicator scans for. */
+.aao-person {
+    border-bottom: 1px solid #dddbda;
+}

@@ -1,0 +1,67 @@
+.detail {
+    border-left: 3px solid #0176d3;
+    background: #f3f3f3;
+    padding: 0.6rem 0.75rem;
+    margin: 0 0 0.4rem 1.1rem;
+}
+
+.detail-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-bottom: 0.4rem;
+}
+.detail-short { font-weight: 600; font-size: 0.8rem; }
+/* The code stays available for engineering and never reaches a title. */
+.detail-code { font-size: 0.7rem; color: #706e6b; font-family: monospace; }
+
+.detail-internal {
+    font-size: 0.75rem;
+    color: #8c4b02;
+    background: #fef5e7;
+    border-radius: 0.15rem;
+    padding: 0.2rem 0.4rem;
+    margin-bottom: 0.4rem;
+}
+
+.detail-quote {
+    font-size: 0.85rem;
+    font-style: italic;
+    margin: 0 0 0.2rem 0;
+    padding: 0;
+    border: 0;
+}
+.detail-where { font-size: 0.7rem; color: #706e6b; margin-bottom: 0.4rem; }
+
+.detail-why { font-size: 0.78rem; margin-bottom: 0.5rem; }
+.detail-why-label {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.65rem;
+    letter-spacing: 0.03em;
+    color: #706e6b;
+    margin-right: 0.3rem;
+}
+
+/* THE NUMBERED PATH. The verification sheet's walk, drawn. */
+.path { list-style: none; margin: 0; padding: 0; }
+.path-step {
+    display: grid;
+    grid-template-columns: 1.3rem 9.5rem 1fr;
+    gap: 0.4rem;
+    align-items: baseline;
+    padding: 0.15rem 0;
+    font-size: 0.75rem;
+    border-top: 1px solid #e5e5e5;
+}
+.path-n { color: #706e6b; font-variant-numeric: tabular-nums; }
+.path-label { font-weight: 600; }
+.path-text { word-break: break-word; }
+
+/* A step that did not happen greys and keeps its reason. It is never dropped, because a path
+   with its dead steps removed reads as a success that simply ended, which is a lie about a
+   refusal. Greying carries a text cue too (the reason reads as a reason), so the distinction
+   does not rest on colour alone. */
+.path-step_skipped { color: #a8a8a8; }
+.path-step_skipped .path-label { font-weight: 400; font-style: italic; }

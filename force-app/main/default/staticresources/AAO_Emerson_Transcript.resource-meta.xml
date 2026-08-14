@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StaticResource xmlns="http://soap.sforce.com/2006/04/metadata">
+    <cacheControl>Private</cacheControl>
+    <contentType>text/plain</contentType>
+    <description>Emerson/AspenTech 29 Jul 2026 transcript, carrier for one Source insert. Anon Apex caps at 32KB and the artifact is 21KB; the fingerprint is computed in beforeInsert, so the text must be present AT insert. Packaged by normalize.py.</description>
+</StaticResource>

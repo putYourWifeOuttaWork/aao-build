@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StaticResource xmlns="http://soap.sforce.com/2006/04/metadata">
+    <cacheControl>Private</cacheControl>
+    <contentType>text/plain</contentType>
+    <description>The 17 June Emerson/AspenTech call, NF1, frozen. sha256 ec8e7170..5a5f, 42,784 bytes, 415 turns, no trailing newline. Carrier only: anonymous Apex has a 32 KB source limit and this artifact is larger.</description>
+</StaticResource>

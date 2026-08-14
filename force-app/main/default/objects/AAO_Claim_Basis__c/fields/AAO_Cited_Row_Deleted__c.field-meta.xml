@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Cited_Row_Deleted__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Written by: The orphan sweep. Read by: The live record is gone; the snapshot is all that remains. Visible to operations, never pushed at a seller.</description>
+    <label>Cited Row Deleted</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

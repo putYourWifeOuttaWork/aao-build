@@ -1,0 +1,150 @@
+/* THE RUN-LEVEL STEPPER. The pipeline's real order, left to right, counts by default.
+   It scrolls inside itself rather than wrapping, because the order is the information and a
+   wrapped stepper reads as two lists instead of one sequence. */
+.stepper {
+    display: flex;
+    align-items: stretch;
+    gap: 0.4rem;
+    overflow-x: auto;
+    padding: 0.75rem 0 0.25rem 0;
+}
+.step {
+    flex: 1 0 8.5rem;
+    border: 1px solid #dddbda;
+    border-radius: 0.25rem;
+    padding: 0.45rem 0.5rem;
+    position: relative;
+}
+/* The arrow between steps says "then", which is the whole point of drawing the order. */
+.step:not(:last-child)::after {
+    content: '\203A';
+    position: absolute;
+    right: -0.42rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #969492;
+    font-size: 1.1rem;
+    line-height: 1;
+    z-index: 1;
+}
+.step-count { font-size: 1.05rem; font-weight: 700; line-height: 1.2; }
+.step-name { font-weight: 600; font-size: 0.78rem; }
+.step-meaning { font-size: 0.68rem; color: #3e3e3c; margin-top: 0.15rem; }
+
+.perf-bar { margin: 0.25rem 0; }
+.link-button {
+    background: none;
+    border: 0;
+    padding: 0;
+    color: #0176d3;
+    font-size: 0.75rem;
+    cursor: pointer;
+}
+.link-button:hover { text-decoration: underline; }
+.perf-panel {
+    font-size: 0.75rem;
+    color: #3e3e3c;
+    background: #f3f3f3;
+    border-left: 3px solid #969492;
+    padding: 0.5rem 0.6rem;
+    margin-bottom: 0.4rem;
+}
+
+.defect {
+    font-size: 0.75rem;
+    color: #8c4b02;
+    background: #fef5e7;
+    padding: 0.35rem 0.5rem;
+    margin-top: 0.35rem;
+}
+
+/* PEOPLE. One collapsible group each, carrying their count. */
+.person { margin-top: 0.6rem; }
+.person-head {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    background: #f3f2f2;
+    border: 0;
+    border-left: 3px solid #747474;
+    padding: 0.35rem 0.5rem;
+    cursor: pointer;
+    text-align: left;
+}
+.person-head:hover { background: #ecebea; }
+/* An internal speaker is MARKED, never hidden: their establishments are real and the pipeline
+   genuinely upheld them, and what an unmarked row misleads about is why nothing followed. The
+   marker is a text line as well as a colour, so it does not rest on colour alone. */
+.person-head_internal { border-left-color: #dd7a01; }
+.person-name { font-weight: 700; font-size: 0.82rem; }
+.person-count { margin-left: auto; font-size: 0.72rem; color: #3e3e3c; }
+.person-internal {
+    font-size: 0.72rem;
+    color: #8c4b02;
+    background: #fef5e7;
+    padding: 0.25rem 0.5rem;
+    margin-left: 1.1rem;
+}
+
+/* THE ROWS. A title in words, and the verdict beside it. */
+.row-wrap { margin-left: 1.1rem; }
+.row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    border-left: 3px solid #dddbda;
+    padding: 0.3rem 0.5rem;
+    margin-top: 0.2rem;
+    cursor: pointer;
+}
+.row:hover { background: #f3f2f2; }
+/* Upheld and refused are told apart by their verdict word as well as by colour, so the
+   distinction survives a reader who cannot see the difference. */
+.row_upheld { border-left-color: #2e844a; }
+.row_refused { border-left-color: #ba0517; }
+.row_open { background: #eef4ff; }
+.row-title { font-size: 0.8rem; font-weight: 600; }
+.row-verdict {
+    margin-left: auto;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #3e3e3c;
+}
+
+.refused-toggle {
+    background: none;
+    border: 0;
+    color: #ba0517;
+    font-size: 0.73rem;
+    padding: 0.3rem 0.5rem;
+    margin-top: 0.15rem;
+    cursor: pointer;
+}
+.refused-toggle:hover { text-decoration: underline; }
+
+/* THE PERFORMANCE PANEL. Numbers the run journalled, nothing recomputed here. */
+.perf-summary {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.35rem 0;
+}
+/* Wide content scrolls inside itself rather than pushing the page sideways. */
+.perf-scroll { overflow-x: auto; margin-bottom: 0.4rem; }
+.perf-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.7rem;
+    white-space: nowrap;
+}
+.perf-table th {
+    text-align: left;
+    font-weight: 600;
+    color: #706e6b;
+    border-bottom: 1px solid #dddbda;
+    padding: 0.2rem 0.5rem 0.2rem 0;
+}
+.perf-table td { padding: 0.2rem 0.5rem 0.2rem 0; border-bottom: 1px solid #f0efef; }
+/* A CEILING WE DO NOT PRINT IS A CEILING WE DISCOVER AT TWENTY-FIVE. Past 80 percent of any
+   governor the row is marked, so nobody has to divide in their head. */
+.perf-row_near td { background: #fef5e7; font-weight: 600; }

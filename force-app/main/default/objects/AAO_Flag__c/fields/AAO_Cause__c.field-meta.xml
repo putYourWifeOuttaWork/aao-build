@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Cause__c</fullName>
+    <description>Written by: Raise. Read by: Why it fired.</description>
+    <label>Cause</label>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Cardinality_Exceeded</fullName>
+                <default>false</default>
+                <label>Cardinality Exceeded</label>
+            </value>
+            <value>
+                <fullName>Relation_Missing</fullName>
+                <default>false</default>
+                <label>Relation Missing</label>
+            </value>
+            <value>
+                <fullName>Gating_Unmet</fullName>
+                <default>false</default>
+                <label>Gating_Unmet</label>
+            </value>
+            <value>
+                <fullName>Established_False</fullName>
+                <default>false</default>
+                <label>Established_False</label>
+            </value>
+            <value>
+                <fullName>History_Contradicts</fullName>
+                <default>false</default>
+                <label>History_Contradicts</label>
+            </value>
+            <value>
+                <fullName>History_Better</fullName>
+                <default>false</default>
+                <label>History_Better</label>
+            </value>
+            <value>
+                <fullName>Awaiting_Ratification</fullName>
+                <default>false</default>
+                <label>Awaiting_Ratification</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

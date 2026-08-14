@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Interpretation__c</fullName>
+    <description>Nullable, null is the good case. Written by: Extraction, where the question needed reading beyond its own text. Read by: Handed to the blind reader; carried to Claim. Populated rows counted per question are the under-specified-question list.</description>
+    <label>Interpretation</label>
+    <length>32768</length>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>6</visibleLines>
+</CustomField>

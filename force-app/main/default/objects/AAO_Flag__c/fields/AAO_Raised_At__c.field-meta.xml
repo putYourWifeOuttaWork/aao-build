@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Raised_At__c</fullName>
+    <description>Immutable. Written by: Raise. On a gating proposition this is opportunity creation. Read by: Age. Day-one red means nothing raises it; it was never down.</description>
+    <label>Raised At</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>DateTime</type>
+</CustomField>

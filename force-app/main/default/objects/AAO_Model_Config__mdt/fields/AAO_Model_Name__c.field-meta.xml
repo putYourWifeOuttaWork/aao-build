@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Model_Name__c</fullName>
+    <description>Written by: a human, in this record, deliberately. Read by: AAO_Extract, which sends it as the model id, and every Candidate row, which is stamped with it. Never hardcoded in Apex: a measurement that cannot name the model that produced it is not a measurement.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Written by: a human, in this record, deliberately. Read by: AAO_Extract, which sends it as the model id, and every Candidate row, which is stamped with it. Never hardcoded in Apex: a measurement that cannot name the model that produced it is not a measurement.</inlineHelpText>
+    <label>ModelName</label>
+    <length>80</length>
+    <required>true</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

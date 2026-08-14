@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Rank__c</fullName>
+    <description>Higher wins where more than one value is established. Blank means UNRANKED, which sorts below every ranked value and never causes a blank projection: a set of only unranked values writes the first in the vendor picklist&apos;s own order. Ranks are a methodology statement and belong in configuration an org can state, not in a constant only we can change.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Rank</label>
+    <precision>3</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

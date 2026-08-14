@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Corroborated__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Set by the resolution stage where BOTH comprehensive reads found this establishment: same contract, byte-range intersection, same voiced meaning (the merge key, twenty-seventh stamp - never string equality on quotes). A marker, never a gate: a pair only one read found stands, because the union is the recall hedge and corroboration is extra confidence, not a requirement. The absorbed read&apos;s row keeps its own receipt under a Merged disposition.</description>
+    <label>Corroborated</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

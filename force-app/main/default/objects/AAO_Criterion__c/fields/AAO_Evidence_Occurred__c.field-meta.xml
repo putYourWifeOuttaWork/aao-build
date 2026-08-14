@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Evidence_Occurred__c</fullName>
+    <description>When it was first voiced, on the evidence-occurred clock and never the run clock.</description>
+    <label>Evidence Occurred</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>DateTime</type>
+</CustomField>

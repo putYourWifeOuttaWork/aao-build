@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Synthetic__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Written by: the demo seeder, via AAO_Synthetic.MARK. Read by: AAO_Demo.purge, which deletes only rows carrying it, and by the delete law, which is the only thing that lets a pair be deleted at all. Operational marker; no law reads it beyond that.</description>
+    <label>Synthetic</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

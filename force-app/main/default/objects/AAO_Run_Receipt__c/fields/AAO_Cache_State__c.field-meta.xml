@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Cache_State__c</fullName>
+    <description>COLD or WARM, derived from whether any call on the pass reported cache-read tokens. Rerunning the same frozen transcript warms provider caches, a warm read is not a cold read, and a warm rerun reported as cold performance is the exact dishonesty the twenty-eighth stamp&apos;s labelling rule exists to prevent. Written by: AAO_Receipt.</description>
+    <externalId>false</externalId>
+    <label>Cache State</label>
+    <length>8</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

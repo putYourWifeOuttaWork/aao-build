@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Participant_Key__c</fullName>
+    <caseSensitive>false</caseSensitive>
+    <description>Written by: the participant writer. Source id plus roster key. Unique, so re-ingesting an artifact cannot double-count a person, which would inflate every coverage answer that rests on a count.</description>
+    <externalId>true</externalId>
+    <label>Participant Key</label>
+    <length>120</length>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>true</unique>
+</CustomField>

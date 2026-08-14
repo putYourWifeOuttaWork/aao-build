@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Blind_Enabled__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Written by: a human, in this record. Read by: AAO_Pipeline. When false the second reader does not run and coverage falls back to elements with located spans, which is the session 7 behaviour that let a refuting span count as coverage. Off is the unsafe setting and is here only so the second reader can be switched out for a comparison.</description>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Written by: a human, in this record. Read by: AAO_Pipeline. When false the second reader does not run and coverage falls back to elements with located spans, which is the session 7 behaviour that let a refuting span count as coverage. Off is the unsafe setting and is here only so the second reader can be switched out for a comparison.</inlineHelpText>
+    <label>BlindEnabled</label>
+    <type>Checkbox</type>
+</CustomField>

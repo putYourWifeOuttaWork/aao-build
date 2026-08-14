@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Evaluator</label>
+    <protected>false</protected>
+    <values>
+        <field>AAO_Dimension__c</field>
+        <value xsi:type="xsd:string">buyer role</value>
+    </values>
+    <values>
+        <field>AAO_Displayed_Label__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>AAO_Rank__c</field>
+        <value xsi:type="xsd:double">2.0</value>
+    </values>
+    <values>
+        <field>AAO_Stored_Value__c</field>
+        <value xsi:type="xsd:string">Evaluator</value>
+    </values>
+</CustomMetadata>

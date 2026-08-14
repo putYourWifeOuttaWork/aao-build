@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Candidate__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Written by: Raise. Read by: Ratification flags only: the held write awaiting a human.</description>
+    <label>Candidate</label>
+    <referenceTo>AAO_Candidate__c</referenceTo>
+    <relationshipLabel>AAO Flags</relationshipLabel>
+    <relationshipName>AAO_Flags</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

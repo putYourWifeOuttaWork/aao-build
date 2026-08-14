@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Basis__c</fullName>
+    <description>Written by: Commit. Read by: the evidence-family law, and anyone asking what kind of evidence this answer stands on. THE UNION OF THE CLAIMS THAT BUILT IT: an answer established from a transcript and later reinforced by a state read reads Both, which is what Both has always meant. Added 1 Aug 2026 as an extension of ruling 47, which named Candidate and Claim; Answer carried the same assumption in a third form (its trigger required spans of every machine establishment) and could not be corrected without it. RATIFIED 48, 1 Aug 2026, union semantics included.</description>
+    <label>Basis</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>State</fullName>
+                <default>false</default>
+                <label>State</label>
+            </value>
+            <value>
+                <fullName>Transcript</fullName>
+                <default>false</default>
+                <label>Transcript</label>
+            </value>
+            <value>
+                <fullName>Both</fullName>
+                <default>false</default>
+                <label>Both</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Type__c</fullName>
+    <description>Immutable. Written by: Raise. Read by: Clearance rule, measurement, surfacing tier.</description>
+    <label>Type</label>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Methodological</fullName>
+                <default>false</default>
+                <label>Methodological</label>
+            </value>
+            <value>
+                <fullName>Contention_Negative</fullName>
+                <default>false</default>
+                <label>Contention_Negative</label>
+            </value>
+            <value>
+                <fullName>Contention_Positive</fullName>
+                <default>false</default>
+                <label>Contention_Positive</label>
+            </value>
+            <value>
+                <fullName>Cardinality</fullName>
+                <default>false</default>
+                <label>Cardinality</label>
+            </value>
+            <value>
+                <fullName>Missing_Relation</fullName>
+                <default>false</default>
+                <label>Missing Relation</label>
+            </value>
+            <value>
+                <fullName>Ratification</fullName>
+                <default>false</default>
+                <label>Ratification</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

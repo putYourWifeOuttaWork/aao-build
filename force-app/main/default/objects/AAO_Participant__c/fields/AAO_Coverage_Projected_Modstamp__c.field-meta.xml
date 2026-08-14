@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Coverage_Projected_Modstamp__c</fullName>
+    <description>When this system last wrote the coverage value on the vendor map row for this person. The stamp half of the coverage watermark. Never inferred, never backfilled from the native ALTF__Coverage_Last_Modified__c stamp: that stamp is non-null precisely where a human edited, so reading it as ours would silently undo the session-77 repair that protects a human edit on a row we have never touched.</description>
+    <label>Coverage Projected Modstamp</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>DateTime</type>
+</CustomField>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Retired__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>CLAIMS RETIRE, NEVER DELETE. Ruled 6 August 2026, the locked record law reaching the claim ledger. A claim that should never have established anything is marked here rather than removed: the replay skips it, retraction clears whatever map value it carried, and the evidence of the mistake stays readable forever. One-way, enforced in the trigger: a retired claim is never un-retired, because that would make the ledger a thing that can be edited back into a state it was never in. First use: the a21 courtesy claim that reproduced trap-seq11-courtesy and reached Ryan Couture&apos;s map row.</description>
+    <label>Retired</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

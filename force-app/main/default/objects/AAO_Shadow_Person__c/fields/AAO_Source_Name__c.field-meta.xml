@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Source_Name__c</fullName>
+    <description>THE ROSTER STRING AS IT ARRIVED, mangled and all: &quot;Vargas, Jefferson [EMR/SYSS/AT/MEDI]&quot;. The stored-form law - wrong text is marked wrong, never deleted - and the practical reason: the parse is ours and can be wrong, and the only way to re-derive a name is to have kept what we derived it from. ASR mangles names (Stacey to &quot;Tracy&quot;, Claude to &quot;clogged&quot;), so the source form is the audit trail on every identity decision.</description>
+    <externalId>false</externalId>
+    <label>Source Name</label>
+    <length>255</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

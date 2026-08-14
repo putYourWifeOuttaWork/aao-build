@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Run_Key__c</fullName>
+    <description>The pass this receipt is for, carried as text to join AAO_Pair__c.AAO_Run_Key__c, whose own description anticipated this object: &quot;carried as text now so the receipt can join later without backfilling a corpus&quot;. Written by: AAO_Receipt. Read by: the Run Inspector&apos;s performance panel.</description>
+    <externalId>false</externalId>
+    <label>Run Key</label>
+    <length>32</length>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

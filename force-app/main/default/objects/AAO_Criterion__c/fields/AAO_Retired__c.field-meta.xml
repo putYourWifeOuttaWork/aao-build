@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Retired__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>CRITERIA RETIRE, NEVER DELETE - the claims-retire law reaching the criteria ledger, 8 August 2026. A criterion that should never have stood (the collapsed placeholder rows whose text was the literal word CRITERION are the first use) is marked here rather than removed: minting keys past it, projection never ships it, and the evidence of the mistake stays readable forever. The collapsed CR history corrects through this path per the twenty-seventh stamp: retire with reason, re-mint under the criterion&apos;s real name, never delete.</description>
+    <label>Retired</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

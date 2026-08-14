@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Coverage_Gap__c</fullName>
+    <description>JSON. Written by: Raise, from the answer&apos;s coverage. Read by: Flag content forks on coverage. Over nothing: not started, here is what to get. Over partial: here is what stands, with its receipts, and here is the piece missing.</description>
+    <label>Coverage Gap</label>
+    <length>32768</length>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>6</visibleLines>
+</CustomField>

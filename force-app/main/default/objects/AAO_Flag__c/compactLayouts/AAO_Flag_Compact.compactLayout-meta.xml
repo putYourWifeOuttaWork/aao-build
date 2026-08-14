@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Flag_Compact</fullName>
+    <fields>AAO_Type__c</fields>
+    <fields>AAO_Cause__c</fields>
+    <fields>AAO_State__c</fields>
+    <fields>AAO_Raised_At__c</fields>
+    <label>AAO Flag Compact</label>
+</CompactLayout>

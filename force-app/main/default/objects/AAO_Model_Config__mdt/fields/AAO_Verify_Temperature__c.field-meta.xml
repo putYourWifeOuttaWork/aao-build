@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Verify_Temperature__c</fullName>
+    <description>Sampling temperature for stage 3, the blind verifier, and for that stage only. BLANK IS THE DEFAULT AND MEANS THE KEY IS NOT SENT AT ALL, which is not the same request as sending a temperature the endpoint would otherwise have chosen. It exists because the stability probe measured the flicker concentrating AFTER locate: location was stable across three identical runs (42/42/43 pairs) while upheld verdicts nearly tripled (8 to 21), so call 3 is where determinism is worth measuring. Set 0 for the temperature-0 probe, blank it to restore the measured baseline. Reads are deliberately NOT covered by this field: their variance is the ruled recall hedge.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Sampling temperature for stage 3 (blind verify) only. Blank means the key is not sent at all, which is the baseline. Set 0 for the temperature-0 stability probe; blank it to revert. Reads are never covered by this field.</inlineHelpText>
+    <label>VerifyTemperature</label>
+    <precision>4</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

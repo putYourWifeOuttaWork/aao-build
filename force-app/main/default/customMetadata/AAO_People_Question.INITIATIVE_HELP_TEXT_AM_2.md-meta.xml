@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>INITIATIVE_HELP_TEXT_AM_2</label>
+    <protected>false</protected>
+    <values>
+        <field>AAO_Org_Override__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>AAO_Provenance__c</field>
+        <value xsi:type="xsd:string">Label</value>
+    </values>
+    <values>
+        <field>AAO_Question_Key__c</field>
+        <value xsi:type="xsd:string">INITIATIVE_HELP_TEXT_AM_2</value>
+    </values>
+    <values>
+        <field>AAO_Sequence__c</field>
+        <value xsi:type="xsd:double">50.0</value>
+    </values>
+    <values>
+        <field>AAO_Shipped_Text__c</field>
+        <value xsi:type="xsd:string">Is a business pressure causing the initiative to be prioritized, sponsored, and funded by a key player?</value>
+    </values>
+</CustomMetadata>

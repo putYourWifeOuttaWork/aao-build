@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Participant__c</fullName>
+    <deleteConstraint>Restrict</deleteConstraint>
+    <description>Written by: the commit step. Read by: everything that asks who a claim is about. THE CLAIM KEYS THE PARTICIPANT, ruled 5 August. Participant is ours and source-agnostic; the native ECI participant record is one input to it, never the identity. AAO_Subject_Contact__c stays for the rows written before this ruling and for the resolved Contact where one exists, but it is no longer the key: a person with no Contact was previously unclaimable, and Jefferson Vargas on the 17 June fixture is the specimen.</description>
+    <label>Participant</label>
+    <referenceTo>AAO_Participant__c</referenceTo>
+    <relationshipLabel>AAO Claims</relationshipLabel>
+    <relationshipName>AAO_Claims</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Trim_Manifest__c</fullName>
+    <description>JSON. Written by: Normalisation. Read by: Audit. A removal that cannot name its rule is a defect.</description>
+    <label>Trim Manifest</label>
+    <length>32768</length>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>6</visibleLines>
+</CustomField>

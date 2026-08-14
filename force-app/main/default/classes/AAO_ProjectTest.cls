@@ -1,0 +1,1180 @@
+/**
+ * The People projection writer, against `people-p8-v1`.
+ *
+ * The derivation tests build answers in memory through JSON so the relationship field is
+ * populated without a DML round trip. That is not a shortcut for its own sake: the derivation
+ * tables are pure functions of standing verdicts, and testing them as pure functions is what
+ * makes a table row fail loudly rather than fail somewhere inside a write.
+ *
+ * The write-leg tests use real records, because query-then-branch is exactly the part that
+ * cannot be tested in memory.
+ *
+ * **THIS FILE WAS REWRITTEN AT THE RE-AIM, and the reason is the point.** Its previous
+ * eighteen tests all passed, all of them against `people-om-v1` codes (`S2#003WD...`), while
+ * the class they tested could not place a single one of the seventeen codes the pass actually
+ * emits. A suite can be green and irrelevant at the same time. The tests below use the codes
+ * the declared set really mints, and `theWriterPlacesEveryCodeTheDeclaredSetMints` is the one
+ * that would have caught it: it holds the placement map against `AAO_PassContracts.specs()`
+ * rather than against a hand-written list, so drift fails a build instead of a run.
+ */
+@IsTest
+private class AAO_ProjectTest {
+    /** An answer with only what the derivation reads: a code, a verdict, an occurred stamp. */
+    private static AAO_Answer__c ans(String code, Id contactId, String verdict, Integer dayOfJune) {
+        return ans(code, contactId, verdict, dayOfJune, null, null);
+    }
+
+    private static AAO_Answer__c ans(
+        String code,
+        Id contactId,
+        String verdict,
+        Integer dayOfJune,
+        Integer counter,
+        String interpretation
+    ) {
+        Map<String, Object> contract = new Map<String, Object>{
+            'attributes' => new Map<String, Object>{ 'type' => 'AAO_Evidence_Contract__c' },
+            'AAO_Proposition_Code__c' => code
+        };
+        Map<String, Object> row = new Map<String, Object>{
+            'attributes' => new Map<String, Object>{ 'type' => 'AAO_Answer__c' },
+            'AAO_Verdict__c' => verdict,
+            'AAO_Subject_Contact__c' => contactId,
+            'AAO_Publication_State__c' => 'Live',
+            'AAO_Evidence_Occurred__c' => '2026-06-' +
+                (dayOfJune < 10 ? '0' + dayOfJune : String.valueOf(dayOfJune)) +
+                'T09:00:00.000Z',
+            'AAO_Evidence_Contract__r' => contract
+        };
+        if (counter != null) {
+            row.put('AAO_Support_Counter__c', counter);
+        }
+        if (interpretation != null) {
+            row.put('AAO_Interpretation__c', interpretation);
+        }
+        return (AAO_Answer__c) JSON.deserialize(JSON.serialize(row), AAO_Answer__c.class);
+    }
+
+    private static Id someone() {
+        return AAO_FakeId.of(Contact.SObjectType);
+    }
+
+    // ============================================== the guard the re-aim exists to install
+
+    @IsTest
+    static void theWriterPlacesEveryCodeTheDeclaredSetMints() {
+        // THE TEST THAT WOULD HAVE CAUGHT v3.9's DEFECT. Held against the declared set itself
+        // rather than a list somebody remembered to update, and symmetric: a contract with no
+        // placement is an answer the writer skips in silence, and a placement with no contract
+        // is a rule for a question nobody asks.
+        AAO_P8Codes.assertCovers(AAO_PassContracts.specs());
+    }
+
+    @IsTest
+    static void anUnplaceableCodeIsCountedAndNamedRatherThanSkipped() {
+        Id p = someone();
+        AAO_Project.Derivation d = AAO_Project.derive(
+            new List<AAO_Answer__c>{
+                ans('S2#' + p, p, 'TRUE', 10), // the retired person-crossed shape
+                ans('AAO_POL_IC1', p, 'TRUE', 11)
+            }
+        );
+        System.assertEquals(1, d.unplaced, 'unit: answers');
+        System.assert(d.unplacedCodes.contains('S2#' + p), d.unplacedCodes + '');
+        System.assertEquals(
+            'Inner Circle',
+            d.political,
+            'The placeable answer still places. An unrecognised code costs its own answer ' +
+            'and never the whole derivation.'
+        );
+
+        AAO_Project.Outcome o = new AAO_Project.Outcome();
+        o.answersRead = 2;
+        o.answersUnplaced = 1;
+        o.unplacedCodes.add('S2#' + p);
+        String s = o.toString();
+        System.assert(s.contains('answers unplaced         1'), 'Got: ' + s);
+        System.assert(
+            s.contains('UNPLACED CODES'),
+            'A code the writer cannot place is named in the run report, because that is the ' +
+            'exact state that reported success while writing nothing. Got: ' + s
+        );
+    }
+
+    // ==================================================== Support · the counter owns the rung
+
+    @IsTest
+    static void theRungComesOffTheCounterAndNotOffAQuiz() {
+        Id p = someone();
+        Map<Integer, String> ruled = new Map<Integer, String>{
+            3 => 'Mentor',
+            2 => 'Supporter',
+            1 => 'Supporter',
+            -1 => 'Non-Supporter',
+            -2 => 'Non-Supporter',
+            -3 => 'Enemy'
+        };
+        for (Integer at : ruled.keySet()) {
+            AAO_Project.Derivation d = AAO_Project.derive(
+                new List<AAO_Answer__c>{ ans(AAO_P8Codes.SENTIMENT, p, 'TRUE', 10, at, 'SUPPORTER') }
+            );
+            System.assertEquals(ruled.get(at), d.support, 'counter ' + at);
+            System.assertEquals(at, d.supportCounter, 'The standing value travels with the rung.');
+        }
+    }
+
+    @IsTest
+    static void aCountedZeroIsNeutralAndNeverMeasuredStaysBlank() {
+        Id p = someone();
+        System.assertEquals(
+            null,
+            AAO_Project.derive(new List<AAO_Answer__c>{}).support,
+            'Nothing established is a state of NOT KNOWING, and it stays blank. This half of ' +
+            'the old law survives Matthew\'s ruling untouched.'
+        );
+        // MATTHEW'S RULING, forty-fourth stamp item 2, reversing what this assertion read:
+        // "A counter resting at zero is Neutral, and Neutral is the derived reading rather
+        // than a value: the field is left alone." The specimen that overturned it is Adam
+        // Pfeiffer in run `pf0811-live`, one supportive establishment and one hedge upheld as
+        // non-support, netting zero and leaving his Status blank. Blank read as erasure on a
+        // person whose enthusiasm is in the transcript; Neutral is legible and cites both.
+        System.assertEquals(
+            'Neutral',
+            AAO_Project.derive(
+                    new List<AAO_Answer__c>{ ans(AAO_P8Codes.SENTIMENT, p, 'TRUE', 10, 0, 'SUPPORTER') }
+                )
+                .support,
+            'A COUNTED zero is Neutral: support and counter-support were both weighed and ' +
+            'they balance, which is a measurement and not an absence.'
+        );
+        System.assertEquals(
+            null,
+            AAO_Project.derive(
+                    new List<AAO_Answer__c>{ ans(AAO_P8Codes.SENTIMENT, p, 'UNVERIFIED', 10, 2, 'SUPPORTER') }
+                )
+                .support,
+            'An UNVERIFIED establishes nothing, so its counter places nobody either.'
+        );
+    }
+
+    // ====================================================== Political · the ceiling model
+
+    @IsTest
+    static void eachOneWayHalfPlacesExactlyWhereItsContractSays() {
+        Id p = someone();
+        Map<String, String> ruled = new Map<String, String>{
+            'AAO_POL_IC1' => 'Inner Circle',
+            'AAO_POL_IC2' => 'Inner Circle',
+            'AAO_POL_IC3' => 'Inner Circle',
+            'AAO_POL_PS1' => 'Political Structure',
+            'AAO_POL_PS2' => 'Political Structure',
+            'AAO_POL_PS3' => 'Political Structure',
+            'AAO_POL_PS4' => 'Political Structure',
+            'AAO_POL_OPS1' => 'Outside Political Structure'
+        };
+        for (String code : ruled.keySet()) {
+            System.assertEquals(
+                ruled.get(code),
+                AAO_Project.derive(new List<AAO_Answer__c>{ ans(code, p, 'TRUE', 10) }).political,
+                code + ': one establishment suffices at every level.'
+            );
+        }
+    }
+
+    @IsTest
+    static void theWeakSidesAreTheirOwnContractsSoNoVerdictIsReadForItsFalseness() {
+        Id p = someone();
+        // THE GUARD, RETIRED RATHER THAN RELAXED. Under the retired two-sided shape the weak
+        // side had to be read off a FALSE, with a standing rule that a FALSE places somebody
+        // only where words affirmatively support the weak side. PS1 and PS2 are now those
+        // words' own contracts, so the thing the guard protected against cannot be expressed:
+        // nothing on this dimension is read for its falseness anywhere.
+        System.assertEquals(
+            null,
+            AAO_Project.derive(new List<AAO_Answer__c>{ ans('AAO_POL_IC2', p, 'FALSE', 10) }).political,
+            'Not approving initiatives is not a placement. The words that ARE a placement ' +
+            'answer AAO_POL_PS1, which points one way and carries its own quote.'
+        );
+        System.assertEquals(
+            null,
+            AAO_Project.derive(new List<AAO_Answer__c>{ ans('AAO_POL_IC3', p, 'UNVERIFIED', 10) }).political,
+            'An UNVERIFIED places nobody. Reading it as the weak side would manufacture a ' +
+            'placement out of not knowing.'
+        );
+    }
+
+    @IsTest
+    static void aLesserPropertyNeverDowngrades() {
+        Id p = someone();
+        AAO_Project.Derivation d = AAO_Project.derive(
+            new List<AAO_Answer__c>{
+                ans('AAO_POL_IC1', p, 'TRUE', 10), // defines the goals: Inner Circle
+                ans('AAO_POL_PS3', p, 'TRUE', 20), // later, sought out for advice: lesser
+                ans('AAO_POL_OPS1', p, 'TRUE', 21) // later still, brokers information: lesser
+            }
+        );
+        System.assertEquals(
+            'Inner Circle',
+            d.political,
+            'The ceiling is the highest placement the standing establishments support. A ' +
+            'lesser property arriving later upgrades or does nothing; it never downgrades, ' +
+            'and unlike Support this is not a contest and recency does not decide it.'
+        );
+    }
+
+    @IsTest
+    static void unsetLeavesTheFieldAloneRatherThanWritingUnknown() {
+        Id p = someone();
+        AAO_Project.Derivation d = AAO_Project.derive(
+            new List<AAO_Answer__c>{ ans(AAO_P8Codes.SENTIMENT, p, 'TRUE', 10, 2, 'SUPPORTER') }
+        );
+        System.assertEquals(
+            null,
+            d.political,
+            'Nobody is placed outside the structure by absence of evidence. The picklist has ' +
+            'an "Unknown" value and writing it would be a claim; null is the absence of one.'
+        );
+    }
+
+    // ======================================================================== Buyer Role
+
+    @IsTest
+    static void eachRoleContractEstablishesItsOwnVendorValue() {
+        Id p = someone();
+        Map<String, String> ruled = new Map<String, String>{
+            'AAO_BR_APP' => 'Approver',
+            'AAO_BR_DM' => 'Decision Maker',
+            'AAO_BR_EVAL' => 'Evaluator',
+            'AAO_BR_USER' => 'User',
+            'AAO_BR_SIG' => 'Signature Approver'
+        };
+        for (String code : ruled.keySet()) {
+            System.assertEquals(
+                ruled.get(code),
+                AAO_Project.derive(new List<AAO_Answer__c>{ ans(code, p, 'TRUE', 10) }).buyerRole,
+                code + ' writes the vendor picklist value byte-exact.'
+            );
+        }
+    }
+
+    @IsTest
+    static void theLadderProjectsTheHighestEstablishedRoleAndTheRestRideTheNote() {
+        // MATTHEW'S RULING, ruled at the thirty-eighth stamp and built at the forty-fifth,
+        // REVERSING what this test used to assert. It read: "The field holds one value and the
+        // evidence establishes two. There is no authored ordering among the five, so picking
+        // would be the machine deciding what outranks what." That was right while nothing
+        // ranked the roles. Something does now, and it is Matthew's, not the machine's: "if
+        // they are Evaluator and User, they are Evaluator", because almost all evaluators are
+        // also users. Adam Pfeiffer's row is the acceptance case.
+        Id p = someone();
+        AAO_Project.Derivation d = AAO_Project.derive(
+            new List<AAO_Answer__c>{
+                ans('AAO_BR_EVAL', p, 'TRUE', 10),
+                ans('AAO_BR_USER', p, 'TRUE', 11)
+            }
+        );
+        System.assertEquals(
+            'Evaluator', d.buyerRole, 'The highest ranked ESTABLISHED role is projected.'
+        );
+        System.assert(
+            d.buyerRoleCollision.isEmpty(),
+            'And the refusal hold is superseded for a set the ladder can rank. Got: ' +
+            d.buyerRoleCollision
+        );
+        System.assertEquals(
+            new List<String>{ 'User' },
+            d.buyerRoleOutranked,
+            'The outranked role is kept, not dropped: it was established by evidence.'
+        );
+        System.assert(
+            d.note != null && d.note.contains('User'),
+            'And it rides the note, so a projected Evaluator stays walkable back to the User ' +
+            'words. Got: ' + d.note
+        );
+    }
+
+    @IsTest
+    static void decisionMakerOutranksBothAndTheLadderIsNotAboutArrivalOrder() {
+        Id p = someone();
+        // The User establishment arrives LAST on purpose. The ruling ranks by which role
+        // subsumes the other, never by which establishment came in latest.
+        AAO_Project.Derivation d = AAO_Project.derive(
+            new List<AAO_Answer__c>{
+                ans('AAO_BR_EVAL', p, 'TRUE', 10),
+                ans('AAO_BR_DM', p, 'TRUE', 11),
+                ans('AAO_BR_USER', p, 'TRUE', 12)
+            }
+        );
+        System.assertEquals('Decision Maker', d.buyerRole);
+        System.assertEquals(new List<String>{ 'Evaluator', 'User' }, d.buyerRoleOutranked);
+    }
+
+    @IsTest
+    static void aPREVIOUSLYUNRANKEDROLEISNOWWRITTENANDNOTHINGISHELD() {
+        // CORRECTED IN PLACE, seventy-seventh stamp, AND THIS IS THE ACCEPTANCE CASE.
+        //
+        // It used to be `aCollisionTOUCHINGanUnrankedRoleSTILLREFUSES` and asserted the hold, on
+        // the forty-fifth stamp's ruling that the hold "stays for anything the ladder cannot
+        // rank". That was right while only three roles were ranked. It also left Adam Pfeiffer's
+        // Buyer Role BLANK on a live map with Evaluator and Approver both established behind it,
+        // and Matthew ruled the blank out: *"If the set has MORE THAN ONE: WRITE THE
+        // HIGHEST-RANKED."* Approver ranks 3, Evaluator 2, so Approver is written and Evaluator
+        // rides the note.
+        //
+        // What the old test protected is NOT lost: nothing established is discarded, and the
+        // surface still says so. That is asserted below, on the outranked list rather than on a
+        // refusal line.
+        Id p = someone();
+        AAO_Project.Derivation d = AAO_Project.derive(
+            new List<AAO_Answer__c>{
+                ans('AAO_BR_EVAL', p, 'TRUE', 10),
+                ans('AAO_BR_APP', p, 'TRUE', 11)
+            }
+        );
+        System.assertEquals(
+            'Approver', d.buyerRole,
+            'Approver outranks Evaluator in the seed, so it is written rather than held.'
+        );
+        System.assert(
+            d.buyerRoleCollision.isEmpty(),
+            'There is no collision to report, because the procedure answered. Got: ' +
+            d.buyerRoleCollision
+        );
+        System.assertEquals(
+            new List<String>{ 'Evaluator' }, d.buyerRoleOutranked,
+            'And the established role it outranked is kept, not dropped.'
+        );
+        System.assert(
+            d.note != null && d.note.contains('outranked by Approver: Evaluator'),
+            'The note carries it on the surface the seller reads. Got: ' + d.note
+        );
+    }
+
+    @IsTest
+    static void nothingESTABLISHEDISTHEONLYBLANK() {
+        // The one path the ruling leaves unwritten, asserted so a later session cannot widen it.
+        Id p = someone();
+        AAO_Project.Derivation d = AAO_Project.derive(
+            new List<AAO_Answer__c>{ ans(AAO_P8Codes.SENTIMENT, p, 'TRUE', 10, 2, 'SUPPORTER') }
+        );
+        System.assertEquals(
+            null, d.buyerRole, 'No buyer-role evidence, so no buyer role. Silence stays silence.'
+        );
+        System.assert(d.buyerRoleOutranked.isEmpty());
+        System.assert(d.buyerRoleCollision.isEmpty(), 'And it is not reported as a collision.');
+    }
+
+    @IsTest
+    static void oneRoleIsStillJustThatRole() {
+        Id p = someone();
+        AAO_Project.Derivation d = AAO_Project.derive(
+            new List<AAO_Answer__c>{ ans('AAO_BR_SIG', p, 'TRUE', 10) }
+        );
+        System.assertEquals(
+            'Signature Approver',
+            d.buyerRole,
+            'An unranked role alone is not a collision. The ladder only ever arbitrates ' +
+            'between several, so a lone Signature Approver projects exactly as before.'
+        );
+        System.assert(d.buyerRoleOutranked.isEmpty());
+    }
+
+    // ========================================================================== criteria
+
+    @IsTest
+    static void criteriaAreDerivedTypedByProvenanceAndDoNotReachTheMapRow() {
+        Id p = someone();
+        AAO_Project.Derivation d = AAO_Project.derive(
+            new List<AAO_Answer__c>{
+                ans(AAO_P8Codes.CRITERION_NAMING, p, 'TRUE', 10, null, 'Must integrate with SAP'),
+                ans(AAO_P8Codes.CRITERION_FORMAL, p, 'TRUE', 10)
+            }
+        );
+        System.assertEquals(1, d.criteria.size(), 'unit: criteria');
+        System.assertEquals('Must integrate with SAP', d.criteria[0].subject);
+        System.assertEquals(
+            'Formal',
+            d.criteria[0].criterionType,
+            'Typing is by provenance: organizational standing spoken makes it Formal.'
+        );
+        System.assertEquals(false, d.criteria[0].required, 'The gate defaults unchecked.');
+        System.assertEquals(
+            false,
+            d.placesAnybody(),
+            'Criteria are records with holder junctions, not map-row dimensions. A person who ' +
+            'named a criterion and nothing else moves no dimension on the map.'
+        );
+        System.assert(
+            d.valuesDerived().contains(AAO_P8Codes.DIM_CRITERIA),
+            'They are still counted, or a criteria-only read would report as derived nothing.'
+        );
+    }
+
+    @IsTest
+    static void aNamingWithNoAttributionDefaultsInformalAndIsNotAFailure() {
+        Id p = someone();
+        AAO_Project.Derivation d = AAO_Project.derive(
+            new List<AAO_Answer__c>{
+                ans(AAO_P8Codes.CRITERION_NAMING, p, 'TRUE', 10, null, 'Onboarding inside 30 days'),
+                ans(AAO_P8Codes.CRITERION_REQUIRED, p, 'TRUE', 10)
+            }
+        );
+        System.assertEquals('Informal', d.criteria[0].criterionType);
+        System.assertEquals(true, d.criteria[0].required, 'Gate language was spoken.');
+    }
+
+    // ------------------------------------------------------------------ the note, Option C
+
+    @IsTest
+    static void theNoteExplainsTheValueShowingAndCarriesNoRecordId() {
+        Id p = someone();
+        AAO_Project.Derivation d = AAO_Project.derive(
+            new List<AAO_Answer__c>{
+                ans(AAO_P8Codes.SENTIMENT, p, 'TRUE', 10, 2, 'SUPPORTER'),
+                ans('AAO_POL_IC1', p, 'TRUE', 11),
+                ans('AAO_BR_DM', p, 'TRUE', 11)
+            }
+        );
+        System.assert(d.note.contains('Support: Supporter'), d.note);
+        System.assert(d.note.contains('Political: Inner Circle'), d.note);
+        System.assert(d.note.contains('Buyer Role: Decision Maker'), d.note);
+        System.assert(
+            !d.note.contains('003') && !d.note.contains('a1S'),
+            'Never a record id on a human surface. Got: ' + d.note
+        );
+        System.assert(d.note.contains('June 2026'), 'Plain date. Got: ' + d.note);
+    }
+
+    // ========================================================== the write, query-then-branch
+
+    @IsTest
+    static void theCreateLegBuildsTheRowWhenSyncNeverMadeOne() {
+        Fixture f = fixture();
+        // No map row exists. This is the leg the harness run does NOT exercise, because every
+        // speaker on the Casey call holds a contact role and therefore already has a skeleton.
+        // It is mandatory product behaviour all the same: contact-role sync is a customer
+        // setting that can be off, and a person in the evidence must still be mapped.
+        System.assertEquals(
+            0,
+            [
+                SELECT COUNT()
+                FROM ALTF__Contact_Map_Details__c
+                WHERE ALTF__Contact__c = :f.contactId AND ALTF__Opportunity__c = :f.oppId
+            ]
+        );
+        establish(f, AAO_P8Codes.SENTIMENT, 'TRUE', 2);
+
+        Test.startTest();
+        AAO_Project.Outcome o = AAO_Project.run(f.oppId);
+        Test.stopTest();
+
+        System.assertEquals(1, o.created, o.toString());
+        AAO_Project.PersonResult r = o.people[0];
+        System.assertEquals('created', r.action);
+        System.assertEquals('Supporter', r.support);
+        System.assertEquals(
+            1,
+            o.writesByDimension.get(AAO_P8Codes.DIM_SUPPORT),
+            'The stage arithmetic counts the value out. unit: values'
+        );
+        System.assertEquals(false, o.derivedNothing(), o.toString());
+        ALTF__Contact_Map_Details__c row = [
+            SELECT ALTF__Status__c, ALTF__Political__c, ALTF__Note__c, ALTF__Buyer_Role__c
+            FROM ALTF__Contact_Map_Details__c
+            WHERE Id = :r.mapRowId
+        ];
+        System.assertEquals('Supporter', row.ALTF__Status__c);
+        System.assertEquals(
+            null,
+            row.ALTF__Political__c,
+            'Established dimensions populated, everything else null. A row filled out to ' +
+            'look complete is a row claiming things nothing established.'
+        );
+        System.assertEquals(null, row.ALTF__Buyer_Role__c);
+        System.assert(row.ALTF__Note__c.contains('Supporter'), row.ALTF__Note__c);
+    }
+
+    @IsTest
+    static void thePopulateLegTouchesOnlyTheDimensionsEstablishmentMoved() {
+        Fixture f = fixture();
+        // The skeleton contact-role sync would have built, with a value we must not disturb.
+        ALTF__Contact_Map_Details__c skeleton = new ALTF__Contact_Map_Details__c(
+            ALTF__Account__c = f.acctId,
+            ALTF__Opportunity__c = f.oppId,
+            ALTF__Contact__c = f.contactId,
+            ALTF__Buyer_Role__c = 'Decision Maker'
+        );
+        insert skeleton;
+        establish(f, AAO_P8Codes.SENTIMENT, 'TRUE', 2);
+
+        Test.startTest();
+        AAO_Project.Outcome o = AAO_Project.run(f.oppId);
+        Test.stopTest();
+
+        System.assertEquals(1, o.populated, o.toString());
+        System.assertEquals(new List<String>{ 'Support' }, o.people[0].dimensionsWritten);
+        ALTF__Contact_Map_Details__c row = [
+            SELECT ALTF__Status__c, ALTF__Political__c, ALTF__Buyer_Role__c
+            FROM ALTF__Contact_Map_Details__c
+            WHERE Id = :skeleton.Id
+        ];
+        System.assertEquals('Supporter', row.ALTF__Status__c);
+        System.assertEquals(null, row.ALTF__Political__c, 'Nothing established it.');
+        System.assertEquals(
+            'Decision Maker',
+            row.ALTF__Buyer_Role__c,
+            'A dimension the evidence never spoke to is left exactly as it was found.'
+        );
+    }
+
+    @IsTest
+    static void twoRowsForOnePairBlockTheWriteAndRaiseAFlag() {
+        Fixture f = fixture();
+        insert new List<ALTF__Contact_Map_Details__c>{
+            new ALTF__Contact_Map_Details__c(
+                ALTF__Account__c = f.acctId,
+                ALTF__Opportunity__c = f.oppId,
+                ALTF__Contact__c = f.contactId
+            ),
+            new ALTF__Contact_Map_Details__c(
+                ALTF__Account__c = f.acctId,
+                ALTF__Opportunity__c = f.oppId,
+                ALTF__Contact__c = f.contactId
+            )
+        };
+        establish(f, AAO_P8Codes.SENTIMENT, 'TRUE', 2);
+
+        Test.startTest();
+        AAO_Project.Outcome o = AAO_Project.run(f.oppId);
+        Test.stopTest();
+
+        System.assertEquals(1, o.blocked, o.toString());
+        System.assertEquals('blocked', o.people[0].action);
+        System.assert(o.people[0].reason.contains('refuses to choose'), o.people[0].reason);
+        System.assertEquals(
+            1,
+            [
+                SELECT COUNT()
+                FROM AAO_Flag__c
+                WHERE AAO_Opportunity__c = :f.oppId AND AAO_Type__c = 'Cardinality'
+            ],
+            'Never pick. Picking one silently is how a projection starts overwriting a row ' +
+            'nobody is looking at.'
+        );
+        for (ALTF__Contact_Map_Details__c row : [
+            SELECT ALTF__Status__c FROM ALTF__Contact_Map_Details__c WHERE ALTF__Opportunity__c = :f.oppId
+        ]) {
+            System.assertEquals(null, row.ALTF__Status__c, 'Nothing was written to either row.');
+        }
+    }
+
+    @IsTest
+    static void aHeldAnswerNeverReachesACustomerRecord() {
+        Fixture f = fixture();
+        AAO_Answer__c a = establish(f, AAO_P8Codes.SENTIMENT, 'TRUE', 2);
+        a.AAO_Publication_State__c = 'Held';
+        update a;
+
+        Test.startTest();
+        AAO_Project.Outcome o = AAO_Project.run(f.oppId);
+        Test.stopTest();
+
+        System.assertEquals(0, o.created, 'Held is live for nothing.');
+        System.assertEquals(0, o.populated);
+        System.assertEquals(
+            0,
+            [SELECT COUNT() FROM ALTF__Contact_Map_Details__c WHERE ALTF__Opportunity__c = :f.oppId]
+        );
+    }
+
+    @IsTest
+    static void theCreateLegLandsAPersonTheOrgHasNoContactFor() {
+        // Jefferson Vargas, the standing specimen: identified on the 17 June fixture, no
+        // Contact record at all. Addendum 19 ruled the create leg, so he now reaches the map
+        // rather than being reported and dropped - and the name written is the PARSED one,
+        // never the mangled roster string he arrives under.
+        Fixture f = fixture();
+        AAO_Settings.overrideForTest.put(AAO_Settings.CONTACT_CREATION, true);
+        AAO_Participant__c unlinked = participantWithNoContact(f);
+        establishFor(f, AAO_P8Codes.SENTIMENT, 'TRUE', 2, unlinked.Id);
+
+        Test.startTest();
+        AAO_Project.Outcome o = AAO_Project.run(f.oppId);
+        Test.stopTest();
+
+        System.assertEquals(1, o.contactsCreated, o.toString());
+        System.assertEquals(0, o.unresolved, o.toString());
+        System.assertEquals(1, o.created, 'And the map row follows the Contact.');
+        AAO_Project.PersonResult r = o.people[0];
+        System.assertEquals('created', r.identity);
+        System.assertEquals('Supporter', r.support);
+        Contact made = [SELECT FirstName, LastName FROM Contact WHERE Id = :r.contactId];
+        System.assertEquals('Jefferson', made.FirstName);
+        System.assertEquals('Vargas', made.LastName);
+        System.assertEquals(
+            'Supporter',
+            [
+                SELECT ALTF__Status__c FROM ALTF__Contact_Map_Details__c WHERE Id = :r.mapRowId
+            ].ALTF__Status__c
+        );
+    }
+
+    @IsTest
+    static void withCreationOffTheSamePersonIsShadowedAndReportedUnresolved() {
+        // The other half of the toggle, and the state architecture v3.0 calls PERMANENT for a
+        // toggle-off customer rather than transitional. The derivation still succeeds and the
+        // map is the one surface they cannot reach: ALTF__Contact__c is required there, so
+        // there is no row to write and none is faked.
+        Fixture f = fixture();
+        AAO_Settings.overrideForTest.put(AAO_Settings.CONTACT_CREATION, false);
+        AAO_Participant__c unlinked = participantWithNoContact(f);
+        establishFor(f, AAO_P8Codes.SENTIMENT, 'TRUE', 2, unlinked.Id);
+
+        Test.startTest();
+        AAO_Project.Outcome o = AAO_Project.run(f.oppId);
+        Test.stopTest();
+
+        System.assertEquals(1, o.unresolved, o.toString());
+        System.assertEquals(1, o.shadowed, o.toString());
+        System.assertEquals(0, o.contactsCreated);
+        AAO_Project.PersonResult r = o.people[0];
+        System.assertEquals('unresolved', r.action);
+        System.assertEquals('shadowed', r.identity);
+        System.assertNotEquals(null, r.shadowPersonId, 'The person persists on our objects.');
+        System.assertEquals('Supporter', r.support, 'The derivation stands on our own rows.');
+        System.assert(r.reason.contains('no map row can be reached'), r.reason);
+        System.assertEquals(
+            1,
+            o.writesByDimension.get(AAO_P8Codes.DIM_SUPPORT),
+            'The value was derived. What failed is the projection, not the read.'
+        );
+    }
+
+    // ==================================================== Coverage, and the retraction
+
+    @IsTest
+    static void coverageCountsOccasionsAndStopsBelowItsOwnCeiling() {
+        System.assertEquals(
+            null,
+            AAO_Coverage.valueFor(0),
+            'ZERO OCCASIONS WRITES NOTHING. "No Contact" is a claim and we have no evidence ' +
+            'for it: the person may have been met on a call nobody recorded. The silence ' +
+            'law - the system journals what happened, never what did not.'
+        );
+        System.assertEquals(null, AAO_Coverage.valueFor(null));
+        System.assertEquals(AAO_Coverage.BRIEF, AAO_Coverage.valueFor(1));
+        System.assertEquals(AAO_Coverage.MULTIPLE, AAO_Coverage.valueFor(2));
+        System.assertEquals(
+            AAO_Coverage.MULTIPLE,
+            AAO_Coverage.valueFor(97),
+            'And it never reaches In-depth, however many occasions there are. MEANINGFUL and ' +
+            'HIGH QUALITY are not counts, the threshold that would separate them is a ' +
+            'measurement nobody has taken, and writing it off a count would be inference ' +
+            'wearing arithmetic\'s clothes.'
+        );
+    }
+
+    @IsTest
+    static void coverageIsNotAnAnswerAndIsNeverCountedAsOne() {
+        Fixture f = fixture();
+        AAO_Settings.overrideForTest.put(AAO_Settings.CONTACT_CREATION, true);
+        AAO_Participant__c unlinked = participantWithNoContact(f);
+
+        Test.startTest();
+        AAO_Project.Outcome o = AAO_Project.run(f.oppId);
+        Test.stopTest();
+
+        System.assertEquals(
+            0,
+            o.answersRead,
+            'Coverage consults no contract and no claim, so a deal whose only dimension is ' +
+            'coverage still reports zero answers read. Counting it would make the stage ' +
+            'arithmetic lie in the one direction it exists to catch.'
+        );
+        System.assertEquals(false, o.derivedNothing(), o.toString());
+    }
+
+    @IsTest
+    static void aValueWeWroteIsRetractedWhenTheEvidenceStopsSupportingIt() {
+        // The a20 defect's surface: two answers stood UNVERIFIED while the map carried their
+        // old projected values. Projection writes the current derivation INCLUDING NULL.
+        Fixture f = fixture();
+        AAO_Answer__c a = establish(f, AAO_P8Codes.SENTIMENT, 'TRUE', 2);
+
+        Test.startTest();
+        AAO_Project.Outcome first = AAO_Project.run(f.oppId);
+        System.assertEquals(1, first.created, first.toString());
+        System.assertEquals(
+            'Supporter',
+            [SELECT ALTF__Status__c FROM ALTF__Contact_Map_Details__c WHERE Id = :first.people[0].mapRowId]
+                .ALTF__Status__c
+        );
+
+        // The evidence stops supporting it - the clobber fix means this is now a real state
+        // rather than an accident, reached by a supersession or a human retraction upstream.
+        a.AAO_Verdict__c = 'UNVERIFIED';
+        update a;
+
+        AAO_Project.Outcome second = AAO_Project.run(f.oppId);
+        Test.stopTest();
+
+        System.assertEquals(1, second.valuesRetracted, second.toString());
+        System.assertEquals(
+            null,
+            [SELECT ALTF__Status__c FROM ALTF__Contact_Map_Details__c WHERE Id = :first.people[0].mapRowId]
+                .ALTF__Status__c,
+            'The map no longer asserts what no answer supports.'
+        );
+        String note = [
+            SELECT ALTF__Note__c FROM ALTF__Contact_Map_Details__c
+            WHERE Id = :first.people[0].mapRowId
+        ].ALTF__Note__c;
+        System.assert(
+            note != null && note.contains('Retracted Support'),
+            'A blank field reads identically to never-established, so the note carries what ' +
+            'the vendor field cannot. Got: ' + note
+        );
+    }
+
+    @IsTest
+    static void aHumanEditIsNeverRetracted() {
+        Fixture f = fixture();
+        AAO_Answer__c a = establish(f, AAO_P8Codes.SENTIMENT, 'TRUE', 2);
+        AAO_Project.Outcome first = AAO_Project.run(f.oppId);
+
+        // The seller moves it by hand, then the evidence weakens.
+        update new ALTF__Contact_Map_Details__c(
+            Id = first.people[0].mapRowId, ALTF__Status__c = 'Mentor'
+        );
+        a.AAO_Verdict__c = 'UNVERIFIED';
+        update a;
+
+        Test.startTest();
+        AAO_Project.Outcome second = AAO_Project.run(f.oppId);
+        Test.stopTest();
+
+        System.assertEquals(0, second.valuesRetracted, second.toString());
+        System.assertEquals(
+            'Mentor',
+            [SELECT ALTF__Status__c FROM ALTF__Contact_Map_Details__c WHERE Id = :first.people[0].mapRowId]
+                .ALTF__Status__c,
+            'Retraction clears only what the watermark proves is OURS and unmodified. A value ' +
+            'a human wrote is theirs, and clearing it would be the one outcome this system ' +
+            'exists to prevent.'
+        );
+    }
+
+    @IsTest
+    static void aNativeStampIsNotOurWatermarkAndTheHumanStillWins() {
+        // THE STANDING ASSERTION THE 8 AUGUST RULING REQUIRED, and it guards the repair
+        // against itself. `touched` became per-dimension so a value we wrote could be proved
+        // ours and retracted; the binding constraint was that it must never read the native
+        // `ALTF__*_Last_Modified__c` stamp to do it.
+        //
+        // The native stamps are non-null for precisely the rows a human edited - Fatema's
+        // Political Status carries one, hers. A repair that read them would have declared her
+        // row touched, handed her deliberate judgment back to the derivation, and undone the
+        // session-77 repair from inside the correction meant to complete it.
+        //
+        // So: a row carrying a native stamp and no watermark of ours still holds back.
+        Fixture f = fixture();
+        AAO_Answer__c a = establish(f, AAO_P8Codes.SENTIMENT, 'TRUE', 2);
+        AAO_Project.Outcome first = AAO_Project.run(f.oppId);
+        Id rowId = first.people[0].mapRowId;
+
+        // A human edit stamps the native field on the way past. That stamp is the vendor's
+        // record that SOMEBODY wrote, never a record that WE did.
+        update new ALTF__Contact_Map_Details__c(Id = rowId, ALTF__Status__c = 'Mentor');
+        update new AAO_Answer__c(
+            Id = a.Id, AAO_Projected_Value__c = null, AAO_Projected_Modstamp__c = null
+        );
+        ALTF__Contact_Map_Details__c stamped = [
+            SELECT ALTF__Status_Last_Modified__c FROM ALTF__Contact_Map_Details__c
+            WHERE Id = :rowId
+        ];
+        System.assertNotEquals(
+            null,
+            stamped.ALTF__Status_Last_Modified__c,
+            'The specimen only means something if the native stamp is actually populated.'
+        );
+
+        Test.startTest();
+        AAO_Project.run(f.oppId);
+        Test.stopTest();
+
+        System.assertEquals(
+            'Mentor',
+            [SELECT ALTF__Status__c FROM ALTF__Contact_Map_Details__c WHERE Id = :rowId]
+                .ALTF__Status__c,
+            'A native stamp is not our watermark. The human value must stand.'
+        );
+    }
+
+    @IsTest
+    static void aHumanValueOnARowWeHaveNeverWrittenIsNeverOverwritten() {
+        // FATEMA CHOUDRAY'S SHAPE, 7 August. Matthew set a Political Status by hand on a
+        // person we hold no answer, no participation row and no watermark for. Under the
+        // stamp test alone this read as first contact - `ourLastWrite` null, so `humanEdited`
+        // false - and the first run to establish anything about her would have overwritten a
+        // deliberate human judgment.
+        //
+        // **Absence of our watermark plus presence of a value IS evidence of a human edit.**
+        // Nobody else could have put it there.
+        // The map row is built by projection rather than by hand, because the vendor's own
+        // BeforeInsert trigger refuses a row assembled in a test - and a hand-built row would
+        // be a shape the product never produces, which is the fixture mistake this build has
+        // already made twice.
+        Fixture f = fixture();
+        AAO_Answer__c a = establish(f, AAO_P8Codes.SENTIMENT, 'TRUE', 2);
+        AAO_Project.Outcome first = AAO_Project.run(f.oppId);
+        Id rowId = first.people[0].mapRowId;
+
+        // Now Fatema's condition exactly: a value on the row, and NOTHING OF OURS CLAIMING IT.
+        // Both halves of the watermark are cleared, so the stamp test cannot save the human -
+        // `ourLastWrite` is null, `humanEdited` returns false, and the row reads as first
+        // contact. Only the presence of a value we cannot prove we wrote stands between the
+        // derivation and a deliberate human judgment.
+        update new ALTF__Contact_Map_Details__c(Id = rowId, ALTF__Status__c = 'Mentor');
+        update new AAO_Answer__c(
+            Id = a.Id, AAO_Projected_Value__c = null, AAO_Projected_Modstamp__c = null
+        );
+
+        Test.startTest();
+        AAO_Project.Outcome o = AAO_Project.run(f.oppId);
+        Test.stopTest();
+
+        System.assertEquals(
+            'Mentor',
+            [SELECT ALTF__Status__c FROM ALTF__Contact_Map_Details__c WHERE Id = :rowId]
+                .ALTF__Status__c,
+            'The human value stands. The derivation says Supporter and it must not land: a ' +
+            'value we cannot prove we wrote is somebody else\'s, and first contact is ours ' +
+            'to write only where the field is EMPTY.'
+        );
+        System.assert(
+            o.people[0].heldBack.contains('Support'),
+            'And it is held back visibly rather than silently skipped. Got: ' + o
+        );
+    }
+
+    // ---------------------------------------------------------------------- the fixture
+
+    private class Fixture {
+        Id oppId;
+        Id acctId;
+        Id contactId;
+        Id sourceId;
+        Map<String, AAO_Evidence_Contract__c> contracts;
+    }
+
+    private static Fixture fixture() {
+        AAO_Ingest.AUTO = false;
+        AAO_Synthetic.MARK = true;
+        Account a = new Account(Name = 'AAO Project Test');
+        insert a;
+        Opportunity o = new Opportunity(
+            Name = 'AAO Project Test Deal',
+            AccountId = a.Id,
+            StageName = 'Stage 1',
+            CloseDate = Date.today().addDays(30)
+        );
+        insert o;
+        Contact c = new Contact(FirstName = 'Test', LastName = 'Person', AccountId = a.Id);
+        insert c;
+
+        Fixture f = new Fixture();
+        f.oppId = o.Id;
+        f.acctId = a.Id;
+        f.contactId = c.Id;
+        f.contracts = new Map<String, AAO_Evidence_Contract__c>();
+        AAO_PassContracts.mint();
+        for (AAO_Evidence_Contract__c ec : [
+            SELECT Id, AAO_Proposition_Code__c
+            FROM AAO_Evidence_Contract__c
+            WHERE AAO_Rubric_Version__c = :AAO_PassContracts.RUBRIC_VERSION
+                AND AAO_Contract_State__c != 'Superseded'
+        ]) {
+            f.contracts.put(ec.AAO_Proposition_Code__c, ec);
+        }
+        AAO_Synthetic.MARK = false;
+        return f;
+    }
+
+    /**
+     * A participant with no Contact. Participation is only ever written by
+     * `AAO_Participants.record` on Source insert, so this builds the Source rather than
+     * hand-inserting the junction - the same mistake was made twice before it was journalled.
+     */
+    private static AAO_Participant__c participantWithNoContact(Fixture f) {
+        AAO_Synthetic.MARK = true;
+        AAO_Source__c src = new AAO_Source__c(
+            AAO_Opportunity__c = f.oppId,
+            AAO_Account__c = f.acctId,
+            AAO_Origin__c = 'ingest',
+            AAO_Artifact_SHA256__c = '0000000000000000000000000000000000000000000000000000000000000017',
+            AAO_Part_Index__c = 1,
+            AAO_Part_Count__c = 1,
+            AAO_Normalized_Text__c = 'jefferson\tNo contact exists for this person.',
+            AAO_Diarization__c = 'Attributed',
+            AAO_Evidence_Occurred__c = Datetime.newInstanceGmt(2026, 6, 17, 15, 0, 0),
+            AAO_Speaker_Roster__c = JSON.serialize(
+                new Map<String, Object>{
+                    'speakers' => new List<Object>{
+                        new Map<String, Object>{
+                            'key' => 'jefferson',
+                            'display' => 'Jefferson Vargas',
+                            'email' => 'jvargas@example.invalid'
+                        }
+                    }
+                }
+            ),
+            AAO_Synthetic__c = true
+        );
+        insert src;
+        AAO_Synthetic.MARK = false;
+        f.sourceId = src.Id;
+        List<AAO_Participant__c> found = [
+            SELECT Id, AAO_Contact__c
+            FROM AAO_Participant__c
+            WHERE AAO_Source__c = :src.Id AND AAO_Contact__c = NULL
+            LIMIT 1
+        ];
+        System.assertEquals(
+            1,
+            found.size(),
+            'The fixture needs a participant with no Contact, and participation is written ' +
+            'by the Source after-insert rather than by hand.'
+        );
+        return found[0];
+    }
+
+    /**
+     * A participant the ROSTER resolves to a Contact, with no answers of any kind.
+     *
+     * Built through the Source after-insert like the helper above, for the reason journalled
+     * there: participation is only ever written by `AAO_Participants.record`, and hand-inserting
+     * the junction was the same mistake twice.
+     */
+    private static AAO_Participant__c rosterParticipantWithContact(Fixture f, String email) {
+        AAO_Synthetic.MARK = true;
+        AAO_Source__c src = new AAO_Source__c(
+            AAO_Opportunity__c = f.oppId,
+            AAO_Account__c = f.acctId,
+            AAO_Origin__c = 'ingest',
+            AAO_Artifact_SHA256__c =
+                '0000000000000000000000000000000000000000000000000000000000000044',
+            AAO_Part_Index__c = 1,
+            AAO_Part_Count__c = 1,
+            AAO_Normalized_Text__c = 'someone\tOn the call and silent about everything.',
+            AAO_Diarization__c = 'Attributed',
+            AAO_Evidence_Occurred__c = Datetime.newInstanceGmt(2026, 8, 11, 15, 0, 0),
+            AAO_Speaker_Roster__c = JSON.serialize(
+                new Map<String, Object>{
+                    'speakers' => new List<Object>{
+                        new Map<String, Object>{
+                            'key' => 'quiet', 'display' => 'Test Person', 'email' => email
+                        }
+                    }
+                }
+            ),
+            AAO_Synthetic__c = true
+        );
+        insert src;
+        AAO_Synthetic.MARK = false;
+        AAO_Participant__c p = [
+            SELECT Id, AAO_Contact__c FROM AAO_Participant__c
+            WHERE AAO_Source__c = :src.Id LIMIT 1
+        ];
+        return p;
+    }
+
+    // ================================== presence must not ride read variance (44th stamp, 1)
+
+    @IsTest
+    static void aParticipantOnTheCallIsPLACEDEvenWhenTheModelEstablishedNothing() {
+        // MATTHEW'S RULING, forty-fourth stamp item 1. Kayla Stanley was on the call and fell
+        // off the map in TWO OF THREE identical probe runs, because a person earned a map row
+        // only by having claims, and claims come from the model. The roster does not: it is
+        // deterministic data on the Source. This is the assertion that presence stopped riding
+        // read variance, and it is the one an in-org run cannot make for us, because a run only
+        // exercises this leg when a resolved participant happens to have no answers at all.
+        Fixture f = fixture();
+        AAO_Participant__c quiet = rosterParticipantWithContact(f, 'quiet.person@example.invalid');
+        // Link it the way the roster ladder would, so the person is RESOLVED.
+        quiet.AAO_Contact__c = f.contactId;
+        update quiet;
+
+        System.assertEquals(
+            0,
+            [SELECT COUNT() FROM AAO_Answer__c WHERE AAO_Opportunity__c = :f.oppId],
+            'The whole point is that nothing was established about this person.'
+        );
+
+        Test.startTest();
+        AAO_Project.Outcome o = AAO_Project.run(f.oppId);
+        Test.stopTest();
+
+        System.assertEquals(
+            1, o.placedFromRoster, 'The roster placed exactly this person. ' + o
+        );
+        List<ALTF__Contact_Map_Details__c> rows = [
+            SELECT ALTF__Coverage__c, ALTF__Status__c, ALTF__Political__c, ALTF__Buyer_Role__c
+            FROM ALTF__Contact_Map_Details__c
+            WHERE ALTF__Opportunity__c = :f.oppId AND ALTF__Contact__c = :f.contactId
+        ];
+        System.assertEquals(1, rows.size(), 'A map row exists for someone on the call.');
+        System.assertEquals(
+            AAO_Coverage.BRIEF,
+            rows[0].ALTF__Coverage__c,
+            'Carrying the coverage the roster derives, which is the one thing being on a call ' +
+            'establishes.'
+        );
+        System.assertEquals(
+            null,
+            rows[0].ALTF__Status__c,
+            'And NOTHING ELSE. A roster placement asserts attendance, never a judgment: ' +
+            'filling the row out to look complete is the defect, not the feature.'
+        );
+        System.assertEquals(null, rows[0].ALTF__Political__c);
+        System.assertEquals(null, rows[0].ALTF__Buyer_Role__c);
+    }
+
+    @IsTest
+    static void anInternalParticipantIsNeverPlacedByTheRosterEither() {
+        // The thirty-seventh stamp's item 4 exclusion has to survive the new leg, or the
+        // deterministic placement would put our own sellers on the customer's map by a route
+        // the coverage guard was built to close.
+        Fixture f = fixture();
+        AAO_Participant__c ours = rosterParticipantWithContact(f, 'seller@example.invalid');
+        ours.AAO_Contact__c = f.contactId;
+        ours.AAO_Internal__c = true;
+        update ours;
+
+        Test.startTest();
+        AAO_Project.Outcome o = AAO_Project.run(f.oppId);
+        Test.stopTest();
+
+        System.assertEquals(0, o.placedFromRoster, 'Our own side is not placed. ' + o);
+        System.assertEquals(
+            0,
+            [
+                SELECT COUNT()
+                FROM ALTF__Contact_Map_Details__c
+                WHERE ALTF__Opportunity__c = :f.oppId
+            ],
+            'And no map row is written at all.'
+        );
+    }
+
+    private static AAO_Answer__c establish(
+        Fixture f,
+        String code,
+        String verdict,
+        Integer counter
+    ) {
+        return establishRow(f, code, verdict, counter, f.contactId, null, 'Contact');
+    }
+
+    private static AAO_Answer__c establishFor(
+        Fixture f,
+        String code,
+        String verdict,
+        Integer counter,
+        Id participantId
+    ) {
+        return establishRow(f, code, verdict, counter, null, participantId, 'Participant');
+    }
+
+    /** A standing establishment on one §P8 proposition for the fixture's person. */
+    private static AAO_Answer__c establishRow(
+        Fixture f,
+        String code,
+        String verdict,
+        Integer counter,
+        Id contactId,
+        Id participantId,
+        String subjectType
+    ) {
+        AAO_Evidence_Contract__c ec = f.contracts.get(code);
+        System.assertNotEquals(null, ec, 'No contract for ' + code);
+        AAO_Synthetic.MARK = true;
+        AAO_Answer__c a = new AAO_Answer__c(
+            AAO_Opportunity__c = f.oppId,
+            AAO_Account__c = f.acctId,
+            AAO_Evidence_Contract__c = ec.Id,
+            AAO_Subject_Type__c = subjectType,
+            AAO_Subject_Contact__c = contactId,
+            AAO_Participant__c = participantId,
+            AAO_Verdict__c = verdict,
+            AAO_Support_Counter__c = counter,
+            AAO_Established_By__c = 'MACHINE',
+            // State basis: a projected map value is cited by the rows its claim froze rather
+            // than by a quote, which the evidence-family law exempts from the span requirement.
+            AAO_Basis__c = 'State',
+            AAO_Publication_State__c = 'Live',
+            AAO_Evidence_Occurred__c = Datetime.newInstanceGmt(2026, 6, 24, 7, 1, 0)
+        );
+        insert a;
+        AAO_Synthetic.MARK = false;
+        return a;
+    }
+
+    // ------------------------------------------------- the stage arithmetic, v3.9's guard
+
+    @isTest
+    static void anEmptyDerivationIsAReportedZeroAndNeverASuccess() {
+        // Architecture v3.9's guard, from the defect that produced it: derive() was proven
+        // against the retired EBV path, skipped every P8-coded answer, and projection wrote
+        // nothing while reporting success. The counters make that state unexpressible as
+        // success - answers in and dimension-writes out, both printed.
+        AAO_Project.Outcome o = new AAO_Project.Outcome();
+        o.answersRead = 40;
+        System.assertEquals(0, o.dimensionWrites(), 'unit: values');
+        System.assert(
+            o.derivedNothing(),
+            'Forty answers producing no value is the writer failing, not the read finding nothing.'
+        );
+        String s = o.toString();
+        System.assert(s.contains('answers read             40'), 'Got: ' + s);
+        System.assert(s.contains('DERIVED NOTHING'), 'And it says so in words. Got: ' + s);
+        System.assert(
+            s.contains('writer defect, not a recall result'),
+            'The report names which kind of failure it is, because a blank map reads as the ' +
+            'other one. Got: ' + s
+        );
+    }
+
+    @isTest
+    static void aRunThatWroteNothingBecauseItReadNothingIsNotADefect() {
+        // Zero answers is a pass that found nothing, which is an ordinary and correct
+        // outcome. The alarm fires on answers-in-with-no-values-out, never on an empty read.
+        AAO_Project.Outcome o = new AAO_Project.Outcome();
+        System.assertEquals(0, o.answersRead);
+        System.assertEquals(
+            false,
+            o.derivedNothing(),
+            'Nothing in and nothing out is silence, not a silent failure.'
+        );
+        System.assert(!o.toString().contains('DERIVED NOTHING'));
+    }
+
+    @isTest
+    static void everyDimensionIsCountedSeparatelyAndNamesItsUnit() {
+        AAO_Project.Outcome o = new AAO_Project.Outcome();
+        o.answersRead = 4;
+        for (String d : AAO_P8Codes.dimensions()) {
+            o.writesByDimension.put(d, 1);
+        }
+        System.assertEquals(
+            AAO_P8Codes.dimensions().size(),
+            o.dimensionWrites(),
+            'unit: values. Reads the dimension list rather than a literal, so adding a ' +
+            'dimension does not silently leave this test asserting the old count.'
+        );
+        String s = o.toString();
+        for (String d : AAO_P8Codes.dimensions()) {
+            System.assert(s.contains(d), 'Every dimension prints its own line. Got: ' + s);
+        }
+        System.assert(!s.contains('DERIVED NOTHING'));
+    }
+}

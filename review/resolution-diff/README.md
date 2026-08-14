@@ -64,10 +64,40 @@ The same explains `r1q10`/`r2q7`: identical bytes, identical meaning, same contr
 1. **Wiring is not a swap of like for like.** `AAO_Resolve` disposes pairs the driven path cannot express (`MERGED`) and writes a field it never sets (corroboration). Ledger arithmetic changes shape, which is exactly why the eighty-first stamp's condition 3(iv) requires located/merged/disposed to reconcile across the merge.
 2. **The pair volume reaching any model leg should fall sharply**, since the deterministic legs take self-subject pairs — the common case — for free. Condition 3(iii)'s re-measure of call 2's batch arithmetic and grammar cap is therefore not a formality: the cap was measured on a stage handed every pair.
 3. **`identify`'s maintained-ness is a cost the proposal must price.** Retiring a path that received the keyed-schema conversion on 13 August means retiring work that is newer than the design it is being replaced by. The twenty-eighth stamp's "one implementation survives" still governs; this report only notes that the survivor inherits the keyed-schema lesson, which `AAO_Resolve.requests()` should be checked against before wiring.
-4. **The mentioned-person gap is the real functional delta.** `identify` cannot see anyone who was not on the call, by its own comment. Every mentioned-person specimen the ledger carries — Fatima, Rich, Priya, Pat — is unreachable on the driven path and reachable on the dark one.
+4. **The mentioned-person gap is the real functional delta.** `identify` cannot see anyone who was not on the call, by its own comment. Every mentioned-person specimen the ledger carries — Fatima, Rich, Priya, Pat — is unreachable on the driven path and ~~reachable on the dark one~~. **THE STRUCK PHRASE IS TRUE IN ITS CONCLUSION AND WRONG IN WHAT IT IMPLIES ABOUT THE MECHANISM. Corrected in place per the corrections law, never deleted; the mechanism and its consequence for the wiring question are §6 below.**
 
 ---
 
 ## 5 · Owed next, not done here
 
 The wiring proposal per the eighty-first stamp's conditions 3(ii) through 3(v), and only on its ratification, the wiring. Before-and-after measurement on the frozen fixtures (model calls, merged count, corroborated count, wall) is condition 3(v) and belongs to that work, not to this report.
+
+---
+
+## 6 · CORRECTION, this report's own · what a mentioned person IS, measured rather than implied
+
+Design's read of §4 item 4 is right that the mechanism was not named, and naming it changes the wiring question. Measured from the same tree:
+
+**`AAO_Resolve` does NOT use `AAO_Shadow_Person__c`.** It mints an `AAO_Participant__c` with a `mention:` roster key — `mentionKey()` returns `'mention:' + designator.trim().toLowerCase()` with whitespace hyphenated, and `mentionFor()` mints the row with the designator VERBATIM as display name (the ASR-name law) and the email carried from the linked Contact so the join's internal-domain gate can still see a seller. Its own header states the intent: *"RESOLUTION ATTACHES SUBJECTS, NEVER SPEAKERS: a resolved mention becomes the pair's subject via a mention-minted Participant row (`mention:` roster key, excluded from coverage — presence establishes coverage and a mention is not presence)."* So the row is a **subject carrier**, deliberately excluded from coverage arithmetic by its key prefix.
+
+**And a second measurement, which cuts against the framing on both sides.** `AAO_Pass.cls:1087-1091` says mentioned-person candidates need *"the shadow-creation path, which is the gates' work and is not built."* **That comment is stale.** The shadow path is built and live:
+
+- `AAO_Shadow_Person__c` is referenced by five production classes: `AAO_AnswerKey`, `AAO_Commit`, `AAO_Identity`, `AAO_PersonName`, `AAO_Replay`.
+- `AAO_AnswerKey` carries `Shadow_Person` as a first-class subject type (line 53, and branches at 180 and 198).
+- `AAO_Commit` carries the shadow lookup onto candidates and claims.
+- **`AAO_Identity.shadow()` mints the rows**, upserting on `AAO_Shadow_Key__c`, reachable from five return sites inside `AAO_Identity.resolve()`.
+- **`AAO_Project.cls:773` calls `AAO_Identity.resolve(person, accountId, opportunityId)`**, so shadow minting runs today, at projection, on every pass.
+- The object carries `AAO_Promoted_Contact__c` and `AAO_Promoted_At__c`, so the promotion path to a real Contact exists too, and `AAO_Participant__c.AAO_Contact__c`'s own field description says it is *"NULLABLE ON PURPOSE: a participant who is not a Contact is exactly the Shadow case."*
+
+`AAO_Resolve`'s header agrees and says so deliberately (lines 44, 49, 292): **creation does not happen in resolution; it stays at projection in `AAO_Identity`, at ladder-zero, behind the create-leg record.**
+
+### What this means for the question design put to Matthew
+
+The two implementations do differ on mentioned people, but **not as "mints a Participant who never participated" versus "waits on a Shadow Person that was never built."** Measured, it is:
+
+- **`AAO_Resolve`**: the mention becomes a *subject carrier* — a mention-keyed Participant, excluded from coverage — and the question of what that person IS in the CRM is deferred to `AAO_Identity` at projection, which already decides link-to-Contact, mint-a-Shadow, or hold, on the existing ladder.
+- **`identify`**: the mention never enters at all, on a comment whose stated reason no longer holds.
+
+**So the representation question is narrower and cheaper than it looked, and it is still Matthew's.** It is not "build a shadow path"; that exists and runs. It is: **does a mentioned person get a mention-keyed Participant row as their subject carrier during resolution, or should the subject carrier be a Shadow Person directly, with no Participant row minted for someone who was not present?** Both end at the same projection-time ladder. The proposal holds both open and prices them; it does not assume either.
+
+**Standing hazard recorded from this:** the `AAO_Pass` comment was read as current by design and by this report before it was checked against the classes it names. A comment asserting the absence of a capability is a state claim, and the state-claim law binds it: unverified until the code carrying it is opened.

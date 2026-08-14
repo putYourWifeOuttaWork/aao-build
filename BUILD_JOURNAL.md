@@ -178,3 +178,32 @@ Test run `707WD0000A84Avs` against aossb2, `RunLocalTests`, 232,553 ms. **501 me
 **Standing consequence: a remote's visibility is verified by reading it back from the API before the first push, never assumed from the flag passed or from the UI default.** Nothing was exposed, because the repository was empty for the whole window between creation and verification.
 
 **And the CLI's own summary was wrong, which is worth recording because it is this project's own law biting in a new place.** The human-format banner printed `Outcome: Failed` beside `Tests Ran 501`, `Pass Rate 100%`, `Fail Rate 0%` — a summary that contradicts itself, and whose rates would have had this session report a clean suite. The truth came from querying the run's own rows: `SELECT Outcome, COUNT(Id) FROM ApexTestResult WHERE AsyncApexJobId = '707WD0000A84Avs' GROUP BY Outcome` returns Pass 500, Fail 1. The run-level row disagrees again in its own way (`MethodsCompleted 481` against `MethodsEnqueued 501`), so the per-method rows are the only trustworthy grain. **Standing consequence, the same one the working mode already states for run reports: a summary is not evidence, the rows are. This now applies to tool output as much as to our own reports.**
+
+---
+
+## 2026-08-14 · Session 2, continued · CORRECTION IN PLACE for commit `3a1db34` · two verification laws adopted
+
+### CORRECTION · WHAT COMMIT `3a1db34` ACTUALLY CONTAINS
+
+`3a1db34` is pushed, so its history is not rewritten and its message is not edited. The wrong text stands where it is and is corrected here, per the corrections law.
+
+**Its message reads** "journal: remote created public, flipped private and verified before any push." **What it actually contains, in addition to that journal entry:**
+
+- **All seventeen previously-owed manifest documents**: the five law documents (Board, Glossary, Architecture, Model and Flow, Charters), the corpus record v1.1, the adjudication sheet, the machine read sheet, the a23 refusal diagnosis, the four fixture raws, the Pitch capture sidecar, the two graded CSVs, and the tg1-versus-Pass-1 grading record.
+- **The entire eighty-fifth stamp.**
+
+**The receipt, measured:** `CODE-INBOX.md` stood at **87 stamps / 397,699 bytes at `34c4331`** and at **88 stamps / 404,442 bytes at `3a1db34`**. `git log --diff-filter=A` places `aao-board.md`, `aao-charters.md`, `aao-unseen-corpus-record-v1_0.md`, `aao-adjudication-sheet.md` and `aao-fixture-projectfarma-2026-07-30-raw.txt` at `3a1db34`.
+
+**Cause:** every commit in session 1 used `git add -A` on a folder design also writes to, so design's bridge writes were swept into CODE's commits between commits. **Nothing was lost and nothing was wrong on disk; the record of WHO PUT WHAT THERE AND WHEN was wrong, which is the part a ledger exists to keep.**
+
+### Two verification laws adopted this session
+
+**1 · A STAMP COUNT COUNTS STAMPS, not H2 headings.** This session verified splices with `grep -c '^## '`, which returns **89** on the current ledger while the top stamp is the **eighty-sixth**. Eight H2s are not stamps: "The new working mode", "a20 verification, midday", "Prior findings, 6 August morning", "Build queue, in order", "Ratified from your a19 report", "Standing, unchanged", "Sequence out", and "For the next design session". The correct pattern is `^## <Ordinal> stamp`, which returns **81**, and **81 reconciles exactly with an eighty-sixth top stamp**: ordinals one through three predate this re-stamped file, and the eighth and ninth were absorbed at re-stamp, which the ledger documents in its own text at the tenth stamp. Adopted: count `^## [Ordinal] stamp`, and reconcile the count against the top ordinal through documented gaps, so a heading count can never drift into being read as a stamp number.
+
+**2 · A COMMENT ASSERTING THE ABSENCE OF A CAPABILITY IS A STATE CLAIM.** `AAO_Pass.cls:1087-1091` says the shadow-creation path "is the gates' work and is not built." It is built and live. The state-claim law binds a comment exactly as it binds a stamp: unverified until the code it names is opened. Recorded because this report and design both read that comment as current before it was checked.
+
+### The `identify-1.0.0` pinning check · BENIGN, and one count corrected
+
+Design flagged six test files pinning `identify-1.0.0` while the charter emits `identify-2.0.0`. **Measured: four test files, five occurrences** — `AAO_CriteriaTest` (2), `AAO_PairCommitTest` (1), `AAO_RunInspectorTest` (1), `AAO_RunExportTest` (1). A fifth file carries the string but is a document, not code: `aao-adjudication-sheet.md`.
+
+**All five occurrences are fixture literals**, of the form `AAO_Charter_Version__c = 'identify-1.0.0'`, setting a field on a pair row the test constructs. **No test asserts an emitted charter version against a pinned one anywhere in the suite** — a search for any `assertEquals` referencing a version, and specifically for any assert referencing `AAO_IdentifyCharter.VERSION`, returns nothing. So nothing is asserting a stale constant, and the suite's 500 of 501 is not resting on one. They are inert historical values in test data. **Not changed**: they are not defects, and editing test fixtures to chase a version they never assert would be churn. Recorded so the next session does not re-investigate.

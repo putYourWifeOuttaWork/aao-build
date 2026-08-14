@@ -1,0 +1,14 @@
+# Salesforce CLI local state (auth artifacts — never commit)
+.sf/
+.sfdx/
+.localdevserver/
+**/main/default/lwc/jsconfig.json
+
+# Node
+node_modules/
+
+# macOS
+.DS_Store
+
+# Local, machine-specific session settings
+.claude/settings.local.json

@@ -135,6 +135,36 @@ Two of the four are now confirmed against the ledger's own bytes by independent 
 2. The 17 outstanding manifest documents, `aao-unseen-corpus-record-v1_0.md` first.
 3. Then the eighty-fourth stamp's queue in its order: the per-leg resolution diff report (report only); the LOR contracts and the read-only measurement run.
 
+---
+
+## 2026-08-14 · Session 2 · The bridge returns · a defect of this journal's own · the remote closes
+
+### DEFECT, this session's own, recorded before anything else · COMMIT `3a1db34` DOES NOT CONTAIN WHAT ITS MESSAGE SAYS
+
+`3a1db34` is titled "journal: remote created public, flipped private and verified before any push." **It also silently carried all seventeen owed manifest documents and the entire eighty-fifth stamp**, because every commit this session was made with `git add -A` and design's bridge had written them to the canonical folder between commits. Measured: `CODE-INBOX.md` went 87 stamps / 397,699 bytes at `34c4331` to 88 stamps / 404,442 bytes at `3a1db34`, and `git log --diff-filter=A` puts `aao-board.md`, `aao-charters.md`, `aao-unseen-corpus-record-v1_0.md`, the adjudication sheet and the fixture raws all at that same commit. **Seventeen law and evidence documents entered the permanent record under a commit message about a GitHub setting, and were pushed that way.**
+
+**The evidence was in front of me and I explained it away.** Verifying the push, this session counted "local docs at root: 38" against an expectation of about 21, noted the discrepancy in its own output, and moved on with "the important verification holds" because the local-versus-remote totals matched. The totals matching is exactly what a silent `git add -A` sweep guarantees; it cannot detect the sweep. **A number that does not match the expectation is a finding, not a rounding difference, and moving on because a different check passed is how a carry lands unexamined.**
+
+**Standing consequences, both adopted:**
+1. **`git status` is the cheapest detector of a landed carry, and it is checked at every pickup.** Design's correction, credited: the ledger never arrives as a new file, it updates IN PLACE at the canonical path, so an mtime sweep across other folders finds nothing while `git status` has been saying `M CODE-INBOX.md` the whole time. This session swept `Downloads`, `Desktop` and `Documents` for new files and explicitly excluded the repo folder as "our own activity", which is precisely where the answer was.
+2. **Commits are staged deliberately, never `git add -A` on a folder another agent writes to.** The canonical folder has two writers by law — design writes the ledger and the documents, CODE writes `review/` and the repo — so a blanket add will keep silently absorbing design's work under CODE's commit messages. Paths are named from here, and anything unexpected in `git status` is inventoried before it is staged.
+
+### The carry, verified on disk
+
+`CODE-INBOX.md` now 410,809 bytes, 89 stamp headings, mtime 2026-08-14 14:26:04 local. Eighty-sixth stamp at line 12, eighty-fifth at line 32, eighty-fourth at line 52, everything below untouched. **The splice was performed by design; this session re-spliced nothing and retyped nothing.** Also landed: `aao-wf-corpus-stage-arc-v0_1.md`, 6,281 bytes.
+
+**The manifest is confirmed closed from this side**, checked by exact filename rather than taken from the stamp: all seventeen previously-absent items are present, zero absent, 37 documents at the canonical root. The eighty-fifth stamp's item 2 corrects the eighty-third's wrong claim about the corpus record and credits session 1's count; the record is now consistent.
+
+### The remote · ITEM 5 CLOSES · VISIBILITY CONFIRMED FROM THE API
+
+The eighty-sixth stamp's item 5 asks for visibility verified rather than assumed. **Confirmed from the GitHub API, not from the flag passed and not from the command's silence:** `GET /repos/putYourWifeOuttaWork/aao-build` returns `private: true`, `visibility: private`. The sequence was: repository found already existing and **public** (`private: false`, 0 KB, never pushed); push withheld; `gh repo edit --visibility private`; **re-read from the API and confirmed private while still empty**; then and only then the push. Nothing was ever exposed.
+
+Push verified end to end: five commits on the remote, remote HEAD `3a1db34` identical to local HEAD, 738 blobs on the remote against 738 local tracked files, working tree clean. **The eighty-fifth stamp's HIGH finding and the eighty-sixth stamp's item 5 are both closed.**
+
+### Next
+
+The eighty-sixth stamp's queue item (b): the per-leg resolution diff report, `AAO_Pass.identify` against the twenty-seventh stamp's text and against `AAO_Resolve`. **Report only, no build**, per the eighty-first stamp's condition 3(i).
+
 ### The suite · RUN AND VERIFIED · exactly the expected shape
 
 Test run `707WD0000A84Avs` against aossb2, `RunLocalTests`, 232,553 ms. **501 methods, 500 Pass, 1 Fail**, and the one failure is the standing non-AAO one the ledger has carried since the fourth stamp: `ConvertToOpportunityTest.testgetOppCreationDetails`, failing on `FIELD_CUSTOM_VALIDATION_EXCEPTION — AE Summary is required when no opportunity is created`, an org-resident validation rule on a non-AAO object. **The eighty-second stamp's expected shape, "500 of 501 with the standing non-AAO failure", is met exactly.** No AAO test fails. The retrieved tree is a working build, not just a syntactically valid one.

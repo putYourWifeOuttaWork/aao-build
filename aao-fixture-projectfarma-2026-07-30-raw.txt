@@ -1,0 +1,1434 @@
+1. Jennae Jizdeortega00:03
+Product (2)
+is to just review the business objectives that you guys kindly shared with me last week. We'll open up the hood on our account manager suite. I know I shared a glimpse of opportunity management and what a streamlined sales process looks like. We can certainly dive more into that today, but the real focus is account planning. And of course, tied directly to that is relationship mapping, which is what brought us here.
+2. Move the player to 26.19 seconds in the call
+Jennae Jizdeortega00:26
+Aside from that, guys, ask questions throughout, but anything else that you want to get out of today's call so I can maximize our time together.
+3. Move the player to 37.31 seconds in the call
+Lewis, Dan00:37
+I think that's the main, the main point is the mapping.
+4. Move the player to 38.75 seconds in the call
+Adam Pfeiffer00:38
+Um, yeah, no, I was gonna say, I think, you know, obviously...
+5. Move the player to 41.47 seconds in the call
+Stanley, Kayla00:41
+Yeah.
+6. Move the player to 45.79 seconds in the call
+Adam Pfeiffer00:45
+We can scale, and if you know, if we were, I think the priority is the mapping. I think your intuition is right. We should definitely focus on that. One of the drawbacks, just I'm going to state it plainly, where I think we would be maybe not reluctant, but maybe something we would do in a later implementation is kind of the whole sales, the...
+7. Move the player to 65.15 seconds in the call
+Adam Pfeiffer01:05
+Go To Market Tech Stack Discussion
+the process thing that like the second offering that we discussed last time. We have such a diverse user group within Salesforce where some of us are like Dan and I, we're gonna, well Dan, I should, but Dan's better at following the process and doing everything the way we design it to do. Like I'd say.
+8. Move the player to 84.75 seconds in the call
+Adam Pfeiffer01:24
+Go To Market Tech Stack Discussion
+We have a lot of like principal consultants and practice area leads that have sales targets that use Salesforce that are, Taylor, what's the PC way to say it? Challenging from an IT cloud compliance adherence perspective, if you will. So I just worry about over-processing something that's going to just make people deviate further from the intent.
+9. Move the player to 108.11 seconds in the call
+Adam Pfeiffer01:48
+So that's my, I mean, and we could talk at the end about maybe why you're offering to counteracts my intuition. But for now, I think like I'm really keen on seeing, like looking under the hood of the relationship mapping, and let's definitely prioritize that. And I'm gonna go.
+10. Move the player to 108.27 seconds in the call
+Jennae Jizdeortega01:48
+Mm.
+11. Move the player to 125.39 seconds in the call
+Jennae Jizdeortega02:05
+Yeah, of course, Ben.
+12. Move the player to 127.15 seconds in the call
+Adam Pfeiffer02:07
+off camera for 20 minutes as I slay some breakfast, okay? So don't mind me.
+13. Move the player to 132.99 seconds in the call
+Jennae Jizdeortega02:12
+I know it's morning for us, Adam, so by all means. And thank you for sharing that drawback, you guys. I appreciate the transparency more than anything because that will help direct my conversations. So with that said, let's go ahead and dive right in.
+14. Move the player to 149.15 seconds in the call
+Jennae Jizdeortega02:29
+All right, team. So I just want to quickly review what I learned from you guys last week. I know it's really wordy here, but some of the goals that we identified, and keep me honest, let me know where I can make edits, but one of them hit 90 million company-wide sales target this year. This is measured on sales booked, not converted revenue.
+15. Move the player to 169.35 seconds in the call
+Jennae Jizdeortega02:49
+Did I hear that correctly, Adam, when you shared that?
+16. Move the player to 174.19 seconds in the call
+Adam Pfeiffer02:54
+Yeah, some variance of that. I think we revised our AOP recently, but like let's for the sake of this discussion, that's the perfect number. And you heard it right. That's a sales metric, not a converted revenue metric.
+17. Move the player to 185.91 seconds in the call
+Jennae Jizdeortega03:05
+Go To Market Tech Stack Discussion
+Perfect. With that, one of the pressures I heard is, and it's not really a pressure, right? I know you guys just implemented sales, so it's just really, sorry, not sales, Salesforce. So it's supporting the scale of that Salesforce usage. Two reps being used, using it today, sorry, two reps initially, that was Kayla and Adam, and now it's all 46 users.
+18. Move the player to 186.99 seconds in the call
+Adam Pfeiffer03:06
+Yeah.
+19. Move the player to 207.79 seconds in the call
+Jennae Jizdeortega03:27
+Some of the initiatives around hitting that goal, establish standard sales workflows across the organization, and ICP scoring metric to identify who best lines up with your service offerings and how you should be delivering that messaging to them. Some of the obstacles, what's
+20. Move the player to 226.43 seconds in the call
+Jennae Jizdeortega03:46
+Go To Market Tech Stack Discussion
+you know, impeding on the day-to-day workflows. There's a gap in contacts are not consistently entered in Salesforce. Another gap, existing contact information is not quite accurate. Another one, lastly, no view of relationship strength or who owns each customer relationship. And then also sales strategy is not refined. It's a growing strategy that is
+21. Move the player to 247.23 seconds in the call
+Jennae Jizdeortega04:07
+continually in flux. But again, we're not going to be focusing so much on sales strategy. This is just a capture of our entire conversation.
+22. Move the player to 256.19 seconds in the call
+Jennae Jizdeortega04:16
+That said, the main initiative with that goal is grow key accounts, including multi-site clients. I'd love to understand what pressure it is that you guys are facing internally. What is it that your CEO and CRO or whoever it is, Adam, what is keeping you up at night that's prohibiting that growth of key accounts? Could it be competitive?
+23. Move the player to 277.43 seconds in the call
+Jennae Jizdeortega04:37
+base? Could it be market share? Like, talk to me a little bit about some pressures.
+24. Move the player to 282.43 seconds in the call
+Adam Pfeiffer04:42
+I'd say our key pressures are, well, number one, like resourcing in general, and that's nothing that sales is really going to drive. From an opportunity development perspective, I think the main pressures are we tend to operate in
+25. Move the player to 301.15 seconds in the call
+Adam Pfeiffer05:01
+silos across manufacturing networks for the same company. So we don't necessarily leverage the relationships or the right relationships or even know which relationships to leverage to expand outside of the existing site we're working on. That's not always the case and every culture on our client side is different.
+26. Move the player to 320.27 seconds in the call
+Adam Pfeiffer05:20
+Sometimes they collaborate very well across sites. Sometimes they definitely do not. So I'd say from an existing account framework, that's the biggest gap. Dan, correct me if you think there's something else there.
+27. Move the player to 333.27 seconds in the call
+Lewis, Dan05:33
+No, I think that's a big one is just being like an orchestration and being organized, streamline of information so we know what's going on.
+28. Move the player to 336.03 seconds in the call
+Adam Pfeiffer05:36
+Help.
+29. Move the player to 343.15 seconds in the call
+Jennae Jizdeortega05:43
+Gotcha.
+30. Move the player to 345.27 seconds in the call
+Jennae Jizdeortega05:45
+Perfect.
+31. Move the player to 349.55 seconds in the call
+Adam Pfeiffer05:49
+From a new account perspective, I think it's really like, you know, who's who that, and then trying to map out a targeted approach to some of these folks. I mean, if we don't have existing connections, you know, it's cold outreach, but cold outreach can be totally...
+32. Move the player to 366.91 seconds in the call
+Jennae Jizdeortega06:06
+Yeah.
+33. Move the player to 368.43 seconds in the call
+Adam Pfeiffer06:08
+you know, flailing or it can be strategic. And I think we lack some of the insights as to how to strategically go about some of these new accounts. I mean, I think that's less about not, I'd say it's less about we don't know how to identify the right people. It's more about we don't consistently use the same tools and the approach across our entire 46 users.
+34. Move the player to 391.87 seconds in the call
+Adam Pfeiffer06:31
+Go To Market Tech Stack Discussion
+into how we map out a new target. And so I think from my our first take, you know, our first meeting last week, it certainly seems like, you know, when you put a visual within Salesforce in front of someone, it can at least like lead a horse to water, right? Like, and so that I think is a valuable and
+35. Move the player to 408.35 seconds in the call
+Jennae Jizdeortega06:48
+Mhm.
+36. Move the player to 412.15 seconds in the call
+Adam Pfeiffer06:52
+important benefit that something like this would bring.
+37. Move the player to 416.03 seconds in the call
+Jennae Jizdeortega06:56
+Perfect. Thanks for that additional context, Dan and Adam. Wonderful. So the initiatives tied with that is establish one account planning and opportunity methodology the whole organization follows. So really aligning to what you just shared there. It's not really consistent workflow for all 46 users. So just streamline that across account planning and relationship mapping.
+38. Move the player to 437.71 seconds in the call
+Jennae Jizdeortega07:17
+Secondly, capture relationships from the global org down to the site level with leadership, site level org charts, having that established and having your reps follow that process. So some of those obstacles, network not built out across sites at existing clients, not enough account intelligence. Every account is standalone today.
+39. Move the player to 457.83 seconds in the call
+Jennae Jizdeortega07:37
+Go To Market Tech Stack Discussion
+parent account, master account with child. And this isn't a bad thing. This is an obstacle whatsoever, but I do remember, Kalia, you saying you guys are going to be implementing the hierarchy soon. And then. Perfect. And then lastly, getting people to log into Salesforce at all is a challenge, but that's what happens when you just put a new Salesforce org. And that's really how we want to help since we are 100% Salesforce native. So again, not really an obstacle.
+40. Move the player to 467.79 seconds in the call
+Stanley, Kayla07:47
+Correct, yeah.
+41. Move the player to 482.47 seconds in the call
+Jennae Jizdeortega08:02
+We see that across our entire customer base.
+42. Move the player to 485.87 seconds in the call
+Jennae Jizdeortega08:05
+Product (2)
+So with that, the Altify solution we'll be speaking to today is our account manager solution, which encompasses our relationship map. With that team, anything else I can add to this? I know you guys kindly shared some additional insights.
+43. Move the player to 503.23 seconds in the call
+Lewis, Dan08:23
+I think that's a good start.
+44. Move the player to 504.91 seconds in the call
+Stanley, Kayla08:24
+Mhm.
+45. Move the player to 504.99 seconds in the call
+Jennae Jizdeortega08:24
+Perfect.
+46. Move the player to 505.63 seconds in the call
+Adam Pfeiffer08:25
+Yeah, great start. I think you've pretty much identified our pain points and I'm assuming that you've got a lot of good demonstration to show us. So yeah, we're excited. Thank you.
+47. Move the player to 515.99 seconds in the call
+Jennae Jizdeortega08:35
+Yeah.
+48. Move the player to 517.43 seconds in the call
+Jennae Jizdeortega08:37
+Go To Market Tech Stack Discussion
+Definitely. All right. So if you take a look at this, this is our demo account, but this is a Salesforce instance. Here we have a strategic account. And I'm curious, how are you guys doing account planning today? Is it a PowerPoint deck?
+49. Move the player to 535.15 seconds in the call
+Adam Pfeiffer08:55
+Go To Market Tech Stack Discussion
+Oh, it's the most inconsistent. I mean, it's just depends on who's sort of in charge of it. So, I mean, that's why we want to bring it into Salesforce and make it consistent. So it's a hodgepodge and I wouldn't even try to use that as a baseline, quite frankly.
+50. Move the player to 541.27 seconds in the call
+Jennae Jizdeortega09:01
+Mhm.
+51. Move the player to 552.91 seconds in the call
+Jennae Jizdeortega09:12
+Go To Market Tech Stack Discussion
+Okay, perfect, perfect. No worries. All right, so with that, we are looking at my book of business living in Salesforce. I look at this, this is my account plan, but I look at this as my plan to make plan. So what this is really giving us a sense of team is, is my plan moving forward? Are we identifying potential white space?
+52. Move the player to 572.59 seconds in the call
+Jennae Jizdeortega09:32
+Are we qualifying it? Are we converting it to actual opportunities? Or is it already won? This is a lay of the land of my entire book of business. With your guys as reps today, especially you, Adam, with your commercial team, how many accounts do they own?
+53. Move the player to 590.75 seconds in the call
+Adam Pfeiffer09:50
+It's, I mean, in reality, so we have like, you know, we're moving towards a key account model. So some of our larger accounts are, you know, specific leader. We have names to accounts. I mean, I would say somebody could have, you know, three to seven or eight accounts, but the way we treat those accounts varies based on their size and like the...
+54. Move the player to 612.43 seconds in the call
+Adam Pfeiffer10:12
+the engagement. So it's never going to be, you know, I would say the ideal thing would be to have two or three key accounts, truly like large volume, large revenue, multi-site accounts for each person, but that's all part of our, you know, growth strategy. We don't have that framework of clients that are that scale yet.
+55. Move the player to 630.11 seconds in the call
+Jennae Jizdeortega10:30
+Ohh.
+56. Move the player to 633.63 seconds in the call
+Adam Pfeiffer10:33
+to have that model come to fruition quite yet.
+57. Move the player to 636.67 seconds in the call
+Jennae Jizdeortega10:36
+Gotcha. I only ask because there's different ways that you guys can really launch an account plan, right? So seeing that your reps have about 3:00 to 7:00, ideally three really large key accounts, but a total book of business, about 7 to 8 accounts, you can have it of your entire book of business where they're looking at all of their accounts.
+58. Move the player to 655.23 seconds in the call
+Jennae Jizdeortega10:55
+or you can have it as a single account. Depends on how you guys want to execute on this. But what you're looking at is my entire book of business with my 25 accounts. Here you can see my plan revenue target. This is my quota and the date that, you know, for that fiscal year. The plan duration,
+59. Move the player to 675.51 seconds in the call
+Jennae Jizdeortega11:15
+account owner, last updated, because we really do want to emphasize the team effort it takes to drive these accounts, grow them, and, you know, win more business and bring it across the finish line. And then here are the opportunities. You'll see we have potential opportunities, which are blue, current opportunities, which are green, and one opportunities,
+60. Move the player to 696.39 seconds in the call
+Jennae Jizdeortega11:36
+Go To Market Tech Stack Discussion
+which are purple. So this gives you good insight in what does my white space look like? Where do we already have a presence? Therefore, am I planning accordingly to renewal, right? One other thing I really want to call out is the thing about Altify being living in Salesforce, one, adoption of Salesforce will increase, but also you're really allowing this to be a team effort. Here on my
+61. Move the player to 721.35 seconds in the call
+Jennae Jizdeortega12:01
+personal book of business, I have about 10 people in my team members. It'll be myself, it'll be my CSM, it'll be my AMs, it'll be the SCs, it'll be my VP, a marketing contact, an SDR. I want everyone to have visibility of what is going on in this account and for them to also include their insights into the account as well while my SDR is doing outreach or my CSM is working the renewal on
+62. Move the player to 746.19 seconds in the call
+Jennae Jizdeortega12:26
+an existing customer of mine. So it really does drive that team collaboration. So one more question, I know I've asked so many questions already, but who is involved in owning these accounts? Who do you want to be collaborating on them with your reps, Adam?
+63. Move the player to 751.39 seconds in the call
+Adam Pfeiffer12:31
+But.
+64. Move the player to 762.75 seconds in the call
+Adam Pfeiffer12:42
+I mean, so that's a kind of a loaded question, I would say. We've got certainly a fair amount of folks from the operational team. I mean, I guess, what do you say?
+65. Move the player to 777.75 seconds in the call
+Adam Pfeiffer12:57
+Go To Market Tech Stack Discussion
+So what, to what level? Like, so some people won't even have access to Salesforce to see this, right? So are we just talking about people within the Salesforce ecosystem?
+66. Move the player to 783.39 seconds in the call
+Jennae Jizdeortega13:03
+Okay, exactly.
+67. Move the player to 787.87 seconds in the call
+Jennae Jizdeortega13:07
+I guess so, right? Unless there's a plan for them to, the other folks, like the operational teams, to have access in the future. So however...
+68. Move the player to 796.19 seconds in the call
+Adam Pfeiffer13:16
+Well, so the ops team does have access. A lot of those users are operational folks. So, I mean, it's really, it's basically a collaboration between the commercial team, so Dan, myself, and our kind of peers within this group, which is a, I mean, we're talking like 7 individuals there. And then the rest of the 46 users are comprised of...
+69. Move the player to 802.39 seconds in the call
+Jennae Jizdeortega13:22
+Okay.
+70. Move the player to 817.31 seconds in the call
+Adam Pfeiffer13:37
+regional vice presidents and market leads on the operations team, and then our CTO, CSO, and their sort of principal consultant network. So it's really a blend of ops, commercial, and some of our subject matter experts that are really taking the lead on any sort of account.
+71. Move the player to 837.83 seconds in the call
+Adam Pfeiffer13:57
+Really anything, leadership, planning, ownership, it's all kind of across those teams.
+72. Move the player to 844.19 seconds in the call
+Jennae Jizdeortega14:04
+Perfect. Great to know. Thank you for that. All right, so moving forward here, this right here is our plan details. Again, this is really the strategy behind the plan, my plan to make plan. On the left hand side, you see here goals and goal growth strategies, customer profile, customer success. This is all done by your reps themselves or whoever it is that's
+73. Move the player to 868.23 seconds in the call
+Jennae Jizdeortega14:28
+owning this account. You want them to really put the thought into their account goal, what their strategy is to develop this plan, what the customer success strategy is going to be, what the relationship strategy is going to be. And because you guys are fine-tuning your methodology within Project Pharma right now,
+74. Move the player to 887.67 seconds in the call
+Jennae Jizdeortega14:47
+A lot of our customers use target account selling TAS, which is Altify, right out-of-the-box. And this is what it looks like out-of-the-box if you really wanted to streamline that and execute on a methodology. However, I did share that we are completely configurable and a methodology agnostic. So you tell us how you'd like to proceed when that time comes.
+75. Move the player to 909.07 seconds in the call
+Jennae Jizdeortega15:09
+So here, the color coding is pretty much a simple progress barometer. This is measuring the completeness of the plan, areas you're still uncovering, and indicators for the leaders to offer coaching opportunities. So as I'm filling this out, things are being checked off green. I could see here I have not completed partner strategy. So now I know I need to go back and complete partner strategy. I'm still in progress.
+76. Move the player to 933.11 seconds in the call
+Jennae Jizdeortega15:33
+barriers and risks, still doing my research for that. But once it's completed, I'll go ahead and just check it off and confirm it. So really, the idea behind this is it's a living, breathing document. It's not a once a year account planning or QBR practice. You want your reps to be in here every day or as much as possible.
+77. Move the player to 955.23 seconds in the call
+Jennae Jizdeortega15:55
+Go To Market Tech Stack Discussion
+updating what's going on within their accounts. Again, giving the company historic data that they can refer to versus if a rep leaves and they take all that knowledge with them. So it's living here in Salesforce. All right, that completes the plan details on the account strategy.
+78. Move the player to 975.07 seconds in the call
+Jennae Jizdeortega16:15
+Here on the right hand side is row details. This is specific to the account themselves. I shared with you guys, I have a book of business of 25 accounts. Your reps would have that three to eight. And this gives them the ability to segment their accounts. So to Adam's point, you really want them to have three high growth, high revenue strategic accounts.
+79. Move the player to 996.23 seconds in the call
+Jennae Jizdeortega16:36
+they'll have those be their A accounts, and the remainder 5 can be a B account, or however it is that allows them to segmentize their account, allowing them to focus their efforts on where is the most opportunity for growth. And again, since it's living, breathing, halfway through the year, they're able to move accounts around as they're working them.
+80. Move the player to 1016.35 seconds in the call
+Jennae Jizdeortega16:56
+The.
+81. Move the player to 1017.39 seconds in the call
+Jennae Jizdeortega16:57
+AI Tools and Automation MentionedGo To Market Tech Stack Discussion
+So with this, my accounts under A accounts, this is all of now the account research. This is pulling data from your Salesforce instance with the custom object fields that Kayla and your team have put together. So there is no duplicitous work. There's also a level of AI that can be leveraged here.
+82. Move the player to 1038.19 seconds in the call
+Jennae Jizdeortega17:18
+AI Tools and Automation Mentioned (2)Go To Market Tech Stack Discussion
+Seeing that you guys are Salesforce users, we are integrated directly with Agentforce. So if I click this button here, it will populate all of it will populate AI data pooling from Agentforce. But I'm curious, Dan, since you're specific to AI strategy today,
+83. Move the player to 1058.31 seconds in the call
+Jennae Jizdeortega17:38
+AI Tools and Automation Mentioned
+What is that AI strategy you plan to move forward with?
+84. Move the player to 1062.23 seconds in the call
+Lewis, Dan17:42
+AI Tools and Automation Mentioned
+It's ongoing, but I do have a question on the Agent Force side. Would we have to have Agent Force enabled for this to work, or is this a separate add-on as well for your guys' AI?
+85. Move the player to 1066.43 seconds in the call
+Jennae Jizdeortega17:46
+Yeah.
+86. Move the player to 1078.03 seconds in the call
+Jennae Jizdeortega17:58
+License Count or Usage Discussion (2)AI Tools and Automation Mentioned (2)Go To Market Tech Stack Discussion
+Nope, this is something that you would work with Salesforce to obtain Agentforce licenses. However, if you are exploring other options, again, just like how we're methodology agnostic, same thing with AI. Bring your own AI. Internally, even though we do have Agentforce, to be honest, guys, Claude is my best friend. I use Claude every single day.
+87. Move the player to 1100.23 seconds in the call
+Jennae Jizdeortega18:20
+ProductGo To Market Tech Stack Discussion
+after our call today, I'm going to populate our transcript into Claude and say, what insights am I missing? Populate that into my Salesforce insight map for my Project Pharma opportunity. Or if I had additional players on our call today, I know, you know, us three have already spoke, or us four have already spoke, but if you had two other people, I would say with the same transcript.
+88. Move the player to 1123.03 seconds in the call
+Jennae Jizdeortega18:43
+AI Tools and Automation MentionedProductGo To Market Tech Stack Discussion
+create these contacts into Salesforce, put them on my relationship map with the attribute of 1 minimal coverage, right, since I only spoke to them once. So I'm using Claude for everything nowadays. And I'm curious, when you say it's still ongoing, what does that mean, Dan? Are you exploring what kind of AI you want to bring to the field?
+89. Move the player to 1141.19 seconds in the call
+John Van Schaick19:01
+Help.
+90. Move the player to 1145.71 seconds in the call
+Lewis, Dan19:05
+No, not necessarily. It's just like we use Cloud Enterprise. So what you're saying is we could use our API from Cloud, our Cloud for this and plug in our API key and then we own the data.
+91. Move the player to 1161.39 seconds in the call
+Jennae Jizdeortega19:21
+Yeah.
+92. Move the player to 1164.59 seconds in the call
+Lewis, Dan19:24
+from that standpoint. Is that what you're saying?
+93. Move the player to 1166.75 seconds in the call
+Jennae Jizdeortega19:26
+AI Tools and Automation Mentioned
+A 100% and we leverage all MCP servers and please forgive me, I am not eloquent with speaking to AI. I'm like learning tidbits from our AI team, but we do leverage the MCP server. So when I'm using Claude, I say use Altify MCP server to extract.
+94. Move the player to 1175.31 seconds in the call
+Lewis, Dan19:35
+It's all good.
+95. Move the player to 1185.91 seconds in the call
+Jennae Jizdeortega19:45
+insights relevant to account planning and opportunity management. So it's very specific pooling the data that we have within our network by leveraging that MCP and then how you mentioned the connector layer.
+96. Move the player to 1199.47 seconds in the call
+Lewis, Dan19:59
+AI Tools and Automation Mentioned
+Okay, is it an extra add-on to have the max AI ability or is that just included?
+97. Move the player to 1213.07 seconds in the call
+John Van Schaick20:13
+Van.
+98. Move the player to 1214.43 seconds in the call
+Lewis, Dan20:14
+Okay.
+99. Move the player to 1223.15 seconds in the call
+Lewis, Dan20:23
+No, you're saying it right? Yeah, MCP. Yeah.
+100. Move the player to 1226.43 seconds in the call
+Jennae Jizdeortega20:26
+So we'll just connect that and yeah, no, no additional cost whatsoever.
+101. Move the player to 1230.51 seconds in the call
+Lewis, Dan20:30
+AI Tools and Automation Mentioned
+Okay, and the features are basically one-to-one, like whether you go with Max AI Agent Force or use our own Cloud API.
+102. Move the player to 1242.03 seconds in the call
+Jennae Jizdeortega20:42
+Yeah, yeah, it's beneficial either way. It's whatever you have today. Obviously, it'll be additional spend if you had agent force, but if you have Max, if you have Claude in-house already, we can certainly leverage that. I personally use Claude. I feel like the information and data that I obtain and the level of
+103. Move the player to 1243.07 seconds in the call
+Lewis, Dan20:43
+Okay.
+104. Move the player to 1261.39 seconds in the call
+Jennae Jizdeortega21:01
+thoroughness and multi-prompting. It's more, Claude delivers me better information, but either or.
+105. Move the player to 1264.19 seconds in the call
+Lewis, Dan21:04
+Mhm.
+106. Move the player to 1269.39 seconds in the call
+Lewis, Dan21:09
+AI Tools and Automation Mentioned
+Yeah, I would agree. Yep. Can you give us a demo of how the, like the Max AI would work in this, like a scenario?
+107. Move the player to 1272.59 seconds in the call
+Jennae Jizdeortega21:12
+Um...
+108. Move the player to 1279.39 seconds in the call
+Jennae Jizdeortega21:19
+AI Tools and Automation Mentioned
+Yep, so for Agent Force, I clicked Max AI. It populated while we were just talking right here. It's giving me the disclaimer, this information is powered by generative AI, review it, validate it, save it, or edit it. Because of course, even though everything's methodology driven and with the world of AI making it
+109. Move the player to 1300.59 seconds in the call
+Jennae Jizdeortega21:40
+AI Tools and Automation Mentioned
+a click of a button, easy for sales, you want that critical thinking. That is the strategy behind growing accounts. People still buy from people. So there's a level of AI, but critical thinking that we require. So we do have the reps or account owners review and save. And now that is generated in here.
+110. Move the player to 1319.55 seconds in the call
+Jennae Jizdeortega21:59
+including the links where this data is being pulled from.
+111. Move the player to 1324.35 seconds in the call
+Lewis, Dan22:04
+Okay, could you do the same for customer strategy?
+112. Move the player to 1328.91 seconds in the call
+Jennae Jizdeortega22:08
+ProductAI Tools and Automation Mentioned
+I could do, yep, you can do it on all fields here, but like, let's also do it on your guys' insight map. I'm generating with Max AI, and now this is pulling the goals, pressures, initiatives, and obstacles that is available on the World Wide Web. So we might have to just give this a second to pull.
+113. Move the player to 1335.31 seconds in the call
+Lewis, Dan22:15
+Okay.
+114. Move the player to 1353.71 seconds in the call
+Jennae Jizdeortega22:33
+AI Tools and Automation Mentioned
+All right, again, that prompter saying this is generated with AI. And now I'm understanding revenue growth to expand CDMO, project portfolio by 18%, market volatility and biotech funding, launch a standardized CQV.
+115. Move the player to 1372.43 seconds in the call
+Jennae Jizdeortega22:52
+playbook, tool, sorry, obstacle tool fragmentation and inconsistent CQV models across teams. Do you think that's pretty accurate, guys? I know there's some acronyms I'm not aware of, but what do you think?
+116. Move the player to 1389.95 seconds in the call
+Lewis, Dan23:09
+Um...
+117. Move the player to 1391.99 seconds in the call
+Lewis, Dan23:11
+For the first run, I think that's...
+118. Move the player to 1395.87 seconds in the call
+Adam Pfeiffer23:15
+It's yeah.
+119. Move the player to 1395.87 seconds in the call
+Lewis, Dan23:15
+Possibly, because it's kind of hard to tell from a height overview.
+120. Move the player to 1399.39 seconds in the call
+Adam Pfeiffer23:19
+I mean, a lot of that makes sense. I mean, there's probably some things that aren't exactly right, but in terms of sort of the things that are in red, those add up to me.
+121. Move the player to 1413.07 seconds in the call
+Jennae Jizdeortega23:33
+AI Tools and Automation Mentioned
+Perfect. And then again, this is just that initial AI run. You do want your reps to do that same, that same, you know, exercise that we did in the beginning. I'll pull this up and say, this is what I learned. Can you guys help me validate it? And let's edit it as we go through so we can have the most accurate information. So that's probably a best practice, especially leveraging the AI.
+122. Move the player to 1437.03 seconds in the call
+Jennae Jizdeortega23:57
+AI Tools and Automation Mentioned
+Wonderful. So we talked about initially the overview of what plan looks like, the account strategy and the accounts themselves with the account research using AI. Any questions on that team before I get into what we're looking at now, the opportunity map?
+123. Move the player to 1454.27 seconds in the call
+Lewis, Dan24:14
+Nope.
+124. Move the player to 1454.99 seconds in the call
+Adam Pfeiffer24:14
+No, click for that.
+125. Move the player to 1455.31 seconds in the call
+Jennae Jizdeortega24:15
+All right. Perfect. Well, I know it looks like there is a lot here that is very true. I'm just going to run you through what this is. On the bottom left, going vertical are the accounts. Again, it's the segmentation of my accounts. On the top,
+126. Move the player to 1455.63 seconds in the call
+Stanley, Kayla24:15
+Stu.
+127. Move the player to 1473.39 seconds in the call
+Jennae Jizdeortega24:33
+Going horizontally is all of the solutions that you're selling, whether whether that be across different business units or whatever it is, so here.
+128. Move the player to 1485.59 seconds in the call
+Jennae Jizdeortega24:45
+Let me just pull up the legend. We have opportunity types. Potential is blue, 8 is, sorry, green is current, and purple is 1. This is exactly the same view that I shared with you guys in the overview. This is just now more granular information versus that aggregated view. So just to walk through this, again, 3M, that's one of my A accounts that I'm targeting. Here I have a current opportunity.
+129. Move the player to 1510.39 seconds in the call
+Jennae Jizdeortega25:10
+opportunity for 55,000, but I also have potential opportunities. What that means is me specifically, I have this opportunity. I heard from my decision maker, oh, this team also may need Altify and they might want the EHS solution. So I haven't qualified that opportunity yet, but I know that's a potential.
+130. Move the player to 1532.75 seconds in the call
+Jennae Jizdeortega25:32
+Go To Market Tech Stack Discussion
+I want visibility over it without fudging Salesforce data and lowering my conversion rate if this is not real. So I'm going to mark that as a potential and I'm going to know I'm going to start working on this to qualify it.
+131. Move the player to 1545.87 seconds in the call
+Jennae Jizdeortega25:45
+Another good call out, maybe I should have used a different account at that time, but for instance, Granfis.
+132. Move the player to 1553.87 seconds in the call
+Jennae Jizdeortega25:53
+They have a, we have a closed one opportunity of $50,000. This is now an upcoming renewal. So if I see here, also we have a potential opportunity. So what I'm going to do here is when I start having those renewal discussions, six months or, you know, best practices about three to four months prior to renewal,
+133. Move the player to 1576.11 seconds in the call
+Jennae Jizdeortega26:16
+I'm going to try to get this upsell of a potential opportunity I identified for Republic Services. So at that time, I'm going to try to include that in my upsell. So pretty much, I know I'm all over the place because these accounts aren't in line with current potential and renewal, but that's the idea of it.
+134. Move the player to 1596.55 seconds in the call
+Jennae Jizdeortega26:36
+This is giving you the lay of the land of all of their three to 8 accounts, understanding where they have existing opportunities, where they can target new opportunities, and where they need to manage renewals in case they have the opportunity to pull in and upsell. This is also giving your different, this is also giving you
+135. Move the player to 1615.83 seconds in the call
+Jennae Jizdeortega26:55
+visibility of the different sites that you're working. So now there's more cohesive process and a full understanding of all of the opportunities that live within each site. That way you can also streamline that process of how you're going to be reviewing each of these larger sites with all of the different multi-sites. Another cool thing here is you can block
+136. Move the player to 1637.11 seconds in the call
+Jennae Jizdeortega27:17
+white space boxes. For 3M, for instance, I know that I cannot sell Altify, or I cannot sell our operational risk solution to them because they're using a competitor, SAP. I'm not going to put time into them until I know, until one, I identify when their SAP renewal ends. Therefore, I could start having conversations there. But again, I don't want to keep, I don't want to keep.
+137. Move the player to 1661.95 seconds in the call
+Jennae Jizdeortega27:41
+an eye on it, I don't want visibility over it just because I need to focus on where there's potential opportunities. So it's a placeholder.
+138. Move the player to 1671.15 seconds in the call
+Jennae Jizdeortega27:51
+Any questions with the white space map?
+139. Move the player to 1672.03 seconds in the call
+Adam Pfeiffer27:52
+Hmm.
+140. Move the player to 1674.75 seconds in the call
+Adam Pfeiffer27:54
+Go To Market Tech Stack Discussion
+Just out of curiosity, the columns there, those are obviously configurable. Where do we pull those? Because we have basically 8 practice areas that are products within Salesforce. So if an opportunity is, you know, we put in a pricing via a product selection and a number,
+141. Move the player to 1680.19 seconds in the call
+Jennae Jizdeortega28:00
+Mhm.
+142. Move the player to 1696.35 seconds in the call
+Jennae Jizdeortega28:16
+Mhm.
+143. Move the player to 1697.15 seconds in the call
+Adam Pfeiffer28:17
+And then that maps it to that practice area. So I assume that we could like basically pull those areas in as the defining data for these columns.
+144. Move the player to 1706.03 seconds in the call
+Jennae Jizdeortega28:26
+Go To Market Tech Stack Discussion
+Yep, absolutely. So the cool thing is if they already have opportunities, which I'd imagine if you implement Altify, there's already going to be opportunities that are living in Salesforce. You can have your reps import their opportunities into the white space map. If Kayla has set a product type,
+145. Move the player to 1725.51 seconds in the call
+Jennae Jizdeortega28:45
+or like a solution or whatever it is that they need to identify in the opportunity to understand what it is that they're selling, we can have that now pull into this map and it will then be under the correct column. Again, we'll configure this with you guys.
+146. Move the player to 1737.79 seconds in the call
+Adam Pfeiffer28:57
+Okay.
+147. Move the player to 1740.23 seconds in the call
+Adam Pfeiffer29:00
+Got it. And then just out of curiosity, the blue one, which was kind of you were calling the unqualified lead, is that.
+148. Move the player to 1746.75 seconds in the call
+Jennae Jizdeortega29:06
+Mhm.
+149. Move the player to 1748.63 seconds in the call
+Adam Pfeiffer29:08
+Go To Market Tech Stack Discussion
+That's entered in as an opportunity in Salesforce, right, or not?
+150. Move the player to 1752.91 seconds in the call
+Jennae Jizdeortega29:12
+Go To Market Tech Stack Discussion
+No, it's a placeholder. So this is the great thing about this is it's not fudging up Salesforce data. You don't have an open opportunity that they're not working on or if they close it, it doesn't, again, it changed. For me, I like seeing a high conversion rate for my opportunities to close one. That's just how I operate. So this is giving the reps that ability.
+151. Move the player to 1754.11 seconds in the call
+Adam Pfeiffer29:14
+No.
+152. Move the player to 1771.63 seconds in the call
+Adam Pfeiffer29:31
+Yeah.
+153. Move the player to 1774.11 seconds in the call
+Adam Pfeiffer29:34
+Okay, I mean, we sort of have our first stage, our stage one is lead, and that's basically it's not, it doesn't hit our weighted pipeline. It's permissible to have an opportunity in there without a dollar value, but if you put a dollar value in, it's just unweighted, it doesn't hit the weighted pipeline. And in terms of conversion rates,
+154. Move the player to 1783.15 seconds in the call
+Jennae Jizdeortega29:43
+Ohh.
+155. Move the player to 1791.15 seconds in the call
+Jennae Jizdeortega29:51
+Okay.
+156. Move the player to 1793.47 seconds in the call
+Adam Pfeiffer29:53
+You know, we usually, if one of those doesn't get qualified, we just abandon it and abandon doesn't hit our win-loss calcs basically. So I think we have a mechanism to capture those things as opportunities as well. So we could probably just map those to those as well. I'm just throwing that out there.
+157. Move the player to 1806.83 seconds in the call
+Jennae Jizdeortega30:06
+Mhm.
+158. Move the player to 1811.39 seconds in the call
+Jennae Jizdeortega30:11
+Go To Market Tech Stack Discussion
+Absolutely, and I love that you guys do that. I wish we did that internally, but we have that workaround of having this potential opportunity. So no, great points. I'm really glad that you shared that with me. It just helps me understand a little bit more about your guys' processes. One cool thing, when I click on the current opportunities that are already living in Salesforce, oh, and guys.
+159. Move the player to 1831.79 seconds in the call
+Jennae Jizdeortega30:31
+Go To Market Tech Stack Discussion
+real quickly to close the loop on those potentials. When your reps identify, okay, this actually is a real opportunity, I can go ahead and convert it. And then this now converts it in here, and then it creates the opportunity in Salesforce. Again, no redundancies, no duplicitous work, just one click, and then it converts.
+160. Move the player to 1852.83 seconds in the call
+Jennae Jizdeortega30:52
+But going to a current opportunity, when I'm looking at the white space map and Adam, you're saying, okay, I'm looking at your guys' white space map, pull up that opportunity that you have with 3M. All I have to do is just click on this and it'll pull me directly to what I shared with you guys last time, the opportunity itself with Altify's launch pad.
+161. Move the player to 1872.63 seconds in the call
+Jennae Jizdeortega31:12
+the different modules, and then again, the process assessment relationships and so on. So it does bring you to the opportunity page using that hyperlink.
+162. Move the player to 1883.27 seconds in the call
+Jennae Jizdeortega31:23
+Let me get back to it.
+163. Move the player to 1888.67 seconds in the call
+Jennae Jizdeortega31:28
+Product
+All right, so we just concluded with the opportunity map and we're making really great time. What you guys have been waiting for is the relationship map. So I did share an overview of this with you guys, but just real quickly, the attributes with the relationship map, we have coverage.
+164. Move the player to 1908.47 seconds in the call
+Jennae Jizdeortega31:48
+This is understanding the level of coverage we've had with them. No contact, brief contact, multiple, in depth. Here is the level of relationship. Are they a mentor? Are they a supporter? Are they neutral? Or are they for our competitor and an enemy?
+165. Move the player to 1925.71 seconds in the call
+Jennae Jizdeortega32:05
+Here is the decision orientation. Are they a financial key player, technical key player? Are they a relationship contact, business contact, or are we still working to identify that? And then lastly is the political structure. Do we understand, are they in the inner circle? Can they sign off on this deal and push it across the finish line so it's closed one for us?
+166. Move the player to 1948.47 seconds in the call
+Jennae Jizdeortega32:28
+Are they part of the political structure? Are they influencing the people in the inner circle? Are they outside or is it still unknown? These are all really great attributes to understand because it divulges that conversation with your team, understanding, okay, what is our level of relationship with them?
+167. Move the player to 1967.47 seconds in the call
+Jennae Jizdeortega32:47
+Go To Market Tech Stack Discussion
+The green and red lines is lines of influence or conflict. And then as we go into each of these contact cards, I actually want to pull up Clara. Here we have the contact details, which are being pulled from the contact record in Salesforce. Again, all of the attributes.
+168. Move the player to 1986.83 seconds in the call
+Jennae Jizdeortega33:06
+An understanding of the attributes. So I know that it's going to be a learning curve for your reps. Any methodology, any sort of training, any new tool, that all requires new training, but we want to make it as seamless as possible. Not only are we providing you with our world-class training where we'll walk your reps through training sessions to make sure they're well equipped, we'll do workshop sessions,
+169. Move the player to 2009.03 seconds in the call
+Jennae Jizdeortega33:29
+However you want to execute on training, we'll partner with you on that. But we've also provided inline coaching. And this inline coaching is giving descriptions of what each of these attributes are and how you identify them.
+170. Move the player to 2024.51 seconds in the call
+Jennae Jizdeortega33:44
+AI Tools and Automation Mentioned
+Also, Max AI is pulling Clara Wilson as a suggested target. This is what it's saying. Heads up, your team's level relationship with this person may be too low. So what do you need to do? Have more contact with Clara, understand her business more, get her validation. Another heads up, you found that this key player supports you and or your solution.
+171. Move the player to 2045.55 seconds in the call
+Jennae Jizdeortega34:05
+And they also support or they also influence the CEO, the decision maker. So they're giving you inline coaching on how to best strategize for the next outreach or what the overall goal is to get this key player on your side.
+172. Move the player to 2062.07 seconds in the call
+Lewis, Dan34:22
+So if we log emails, is also, I'm guessing you're getting down to it right there with the activity. It pulls that information as well, the historical.
+173. Move the player to 2071.63 seconds in the call
+Jennae Jizdeortega34:31
+Yep, absolutely.
+174. Move the player to 2074.03 seconds in the call
+Jennae Jizdeortega34:34
+And that's where it's getting all of that data from to help us understand what that next move is.
+175. Move the player to 2080.43 seconds in the call
+Lewis, Dan34:40
+Okay.
+176. Move the player to 2082.59 seconds in the call
+Jennae Jizdeortega34:42
+Important to you guys is the relationships. So this is the relationships within that organization, who Clara reports to, who she influences, who is influenced by Clara, and who her conflict is. But what you guys care about is team relationships. You want to understand
+177. Move the player to 2099.95 seconds in the call
+Jennae Jizdeortega34:59
+Product
+Who within Project Pharma or Perkerwicz Elmer or One Source, who within those organizations have a relationship with Clara? This is where you put that. Brian Rice, our account manager internally, has, you know, a mild relationship with Clara. I just noticed that Brian is connected to Clara, don't know his level of influence, don't know how much, how well they know each other, but I do
+178. Move the player to 2124.47 seconds in the call
+Jennae Jizdeortega35:24
+see that they do have a connection. I'm not going to ask Brian to facilitate an intro if he has that, you know, influence or pull. Whereas Tiffany Chang, our regional sales rep, has a high level relationship with Clara. So, okay, I'll ask Brian, but I'll certainly ask Tiffany to facilitate that intro. Or if Clara goes dark on me, I'll ask Tiffany to give her a nudge.
+179. Move the player to 2149.19 seconds in the call
+Jennae Jizdeortega35:49
+but this is giving you insight of internally who has a relationship with those key contacts.
+180. Move the player to 2155.79 seconds in the call
+Stanley, Kayla35:55
+I'm assuming that's like a manual add every time a new contact is created to this structure, right? And then our team would have to manually go in and update like I do know them or that type of information.
+181. Move the player to 2168.35 seconds in the call
+Jennae Jizdeortega36:08
+Yep, so it's manually added. What I do is now I put into Claude all of my key contacts for all of my accounts. I import a list and say these are my key contacts in all 25 of my accounts. Search LinkedIn, search the World Wide Web with who at Altify has connections with these accounts.
+182. Move the player to 2181.31 seconds in the call
+Stanley, Kayla36:21
+Mhm.
+183. Move the player to 2187.47 seconds in the call
+Jennae Jizdeortega36:27
+Go To Market Tech Stack Discussion
+It then brings me different items of Claire is connected to Tiffany and you know, so on and so forth. And I would then have that pushed into Salesforce. So it's doing it for me. But the critical thinking aspect is when I hop on a call with Adam and Adam's like, Jennae, how did you get this information? I'd say, oh,
+184. Move the player to 2192.19 seconds in the call
+Stanley, Kayla36:32
+Mhm.
+185. Move the player to 2205.95 seconds in the call
+Jennae Jizdeortega36:45
+Claude helped me find it. He sourced it from LinkedIn. And I confirmed with Tiffany, she does have that relationship with Clara.
+186. Move the player to 2215.83 seconds in the call
+Adam Pfeiffer36:55
+Got it.
+187. Move the player to 2218.19 seconds in the call
+Jennae Jizdeortega36:58
+Wonderful. I've already walked you guys through the lay of the land of how to like review this, but just real briefly, because Clara is such a big, such a big influence in this map and in this opportunity to get it across the line. I need to get on Clara's good graces. I already have a weekly one-on-one with Beth Angel. I have multiple
+188. Move the player to 2240.87 seconds in the call
+Jennae Jizdeortega37:20
+in-depth coverage with her. Beth has been sharing me all the insight with Clara of Clara. She's telling me what Clara cares about, what her pressures are. And she also told me a key insight that Clara and Mark do not get along. They are trying to compete for the same funds for different projects. So I know that there is a level of conflict between Clara and Mark.
+189. Move the player to 2262.63 seconds in the call
+Jennae Jizdeortega37:42
+But I do know, according to Beth, that both Clara and Mark influenced Charles Underwood, and he's going to be the signer of whatever initiative these guys come to a conclusion to. So Beth gets me to Clara. I now made Clara a supporter after having multiple conversations with her. She is now my relationship contact, my executive sponsor. And that way, I'm getting directly to Charles.
+190. Move the player to 2287.27 seconds in the call
+Jennae Jizdeortega38:07
+Claire is telling me in order to win Mark, this is the things that I need to do. There's nothing I can do. So I'm just going to avoid that conversation and just have these conversations with supporting players, knowing that no matter how much level of influence we have over Mark, he's not going to change his mind on the competitor. But again, that's just.
+191. Move the player to 2306.27 seconds in the call
+Jennae Jizdeortega38:26
+how you look at this, how it becomes dialogue, and then how, Adam, you're able to coach your reps on, hey, how do we get Mark on our side? And then I would say, I've tried everything, Adam. I don't know what else to do. Maybe I pull you in to have that conversation.
+192. Move the player to 2323.91 seconds in the call
+Adam Pfeiffer38:43
+OK.
+193. Move the player to 2325.59 seconds in the call
+Jennae Jizdeortega38:45
+Wonderful. So that's that with the relationships. That's understanding the people and the politics within your key accounts. What's next is let's understand exactly what it is that they care about. And each of these people here have confirmed a goal, a pressure, an account initiative, obstacles. And it's important to understand
+194. Move the player to 2350.59 seconds in the call
+Jennae Jizdeortega39:10
+and tie that to the correct contact. I'm not going to go through this because I already ran through this with you guys as I reviewed your business. But essentially, the way that you would train your reps on this is account goals. What is the overarching goal of the comp company? You want to tie a metric to that and a timeline to that.
+195. Move the player to 2369.55 seconds in the call
+Jennae Jizdeortega39:29
+The account pressures is what is keeping Adam and Dan up at night? What are the pressures that you're facing that's prohibiting you from reaching that goal? So you then assign Kayla, hey, Kayla, let's do these initiatives to overcome these goals. And let's maximize revenue in key accounts and strategic opportunity management. Let's find a solution for that and implement that.
+196. Move the player to 2390.27 seconds in the call
+Jennae Jizdeortega39:50
+And then here, obstacles is what is broken in the day-to-day workflows that you need solving for. And that will ultimately be solved by these initiatives in place. Can't access key players, average deal size too low, don't understand customers buying business, and poor qualification. So of course,
+197. Move the player to 2406.27 seconds in the call
+Adam Pfeiffer40:06
+The.
+198. Move the player to 2408.95 seconds in the call
+Jennae Jizdeortega40:08
+your guys's conversations will be different, but essentially that's how you outline the goals, pressures, initiatives, and obstacles.
+199. Move the player to 2422.91 seconds in the call
+Jennae Jizdeortega40:22
+Another thing you can do here, just so you can keep the customer account succinct with the level of different sites and the level of different people that own that account, is having different tabs for each initiative. You can have different tabs for each site level. You can have different tabs for each person.
+200. Move the player to 2443.23 seconds in the call
+Jennae Jizdeortega40:43
+Product
+or like each internal rep, however you want to go about it, this is where you organize all of the account insights. So instead of being so siloed, all of the account data is living right here on this one account insight map. Yes, there may be different insight maps for different opportunities for maybe multi-sites.
+201. Move the player to 2462.59 seconds in the call
+Jennae Jizdeortega41:02
+Product
+But essentially, everything is living right here. And say a rep creates a new opportunity, puts all of their data in that one opportunity, and Adam, you're like, hey, I told you also keep it here in the account insight map. All they would have to do is import and pull it in from that opportunity. And then it's now added in the account itself. So you have.
+202. Move the player to 2482.71 seconds in the call
+Jennae Jizdeortega41:22
+full visibility of what's going on within that account.
+203. Move the player to 2486.43 seconds in the call
+Stanley, Kayla41:26
+And these insight maps are visible to multiple users. It's not just like user specific.
+204. Move the player to 2491.95 seconds in the call
+Jennae Jizdeortega41:31
+License Count or Usage DiscussionGo To Market Tech Stack Discussion
+Correct. Whoever has a Salesforce license with an Altify license can have access to this.
+205. Move the player to 2493.87 seconds in the call
+Adam Pfeiffer41:33
+Yeah.
+206. Move the player to 2497.79 seconds in the call
+Stanley, Kayla41:37
+K.
+207. Move the player to 2498.51 seconds in the call
+Adam Pfeiffer41:38
+So that import functionality, that has to be manually done every time. There's no way to just automatically, like upon account creation, port that over to the actual account map.
+208. Move the player to 2510.95 seconds in the call
+Jennae Jizdeortega41:50
+And you would have to import it manually.
+209. Move the player to 2512.83 seconds in the call
+Adam Pfeiffer41:52
+Okay.
+210. Move the player to 2516.55 seconds in the call
+Jennae Jizdeortega41:56
+AI Tools and Automation Mentioned
+Another cool thing too, I know we have AI now at our fingertips, but if you find that you are working, that there's a similar account, right? You have two different high strategic accounts that have a lot of revenue to be, a lot of revenue growth. You can replicate
+211. Move the player to 2534.51 seconds in the call
+Jennae Jizdeortega42:14
+Product
+that one insight map from one account that you just won their business from and have that import into that existing account. Therefore, if it's a prospecting account, you have no information, no validation, your reps can say, hey, we just closed this customer that has a very similar business objectives as you.
+212. Move the player to 2556.27 seconds in the call
+Jennae Jizdeortega42:36
+Let's review this and tell me if I'm on track for understanding those same goals, initiatives.
+213. Move the player to 2563.71 seconds in the call
+Jennae Jizdeortega42:43
+Product
+obstacles and challenges that you might face as well. So you can probe and pull in similar accounts. I actually have customers who have templatized different industry insight maps. So they have took a collection of data to understand, okay, this industry has a very similar revenue goal. They have very similar pressures, similar initiatives, and similar obstacles.
+214. Move the player to 2588.15 seconds in the call
+Jennae Jizdeortega43:08
+Product
+I want this to live on every single new account that is created and pull up that templatized insight map just for reference. So you can do something like that, Adam.
+215. Move the player to 2598.71 seconds in the call
+Adam Pfeiffer43:18
+Yeah.
+216. Move the player to 2603.71 seconds in the call
+Jennae Jizdeortega43:23
+Product (2)
+All right, so we talked quite a bit about the overview page, the plan details, the opportunity map. With that, the relationship map and insight map. Now we have objectives and actions, and then we'll conclude with test and improve. So objectives and actions, this is now how you're operationalizing your plan. This is now how you're going to, you know,
+217. Move the player to 2626.99 seconds in the call
+Jennae Jizdeortega43:46
+Move forward with that, so...
+218. Move the player to 2631.55 seconds in the call
+Jennae Jizdeortega43:51
+Can hear, so sorry.
+219. Move the player to 2638.27 seconds in the call
+Jennae Jizdeortega43:58
+What you're seeing here is the objective name, which are, so objectives are a way of pretty much achieving that goal in the plan. You have a due date associated with it, the status, objective type, this is the type of objective that you're trying to aim for, the owner of it, the account name, and then of course,
+220. Move the player to 2657.63 seconds in the call
+Jennae Jizdeortega44:17
+additional attachments that you can upload. Metrics, the way that I see it in metrics is how we know we're being successful. How do you tie metrics to our success of achieving this objective? The value to customer is why should they care about this? And the strategy is how we're going to go about doing it. With that, there's a list of actions associated with that objective. So
+221. Move the player to 2673.23 seconds in the call
+Adam Pfeiffer44:33
+Yeah.
+222. Move the player to 2679.83 seconds in the call
+Jennae Jizdeortega44:39
+broadening contacts and trust with the line of business management team. The actions that I have put forth here is to request involvement in new study we're putting together, send Claire a note on some of the best places to eat in Denver on that personal note, schedule time to do a value metrics with customer a call, and let's e-mail Matt.
+223. Move the player to 2699.63 seconds in the call
+Jennae Jizdeortega44:59
+With this, this is really great to bring in the entire team to get this deal across the finish line or grow this account in general. It's always weary when you see the same person as the account owner, or sorry, the task owner. You do want this to be a team effort, and this is the perfect opportunity to do that.
+224. Move the player to 2718.19 seconds in the call
+Jennae Jizdeortega45:18
+What this is an Altify.
+225. Move the player to 2724.59 seconds in the call
+Lewis, Dan45:24
+Uh-oh.
+226. Move the player to 2726.11 seconds in the call
+Jennae Jizdeortega45:26
+Go To Market Tech Stack Discussion
+You put the notifications together for Salesforce tasks, whether that's living on the homepage, whether that's a pushed e-mail, that's how your reps and your account team will be getting these tasks within their account plan. It'll be that same notification as a Salesforce action.
+227. Move the player to 2748.23 seconds in the call
+Adam Pfeiffer45:48
+When you build a new, oh, I was just going to say, when you build a new objective, I assume that all of the things I'm seeing, like metrics, value to customer strategy, are just like free text fields that we enter for each one.
+228. Move the player to 2748.83 seconds in the call
+Jennae Jizdeortega45:48
+Any questions?
+229. Move the player to 2751.35 seconds in the call
+Jennae Jizdeortega45:51
+Go ahead.
+230. Move the player to 2763.47 seconds in the call
+Jennae Jizdeortega46:03
+Yep, yep, exactly.
+231. Move the player to 2763.71 seconds in the call
+Adam Pfeiffer46:03
+Got it.
+232. Move the player to 2765.71 seconds in the call
+Adam Pfeiffer46:05
+OK.
+233. Move the player to 2768.27 seconds in the call
+Lewis, Dan46:08
+Can you assign, so does it kind of work like if you complete a task, it notifies the team or how does that work from like a notification standpoint when tasks are assigned or completed?
+234. Move the player to 2781.79 seconds in the call
+Jennae Jizdeortega46:21
+Yep.
+235. Move the player to 2784.19 seconds in the call
+Jennae Jizdeortega46:24
+Go To Market Tech Stack Discussion
+Both. So both assigned and completed will be notified the same way as your Salesforce tasks are notified. Do you guys get a pushed e-mail saying that you have a task assigned to you?
+236. Move the player to 2800.27 seconds in the call
+Lewis, Dan46:40
+I don't think that's set up right now, Kalia, right?
+237. Move the player to 2802.19 seconds in the call
+Adam Pfeiffer46:42
+Yeah, we, I think it is. I mean, I, we have to look. I mean, we have certain things.
+238. Move the player to 2805.91 seconds in the call
+Stanley, Kayla46:45
+Go To Market Tech Stack Discussion
+No, I think tasks just pop up on your home screen. I don't think we get auto emails for tasks right now. We get them when you're creating an opportunity for like team members to be notified they're on a team for a new opportunity specifically, but I'm sure we can get that turned on on our Salesforce side for tasks.
+239. Move the player to 2809.95 seconds in the call
+Jennae Jizdeortega46:49
+Mhm.
+240. Move the player to 2810.51 seconds in the call
+Adam Pfeiffer46:50
+Yeah.
+241. Move the player to 2820.99 seconds in the call
+Adam Pfeiffer47:00
+Right.
+242. Move the player to 2822.59 seconds in the call
+Adam Pfeiffer47:02
+The.
+243. Move the player to 2827.15 seconds in the call
+Jennae Jizdeortega47:07
+Yeah, and it's whatever's best for the organization. Some only have it living on the home screen, and I have some customers that do do the push notifications, and then we do a daily digest where I have all my outstanding tasks from the past week or the past day or whatever it may be. So it's just based off of how you guys structure it. We'll just replicate that.
+244. Move the player to 2847.79 seconds in the call
+Adam Pfeiffer47:27
+So...
+245. Move the player to 2849.31 seconds in the call
+Adam Pfeiffer47:29
+Go To Market Tech Stack Discussion
+I like that. So far, I mean, honestly, I like everything we've seen so far. I guess one question I have, and this is, so the ecosystem in which we reside in Salesforce is, we're a part of the broader Perkerwicz and Elmer instance of the platform. So when I go to account search, we have PF accounts, which are basically identified.
+246. Move the player to 2864.03 seconds in the call
+Jennae Jizdeortega47:44
+Mhm.
+247. Move the player to 2870.71 seconds in the call
+Adam Pfeiffer47:50
+through a myriad of ways, including account naming convention. And then there's a whole slew of other things that are on the Perkerwicz and Elmer side, one source side. And we have, for example, we would have a separate account for the same location if we were both working at that site. So Project Pharma exists in its own sort of.
+248. Move the player to 2871.59 seconds in the call
+Jennae Jizdeortega47:51
+Mm.
+249. Move the player to 2890.67 seconds in the call
+Adam Pfeiffer48:10
+vacuum in a sense from an account level. So all of our opportunities go to a Project Pharma account. There could be a Perkerwicz and Elmer account that's the same site, but we're managing the workflows in, you know, individually. So what I'm, as I sit here thinking about this, like, how would that work?
+250. Move the player to 2893.07 seconds in the call
+Jennae Jizdeortega48:13
+Mhm.
+251. Move the player to 2909.75 seconds in the call
+Adam Pfeiffer48:29
+Go To Market Tech Stack Discussion
+work, how would your kind of, you know, over the top layering of Altify into our Salesforce instance, knowing that it's like broader than just Project Pharma? I mean, and Kalia, you know, we probably need to talk about this, but like what I what I don't think, we're not looking to implement this for the broader Perkerwicz and Elmer team.
+252. Move the player to 2928.67 seconds in the call
+Jennae Jizdeortega48:48
+Ohh.
+253. Move the player to 2928.83 seconds in the call
+Adam Pfeiffer48:48
+Go To Market Tech Stack Discussion
+So like, I don't know how we could layer this into Project Pharma Salesforce environment without it impacting the broader organization.
+254. Move the player to 2937.55 seconds in the call
+Stanley, Kayla48:57
+It would probably be on our user level, I would assume.
+255. Move the player to 2938.03 seconds in the call
+Jennae Jizdeortega48:58
+It won't. Sorry.
+256. Move the player to 2941.43 seconds in the call
+Adam Pfeiffer49:01
+Is that all it is? Good. Okay.
+257. Move the player to 2942.43 seconds in the call
+Stanley, Kayla49:02
+Yeah.
+258. Move the player to 2942.51 seconds in the call
+Jennae Jizdeortega49:02
+Exactly.
+259. Move the player to 2960.99 seconds in the call
+Stanley, Kayla49:20
+Mhm.
+260. Move the player to 2961.51 seconds in the call
+Jennae Jizdeortega49:21
+Go To Market Tech Stack Discussion
+they're importing opportunities in the opportunity map. It doesn't have to be just PF opportunities. It can be the entire Perkerwicz and Elmer, you know, all opportunities for that one site. So they actually, you guys have the benefit of having Perkerwicz and Elmer or being part of Perkerwicz and Elmer Salesforce instance because you have all that data. However, Perkerwicz and Elmer will not see any of the Altify information.
+261. Move the player to 2986.19 seconds in the call
+Jennae Jizdeortega49:46
+License Count or Usage Discussion (2)
+data because they do not have users or licenses.
+262. Move the player to 2988.59 seconds in the call
+Adam Pfeiffer49:48
+Got it. Yeah, I think, I mean, one of the things that may be useful, like we, we're trying to cross sell and kind of work in parallel with some of our, you know, sister companies, if you will. And I think there is some value in like having a snapshot of
+263. Move the player to 3002.91 seconds in the call
+Jennae Jizdeortega50:02
+Mhm.
+264. Move the player to 3007.75 seconds in the call
+Adam Pfeiffer50:07
+overall account values or whatever, but I would definitely want like on something like this to be keep those completely separate because they, I mean, I think there's insight there, but it would have to be like, you know, like people would have to be trained and understand what that means. It's just, if we're looking to get into it, for example, the way I see this is like.
+265. Move the player to 3014.43 seconds in the call
+Jennae Jizdeortega50:14
+Okay.
+266. Move the player to 3026.91 seconds in the call
+Adam Pfeiffer50:26
+If we're looking to break into a new account and we see that Perkerwicz and Elmer's done $2 million in billings over the last year, then it's probably a good idea to at least try to align. Whereas if they have no relationship, then we bypass that step, right?
+267. Move the player to 3040.43 seconds in the call
+Jennae Jizdeortega50:40
+Exactly. So you let us know with implementation and a next step essentially would be me connecting you with our implementation team so you understand the roles and responsibilities and the lift of what that looks like. You guys would give us the guidelines of how you want this to be configured. Pretty much we give you a link.
+268. Move the player to 3059.63 seconds in the call
+Jennae Jizdeortega50:59
+Go To Market Tech Stack Discussion
+You press it and installs in your Salesforce environment. We usually bypass security and info sec really quickly because we're 100% Salesforce native. We do not own any of your data. It's all in Salesforce. So that process is really easy. But at configuration, Adam, you let us know the rules of engagement of how you
+269. Move the player to 3080.71 seconds in the call
+Jennae Jizdeortega51:20
+what you want pulled, how you want things pulled, how you want things measured and weighted, and we'll put this together exactly how you want to execute.
+270. Move the player to 3089.39 seconds in the call
+Adam Pfeiffer51:29
+Yeah, I think, I mean...
+271. Move the player to 3091.79 seconds in the call
+Adam Pfeiffer51:31
+If, if, if we get there, I think this is this is our implementation team right here between Kalia and Dan and myself. I mean, at least for starters, they don't know that I just signed them up, so this is great.
+272. Move the player to 3102.47 seconds in the call
+Jennae Jizdeortega51:42
+Yeah.
+273. Move the player to 3103.55 seconds in the call
+Lewis, Dan51:43
+I need to negotiate.
+274. Move the player to 3105.15 seconds in the call
+Adam Pfeiffer51:45
+Yeah, this is a non-negotiable.
+275. Move the player to 3107.95 seconds in the call
+Stanley, Kayla51:47
+Non-negotiable.
+276. Move the player to 3109.63 seconds in the call
+Jennae Jizdeortega51:49
+Wait, so with that, who else needs to be involved in a decision like this then?
+277. Move the player to 3109.87 seconds in the call
+Adam Pfeiffer51:49
+That's right.
+278. Move the player to 3116.67 seconds in the call
+Adam Pfeiffer51:56
+In terms of mapping or the actual like moving forward with Altify as our solution?
+279. Move the player to 3122.75 seconds in the call
+Jennae Jizdeortega52:02
+The latter, moving forward with Altify.
+280. Move the player to 3124.35 seconds in the call
+Adam Pfeiffer52:04
+AI Tools and Automation Mentioned
+It's going to be us, our recommendation, and really just, it'll go to our president, Rich, and then ultimately there's going to be some sort of a approval required from the Perkerwicz and Elmer. There's an advisory committee for kind of new platforms, especially those that leverage AI. So there would be
+281. Move the player to 3142.95 seconds in the call
+Adam Pfeiffer52:22
+some approval required, but I mean ultimately upon the recommendation from us and Rich, like that's kind of just a formality, right? It's necessary, but I don't see them pushing back for something that's kind of...
+282. Move the player to 3151.95 seconds in the call
+Jennae Jizdeortega52:31
+No.
+283. Move the player to 3158.99 seconds in the call
+Adam Pfeiffer52:38
+So plug and play with existing platforms, right?
+284. Move the player to 3161.35 seconds in the call
+Stanley, Kayla52:41
+Mhm.
+285. Move the player to 3162.15 seconds in the call
+Jennae Jizdeortega52:42
+Understood. Okay, perfect. And then I know, Dan, you've been doing your research and you kindly shared with me that, you know, based off of initial research, that Altify does look like it has more capabilities. But talk to me a little bit more about that. What are, or what other vendors are you looking at and provide feedback of just what you've seen so far.
+286. Move the player to 3162.83 seconds in the call
+Adam Pfeiffer52:42
+Okay.
+287. Move the player to 3184.67 seconds in the call
+Lewis, Dan53:04
+Well, you're the only one. So, so far, the feedback's been, from what I've seen, has been pretty good. And so, yeah, we're starting, I guess, with the best from the rankings. But no, we'll be looking at other options.
+288. Move the player to 3194.07 seconds in the call
+Adam Pfeiffer53:14
+Yeah.
+289. Move the player to 3203.95 seconds in the call
+Lewis, Dan53:23
+over the next couple of weeks and comparing what you guys offer to them and especially the pricing. I know we haven't got to that point, but I think it would be good to kind of go over the pricing model and how that would, how that would shake out.
+290. Move the player to 3205.71 seconds in the call
+Jennae Jizdeortega53:25
+But.
+291. Move the player to 3221.55 seconds in the call
+Jennae Jizdeortega53:41
+Yeah.
+292. Move the player to 3221.55 seconds in the call
+Adam Pfeiffer53:41
+Yeah, and if, and just to, I don't know if that's something that's better walked through or something that you share with us formally, but the only other thing I would like to prod on before we run out of time is when it comes to building it, like, so you've shown us the org chart for an organization, 3M for instance, if...
+293. Move the player to 3239.71 seconds in the call
+Jennae Jizdeortega53:59
+Mhm.
+294. Move the player to 3241.59 seconds in the call
+Adam Pfeiffer54:01
+Go To Market Tech Stack Discussion
+If we're starting from scratch, like how does, so from a user functionality perspective, and again, this goes back to some of my, let's say, elder statesmen that don't really adapt to cloud-based platforms that great, Kayla is smiling. I'm not going to name any names, but how does that look like? I'm assuming A, the contacts have to be contacts we've already entered into Salesforce.
+295. Move the player to 3258.99 seconds in the call
+Stanley, Kayla54:18
+Thanks.
+296. Move the player to 3265.71 seconds in the call
+Adam Pfeiffer54:25
+Right? I mean, there's no sort of like help us build the org chart with contacts we're not aware of functionality. But then how do we, how user-friendly is it for, you know, anybody of any computer skill level to go in and just sort of understand how that map gets built? And so you can go back to pricing first if that's.
+297. Move the player to 3266.03 seconds in the call
+Jennae Jizdeortega54:26
+Mhm.
+298. Move the player to 3266.83 seconds in the call
+Stanley, Kayla54:26
+Are you?
+299. Move the player to 3285.87 seconds in the call
+Adam Pfeiffer54:45
+Something you want to cover here or just share via like a proposal or just an e-mail, whatever. I am just curious because we haven't seen like that. We've seen the org chart in place. We haven't seen how it's built.
+300. Move the player to 3297.19 seconds in the call
+Jennae Jizdeortega54:57
+Definitely. So let me actually pull up your guys' here. So pricing, I'd love to review that with you guys. I'd like to put together pricing. I'd love to understand what your training capabilities look like, whether or not you'd want us to train the trainer. If you guys want virtual training, if you guys want us to come in person, that'll help me understand the level of managed service hours.
+301. Move the player to 3319.19 seconds in the call
+Jennae Jizdeortega55:19
+License Count or Usage Discussion (2)Product
+That's one component of it because we do believe in the methodology and the execution. And then there is the solution fee for the licenses. But really quickly, I just to add to your point, Adam. So here on a relationship map, I have not built out your company relationship map quite yet. So here, this is how it starts. No contacts.
+302. Move the player to 3327.79 seconds in the call
+Adam Pfeiffer55:27
+Okay.
+303. Move the player to 3341.55 seconds in the call
+Jennae Jizdeortega55:41
+AI Tools and Automation MentionedProduct
+I do have you 3 already here because based off of engagement, we've already had engagement. So Max AI is telling me, hey, you want these three people on your relationship map. From there, now I have some groundwork to follow. I still need to do the attributes.
+304. Move the player to 3360.19 seconds in the call
+Jennae Jizdeortega56:00
+As your reps are having conversations, they could either pull more contacts that are in the account itself. I don't have any other contacts in Perkin Elmer. So even though I talked to you three, but maybe I emailed five of your counterparts and maybe I emailed, you know, your president. It's now going to have those be suggested targets on the manage contacts.
+305. Move the player to 3380.19 seconds in the call
+Jennae Jizdeortega56:20
+versus just the three of you guys.
+306. Move the player to 3382.19 seconds in the call
+Adam Pfeiffer56:22
+Go To Market Tech Stack Discussion
+And then, again, that's reliant on e-mail tracking to an opportunity or contact level within Salesforce, so that's that's a gap, but that's our own gap to, you know, to to shore up, of course.
+307. Move the player to 3388.03 seconds in the call
+Stanley, Kayla56:28
+Okay.
+308. Move the player to 3388.91 seconds in the call
+Jennae Jizdeortega56:28
+Correct, activity history.
+309. Move the player to 3395.95 seconds in the call
+Jennae Jizdeortega56:35
+Go To Market Tech Stack Discussion
+So then another way, what I would do is, again, if you brought on your president today and, you know, another player, I will go ahead in real time create those contact cards. By creating these contact cards, it'll put them on the map and it'll also create that contact under the account record in Salesforce. So now you're creating that account record or
+310. Move the player to 3418.19 seconds in the call
+Jennae Jizdeortega56:58
+Product
+that contact record. What I've been doing lately is after I say in Claude, hey Claude, I spoke to Adam, Dan, and Kalia, help me identify other key players in this account that I need to include on my Project Pharma relationship map. It will then pull different names.
+311. Move the player to 3419.87 seconds in the call
+Adam Pfeiffer56:59
+Yeah.
+312. Move the player to 3437.95 seconds in the call
+Jennae Jizdeortega57:17
+AI Tools and Automation Mentioned
+I'll validate if I want item one, IM 2, IM 3 pushed. Maybe I don't need item 4, but 8, 9, and 10, I do also want them pushed. So there's that level of AI.
+313. Move the player to 3450.19 seconds in the call
+Jennae Jizdeortega57:30
+Does that Help?
+314. Move the player to 3450.43 seconds in the call
+Adam Pfeiffer57:30
+Okay. Yeah, and then in terms of hierarchy, like is that just a manual process where you just map that out yourself?
+315. Move the player to 3457.07 seconds in the call
+Jennae Jizdeortega57:37
+Yep, you can go like that. So what is that? What does that look like? Does it look like this?
+316. Move the player to 3460.07 seconds in the call
+Adam Pfeiffer57:40
+Me and Dan report to Kalia.
+317. Move the player to 3462.59 seconds in the call
+Stanley, Kayla57:42
+Yes.
+318. Move the player to 3463.47 seconds in the call
+Jennae Jizdeortega57:43
+Of course, I like that.
+319. Move the player to 3463.59 seconds in the call
+Adam Pfeiffer57:43
+Go To Market Tech Stack Discussion
+When it comes to Salesforce, me and Dan report to Kalia.
+320. Move the player to 3466.51 seconds in the call
+Jennae Jizdeortega57:46
+Okay, we're gonna be moving that then. So I could change that here and it could be, it could change this way, you exit it out and you now reassign. However, it's really cool too because as you're making these edits in the contact record, if you have a reports to custom object field, it will also update that for you too.
+321. Move the player to 3469.63 seconds in the call
+Stanley, Kayla57:49
+Yeah.
+322. Move the player to 3475.83 seconds in the call
+Stanley, Kayla57:55
+Hi, Kalia.
+323. Move the player to 3487.79 seconds in the call
+Adam Pfeiffer58:07
+Okay.
+324. Move the player to 3489.39 seconds in the call
+Lewis, Dan58:09
+Does this also tie into LinkedIn URL anywhere?
+325. Move the player to 3494.19 seconds in the call
+Jennae Jizdeortega58:14
+So you can include LinkedIn.
+326. Move the player to 3497.75 seconds in the call
+Jennae Jizdeortega58:17
+Go To Market Tech Stack Discussion
+Our integrations are based strictly off of what Salesforce integrations are. They don't have the greatest relationship with LinkedIn. They cut that off a few years ago. So we no longer have that direct connection. I do have to go on your guys' LinkedIn accounts, pull your photo, and add them here because Salesforce does not have that.
+327. Move the player to 3515.99 seconds in the call
+Stanley, Kayla58:35
+Mm.
+328. Move the player to 3518.19 seconds in the call
+Jennae Jizdeortega58:38
+relationship with LinkedIn anymore.
+329. Move the player to 3520.91 seconds in the call
+Lewis, Dan58:40
+Is it possible to pull that information? Because I know Apollo provides a lot of that information. Is it possible to port that over from Apollo?
+330. Move the player to 3526.99 seconds in the call
+Jennae Jizdeortega58:46
+Yeah.
+331. Move the player to 3528.67 seconds in the call
+Jennae Jizdeortega58:48
+Go To Market Tech Stack Discussion
+Yep, so if there's integration, any integrations you have with Salesforce, we'll just replicate that and we'll sync it obviously how you want it to be transferring data.
+332. Move the player to 3539.95 seconds in the call
+Lewis, Dan58:59
+Okay.
+333. Move the player to 3543.23 seconds in the call
+Jennae Jizdeortega59:03
+Perfect. One question is I know there's no timeline. It's just based off of when you find the correct tool. But ideally, when would you like something like this implemented?
+334. Move the player to 3555.39 seconds in the call
+Adam Pfeiffer59:15
+Um, I mean...
+335. Move the player to 3558.35 seconds in the call
+Adam Pfeiffer59:18
+Kind of a loaded question. I think that there's not like a drop dead date where we'd like to see it, but I mean, I think the sooner we can come to a decision on a platform and then understand what that kind of training and, I mean, contracting, licensing, and training timeline looks like. I mean, the sooner the better in my opinion, but also there's, we have the...
+336. Move the player to 3580.59 seconds in the call
+Adam Pfeiffer59:40
+I'd say we have the latitude to do things at the right pace to make sure it's built right. So training and implementation, like we can do it the right way. There's not, we don't need to cut corners based on an arbitrary date, if you will.
+337. Move the player to 3592.67 seconds in the call
+Jennae Jizdeortega59:52
+Perfect. So no compelling event, no SKO, you want to have this. That's usually what we hear is we want this enabled before SKO so our reps can have an account ready and reviewed at SKO. That's usually what we hear, but it doesn't sound like that's the case.
+338. Move the player to 3600.91 seconds in the call
+Adam Pfeiffer01:00:00
+Ohh.
+339. Move the player to 3608.27 seconds in the call
+Adam Pfeiffer01:00:08
+No, I mean, I think this is really about identifying and implementing, you know, platforms or solutions that just help us like grow and execute a strategy. And just like more importantly, we don't have connectivity across our own internal team as to who knows who and like.
+340. Move the player to 3629.19 seconds in the call
+Adam Pfeiffer01:00:29
+who we need to be talking to. So I think, I mean, the driver is better business practices, more efficient use of our time and intelligent sharing. But I don't think there's a date to that other than like the sooner we can get it, I think the better it will be for our bottom line.
+341. Move the player to 3644.51 seconds in the call
+Stanley, Kayla01:00:44
+Thanks.
+342. Move the player to 3646.19 seconds in the call
+Jennae Jizdeortega01:00:46
+Yep. Perfect. All right. Kayla and Dan, do you have any other feedback? I know, Adam, I loved yours, where you said you liked everything that you've seen so far, but any feedback from you two?
+343. Move the player to 3647.79 seconds in the call
+Adam Pfeiffer01:00:47
+The.
+344. Move the player to 3658.99 seconds in the call
+Lewis, Dan01:00:58
+Go To Market Tech Stack Discussion
+I did have a question on how it kind of works with Altify since it's natively in Salesforce and not everyone will have an Altify C. So is that just a separate like login within Salesforce and then no? Okay. How is that?
+345. Move the player to 3665.63 seconds in the call
+Jennae Jizdeortega01:01:05
+No.
+346. Move the player to 3676.43 seconds in the call
+Jennae Jizdeortega01:01:16
+Okay.
+347. Move the player to 3677.83 seconds in the call
+Lewis, Dan01:01:17
+License Count or Usage Discussion (2)
+work. The reason where I'm going is like, obviously Perk and Elmer on the other side of the business, all those licenses, they're probably not going to have an Altify user. And so I'm guessing that's not going to be a problem. And we can pick and choose who has an Altify login.
+348. Move the player to 3678.51 seconds in the call
+Jennae Jizdeortega01:01:18
+So.
+349. Move the player to 3696.67 seconds in the call
+Jennae Jizdeortega01:01:36
+Ohh.
+350. Move the player to 3697.51 seconds in the call
+Lewis, Dan01:01:37
+So how would that kind of work from a login standpoint?
+351. Move the player to 3700.67 seconds in the call
+Jennae Jizdeortega01:01:40
+Go To Market Tech Stack Discussion
+You let us know who the users will be. We install it into their account and then turn on the switch button. And then they now have the Altify Launchpad on their account record. Whereas A Perk and Elmer employee will see Salesforce account record as it is without that Altify Launchpad. So very seamless.
+352. Move the player to 3712.31 seconds in the call
+Lewis, Dan01:01:52
+Okay.
+353. Move the player to 3719.39 seconds in the call
+Lewis, Dan01:01:59
+Go To Market Tech Stack Discussion
+Okay, and will that change how the Salesforce is currently structured for the rest? Like, if we, I'm guessing it's separate. What we do with Altify for the selected people is not going to change the fields for the rest of the Salesforce platform?
+354. Move the player to 3738.83 seconds in the call
+Jennae Jizdeortega01:02:18
+Ooh, that's a good question. So if we are routing back to the custom object field solution, right? If Kalia has a solutions tab where we can now map it under the different, you know, solutions that you're selling, those tabs, that could possibly change. If you already have a reports to field, we'll just use that same reports to field.
+355. Move the player to 3761.71 seconds in the call
+Jennae Jizdeortega01:02:41
+Go To Market Tech Stack Discussion
+So it just depends. You need to give us the list of the fields that you'd want to use in Altify that you have living in your environment today. If we need to add a field into Altify, that might, I don't want to misspeak, there's a possibility that that might now live in all of Salesforce, but it would just be blank for the other users. And I mean.
+356. Move the player to 3779.11 seconds in the call
+Lewis, Dan01:02:59
+Okay.
+357. Move the player to 3779.79 seconds in the call
+Stanley, Kayla01:02:59
+Mhm.
+358. Move the player to 3780.15 seconds in the call
+Jennae Jizdeortega01:03:00
+Go To Market Tech Stack Discussion
+There's like 50 fields in Salesforce that I don't even use, so, so...
+359. Move the player to 3782.43 seconds in the call
+Lewis, Dan01:03:02
+Yeah, no, I know. Yeah, I was just kind of curious on how much of A lift it's going to be for Kayla to get approval from Perkerwicz and Elmer, because that's not always easy. And so, so really you need a list of the fields that we use or.
+360. Move the player to 3791.39 seconds in the call
+Jennae Jizdeortega01:03:11
+Mhm.
+361. Move the player to 3791.55 seconds in the call
+Stanley, Kayla01:03:11
+Mhm.
+362. Move the player to 3801.23 seconds in the call
+Lewis, Dan01:03:21
+Like, do you have like a template or anything that you would?
+363. Move the player to 3804.51 seconds in the call
+Jennae Jizdeortega01:03:24
+Go To Market Tech Stack Discussion
+So it's pretty much just what you want us to use. So that call, I do recommend as a next step before I provide pricing. I do want an implementation call just so they could understand the scope of what your Salesforce environment looks like, what that configuration looks like, and then what training looks like so we can draft up how we'll help execute on training. So
+364. Move the player to 3808.11 seconds in the call
+Lewis, Dan01:03:28
+OK.
+365. Move the player to 3825.75 seconds in the call
+Jennae Jizdeortega01:03:45
+I'd love to do that as a next step. Is that appropriate for you guys?
+366. Move the player to 3829.79 seconds in the call
+Lewis, Dan01:03:49
+Yeah, is it would it be more efficient for us to just provide a screen grab of the layout so they could prep before the call?
+367. Move the player to 3837.75 seconds in the call
+Jennae Jizdeortega01:03:57
+I mean, yeah, that would be great. We would love that. Normally, we just all come in and meet each other, and then we tell you, we outline the timeline of like the different things that are required, the different roles and responsibilities. And then from that, we can then put together a proposal, but anything you could provide us prior would always be helpful.
+368. Move the player to 3839.43 seconds in the call
+Lewis, Dan01:03:59
+Okay.
+369. Move the player to 3857.15 seconds in the call
+Adam Pfeiffer01:04:17
+Yeah, man, I think we could provide, you know, um...
+370. Move the player to 3857.23 seconds in the call
+Lewis, Dan01:04:17
+Okay.
+371. Move the player to 3862.27 seconds in the call
+Adam Pfeiffer01:04:22
+We can provide some insights there. I mean, I will say we haven't like signed any sort of an NDA with you. And if we're going to just share anything like that, it may be good to have that in place before we do. I have no problem sharing that if we put an NDA in place. Or we just can walk you through it on the call. Like we can pull up our instance and show you. But either way, I mean, I think at this point.
+372. Move the player to 3869.87 seconds in the call
+Jennae Jizdeortega01:04:29
+Help.
+373. Move the player to 3880.71 seconds in the call
+Jennae Jizdeortega01:04:40
+Yeah.
+374. Move the player to 3885.95 seconds in the call
+Adam Pfeiffer01:04:45
+As I think we're making pretty good progress, I mean, an NDA would be, you know, preferred on my side if we can do that.
+375. Move the player to 3894.27 seconds in the call
+Jennae Jizdeortega01:04:54
+I will get you that NDA. Can you guys use our NDA or does Perkerwicz and Elmer require you to be theirs?
+376. Move the player to 3898.67 seconds in the call
+Adam Pfeiffer01:04:58
+Yeah, as long as it's bilateral, we can review it on our legal side and that's fine if you want to share yours.
+377. Move the player to 3904.95 seconds in the call
+Jennae Jizdeortega01:05:04
+Perfect, I will do that. And again, that conversation is not contingent to any specific data from you guys. So if that takes a little bit longer, let's still have that conversation and talk through the workflows.
+378. Move the player to 3917.63 seconds in the call
+Adam Pfeiffer01:05:17
+Yeah, no, I agree with that. And I think, you know, ultimately...
+379. Move the player to 3923.67 seconds in the call
+Adam Pfeiffer01:05:23
+I think Perkerwicz and Elmer will view that sort of like if we're saying which fields are we looking to actually access to import into the Altify solution. I don't, there's nothing that I would think they would weigh is like this is proprietary and not to be shared and this isn't. I think it's kind of an all or nothing proposition and that's what I would push for.
+380. Move the player to 3941.23 seconds in the call
+Stanley, Kayla01:05:41
+Yeah.
+381. Move the player to 3944.27 seconds in the call
+Adam Pfeiffer01:05:44
+So we're not limited in our implementation when we do build it out.
+382. Move the player to 3944.39 seconds in the call
+Jennae Jizdeortega01:05:44
+Mhm.
+383. Move the player to 3947.15 seconds in the call
+Stanley, Kayla01:05:47
+Right. And our opportunities are all a project pharma specific template. So our opportunity template is different than one source, which is different than everybody else. So like if we knew to adjust and change ours as this is going, it's only going to affect project pharma opportunities, not one source and everybody else.
+384. Move the player to 3954.51 seconds in the call
+Jennae Jizdeortega01:05:54
+Mhm.
+385. Move the player to 3959.63 seconds in the call
+Jennae Jizdeortega01:05:59
+Mhm.
+386. Move the player to 3966.79 seconds in the call
+Stanley, Kayla01:06:06
+So it should be, that should make that kind of just that also easier.
+387. Move the player to 3966.83 seconds in the call
+Jennae Jizdeortega01:06:06
+Perfect.
+388. Move the player to 3967.99 seconds in the call
+Adam Pfeiffer01:06:07
+The.
+389. Move the player to 3971.67 seconds in the call
+Jennae Jizdeortega01:06:11
+Perfect. So when would you guys like to have that conversation?
+390. Move the player to 3976.91 seconds in the call
+Jennae Jizdeortega01:06:16
+Next week, a lot of us are out. We are supporting a training on site with a customer of ours, but we can do Monday at the earliest. Otherwise, we'd have to push it for the week of the 10th.
+391. Move the player to 3991.07 seconds in the call
+Adam Pfeiffer01:06:31
+I would probably prefer the week of the 10th. I've got some travel next week. And I think we want to, as Dan mentioned, we're looking at, you know, we're doing our diligence and looking at a few other options. I mean, you know, full transparency, like if we were going to jump today, like you're the leader in the clubhouse for sure. But there's also pricing and other things that kind of make that contingent. But I think
+392. Move the player to 3994.51 seconds in the call
+Jennae Jizdeortega01:06:34
+Okay.
+393. Move the player to 4004.83 seconds in the call
+Jennae Jizdeortega01:06:44
+Just.
+394. Move the player to 4012.67 seconds in the call
+Adam Pfeiffer01:06:52
+I think give us that next week to think about some other things. I mean, I think it's great to schedule something for the week of the 10th.
+395. Move the player to 4016.43 seconds in the call
+Jennae Jizdeortega01:06:56
+Yes.
+396. Move the player to 4020.43 seconds in the call
+Stanley, Kayla01:07:00
+Yep.
+397. Move the player to 4021.47 seconds in the call
+Adam Pfeiffer01:07:01
+And we can, I mean, let us get back to you with some, I mean, are you pretty flexible in terms of timing that week?
+398. Move the player to 4021.79 seconds in the call
+Jennae Jizdeortega01:07:01
+What?
+399. Move the player to 4030.19 seconds in the call
+Jennae Jizdeortega01:07:10
+It's just that I'm including the implementation team, but what looks best is...
+400. Move the player to 4039.47 seconds in the call
+Jennae Jizdeortega01:07:19
+I mean, yeah, we're relatively flexible besides Friday. We can make things work.
+401. Move the player to 4040.51 seconds in the call
+Adam Pfeiffer01:07:20
+Those.
+402. Move the player to 4044.19 seconds in the call
+Adam Pfeiffer01:07:24
+Next Step
+Okay, and I would throw Tuesday out for us because Tuesdays are hell day. So maybe Wednesday the 12th, I mean, I'm pretty wide open after around 11 A.m. Pacific Time. And Thursday I have time in the morning as well. So I mean, whatever, like we can.
+403. Move the player to 4048.59 seconds in the call
+Jennae Jizdeortega01:07:28
+Okay.
+404. Move the player to 4049.35 seconds in the call
+Stanley, Kayla01:07:29
+And.
+405. Move the player to 4057.47 seconds in the call
+Jennae Jizdeortega01:07:37
+Okay.
+406. Move the player to 4063.55 seconds in the call
+Adam Pfeiffer01:07:43
+we have time to sort out the scheduling in that meeting. But I think that earmarking it for that week makes sense. It gives us a little time to do a couple more things on our side. And then we would look forward to kind of talking those logistics and details that would then ultimately get us to some pricing. And we can go from there.
+407. Move the player to 4081.79 seconds in the call
+Jennae Jizdeortega01:08:01
+Next Step
+Okay, just looking at this now, I could do 130 Pacific time. So I know that's a little later for you, Kayla and Dan, but 130 Pacific time that Wednesday, just as a placeholder and we can always adjust if things come up.
+408. Move the player to 4093.55 seconds in the call
+Adam Pfeiffer01:08:13
+Is that a 60 minute thing or 30? I mean, I'm good with that, Dan. You guys good with that?
+409. Move the player to 4095.79 seconds in the call
+Jennae Jizdeortega01:08:15
+Nope, 30 minutes.
+410. Move the player to 4099.79 seconds in the call
+Stanley, Kayla01:08:19
+Yeah.
+411. Move the player to 4101.15 seconds in the call
+Lewis, Dan01:08:21
+Uh, yep.
+412. Move the player to 4102.51 seconds in the call
+Adam Pfeiffer01:08:22
+Okay.
+413. Move the player to 4102.63 seconds in the call
+Jennae Jizdeortega01:08:22
+Perfect. Let's go ahead and do that. Dan, if there's anything you need from, well, is there anything you need from me as you're doing your research on different vendors? I have like tons of competitive intel.
+414. Move the player to 4114.03 seconds in the call
+Lewis, Dan01:08:34
+Add of pricing. Price match. Price match would be awesome.
+415. Move the player to 4118.31 seconds in the call
+Adam Pfeiffer01:08:38
+Price match this is.
+416. Move the player to 4120.19 seconds in the call
+Jennae Jizdeortega01:08:40
+Well, we'll talk about that. Well.
+417. Move the player to 4120.71 seconds in the call
+Lewis, Dan01:08:40
+No, is no.
+418. Move the player to 4121.99 seconds in the call
+Adam Pfeiffer01:08:41
+Are we buying a refrigerator?
+419. Move the player to 4122.91 seconds in the call
+Lewis, Dan01:08:42
+Okay.
+420. Move the player to 4124.19 seconds in the call
+Lewis, Dan01:08:44
+Capp.
+421. Move the player to 4124.47 seconds in the call
+Jennae Jizdeortega01:08:44
+Go To Market Tech Stack Discussion
+When you talk to them, ask them if they're Salesforce native and ask them if they're methodology driven. And then if they say yes to both of those, then I'll be like, okay, Dan, we have a conversation going.
+422. Move the player to 4124.59 seconds in the call
+Stanley, Kayla01:08:44
+I see.
+423. Move the player to 4128.43 seconds in the call
+Stanley, Kayla01:08:48
+And then.
+424. Move the player to 4130.19 seconds in the call
+Lewis, Dan01:08:50
+Okay.
+425. Move the player to 4134.35 seconds in the call
+Lewis, Dan01:08:54
+Yeah, yeah, I think we both know the answer to that. So, well played.
+426. Move the player to 4135.51 seconds in the call
+Stanley, Kayla01:08:55
+And.
+427. Move the player to 4137.79 seconds in the call
+Stanley, Kayla01:08:57
+Yeah.
+428. Move the player to 4137.95 seconds in the call
+Jennae Jizdeortega01:08:57
+Yeah.
+429. Move the player to 4138.35 seconds in the call
+Adam Pfeiffer01:08:58
+Well, but I will say, as you're, you know, as you kind of check off your boxes, do you like, I would be interested in seeing like phase two pricing around some of the methodology stuff. I don't think we're there yet. I think organizationally, we need to mature a little bit in how we do that. But
+430. Move the player to 4184.27 seconds in the call
+Jennae Jizdeortega01:09:44
+I know.
+431. Move the player to 4184.91 seconds in the call
+Adam Pfeiffer01:09:44
+I'm not writing it off. I'm saying I don't think we're mature enough in our processes to leverage that very effectively.
+432. Move the player to 4191.79 seconds in the call
+Jennae Jizdeortega01:09:51
+Product
+That makes sense. It's not a separate thing. That's just what Altify is. Our solution has methodology ingrained in it. That's where those different strategy questions are coming from, the different account questions are coming from. And then also, most importantly, the methodology lives in the relationship map.
+433. Move the player to 4199.79 seconds in the call
+Adam Pfeiffer01:09:59
+Thor.
+434. Move the player to 4206.43 seconds in the call
+Adam Pfeiffer01:10:06
+Okay.
+435. Move the player to 4209.47 seconds in the call
+Jennae Jizdeortega01:10:09
+with understanding the attributes. So it's the full package itself. But...
+436. Move the player to 4216.03 seconds in the call
+Jennae Jizdeortega01:10:16
+I'll come up with pricing. I'll definitely come up with good pricing proposals. And then after the first shot of you guys looking at it and you say, Jennae, there's absolutely no way we can do this, then we'll just fine tune and then give you guys exactly what you need and, you know, meet the price point that you're trying to look for. But do you have a ballpark of what it is that you need to be within, Adam?
+437. Move the player to 4235.27 seconds in the call
+Adam Pfeiffer01:10:35
+Oh no, I would never tell you that either. I mean, I actually, I probably would tell you that, you know, eventually, but we haven't even, we haven't got a price for any of these solutions. So I don't even know what ballpark we're in. So that's why I think it's important for us to take the next, because I get it, like your pricing depends on that implementation approach. So
+438. Move the player to 4238.59 seconds in the call
+Jennae Jizdeortega01:10:38
+Okay, no problem. Understood.
+439. Move the player to 4248.03 seconds in the call
+Jennae Jizdeortega01:10:48
+Mhm.
+440. Move the player to 4260.03 seconds in the call
+Adam Pfeiffer01:11:00
+We'll get there and we'll find out what the pricing is, and then maybe I'll be able to.
+441. Move the player to 4266.19 seconds in the call
+Adam Pfeiffer01:11:06
+I don't know yet. I haven't run into a lot of issues. Once we get approval for stuff like prices, you know, I mean, I'm assuming you have some sort of a competitive offering from a price perspective. So, yeah, I, yeah.
+442. Move the player to 4276.75 seconds in the call
+Jennae Jizdeortega01:11:16
+Yeah.
+443. Move the player to 4278.35 seconds in the call
+Jennae Jizdeortega01:11:18
+I'll work with you guys. No worries.
+444. Move the player to 4281.31 seconds in the call
+Jennae Jizdeortega01:11:21
+But perfect, wonderful. I look forward to the 12th. If anything comes up, you guys let me know. We can always readjust. I will provide the NDA right now, a quick recap of what we discussed. And then Dan, reach me if there's anything that comes up in your competitive research. Kaylin, Adam, by all means, my line of communication is open too for you guys.
+445. Move the player to 4300.35 seconds in the call
+Lewis, Dan01:11:40
+All right. I appreciate it. Thank you.
+446. Move the player to 4301.63 seconds in the call
+Stanley, Kayla01:11:41
+Awesome. Thank you. Have a good one. Thank you.
+447. Move the player to 4302.51 seconds in the call
+Jennae Jizdeortega01:11:42
+Thanks, everyone. Have a great day.
+448. Move the player to 4303.67 seconds in the call
+Adam Pfeiffer01:11:43
+Thanks, Shanaya. I appreciate you.
+449. Move the player to 4304.27 seconds in the call
+Lewis, Dan01:11:44
+Thanks, too. Bye.
+450. Move the player to 4305.47 seconds in the call
+Jennae Jizdeortega01:11:45
+I.
+451. Move the player to 4308.27 seconds in the call
+Adam Pfeiffer01:11:48
+Yo, oh, you're outta here.

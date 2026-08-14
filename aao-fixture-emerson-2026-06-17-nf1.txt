@@ -1,0 +1,415 @@
+renee_martin	Hey guys!
+ryan_couture	Hello, how are you doing?
+renee_martin	Hi, Ryan. How are ya?
+jefferson_vargas	Hello!
+renee_martin	Hey, Jefferson, hey.
+renee_martin	The.
+neeraja_chimata	Hello!
+renee_martin	How you doing?
+jefferson_vargas	How are you?
+renee_martin	Yes.
+neeraja_chimata	Hey, Renee.
+renee_martin	I am perfectly fine. It is a nice day today. How about you guys?
+neeraja_chimata	Hi, Jeff. How are you doing? Hey, see, good. I'm good with another problem for you, huh?
+jefferson_vargas	Ohh, that's good. Hi, I'm well. How about you?
+ryan_couture	Excellent.
+jefferson_vargas	Yeah.
+renee_martin	Wait, we're not a problem.
+jefferson_vargas	I mean, I got problems coming at me of all directions. I'm not worried about it.
+neeraja_chimata	Yes.
+renee_martin	Yeah.
+ryan_couture	Yeah.
+neeraja_chimata	No, you're not the problem. I am the problem. Don't worry about it. I am the problem for Jeff. You guys are all good. I'm going to be in the background. You guys do the talking. I just want to make sure if you need any help, I'm here. Otherwise, I'm usually a problem. So.
+renee_martin	Ha ha ha.
+ryan_couture	It's us.
+jefferson_vargas	Ha ha ha.
+jefferson_vargas	Yeah.
+ryan_couture	Okay.
+renee_martin	Awesome.
+jefferson_vargas	Yeah.
+wendy_higley	Neeraja, I don't think you could ever be a problem, could you?
+jefferson_vargas	Not at all, no.
+ryan_couture	No, it's me. It's me.
+renee_martin	Wendy, don't jinx us.
+neeraja_chimata	She talked to Ryan. He reports to me.
+jefferson_vargas	No.
+wendy_higley	I know I can be a problem.
+ryan_couture	I get to be a problem and then blame it on her.
+wendy_higley	There you go. My husband was just in my office and he walked out. If you would have asked him, he would say, I'm always a problem.
+jefferson_vargas	Yeah.
+jefferson_vargas	Yeah.
+neeraja_chimata	A story of my life, don't worry about it.
+renee_martin	Yeah.
+ryan_couture	Yeah.
+neeraja_chimata	Don't worry about it.
+ryan_couture	Pleading the 5th.
+wendy_higley	Yeah.
+renee_martin	Well, guys, thanks for getting together today. I think it's Jefferson, it's great to meet you. My name's Renee Martin. I am the Global Account Director for the Emerson Aspen Tech account. Wendy, do you want to introduce yourself to Jefferson?
+wendy_higley	Hi, Jefferson. Pleasure to meet you.
+jefferson_vargas	Hello. Yeah, good to meet you as well.
+wendy_higley	VP of Sales here at Altify, Renee is on my team and we have just thoroughly enjoyed working with the team so far and it's lovely to meet a new team member and face.
+jefferson_vargas	Yeah, yeah, it's good to meet all of you. I'm part of the sourcing team at MoneyGram and, or not MoneyGram, that was my old job. I haven't said that in a while, wow. No, at Aspen Tech, but probably the reason why I kind of stumbled there is because
+ryan_couture	I was like, are we using a new app or something that I don't know?
+wendy_higley	That's a problem, Jefferson.
+renee_martin	Yeah.
+jefferson_vargas	More and more, I'm trying to introduce myself as being from Emerson because Aspen Tech and Emerson are coming together. And so I'm just out of practice saying these things, I guess.
+renee_martin	Yeah.
+ryan_couture	Mhm.
+renee_martin	I hear ya. I think I was on with Wendy. Wendy and I used to work together at two other companies. And I think we were on with a customer. I'm like, well, yes, Renee from DocuSign, because we were at DocuSign together. So it does happen. It does happen.
+wendy_higley	Mhm.
+jefferson_vargas	Ha ha ha.
+renee_martin	So today I thought, let me share my screen. I thought we'd talk a little bit about the buying process. Jefferson, maybe you can, we can go through these milestones that we talked about with Fatima and Ryan and Neeraja about a week ago. And then maybe you can help us kind of figure out what that looks like.
+jefferson_vargas	Mhm.
+renee_martin	and look at the timing for that. And then I do have some high level pricing. We can talk through that and kind of figure out what next steps are. Does that sound okay? Was there anything else you wanted to cover, Jefferson or Ryan or?
+jefferson_vargas	No, I think that's a good, good place to start.
+renee_martin	OK, let me share my screen.
+renee_martin	And Wendy, feel free to jump in here anytime I'm going off the rails.
+wendy_higley	I doubt that's going to happen, but I'm here if I want to chime in with anything.
+renee_martin	All right. So this is the path to partnership that we walked through with Fatima based on the timing of this go live in October of 2026 for the new fiscal year. So I'm going to just kind of go backwards. So we
+jefferson_vargas	Mhm.
+renee_martin	got the decision last week, and then we started working with Ryan and Neeraja on scoping out the commercials, and that's where we got introduced to you, Jefferson. So I think it'll help, you know, we've got to get through the legal review, we've got to get through the info sec review.
+jefferson_vargas	M.
+renee_martin	and finalize the MSA, and then of course the order form and pricing, and then be ready to go by August to start implementation and software configuration, implementation, training, whatever else we need to do, is going to probably take some time. So
+jefferson_vargas	Mhm.
+renee_martin	Where are you at with these dates and milestones from your perspective?
+jefferson_vargas	Sure. I mean, certainly it's difficult to kind of assign a definitive date to like when InfoSec review will be completed, when legal review will be completed, just because the number of people who have touch points there. I did see that you sent over a copy of the MSA, so thank you for that.
+renee_martin	Yeah.
+renee_martin	OK.
+jefferson_vargas	Yeah, I think it will help to have the latest quote that I can include with legal. And then when it comes to InfoSec, there's a bit of a separate track there where we go to our compliance team where they will send out some
+renee_martin	Sure.
+jefferson_vargas	questionnaires. I think there are two or three. I'm not sure if it's two or three questionnaires that would be sent to somebody on your team who could speak to compliance regarding cybersecurity issues. So, you know, I'd be happy to direct them to you, unless you think there's a better person I should be directing those kind of
+renee_martin	The.
+jefferson_vargas	Questionnaire content, too.
+renee_martin	Well, I think we've got a package that's already kind of put together from our InfoSec team. And the good news is, is we are literally a managed package directly inside Salesforce. So we find that the InfoSec review, because you guys are already Salesforce users,
+wendy_higley	But.
+jefferson_vargas	Mhm.
+jefferson_vargas	Mhm.
+renee_martin	likely will go faster and better because we're a managed package directly in Salesforce. And then I've got like a package I can send over to you from our InfoSec team to send over with the MSA if that's at all helpful to the project.
+jefferson_vargas	Yeah, I mean, I don't think it's a bad idea to send it. It's great to have as a reference. I do think that our compliance team will look for a completed questionnaire. But honestly, it's helpful for you to send that material anyways, because it might help to, you know, answer some of those questions before they're asked.
+renee_martin	Questionnaire. Yeah, okay.
+wendy_higley	Okay.
+renee_martin	Got it. Wendy, I'm sorry, did I interrupt you?
+wendy_higley	No, I was just going to chime in and say, yeah, it'll be like a link to our trust center. And then if you have a separate document that's required, we'll just, you know, you can ship that over to us and then we'll send it an email to our security team requesting them to complete it.
+renee_martin	Yeah.
+renee_martin	Security team, yeah.
+jefferson_vargas	Yeah.
+jefferson_vargas	Yeah, if you could just send me the contact email person team that I should have them send it to. I don't have visibility to these questionnaires. It's part of that compliance team. So as long as I have the person, I'll make sure they have that and then they can forward that on.
+wendy_higley	Oh, okay.
+wendy_higley	Yeah.
+wendy_higley	Yeah, you know what, Renee?
+renee_martin	Yeah, it's a generic. It's security at Altify.com, but I'll send that over to you.
+jefferson_vargas	Okay, yeah, that'll work.
+wendy_higley	Perfect. Yeah, they may have some sort of like internal process where they just need to plug an email address in and maybe it ships the form directly for them to fill out or something instead of like an attachment. So that makes sense. Okay.
+renee_martin	Yeah, that's what I think.
+jefferson_vargas	Mhm.
+jefferson_vargas	Yeah, yeah, so that'll be great. I can send that off to them. I don't know. Neeraja, have you had those? Have I bothered you in the past with those intake forms for info security or not?
+renee_martin	Yeah.
+neeraja_chimata	Yeah, yeah, one trust.
+ryan_couture	Yep.
+jefferson_vargas	Okay, that's what I thought. All right, I was like, oh no, did I not do that to other people? Okay, great. Sounds good.
+renee_martin	What? Oh yeah.
+neeraja_chimata	Yes.
+ryan_couture	The.
+renee_martin	Easy. That should be easy. That's the easy button. Okay, so, and then should we start a cadence just like administratively to check in since we've kind of got these gates that we're trying to manage? I know Ryan, we talked about maybe doing a once a week.
+neeraja_chimata	Yep.
+jefferson_vargas	Yeah.
+renee_martin	even if it's just a quick check-in.
+ryan_couture	Even A 20 or 30 minute check-in once a week could be beneficial.
+renee_martin	Do you guys have a Jefferson? Does that work for you?
+jefferson_vargas	Yeah, I mean, yeah, I think that should be fine. Yeah.
+renee_martin	Do you guys have a preference? Is this the time that you prefer?
+jefferson_vargas	I think Wednesday afternoons are pretty good for me, but I can't speak for everybody.
+ryan_couture	The only thing is, is if it works 1/2 an hour earlier, sometimes that would be a little bit easier for me, but I understand that might not work with everybody's schedule.
+renee_martin	So 1 P.m. Western time. My brain is fried today. Pacific time and 4 o'clock Eastern time. Wendy.
+ryan_couture	That would be my personal preference, but I can be flexible.
+renee_martin	And Neeraja, it's up to you whether you want to be on, but you know, it's really your call. I did, I did, I wanted to invite everybody to this party.
+neeraja_chimata	Yeah, I did, no, I just want to make sure that if anything, I help support, right, Jeff, I work with on this one, Ryan, this is his first. So I just want to make sure that I'm available to support. Other than that, I'm not required. Yeah.
+renee_martin	Okay, great. This will be good. All right. Does 4 o'clock on Wednesday afternoon work for you for the next couple weeks?
+ryan_couture	And.
+renee_martin	Okay, we're good.
+jefferson_vargas	Same, yeah, yeah, I think so.
+renee_martin	Logistically, I'll send that out. All right. So what else should we talk about? We talked, you know, Jefferson, Neeraja, did you bring him up to speed as to what we're trying to accomplish here with the relationship maps and the insights? And does he care?
+neeraja_chimata	Jeff.
+neeraja_chimata	He does.
+ryan_couture	Yeah.
+neeraja_chimata	He does. He very much cares. So the second question I have answered. Yes. He, I don't think he was part of the negotiation for prolific. So yes, I gave him a little bit of context, but Jeff, I'm happy to give more context if you want more. I think he has some idea.
+ryan_couture	It's.
+ryan_couture	Incredibly important to him.
+jefferson_vargas	Sure, sure. Yeah, I mean, I guess the primary question I'm going to have is like whether or not what I see, I have a proposal. I think it might be a couple of weeks old. I just want to make sure I understand if these are all, you know, where we need them to be. Like I know that right now the proposal I'm looking at and I can share my screen if that helps.
+renee_martin	Yeah.
+jefferson_vargas	I don't know if this is the most up-to-date.
+neeraja_chimata	Yeah, see, he's the numbers guy, so he's going to come down to the numbers, so he knows the context.
+jefferson_vargas	Ha ha ha.
+renee_martin	Oh, right. So he understands, got it. Like in what you talked about and what we talked about was in our little email exchanges. So you have an investment proposal that was from, you know, before, just so you guys could do some budgeting. It looks like I made a mistake. I'm sorry about my discount being off.
+jefferson_vargas	Yeah.
+neeraja_chimata	Yeah.
+renee_martin	But you would ask us for a one year, two year, and a three year, and we don't do one years. But this is a three year with a 35% discount. And just instead of doing it license by license, we do this with a lot of our enterprise customers. We give them the ability to grow.
+jefferson_vargas	Mhm, Okay.
+ryan_couture	Yeah.
+renee_martin	without having to do additional contracting for additional licenses. So Wendy, did you want to add anything here?
+jefferson_vargas	Mhm.
+wendy_higley	No, yeah, this is designed. I know that there was sort of a range that you guys were looking to add, like it was like 500 to 600 or something. So we've done this before where we just take the, or we add the flexibility for you to go up to a certain ceiling for no extra cost. So it gives you that.
+jefferson_vargas	Mhm.
+wendy_higley	You don't have to count heads. You don't have to swap in and swap out for people when they, you know, when they need them. You don't have to come to us and say, I need to buy more. So we'll just go ahead and turn on up to 600 licenses for you so that you have them available.
+jefferson_vargas	OK, I see.
+neeraja_chimata	Is that tiers, tier priced? Wendy, is this the tier of like 0 to 600 and 600 and above? Like, is that the tier or is it just priced? Okay, the tier. Okay. So if we go, sorry, the reason why I'm asking is if we, let's say, go above 600, will that get us into a higher tier?
+renee_martin	Yes, that's the...
+wendy_higley	Ohh.
+renee_martin	Yeah, that's the tier. That's...
+neeraja_chimata	of what's the ceiling for the higher tier.
+wendy_higley	Yeah, your price per user when you reverse engineer the math would go down. Obviously, you would be spending more on an annual basis because you have more volume, but we would dial down sort of that price per person if you crest above.
+neeraja_chimata	Okay.
+jefferson_vargas	Sure. And I think that the, you know, the total cost, the annual total is going to be the thing that gets the most amount of scrutiny when it comes to the approvals. And so I know that our internal approvers would be looking to see, you know, something that was
+renee_martin	Yeah.
+jefferson_vargas	more discounted than what I'd had originally at the 600 level. Is there anywhere else to go with this as far as the per user rate? Like, I mean, I appreciate the flexibility of the up to 600, but if we were to list it at 500, where would that put us?
+renee_martin	Well, that 600 is kind of 0 to 600. That's the price break of 35% for a three-year deal. So that is where the price break is. So, I mean, we could go back and recalculate. It might be a little bit higher priced, which might, but I don't know if it'd be like a...
+jefferson_vargas	Mhm, mhm.
+renee_martin	100 licenses more higher price.
+jefferson_vargas	Yeah, I mean, I'm trying to better understand what that total is going to be. Like, you know, certainly any movement that we can have to try to improve that total, what is going to be smiled upon by the approvers. I know that some other questions that I had about
+jefferson_vargas	The, and I apologize, I was using the older proposal, is about like there was a training section that said TBA, and I wasn't sure exactly what that was.
+renee_martin	So licenses aside, I didn't show you the two year, but there's a two year in here. I'll send this to you. So you get 25% for a two year off list price up to 600. This one is 35% because you're going an extra year, so you get an extra 10% off. So what change, how licenses are impacted, our term,
+jefferson_vargas	Mhm.
+jefferson_vargas	Mhm.
+jefferson_vargas	Mhm.
+renee_martin	and volume, right? Those are the two levers that we can pull is term and volume. This is our pricing for up to 600 and that's a tier. So if you had 1000, this would be a per price much lower, obviously, if that makes sense. So it's all volume based.
+jefferson_vargas	Mhm.
+jefferson_vargas	Mhm.
+jefferson_vargas	Mhm.
+jefferson_vargas	Yeah.
+renee_martin	Wendy.
+jefferson_vargas	Yeah.
+wendy_higley	Yeah, the only other lever which really isn't applicable here right now is when it's number of solutions. So if you were moving forward with our enterprise package, which is, you know, strategic account and territory planning, it's opportunity management, and then it, which
+renee_martin	All right.
+wendy_higley	What you're getting today is a part of all of that. And then our sales process manager, let's just say you're buying all of it. We would apply it, we would be able to apply a higher discount rate because you have multiple products that you are investing in.
+jefferson_vargas	Sure, sure.
+wendy_higley	So that's the only other level, but since it's just the insights package, which is our, you know, sort of smallest module.
+renee_martin	Thanks.
+renee_martin	Starter, our starter package.
+wendy_higley	What? Our starter package, yes.
+jefferson_vargas	Mhm.
+renee_martin	Yeah, it's actually the least expensive. So that's how that works. And then, so, you know, one of the things that sets us apart really is the outcomes that customers are getting, like improved win rates, bigger deal sizes, because the relationship map can really help you put.
+renee_martin	together a strategy and customers like Autodesk found that if there's three supporters on the relationship map that their win rate went up by 137%. So it definitely works, this project does work, but part of the reason they were successful is because they invested, they were buying an enterprise product and invested in services.
+renee_martin	So installation, this is what the services one time cost is, where it says initial implementation. It includes leadership alignment, getting everybody on board on using insights and relationship maps, field alignment, leadership training, relationship map user training, and then insight user training. So
+renee_martin	This is the number from services and this is a one-time initial cost of $44,000.
+renee_martin	Anything you want to add, Wendy? She's been with Altify and seen a lot of really successful implementations and maybe has a little insight on that.
+wendy_higley	Yeah, absolutely. So the one thing that our successful customers all have in common is that they invest in enablement for their teams and more importantly, they're committed to the change management motion, which is what you see those alignment line items are all about. Software installation optimization, you can see is like a nominal number because it's just...
+wendy_higley	It's a managed package, so it's very easy and straightforward to install and configure. And then your leadership alignment is where your, you know, your senior sales leaders and would come together and they would start to define sort of that success charter. Like what does good look like? What are we, how are we going to measure success?
+ryan_couture	Yeah.
+wendy_higley	you know, what's the whole goal and really purpose so we can get everybody singing from the same sheet of music. Then that trickles down and then the field alignment is sort of like a kickoff session. This is all virtual, by the way. So the entire field, all five, 600 users would be assembled and then there would be the leadership fingerprints on the kickoff call as to the why and.
+wendy_higley	the ROI that you're aiming for. Then there would be leadership training, which is around the leaders understanding how to read into the insight maps and the relationship maps and coach to them accordingly. And then of course, the end user training for the field. And we would put up to 50 people into a single call.
+wendy_higley	The training's pretty straightforward, so we can have the higher groups on like up to 50 people on a call. Because in A, you've already been through some relationship mapping before, so it's not a completely new concept. So they'll be, you know, I'm sure really wanting to understand what's different with this map. And then of course, insight mapping will be something that will be new that they'll need to be enabled on as well.
+wendy_higley	So again, one time fee and then that managed services, reporting, coaching, facilitation, etc. 10 out, that's an ongoing annual cost that will, it's not a license cost, but it's going to be reflected year over year. And that's to give you some ongoing support that we can stay lockstep with you. Of course, you'll have a customer success manager, but
+wendy_higley	You know, you could need help with some custom reporting. You may want, you know, a few hours a year where, you know, someone comes in and works with your managers on, you know, coaching best practices, or you want to run some, you know, reviews and you won't have the test and improve functionality with just those two modules. But
+wendy_higley	If you want someone to come in and do like, let's do some like deal review and teach you how to do it with our to our software, et cetera. So that's, that's, oh, go ahead.
+ryan_couture	So, when...
+ryan_couture	Wendy is that when you say 10, is that 10 days worth like an 80 hours thing?
+wendy_higley	Set 10 hours of work a year.
+renee_martin	It's 20. It was my fat finger. This is 20 hours a year. Yeah.
+ryan_couture	Ten hours.
+wendy_higley	Oh, okay. I was gonna say that's looking...
+ryan_couture	Oh, so, okay.
+wendy_higley	Yeah, I was like, wow, did our rate go up?
+ryan_couture	I was going to say that.
+renee_martin	And our rate doubled.
+ryan_couture	Yeah, okay, so that's 20 hours of that assistance. And then is there an option to do like a train the trainer type deal?
+wendy_higley	We can do train the trainer as well. I would strongly recommend that your first round of enablement come from our facilitators or consultants, but we can certainly add a train the trainer so that you can refresh folks. You know, people are going to leave, people are going to join. That's just inevitable.
+wendy_higley	So you can do T3 and it would be pretty straightforward for these solutions where it gets really into the long certification and more robust train the trainers when you're doing full-blown account planning and full-blown opportunity management with methodology.
+ryan_couture	As opposed to just the relationship mapping that we're okay.
+wendy_higley	Yeah, yeah, I can we can take that Renee as an action and go get a quote from Travis on T3 for insights.
+renee_martin	Yeah, and the good news is, is that we'll record these sessions. So if you guys have an intranet, you know, you'll definitely want to put it up on the internet. It's just a very different experience when people are live building out a relationship map, learning how to do it.
+ryan_couture	Okay.
+ryan_couture	Mhm.
+renee_martin	learning how to read the tea leaves, as Wendy likes to say, and really understanding how to use the insights to build strategy for relationship management.
+neeraja_chimata	A couple of questions from me, the user training, the two SKUs on the bottom that says the relationship map user training and the insight user training, right? That's global, right? Is that global at times in terms of making sure the rest of the...
+renee_martin	Mhm.
+renee_martin	Yes.
+wendy_higley	M.
+neeraja_chimata	like APJ would have a APJ time call and Europe. Okay, so that's that. I just want to make sure you have support globally for that. The other question I had was if the inside user training is not something we want to do right off the bat, because I know the desire
+wendy_higley	Yeah.
+renee_martin	Yep, however you want to set it up.
+wendy_higley	I.
+wendy_higley	Yep.
+neeraja_chimata	and the ask is just about the relationship mapping, right? Like we want to get ahead of the relationship map gap that we have for sales. Is that something that we can basically add on at a later point, even though we don't kind of, is there like config associated with the installation and optimization around insight?
+wendy_higley	Okay.
+wendy_higley	So it automatically comes included the two, the two come side or come as a package. What you can do is implement relationship map first, have the insight maps turned off, let that absorb, and then do a fast follow or a couple months later, then you fire up the insight maps and do that enablement.
+neeraja_chimata	Right.
+neeraja_chimata	Right.
+wendy_higley	That would probably best practice, but I would recommend and I can go back and confirm, but keep it under the same statement of work. We can just make sure that it falls within the timeframe, like you have X amount of months or a year to go ahead. You can, you know, pay for the services now and then roll them out later.
+neeraja_chimata	Is there like an end date for this? Or the reason why I'm asking is, is there like an end date for the insight user, like training, for example, we get the 10 hours, but is there like an end date for that within like 3 months or six months or a year or?
+wendy_higley	The.
+wendy_higley	Um...
+wendy_higley	Yeah, we can set it up. We can be flexible with that. Yeah.
+renee_martin	Birth.
+renee_martin	Yeah.
+neeraja_chimata	No, I don't. I feel like we got to be flexible about starting that at a later point, because from a change management perspective, the relationship map user training has to happen first, and then people start using, and then we introduce the insights so that they kind of like stack up the change with the sales trips.
+wendy_higley	Yeah.
+wendy_higley	Mhm.
+wendy_higley	Hello.
+wendy_higley	Yeah, we can definitely do that. We can say, you know, the statement of work is good for six months, eight months, nine months, whatever that time frame is. When we do big, giant enterprise rollouts, sometimes I've seen them be like, it takes a year to get everything rolled out when you're doing the entire enterprise platform. So yeah, I don't see any reason why we wouldn't be able to do that. We just have to define it in writing in the statement of work.
+neeraja_chimata	And...
+neeraja_chimata	Okay.
+renee_martin	Yeah.
+neeraja_chimata	Okay.
+neeraja_chimata	Right.
+neeraja_chimata	Okay, and then the...
+renee_martin	Yeah, and I would recommend, I would just say, I would not go, it's such a valuable tool that once they start using it, they're going to be like, we should have had it for the first six months that we were doing this. So, and it's not that much, in terms of enablement, it's not that much to grasp. Once you understand that you understand it.
+neeraja_chimata	To.
+neeraja_chimata	Yep. No, I think once they see it, I think it would be good for me. I want to make sure we have flexibility of using those hours at any point of time to cater to business if the business wants to kind of not want to come by them. I still do not, like, can you help me understand the leadership alignment and the field alignment?
+renee_martin	Yes.
+renee_martin	Got it.
+neeraja_chimata	I still feel like it's not clear to me on what those two things are.
+wendy_higley	Yeah, that's the change management. And there's some summary of what the services are. So you'll like in this case, we've been working with you all and Fatima. This is where the sales leadership, who the end user stakeholders are going to be. You would want to assign a sponsor from the business.
+wendy_higley	and they would say to the entire sales organization, we would define your success. Could you go back to that, Renee, so they can have it available to read along if they'd like. So this is where we determine, okay, your success metrics, the expectations, it would be the fingerprints of your leadership team as to the value of why.
+wendy_higley	and what success looks like because you're going to have a lot better adoption. You're going to have a lot stronger usage when you set those expectations up front. It's just part of change management and then prepares those leaders to be coaching to what you're going to be getting with Altify. And then there's the, like a kickoff to the team of here's what's coming.
+ryan_couture	The.
+wendy_higley	that leader is typically involved and addresses the sales organization, says we're really excited. We've made this investment of Altify and this is why we're doing it. You know, we're going to grow our revenue and to do that, we deepen relationships with our customers and understand, you know, the buying organization to build strategy and align the, you know, the goals and the pressures of our customers. So they sort of do that.
+wendy_higley	this is now an official initiative in the why. And it really does a good job of setting that expectation to drive the value versus like, oh, here's some tool training for you, right? It really takes the reason and the business drivers for Altify and puts it front and center versus here's a widget.
+renee_martin	Yeah, the accountability and the change management piece is where customers who don't invest in that, it doesn't take. It becomes just a tool and not actually a best practice that they use and a coaching practice.
+wendy_higley	Yeah, for under $5,000, it is well worth the ROI.
+renee_martin	Any other questions on this piece?
+ryan_couture	Nope, not for me at least. I can't speak for Neeraja and Jefferson.
+jefferson_vargas	Yeah, I'm still kind of, I'm trying to put all this together just because on the last proposal, you know, I saw that line for 6,500 and then nothing else from there. So I'm still trying to really digest what all this is. Can you kind of, you touched on it earlier. Can you give me a little bit more context on the reoccurring cost than the managed services one at the bottom?
+wendy_higley	Yeah, so that is what, when we have our team available to you throughout the course of each year of the agreement, where you can have these services or bucket of hours, let's just call it, 20 hours to use for things such as you may want us to help you develop a custom report. You may want someone to come in and refresh your train
+wendy_higley	the trainers refresh enablement, you may have, you know, you may want some additional level of support. And this number was scoped based upon, you know, the solution set that you're investing in with insights as well as the size of your organization. Our VP of professional services, Travis Hill, was the one that said, you know, based upon our successful customers,
+wendy_higley	they would, we would expect them to need about 20 hours of ongoing managed services per year to support their success. And we can give you a list of all of the different services that we offer, but that, you know, that's just, that's our recommendation.
+renee_martin	Yeah.
+jefferson_vargas	Tim.
+renee_martin	If you don't want services, you don't have to have services, but what we're saying is we're coming with best practices from successful customers. Does that make sense?
+jefferson_vargas	Sure, sure, then.
+wendy_higley	Yeah, yeah, you can take that. So you can say, I don't want the ongoing managed services and that light item goes away. And then if you need services throughout the term of the agreement, you can add them on in one time. They're just at a higher hourly rate.
+jefferson_vargas	Sure, sure.
+jefferson_vargas	Yeah, I mean, I think, I'm trying to think of exactly how we tell this story to our approvers. You mentioned Emerson earlier. Do you have a product already with Emerson, this equivalent products with Emerson?
+wendy_higley	We don't have any agreement with Emerson.
+renee_martin	No.
+jefferson_vargas	Okay.
+wendy_higley	We would like to.
+jefferson_vargas	Yeah.
+jefferson_vargas	Yeah, and so I think that's part of where I'm going with this is that I want to make sure that we're presenting a compelling story to those approvers. You know, I'm going to need the, you mentioned an SOW, would you be able to provide a draft SOW with all those line items?
+wendy_higley	Absolutely.
+renee_martin	Yep.
+jefferson_vargas	Okay, yeah, I think where I'll go next with that is I'll take that on to the Emerson due diligence team just to see if they can take a look at those line items and see if they jive with what they would expect and see where we can go from there.
+renee_martin	Okay.
+jefferson_vargas	Mhm.
+renee_martin	And the reason customers are successful is that they focus on those three things.
+renee_martin	Anything else there, Wendy? Just.
+jefferson_vargas	Sure.
+wendy_higley	No, that's it. That's sort of the blueprint for success is following that change execution process.
+renee_martin	Now, were you guys planning to, I know on relationship maps, there's no max AI configuration. What is your AI appetite and how are you guys approaching AI? I don't think we ever had that conversation. It was really just about relationship maps.
+wendy_higley	Yeah, and the reason we bring it up is because if there, we've released our MCP, so there's embedded AI that you can have like the generate with Max AI button on the insight map is just one example of our AI capabilities. You click that, there's a, you know.
+wendy_higley	an embedded prompt that goes out, scrapes the web, and pulls the data back into the insight map to sort of help the sellers get started with build out. There's also our MCP capabilities are released, so you know if your if your sellers are working in Claude or Copilot or ChatGPT.
+wendy_higley	we can set it up so that it can go and read and write data from Altify. So you can be in Claude and you can say, here's the transcript from my call, go update my relationship map and go update my insight map. And it will do it and then it would, it goes both ways. So if you are interested.
+wendy_higley	in the AI capabilities with initial enablement or initial implementation, we have to take that into account. There will also be one more line item on statement of work for the one-time fees to set that up. If that's something that you say, that's great, we're not quite there yet, but we'll do that down the road, then we, that's a non-issue that swim laying around max AI configuration just.
+wendy_higley	Goes away.
+renee_martin	Yeah, I just wanted to clarify with them.
+neeraja_chimata	Yeah.
+ryan_couture	Yeah.
+neeraja_chimata	We might have to take that after the initial rollout. I don't think there is an enterprise plan of integrating an AI into our transactional systems. It just does its own LLM right now to make sure we can use that as a kind of like an AI chat.
+wendy_higley	But.
+neeraja_chimata	But kind of a thing, not necessarily an integrated transactional AI kind of strategy for Emerson. And I don't want to introduce anything, especially on the Salesforce layer at this point of time without going through.
+neeraja_chimata	Through that, so I think I think it's great that I did see this capability when I was understanding, and this was actually what I learned in Burlington, actually, when I went for the for the webinar about Altify, so I see the the capability, but I don't, we're not we're not gonna be able to do that with the with the current strategy.
+ryan_couture	Burnett is not right there.
+wendy_higley	Okay.
+renee_martin	No, no problem.
+ryan_couture	I'm sorry, I do need to drop, but if there's any other actions or anything for me, just please let me know if there's anything I can help out with. And thank you. It was nice to see you all again. And Jefferson, good to meet you. And I think we'll be working, we'll be working with, or together through this for the next couple of weeks or whatever through procurement. Looking forward to it.
+wendy_higley	Yeah, and whenever.
+wendy_higley	Hey.
+neeraja_chimata	Yeah, thanks.
+neeraja_chimata	Sure.
+jefferson_vargas	Yeah, good to meet you as well.
+jefferson_vargas	Wonderful. Yeah, thank you.
+renee_martin	Thanks, Ryan. Sorry guys, I lost track of time.
+ryan_couture	All right, thanks. Bye.
+wendy_higley	Hi, Ryan.
+neeraja_chimata	Oh, no worries. The recurring cost piece, right, Jeff, I wasn't aware of, I didn't see that either. So I was wondering, is that like a signature success kind of MS or is it specific MS? Is it including like?
+neeraja_chimata	Enhanced Support and MS or Enhanced Support is part of the subscription.
+wendy_higley	Yeah.
+wendy_higley	You'll get support as part of your subscription. There's 24-7 support. You'll have a designated customer success manager just out of the box. Those managed services hours are a bucket of reserved hours that you will have available 20 hours every year to engage with our consultants.
+neeraja_chimata	Uh-huh.
+wendy_higley	on whether there are internal or external. Yeah, so you may say.
+neeraja_chimata	Okay, if there are enhancements or external, got it. But we would have CSM, we would have support as part of the regular licensing, like subscription. Okay, okay.
+renee_martin	Yeah.
+wendy_higley	Yep.
+wendy_higley	100%. Yeah, that's standard.
+renee_martin	And, and Wendy and me.
+wendy_higley	Yeah, you're stuck with us.
+neeraja_chimata	I know, I know.
+renee_martin	She's like, oh my god, please help me.
+wendy_higley	Yeah.
+neeraja_chimata	No, no, no, no, no, I'm good. I know I did not even think that that was something I need to like, no, it's by default that I got you guys. So, okay. I wasn't going to let you guys go that easy anyways, so, okay.
+renee_martin	Um...
+renee_martin	Yeah.
+wendy_higley	Yes.
+renee_martin	Yeah.
+jefferson_vargas	Mmh.
+renee_martin	I know that we only set 1/2 hour aside and I know some of you are on the East Coast. So you tell me, do you want us to send this over to you? We can help kind of put together a story.
+neeraja_chimata	Okay.
+renee_martin	I think we need to do a little bit of a story, Wendy, for them to understand, like, we're not a technology company. We are literally a technology services methodology company. So I think that's what I think some folks are not as familiar with.
+wendy_higley	M.
+neeraja_chimata	Yeah, no, I'm good. I'm good with the thing. I think Jeff needs to figure out the pricing. So if you can send this out, I think we were being asked to work within that budget and I think you guys know that as well. So I need to figure out how that goes further. I just want to make sure what is it that we can.
+wendy_higley	Yeah.
+neeraja_chimata	How to basically tell the story, that's what Jeff is also trying to like, we were both kind of contemplating about that as well in terms of like, how do we make sure that this is the right investment internally, even though there's budget, there are going to be questions. So we just got to make sure we have the right understanding of things as well.
+renee_martin	Yeah.
+neeraja_chimata	All right, good job, ladies. Thank you so much. If you can share the information and then I will let you guys work with Jeff and I'm right here and I'm going to support whatever it's going to take to make sure that it gets through as soon as possible. The only thing is you already have the NDA
+wendy_higley	Absolutely.
+renee_martin	All right.
+wendy_higley	Thank you.
+neeraja_chimata	in place, right? Like the NDA. That's not gonna expire. That's good, right? That's not gonna expire or anything. Okay.
+wendy_higley	Yeah.
+renee_martin	Yeah, we all have the NDA. Yeah, yeah.
+renee_martin	No, right.
+wendy_higley	Mm.
+neeraja_chimata	All right. All right. I'm looking, I'm going to talk to Jeff and see what he's going to do next.
+renee_martin	Yeah, and ask him what he, we're going to come back with a draft statement of work. He wants to actually see the services. And then I'm going to, I have the action item of getting train the trainer pricing as well for and scope.
+wendy_higley	Okay.
+neeraja_chimata	Yes.
+wendy_higley	Yeah.
+neeraja_chimata	Yes.
+neeraja_chimata	Yeah. Okay. All right. Thank you. Bye.
+renee_martin	Awesome. Okay.
+wendy_higley	Wonderful.
+renee_martin	All right, guys. Thanks, guys.
+wendy_higley	Thanks, bye.
+renee_martin	Emerson's trying to get in.
+wendy_higley	Jefferson.
+renee_martin	Yeah. Hi, Jefferson, were you trying to get in?
+jefferson_vargas	Hello? Are you still there?
+renee_martin	We're still here, yes.
+wendy_higley	We were just, we were just jumping up.
+renee_martin	Are you looking for us? You're on mute, Jefferson. Yeah.
+jefferson_vargas	Okay, first of all, I am so sorry for my abrupt exit there. I didn't realize that I was not plugged, my laptop was not plugged in.
+renee_martin	Yeah.
+wendy_higley	Yes.
+renee_martin	We thought we made you so mad that you were...
+renee_martin	Oh no. We just recapped the action items and we were saying, I'll get you a draft statement of work so you can understand the services a little bit better and then do the train the trainer. I think Neeraja wanted to understand what that could look like. I'll send this over to you.
+jefferson_vargas	Yeah, if you could please send that to me, that would be really great. As well as, and I'm sorry you mentioned earlier, I didn't write it down, the contact person that you would have so I can at least get the compliance piece started.
+renee_martin	When.
+wendy_higley	I.
+renee_martin	Okay.
+renee_martin	Yeah.
+renee_martin	Yeah, for sure.
+wendy_higley	Mhm.
+jefferson_vargas	That would be on a separate track than the legal stuff, so...
+renee_martin	Yeah, okay. And are you going to send the MSA over to your legal team?
+jefferson_vargas	I would like to send it both with the SOW all in one. And so, and then I'm gonna have, like I said, I'll have our due diligence team take a look at it as well. And then if we have questions, I will come back to you because I prefer to get everything as kind of.
+renee_martin	Oh, gotcha. Okay. Got it. All right, well.
+wendy_higley	Okay.
+renee_martin	One package.
+jefferson_vargas	Or I send it to legal, they tend not to like getting multiple versions and things like that.
+renee_martin	Makes sense, makes sense.
+wendy_higley	Totally get.
+renee_martin	Okay, perfect. All right, we'll work on those action items and I'll send you a copy of this. I got to clean up a couple of things I noticed, so I'll do that and get this over to you as well.
+jefferson_vargas	Wonderful. I do appreciate you taking the time.
+renee_martin	Awesome.
+renee_martin	Yeah, of course. Thank you for your time. Great to meet you and looking forward to working with you.
+jefferson_vargas	Yes, hopefully in the future my laptop will be plugged in.
+renee_martin	Yeah.
+wendy_higley	Well, I'm glad we were still on when you jumped back, so...
+jefferson_vargas	Haha.
+renee_martin	Yeah, awesome.
+jefferson_vargas	Yeah.
+renee_martin	Alright, we'll talk to you soon.
+wendy_higley	All right.
+jefferson_vargas	All right, sounds good. Thank you.
+wendy_higley	Bye-bye.
+renee_martin	Thanks.
+wendy_higley	Thank you.

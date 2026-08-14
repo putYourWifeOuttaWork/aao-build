@@ -133,5 +133,10 @@ Two of the four are now confirmed against the ledger's own bytes by independent 
 
 1. `gh auth login` by Matthew, then the private remote and the push. **The history still exists on exactly one machine, which is the condition that caused this journal to start over.** Highest-value open item.
 2. The 17 outstanding manifest documents, `aao-unseen-corpus-record-v1_0.md` first.
-3. Run the test suite; 500 of 501 with the standing non-AAO failure is the expected shape. Report deltas, not greens.
-4. Then the eighty-fourth stamp's queue in its order: the per-leg resolution diff report (report only); the LOR contracts and the read-only measurement run.
+3. Then the eighty-fourth stamp's queue in its order: the per-leg resolution diff report (report only); the LOR contracts and the read-only measurement run.
+
+### The suite · RUN AND VERIFIED · exactly the expected shape
+
+Test run `707WD0000A84Avs` against aossb2, `RunLocalTests`, 232,553 ms. **501 methods, 500 Pass, 1 Fail**, and the one failure is the standing non-AAO one the ledger has carried since the fourth stamp: `ConvertToOpportunityTest.testgetOppCreationDetails`, failing on `FIELD_CUSTOM_VALIDATION_EXCEPTION — AE Summary is required when no opportunity is created`, an org-resident validation rule on a non-AAO object. **The eighty-second stamp's expected shape, "500 of 501 with the standing non-AAO failure", is met exactly.** No AAO test fails. The retrieved tree is a working build, not just a syntactically valid one.
+
+**And the CLI's own summary was wrong, which is worth recording because it is this project's own law biting in a new place.** The human-format banner printed `Outcome: Failed` beside `Tests Ran 501`, `Pass Rate 100%`, `Fail Rate 0%` — a summary that contradicts itself, and whose rates would have had this session report a clean suite. The truth came from querying the run's own rows: `SELECT Outcome, COUNT(Id) FROM ApexTestResult WHERE AsyncApexJobId = '707WD0000A84Avs' GROUP BY Outcome` returns Pass 500, Fail 1. The run-level row disagrees again in its own way (`MethodsCompleted 481` against `MethodsEnqueued 501`), so the per-method rows are the only trustworthy grain. **Standing consequence, the same one the working mode already states for run reports: a summary is not evidence, the rows are. This now applies to tool output as much as to our own reports.**

@@ -304,3 +304,39 @@ alone, and the WF read is still the first real exercise of the branch that write
 eighty-eighth stamp's zero-coverage disclosure stands untouched.
 
 Report and every artifact: `review/anchor-visibility/`.
+
+### Session 107, cont'd · THE LOOSE ARTIFACTS IN `~/Downloads`, swept by hash and preserved selectively
+
+Matthew flagged that deliverables have been landing loose in `~/Downloads`. Swept the whole
+directory, compared **by content hash against every file in the repo**, never by name, so a
+same-named older copy could not read as present and a renamed identical copy could not read as
+missing.
+
+**Brought in, because it is human-authored and irreplaceable** (`review/human-grading/`): the a23
+graded CSV, 43 rows, and five Numbers grading surfaces Matthew worked in by hand plus the tg1
+sheet's Numbers original. The eighty-second stamp's item 3(b) named this exact class as the true
+archive loss if no remote exists; a remote exists now.
+
+**The load-bearing gap it closed:** the repo held the tg1 graded CSV and **no machine-readable a23
+grading at all** — the a23 grades lived only as prose in the adjudication sheet's §11 and the
+refusal diagnosis. That is the only row-level human grading on unseen speech this project has, the
+source of refusals 0-of-18 against the training set's 21-of-23, and the thirty-seventh stamp calls
+its comparison "mechanically derivable." **Prose is not a source for a mechanical derivation.**
+
+**Left out, each checked rather than assumed:**
+
+- **Five `CODE-INBOX` snapshots** (8 August, topping at the nineteenth, twenty-eighth,
+  twenty-ninth, thirtieth and thirty-second stamps). Sampled 38-39 of 40 long lines from each
+  already present verbatim in the live ledger; the misses are lines later struck in place per the
+  corrections law. Nothing recoverable. Matthew's own read of these was right.
+- **Every context archive** (`aao-context_1`–`_27`, `aao-bundle`, `AAO_aug2_7pm`, `AAAO_AUG31`, the
+  code handoffs, `aao-docs-2026-08-08`). All carry law documents at states the repo has passed:
+  that archive's adjudication sheet is 40,003 bytes against the repo's 57,594 with §11.
+- **`altifyos-*`, decks, PDFs, architecture PNGs, charter-design v0.7–v1.8, corrections v2.4–v2.8,
+  proof registers, board v22.** Superseded lineage or communication artifacts; none load-bearing on
+  an open item.
+
+`review/ledger-deliveries/` keeps `aao-stamp-87.md` as carry provenance, so a splice can be
+re-verified against the bytes it was made from rather than against a memory of them.
+
+**The originals remain in `~/Downloads` untouched.** Nothing was moved or deleted; these are copies.

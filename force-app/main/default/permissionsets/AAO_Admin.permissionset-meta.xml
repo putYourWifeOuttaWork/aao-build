@@ -881,6 +881,46 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>AAO_Shadow_Person__c.AAO_Anchor_Count__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>AAO_Shadow_Person__c.AAO_Anchors__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>AAO_Shadow_Person__c.AAO_Designator__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>AAO_Shadow_Person__c.AAO_Identity_Provenance__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>AAO_Shadow_Person__c.AAO_Utterance_End__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>AAO_Shadow_Person__c.AAO_Utterance_Quote__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>AAO_Shadow_Person__c.AAO_Utterance_Source__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>AAO_Shadow_Person__c.AAO_Utterance_Start__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>AAO_Shadow_Person__c.AAO_Display_Name__c</field>
         <readable>true</readable>
     </fieldPermissions>

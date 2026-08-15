@@ -207,3 +207,100 @@ Test run `707WD0000A84Avs` against aossb2, `RunLocalTests`, 232,553 ms. **501 me
 Design flagged six test files pinning `identify-1.0.0` while the charter emits `identify-2.0.0`. **Measured: four test files, five occurrences** — `AAO_CriteriaTest` (2), `AAO_PairCommitTest` (1), `AAO_RunInspectorTest` (1), `AAO_RunExportTest` (1). A fifth file carries the string but is a document, not code: `aao-adjudication-sheet.md`.
 
 **All five occurrences are fixture literals**, of the form `AAO_Charter_Version__c = 'identify-1.0.0'`, setting a field on a pair row the test constructs. **No test asserts an emitted charter version against a pinned one anywhere in the suite** — a search for any `assertEquals` referencing a version, and specifically for any assert referencing `AAO_IdentifyCharter.VERSION`, returns nothing. So nothing is asserting a stale constant, and the suite's 500 of 501 is not resting on one. They are inert historical values in test data. **Not changed**: they are not defects, and editing test fixtures to chase a version they never assert would be churn. Recorded so the next session does not re-investigate.
+
+---
+
+## Session 107 · 15 August · THE ANCHOR FIELDS WERE ALWAYS IN THE ORG · the eighty-ninth stamp's item 5 answered as 5(c), with a mechanism · TWO SOURCE TREES AND A THIRD ORG · CODE's own "not in the org" corrected against itself
+
+**Correction first, per the corrections law.** CODE reported that the eight utterance-anchor fields
+were absent from `00DWD00000DV7iT2AT`, and recommended taking it to Matthew as an environment
+blocker. **That was wrong.** The fields were deployed and present the entire time. The eighty-ninth
+stamp's item 1 and item 2 are wrong in the same direction and for the same reason, and both are
+corrected here rather than at either party's expense: **design and CODE independently read an
+FLS-filtered view of the org and reported it as existence.** Two instruments agreeing is not
+corroboration when both share a blind spot.
+
+### The mechanism, measured rather than reasoned
+
+A field deployed through the Metadata API grants field-level security to **no permission set and no
+profile, System Administrator included.** An unpermissioned field is:
+
+- absent from `sf sobject describe`
+- absent from standard-API `FieldDefinition`
+- uncompilable in anonymous Apex, which compiles against the running user's accessible schema
+- **fully present** in Tooling-API `FieldDefinition`, carrying a real `LastModifiedDate`
+- **fully usable** by deployed Apex, which compiles in system context and ignores FLS
+
+Same object, same org, same second, two APIs: **33 fields via Tooling with all eight present at
+`2026-08-15T12:42:24Z` and `13:07:38Z`; 24 fields via the standard API with all eight absent.**
+Design's 24-row result is that second row exactly.
+
+### The control nobody designed, and it is what makes this a diagnosis
+
+`AAO_Shadow_Key__c` was modified in the same deploy at the same second and **stayed visible
+throughout**. It is `required=true`, and a required field's FLS is universal and unrestrictable.
+All eight anchors are `required=false`. Same deploy, same object, same second, opposite visibility,
+and the only difference between them is one flag. `FieldPermissions` confirms it from the other
+side: the eleven older fields each carry `AAO_Admin`; the eight anchors carried only the
+system-granted `sfdc_slack`; and `AAO_Admin.permissionset-meta.xml` named the eleven and none of
+the eight.
+
+### The eighty-ninth stamp's new law: its example is wrong, and the law needs one clause
+
+`created=false` was **literally true and correctly reported** — the fields already existed, so
+there was nothing to create. The deploy never lied; every `Succeeded, 22 components` was accurate.
+More sharply: the law's prescribed remedy, querying `FieldDefinition` for the specific API names
+after the deploy, is precisely what design did, and it **returned the wrong answer**. The
+amendment the evidence forces:
+
+> A report of deploy success names the org id the query ran against **and** whether the API used
+> enforces FLS. Existence and visibility are two facts, and a report states both.
+
+Which is the field-with-no-readers law one level down: **a field with no permission is a field with
+no readers, and it reads as a field that is not there.**
+
+### The second finding, independent, and the larger process hazard
+
+- **The global `sf` default target org is `altify-dev` `00Dg500000B0KjZEAV`**, not the sandbox.
+  Neither project set a project-level target org, so any `sf` command without `-o` addressed it.
+  `AAO_Shadow_Person__c` **does not exist in that org at all** (`describe` → `NOT_FOUND`,
+  `FieldDefinition` → 0 rows).
+- **Two source trees exist on this device.** `/Users/thefinalmachine/Downloads/claude` (`main`,
+  project `aao-build`) carries 21 field files including all eight anchors.
+  `/Users/thefinalmachine/Downloads/aao-sandbox` (`master`, project `aao-sandbox`) carries 13 and
+  none of the eight. **The second is the pre-loss lineage and is evidence under the custody rule;
+  nothing in it was touched, including its `sf` config.** It is also the shell's default working
+  directory.
+
+Two independent ways for a command to silently address the wrong thing. **Fixed in the live tree
+only:** `sf config set target-org=aossb2`, verified by `sf org display` returning
+`00DWD00000DV7iT2AT`. The eighty-ninth stamp's item 4 is therefore answered in the negative as it
+stood, and answered in the affirmative from here.
+
+### The fix and its verification
+
+Eight `fieldPermissions` blocks added to `AAO_Admin.permissionset-meta.xml`, readable and editable,
+all eight being writable non-formula fields. Deployed **explicitly `-o aossb2`**, job
+`0AfWD00000FuquX0AR`, host `altify--aossb2.sandbox.my.salesforce.com`.
+
+**Verified by the org, FLS-aware, all three affirmative:**
+
+| instrument | before | after |
+|---|---|---|
+| FLS-aware `FieldDefinition` | 24 fields, eight ABSENT | **32 fields, all eight PRESENT** |
+| anonymous Apex probe | compile failed at line 2 | **Compiled successfully · `COMPILE PROBE OK: probe`** |
+| SOQL selecting all anchor columns | — | **succeeds, 0 records** |
+
+The eight API names, as item 5 requires: `AAO_Designator__c`, `AAO_Anchors__c`,
+`AAO_Anchor_Count__c`, `AAO_Identity_Provenance__c`, `AAO_Utterance_Source__c`,
+`AAO_Utterance_Start__c`, `AAO_Utterance_End__c`, `AAO_Utterance_Quote__c`.
+
+### What it does to the read
+
+**S5-19, DELTA-1, and the mention-held half of S5-18 are MEASURABLE.** The eighty-ninth stamp's
+item 8 fallback does not fire and those rows do not grade NOT MEASURABLE. **The honest boundary,
+unchanged:** these fields have never held a row, so their writability under load rests on the suite
+alone, and the WF read is still the first real exercise of the branch that writes them — the
+eighty-eighth stamp's zero-coverage disclosure stands untouched.
+
+Report and every artifact: `review/anchor-visibility/`.

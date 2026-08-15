@@ -2,7 +2,7 @@
 
 > **The version lives on the stamp line below and nowhere else. Read this document first in every session and update it last.**
 
-**v2.9 · 9 August 2026, session close · THE HALVING IS MET AND RATIFIED; THE LANE RULING AND THE STABILITY PROBE LAND; THE EXECUTION SEED BELOW IS THE NEXT SESSION'S LANE. THE RESULT: run `pf0808-h1`, ~57 s in-org COLD (66 s shell), 6 model calls, worst callout 27.0 s, bytes 41/41, designator quotes 4/4, trap 0/0, ledger 41/41/28 HELD, commit `5b8b3d1`, verified by design against the org (map values, notes, and the Buyer Role citation fix all live). The day's arc: 59 callouts to 6, ~150 s of identification to ~4 s of resolution, 105 s to 57. BOTH HALVING MOVES RATIFIED: verify parallelized as CONJUNCT-HOMOGENEITY buckets (52.5 s to 20.8 s; the split is permanent whenever sentiment rides with anything else; `AAO_Pass.verify(runKey, bucket, shardCount, shardIndex)` shards further; the 50-stretch is one driven shard away and rides the accuracy phase, no standalone run); and call 0 concurrent with the reads. THE CACHE REORDER IS LIVE AND MEASURED: in_tok per read 23,804 to 3,220; the sequential probe showed cache_read 27,436, ~88% of a read's input at ~10% price; parallel reads cannot share within a run, which is mechanical, not a failure. THE LANE RULING (design under delegation, veto open): tokens versus latency is DISPATCHER CONFIG, one code path, one flag, never a design fork. THE BATCH LANE (the nightly window, throughput-bound): SERIAL, call 0 first exactly as the dispatch law says, reads reusing the cached artifact prefix, token-optimal, wall irrelevant at 21-36 concurrent, and THE COST MODEL PRICES THIS LANE. THE EXPRESS LANE (seller-facing freshness): h1's parallel graph, ≤60 met; the dispatch law bends lawfully and namedly: reads launch speculatively and the scope verdict gates PAIR ADMISSION, with NONE or ACCOUNT dropping speculative output unpersisted and the tokens as the lane's stated premium; the admission-drop semantics BUILD with the lane flag before any non-fixture artifact runs express. The call-0 parallelization was a structural move made inside an execution stretch; it is ruled and kept via the lanes, and that class of move parks first from here. THE STABILITY FINDING, the accuracy phase's new subject: tg1 and h1 are the SAME SHAPE disagreeing with itself on identical bytes (44 pairs then 41; Adam at Political Structure plus Evaluator, then Inner Circle plus a buyer-role collision; Dan stable Supporter on both against p1's Non-Supporter). THE STABILITY PROBE: three identical runs, same shape, same frozen fixture, purge between, diffed mechanically on the merge key; STABLE versus FLICKERING per establishment; the rate reported; nothing tuned against its first output; Matthew still grades ONE comparison, tg1 against Pass 1. NEW OPEN TO MATTHEW, methodology, from h1's honest refusal (Adam: Evaluator AND User both established, the vendor field holds one, the writer held and noted): WHAT WINS WHEN TWO BUYER ROLES BOTH VERIFY: recency on the evidence-occurred clock, an authored precedence ladder, or hold-plus-flag; hold-and-note stands until he rules. THE FOLD DISCIPLINE FOR THE STRETCH AHEAD: this Board plus inbox stamps 27 through 32 are the authority; the DEEP FOLDS (Charters §P8 supersede marks and the lane text, Architecture, Model & Flow entities for the pair ledger, span set, receipt, and create-leg record, Glossary terms) are DEFERRED DELIBERATELY to the next strong session, batched with the span-set build so the charter text moves once, not twice; A LESSER SESSION NEVER REWRITES THIS BOARD OR ANY LAW DOCUMENT: it appends to the inbox and parks. Companions: inbox stamps 30 through 32; `review/pf0808-h1/timings.md`; the machine read sheet regenerated at v1.1 (the suspect list turned over: five answered, five new).**
+**v3.0 · 15 August 2026, session close · THE FIRST GRADED WELLS FARGO STACK RAN — s3, s4, s5 in occurred order, once each, no rehearsal, then the ONE clean re-run behind locked predictions (`b2a2514`). THE RESULT: the pipeline works end to end (78 pairs located and disposed one-for-one; refusals discriminate, 21/52 and 23/48 with cited reasons; two-read merge live, 24/78; cards dedup held across three calls, 28 cards zero duplicates; DML model predicted 133, 35, 39 exactly; join DML 133→35 after bulkification; call 0 clean sweep on the re-run). THE FINDINGS: cross-call accrual failed twice (per-Source answer key, fixed as A2 answers 70→34; then `Reinforced` moves nothing) and MATTHEW RETIRED THE COUNTER — bands derive from the ontology, terminals stay proof-gated (101st stamp); the unclearable-flag failure was found and PROMOTION ruled its fix, clear-by-person, key-collapse intact (98th); Priya produced zero claims from nine upheld pairs, lawful-or-defect diagnosis owed (100th/101st). THE DAY ALSO REBUILT THE SCHEMA REFERENCE (317 fields, FLS-blind vs FLS-aware diff clean, Apex inventory, current flow, ALTF field map — CODE's review/schema-reference plus design's org inventory). Stamps eightieth through hundred-first are the day's record; the inbox is authoritative on their substance.**
 
 **v2.8 · 8 August 2026, session close · THE GATE RAN AND THE HALVING ORDER GOVERNS; FOUR RULING SETS BANKED (inbox stamps 28 through 31); THE EXECUTION WORKING MODE BEGINS. THE GATE: run `pf0808-tg1`, frozen Project Farma through the rebuilt pipeline, ~105 seconds source through projection COLD, 6 model calls plus one honest call-0 retry, worst callout 31.8 s, no split fired. THE 59-CALLOUT SHAPE IS DEAD: deterministic resolution took 234 ms plus one 5.5 s typed-request call where the old call 2 spent ~150 s across 59 transactions; 71 callouts became 6; the whole rebuilt pipeline costs less than the old call 2 did alone. Design verified the run against the org before any verdict: the three map rows true to the report, named criteria live ("Competitive pricing within budget" projected; "Salesforce-native, methodology-driven" held Partial), both placeholder CR rows retired lawfully in place, Dan Lewis re-created and CAUGHT by the create-leg record (MK-00000001), the purge's first use clean under the human-watermark guard. MATTHEW'S VERDICT: good news, band miss accepted (past acceptable 60-90, under the 120 fail line), and the number must HALVE: target ≤60 s, stretch 50. THE HALVING ORDER (thirtieth stamp): parallelize the two verify batches (~79 s expected; confirm whether the two-batch split is family-homogeneity, which would make the shape permanent); build the CACHE PREFIX REORDER now (artifact-first prompts so every call after the first reuses the artifact prefix, cutting seconds AND tokens, production-cold included); the call 3 downsize comparison rides the accuracy phase, the largest remaining lever on both seconds and dollars. THE RULINGS BANKED SINCE v2.7, each carried in its inbox stamp: THE ADMISSION FILTER (28: deterministic, metadata-only, zero model, zero fetch, in front of intake itself; sales and account management only, keyed on licensed roles of organizer or internal participants plus the external-participant and bounded-committee gates; the cost chosen and written: sales evidence on non-sales calls is lost by design; builds after the gate and before any automated funnel); CALL 0 SLIMS (28: the mentioned-person emission cut as vestigial; ONE resolver service with two invocation moments, call 0 up front and the resolution stage on demand; two implementations would be a bug); THE PURGE-AND-RERUN PROTOCOL (28: delete only what is enumerable as ours, run-keyed rows and create-leg-recorded contacts; seeds stay; human-watermarked rows never; the create-leg record is what makes purge lawful); THE SPAN SET (29: a pair's evidence becomes one to three byte-located verbatim spans stitched across adjacent turns, elicitation marked, entering as CITED EVIDENCE never invisible context; call 3 stays blind on exactly the cited set; builds at the accuracy phase; deq1/deq2 the acceptance specimens); THE RECEIPT CONFIRMED as one thin object with two jobs, the did-we-read record and the per-call telemetry home, under the new OBJECT-BUDGET LAW (29: every new object justifies itself against the enterprise install budget); THE 90-SECOND SPLIT TRIGGER (29: any stage crossing 90 s of callout wall completes its REMAINING work in a continuation, never redoes, never retries bigger; split units are artifact partition, request batch, claim batch); THE THROUGHPUT REQUIREMENT (29: 10,000 transcripts in the 8-hour window is ~21 concurrent pipelines at 60 s, ~11 at 30; the deciding ceilings, org async concurrency and gateway rate limits, are unverified and measured after the halving rerun); THE LOOKS-RIGHT STANDARD (30: records generate properly, traps hold, timings in band, nothing graded until the accuracy phase); THE CHARTERS SHARE THE PASS (31: Problems, Politics, and Process add QUESTIONS to the same two reads and CLAIMS to verify, never new reads; dependencies live at the join as code order, person rows then insight cards then edges, an edge with a missing endpoint HELD never guessed, then process and assessment off our own ledger; the four-charter future is never a multiple of the People pass, always an increment; the cost model prices it before Problems declares); SINGLE PROJECTION (31, design direction, proposal-first: OUR LEDGER IS AUTHORITATIVE and the vendor surface is its projection, so downstream computation reads our answers and vendor DML batches once at the end of the run); SCALE COST IS TOKENS, NOT SECONDS (30: parallelism buys latency only; the reorder and the downsize buy both). THE STANDING QUESTION THE GATE OPENED, deliberately not adjudicated: the two shapes DISAGREED on identical bytes (Dan Lewis Non-Supporter at Pass 1, Supporter at tg1; Adam Decision Maker then Evaluator plus Political Structure; 44 pairs located where the sweep found 59, 14 corroborated); at most one map is right and neither is graded; MATTHEW GRADES tg1 AGAINST PASS 1 at the accuracy rerun. Two small defects from design's org verification: the Option C note's Buyer Role lines carry no date-and-speaker citation (fix rides the halving work); CR-00000000's vendor projection on Emerson still displays the word CRITERION, marked and reported, disposition Matthew's by hand. THE EXECUTION WORKING MODE (31), because the strong-model budget is finite and the design is banked: stamps 27 through 31 plus this Board are LAW for the stretch ahead; execution sessions on any model RELAY, BUILD, RUN, and VERIFY per the verification sheet and the looks-right standard and never redesign; a structural question that surfaces is PARKED in the inbox's "For the next design session" list with options and costs; strong sessions become short and rare, rulings only. Companions: inbox stamps 28 through 31; the machine read sheet v1.0, a new satellite carrying the design as gradeable assertions, Matthew's audit instrument, regenerated on shape changes. Charters, Architecture, Model & Flow, and the Glossary owe the v2.7 and v2.8 rulings at their next bumps, held behind the halving work.**
 
@@ -45,15 +45,16 @@
 
 **The locations.** These documents live in the claude.ai project (design's side) and as `docs/` in CODE's repository, carried between them by Matthew or the project. CODE's repository also holds: `BUILD_JOURNAL` (the only numeric record), `review/<run-id>/` (every run's export), `review/gate3/frozen-fixtures.md` (the freeze list, which disambiguates what stamps cannot), and the regression set. Exports reach design as files through Matthew. **Design also now holds a direct read connection to the sandbox, which closes the export hand-off gap that bit a21, a23 and the grading-sheet build; the refusal diagnosis was produced through it in one pass.** The CODE inbox (`CODE-INBOX.md`) is the standing channel; its top stamp is CODE's current instruction. The two foreign fixture raws and the capture sidecar live in the project beside the corpus record.
 
-## 2 · Current state · 8 August 2026, session close
+## 2 · Current state · 15 August 2026, session close
 
-**Org:** sandbox `altify--aossb2` (`00DWD00000DV7iT2AT`, IsSandbox true, re-verified at the gate's verification). Production (`altify.my.salesforce.com`, org `00DHn000006jYatMAE`) read-only unconditionally; `altify-pbo` never read. **A connection's identity is unverified until the runtime names the org: query Organization before doing any work through any MCP connection, every session.**
+**Org:** sandbox `altify--aossb2` (`00DWD00000DV7iT2AT`, instance USA758S). Production (`altify.my.salesforce.com`, org `00DHn000006jYatMAE`) read-only unconditionally. **Two trees on the build device:** `Downloads/claude` (`main`, `aao-build`) is live; `Downloads/aao-sandbox` (`master`) is the pre-loss lineage, untouched, evidence. `target-org=aossb2` pinned in the live tree only. **The inbox channel is git-tracked at `Downloads/claude/CODE-INBOX.md`; design writes stamps directly; hand-carry is over.**
 
-**THE REBUILT PIPELINE IS BUILT, GATED, AND VERIFIED**, artifact to live vendor map: call 0 slimmed (one model read: two one-way scope questions with quotes plus the which-opportunity pick; deterministic ladder in Apex; NONE does not dispatch), call 1 as TWO COMPREHENSIVE READS in parallel (all declared families per read, byte-range merge, corroboration marks never gates), the RESOLUTION STAGE (speaker attach as byte lookup in Apex, 234 ms and zero model calls on PF; typed-request model leg only for the remainder; creation on ladder-zero behind the live create-leg record), blind verify in keyed family batches, the join through the single writer, projection with per-dimension watermarks, coverage computed. Commit `64a2605`; suite 420 ran, the only failure the standing org-resident `ConvertToOpportunityTest`. **The gate: `pf0808-tg1`, ~105 s COLD, 6 model calls, worst callout 31.8 s, ledger 44/44/29 HELD, demo-narration trap HELD, criteria named and lawful. Verified by design against the org.** The old 59-callout shape is dead: 71 callouts to 6, ~150 s of call 2 to 5.7 s of resolution. **THE HALVING RERUN `pf0808-h1` then MET the target: ~57 s in-org COLD, verify parallelized as conjunct buckets (52.5 to 20.8), call 0 hidden under the reads, the cache reorder live (in_tok 23,804 to 3,220 per read; sequential cache_read 27,436), the Buyer Role note citation fixed on the live map. Commit `5b8b3d1`. Verified by design against the org.**
+**THE WELLS FARGO INSTRUMENT HAS BEEN READ.** Three sources on `006WD00000TWvH0YAL` (SRC-00000045 = 5 Aug = s3 first; names run BACKWARDS against occurred order — sequence by `AAO_Evidence_Occurred__c`, never by name). The stack ran once dirty (findings above), then once clean behind locked predictions after promotion + card-face + person-durable key landed. Current clean state: 34 answers on the Contact-durable key A2; Tom one row at −1 with three claims; Priya HAS a map row and Contact from the dirty run's projection but the clean run wrote her zero claims (diagnosis owed); 3 shadows, 3 Identification flags standing (kept deliberately as promotion's test specimens); 28 cards, s5 faces deterministic until `keyedShardCount` wires.
 
-**THE ACTIVE WORK IS THE ACCURACY PHASE (thirty-second stamp): the span set builds (twenty-ninth stamp item 1), the call 3 downsize comparison runs, the two-read shape runs against s1 and a23 with full exports, THE STABILITY PROBE runs (three identical runs on frozen PF, purge between, mechanical diff on the merge key, shardCount=2 driven inside), and Matthew's grading sheet for tg1 against Pass 1 is prepared with criterion names and internal marking derived.** The three runs so far disagree on identical bytes (Adam: Decision Maker at p1, Political Structure plus Evaluator at tg1, Inner Circle plus a held buyer-role collision at h1; Dan: Non-Supporter at p1, Supporter at tg1 and h1; pairs 59, 44, 41). **At most one map is right and none is graded; the probe measures the flicker mechanically and Matthew's one grading settles the truth.** Then the admission filter proposal, the single-projection proposal, the receipt object, and the concurrency measurement. The a23 record and its diagnosis stand unchanged (the adjudication sheet §11, the refusal diagnosis satellite, the stage caveat riding everything); the absent-versus-too-narrow report and the additive propositions wait behind the accuracy phase.
+**BUILT AND VERIFIED TODAY:** Gaps 1+2 (`Held` disposition), the eight shadow utterance anchors WITH their FLS grants, the Identification flag as full mechanism (raise at both held sites, bound key, clear-by-identification, `AAO_Resolve` wired with its first production caller), join bulkification (`4C+9`→`C+9`, ceiling 35→~140 candidates), promotion pass after projection (UNTESTED — no specimen yet), card-face keyed by pair Id (root cause: Map silently overwrote colliding refs), person-durable answer key A2.
 
-**The precision gate on the product surface passed at the 7 August map read and that grading stands.** What a23 adds is that the map read was performed on values derived from the training set. **A gate passed on the training set is a calibration, not a result** (section 3). The timing gate adds the complement: **a looks-right map at speed is a mechanics result, never a truth result; the truth question is the accuracy phase's.**
+**THE SCHEMA REFERENCE EXISTS:** design's `aao-org-field-inventory-2026-08-15.md` (317 fields, standard API) + CODE's `review/schema-reference/` (Tooling dump with full picklists, Apex inventory: 83 classes, 9 triggers, ZERO declarative validation rules — all 44 guards are Apex addError; current 15-stage flow; ALTF field-level projection map from `AAO_P8Codes`). The fold of these into Model & Flow and Architecture is owed editorial work, not discovery.
+
 
 ## 3 · Locked · the complete ledger, not open to relitigating
 
@@ -101,7 +102,24 @@
 - **EXISTENCE AND VISIBILITY ARE TWO FACTS AND ARE MEASURED SEPARATELY (15 August, ninetieth stamp).** A schema claim names the org id the query ran against, the API it ran through, and whether that API enforces FLS, or it is not a claim. **Metadata API deploy grants field-level security to no profile and no permission set, System Administrator included:** a field lands PRESENT AND INVISIBLE unless `fieldPermissions` land with it. Design's MCP connection reads through the standard API and is FLS-aware, so **it can never establish that a field does not exist** — only that this user cannot see it; every design describe is reported as a VISIBILITY measurement, and existence questions go to CODE's Tooling read. Proven the day it was named: eight anchor fields on `AAO_Shadow_Person__c` were reported absent by three FLS-aware instruments while present in the org since `12:42:24Z`. The control was `AAO_Shadow_Key__c`, changed in the same deploy at the same second, `required=true` and therefore FLS-unrestrictable, which never left view. **This supersedes the eighty-ninth stamp's `created=false` law whole** — that law rested on a false example and its prescribed remedy is exactly what produced the wrong answer.
 - **THREE READINGS OF ONE INSTRUMENT CLASS ARE ONE READING (15 August, ninetieth stamp).** Corroboration requires instruments that FAIL DIFFERENTLY, and **independence is asserted only after it is established** — the capability law turned on our own measurements. Agreement between instruments sharing a blind spot is the blind spot repeating itself, never evidence. Design's error the day it was named: Apex compile, `sf sobject describe`, and `FieldDefinition` through the standard API were reported as three independent instruments agreeing; all three enforce FLS, and they were one instrument wearing three faces.
 
+- **THE COUNTER IS RETIRED (Matthew, 15 August, 101st stamp).** Support's bands derive from the ontology directly: the standing voiced state is the latest distinct verified establishment's, superseded by later evidence, contention flag with full quoted sequence on polarity reversal. People change their tune and that is lawful data. **Terminals stay proof-gated on their own grade of words per the pinned §P8.4 meanings** — the guard moved, it did not vanish. Conditions: calibration reproduces Matthew's first-fixture grading (Adam top-of-Supporter) before the writer retires; `AAO_Support_Counter__c` stays in schema as history; replay still reconstructs standing state exactly. Resolves the 71st/80th contradiction by removing the mechanism both fought over.
+- **PROMOTION IS THE FLAG-CLEARING MECHANISM (Matthew, 15 August, 98th/99th stamps).** A flag clears on the PERSON, never the key: when a Contact lands, shadows promote via `AAO_Promoted_Contact__c` and every flag bound to any promoted shadow clears by identification. N name forms, N shadows, one Contact, N flags cleared. **The key-collapse ruling does not move.** `reconcile` runs again after projection, where the answer can be yes. Category-standard associate step (Gong/People.ai pattern); the mention ladder itself has no competitor analogue.
+- **THE PERSON-DURABLE ANSWER KEY IS BUILT LAW (A2, 15 August).** Answers key on Contact where one exists, shadow where none does, per-Source Participant last. Verified: 70→34 rows, Tom one row. The per-Source key's reason (replay for Contact-less people) is served by the shadow branch.
+- **A DEPLOY THAT ADDS A FIELD SHIPS ITS `fieldPermissions` IN THE SAME DEPLOY (15 August, 94th stamp)** — Metadata API grants FLS to nobody, sysadmin included; the check is repeatable, never permanent. A schema claim names its org id, its API, and whether that API enforces FLS. Design's connection measures VISIBILITY, never existence; existence questions go to Tooling.
+- **PREDICTIONS-BEFORE-PURGE IS STANDING PRACTICE (100th stamp):** every verification run locks its predictions in a commit before the purge and grades misses without softening. THE LIVENESS RULE (91st): an absence row grades against a named liveness pair or grades VACUOUS. THE DML SPLIT TRIGGER is ratified as backstop at 112 statements (96th), built after need is shown.
+
 ## 4 · Open · with owners
+
+**Added at v3.0 (15 August). Items below the rule predate this session; the eightieth through hundred-first stamps are authoritative on their status until the next fold.**
+
+1. **Priya's zero claims (CODE, FIRST):** nine upheld pairs, zero claims — show the refusing gate lawful and name it, or it is a one-for-one counting-law defect. Matthew: a lawful refusal stands, no build to force her onto the map. Promotion is UNTESTED until this yields a specimen.
+2. **The counter retirement build (CODE, after 1):** ontology-direct standing state per the 101st's conditions; calibration against the first fixture and the frozen corpus BEFORE the writer retires; divergences to Matthew.
+3. **`keyedShardCount` wiring (CODE):** the card-face keyed-grammar ceiling (34th stamp) is now the live blocker on s5's inferred faces.
+4. **Purge extension (CODE):** `AAO_Purge` misses cards, shadows, flags — 28/3/3 survived a full purge. Everything enumerable as ours.
+5. **Three numbers before any pilot:** worst callout rose 46%→60%→73% across the dirty stack (69% on clean), unexplained; SOQL now the closer governor at 81/100, did not fall with DML; call 3 silent retries (two occurrences, 4-of-5 invocations silent once), undiagnosed. Receipt journals 4 callouts where the pass makes 5 — model leg has no receipt leg.
+6. **Design owes:** the graded 46-row read sheet against the clean stack (including the s5 card-count question — 12 new vs Matthew's expectation of fewer, cue by cue vs authored expectations); the doc fold (field tables + flow into Model & Flow; Apex inventory + ALTF map into Architecture; Claim Basis six-vs-eight cited-type contradiction).
+7. **Matthew, when ready:** the injection surface (LWC paste-a-transcript harness, real receipts only, no simulated telemetry) — removes CODE from the test loop and doubles as the manual-ingest product path for the ~80% with no call capture. Coverage saturates at two calls (`Multiple contacts` ceiling) — whether that range is enough for the maps-firm-up story is a product question. Two call-2 implementations still coexist (28th stamp's one-implementation rule unsatisfied).
+---
 
 **[v2.9: THE ACCURACY PHASE GOVERNS THIS SECTION. Current order: the accuracy phase (span set, downsize comparison, s1 and a23 runs, the stability probe with the shard driven, Matthew's grading sheet) → the admission filter proposal → the single-projection proposal → the receipt object → the concurrency measurement → the queue resumes. Execution sessions follow the stamps, PARK structural questions, never redesign, and never rewrite this Board.]**
 
@@ -123,14 +141,18 @@
 
 ## 5 · Next steps, in order
 
-1. **The accuracy phase (CODE):** the span set; the downsize comparison; s1 and a23 runs with full exports; **the stability probe** (three runs, shard driven); the batch-lane token measurement; the exports for the grading sheet.
-2. **Matthew:** rule the buyer-role collision; **grade tg1 against Pass 1** from the prepared sheet; the Emerson CRITERION row by hand whenever.
-3. **The admission filter proposal** (before any automated funnel), **the single-projection proposal**, **the receipt object**, **the express-lane admission-drop build**, **the concurrency measurement** (the two unverified ceilings: org async concurrency, gateway rate limits).
-4. **The next strong session:** rule the parked list; the deep folds (Charters, Architecture, Model & Flow, Glossary) batched with the span-set build; Board to v3.0.
-5. **The freeze lifts**: the absent-versus-too-narrow report, the additive propositions (political membership-without-authority, the MENTOR siblings), Project Farma Pass 2 with the designator acceptance table, the foreign fixtures (Handle negative control), further mixed-stage production transcripts.
-6. Gates pass; **People closes; PROBLEMS opens** (Goal, Pressure, Obstacle, Initiative; charter design-side first), with the cost model in hand. **People does not close on a23's numbers and nobody should pretend otherwise.**
+1. **CODE:** Priya diagnosis (lawful gate named, or defect fixed) → promotion gets its specimen and is verified.
+2. **CODE:** counter retirement per the 101st's conditions, calibration first.
+3. **CODE:** `keyedShardCount`, purge extension, the receipt's model leg.
+4. **Design:** the graded read sheet; then the doc fold.
+5. **Matthew:** the injection surface when he wants it; the coverage-range product question.
+6. Then the config plane and D360, per the 86th stamp's proof order.
 
 ## 6 · Standing hazards · the complete list
+
+**THE INSTRUMENT-REACH HAZARD, 15 August, four instances in one day:** an absence reported from an instrument that cannot see the whole subject (FLS-filtered describe, lexical grep that cannot follow a call graph, a two-of-three-object search, a corpus with no positive control) is not an absence. Name the instrument's reach — orgs, APIs, objects, files — before reporting what it did not find. Three readings of one instrument class are one reading.
+
+**THE SATURATION HAZARD, 15 August:** Coverage tops out at `Multiple contacts` after two calls (`In-depth` deliberately underivable), and with the counter retired it was the last accumulating dimension. What "firms up over calls" now rests on: cards dedup/reinforce, obstacle lifecycle, LOR rungs, and ontology-direct stance supersession. Whether that is enough accrual for the product story is unmeasured.
 
 **THE TUNED-BEHAVIOUR HAZARD, 8 August, the largest on this list:** every measurement taken on `ec8e7170` is a calibration and not a result, and the project cannot tell from inside that fixture which of its behaviours are design and which are tuning. a23 proved it: 91% correct refusals became 0%, **and the diagnosis located the tuning in the contract propositions, which the verifier applied faithfully.** **Every repair verified only on the training set re-opens on the first unseen fixture that exercises it**; buq6/EVALUATOR, recorded repaired at v0.6, is the first confirmed re-opening.
 
@@ -158,82 +180,26 @@ The only queryable orgs are Altify's own; ~80% of installs have none of its hist
 ## 7 · The session seed
 
 ```
-Seed - AAO EXECUTION session, lesser model expected. Focus: THE
-ACCURACY PHASE, receiving and verifying CODE's reports, per inbox
-stamps 27 through 32. Cowork session attached to the Altify
-Agency project.
+Seed - AAO session, 16 August or later. Cowork session attached to
+the Altify Agency project. OPEN THE BOARD FIRST (claude/aao-board.md,
+v3.0) then CODE-INBOX.md from the top stamp (hundred-first).
 
-YOUR LANE, absolute: you verify, relay, prepare grading sheets,
-and park. You do NOT redesign, do NOT relitigate any ruling, do
-NOT touch Charters, Architecture, Model & Flow, or the Glossary,
-and you NEVER rewrite this Board (strong sessions only; a stale
-full-file write destroys concurrent work silently). Your only
-writes: ADDITIVE stamps on CODE-INBOX.md (re-read it immediately
-before writing), entries under its "For the next design session"
-list, and grading-sheet satellites as new files. If a decision
-feels structural, it IS structural: park it with options and
-costs, tell Matthew a strong session should rule it, and continue
-on the stamped path.
+The state: the first graded Wells Fargo stack ran 15 August - dirty
+then clean behind locked predictions. The pipeline works; cross-call
+accrual was the casualty (counter RETIRED by Matthew, 101st stamp;
+bands now ontology-direct, terminals proof-gated). Promotion is built
+but UNTESTED because Priya produced zero claims from nine upheld
+pairs - that diagnosis is CODE's first task and everything behind it
+queues on its answer.
 
-Read first: this Board (the v2.9 stamp governs), then
-CODE-INBOX.md stamps thirty-second down through twenty-seventh
-(the active law), then aao-verification-sheet.md, then
-aao-machine-read-sheet-v1_0.md (internally v1.1). Open by exact
-path, never search. Numbers only from CODE's BUILD_JOURNAL or its
-run reports. Before ANY org work: query Organization first;
-sandbox is altify--aossb2 (00DWD00000DV7iT2AT); PRODUCTION
-(altify.my.salesforce.com, 00DHn000006jYatMAE) IS READ-ONLY
-UNCONDITIONALLY, and altify-pbo is never read.
+Design's first tasks: verify CODE's Priya diagnosis from the org;
+grade the 46-row read sheet against the clean stack; then the doc
+fold (field tables + flow into Model & Flow, Apex inventory + ALTF
+map into Architecture).
 
-State on pickup: the pipeline is rebuilt, gated, and halved
-(pf0808-h1: ~57 s in-org COLD, 6 model calls, worst callout 27 s,
-ratified; commit 5b8b3d1). The active work is THE ACCURACY PHASE:
-CODE builds the span set and the call 3 downsize comparison, runs
-the two-read shape against s1 and a23, runs the STABILITY PROBE
-(three identical runs on frozen PF, purge between, mechanical
-diff on the merge key, shardCount=2 driven inside), measures the
-batch lane's token number, and ships full exports.
-
-WHEN CODE'S REPORT ARRIVES:
-1. Verify per the verification sheet and the looks-right
-standard: artifact sha against the freeze list; bytes exact;
-ledger arithmetic (located = disposed; verdicts = identified);
-traps zero (a fictional person anywhere on a map = failed run,
-whatever else passed); timings with COLD or WARM labels; no
-per-pair callouts; worst callout under 90 s. Spot-check the org
-with two or three SOQL queries where the report claims map
-values, after the Organization check.
-2. Report the verdict to Matthew plainly: measured, never
-asserted; name what you verified yourself and what you took on
-report.
-3. Build Matthew's grading sheet for tg1 against Pass 1 from the
-exports: every establishment with its verbatim quote, criterion
-NAMES shown, internal people MARKED, both derived, never by
-hand; blank rows are his only miss channel. The stability
-probe's STABLE/FLICKERING lines ride the same sheet as context,
-mechanical, ungraded.
-4. Cut the next inbox stamp: ratify what passed, name defects
-found, state the next queued item FROM THE STAMPED ORDER (the
-admission filter proposal, the single-projection proposal, the
-receipt object, the express-lane admission-drop build, the
-concurrency measurement). No new rulings in stamps, ever.
-5. NOTHING COUNTS AS ACCURACY until Matthew grades. The probe is
-never tuned against on its first output.
-
-Open to Matthew (remind him, never decide for him): the
-buyer-role collision (recency, precedence ladder, or
-hold-plus-flag); grading tg1 against Pass 1 when the sheet is
-ready; the Emerson CRITERION vendor row, by hand.
-
-Rules: corrections into documents, never chat; wrong text marked
-wrong in place, never deleted; a report without its rows does not
-count; row export, timings, governors with every run; the
-counting laws; the stage caveat and tuned-behaviour law ride
-every single-fixture finding; no em dashes in written output. At
-session end: append your state to your own inbox stamp; do NOT
-rewrite this Board; list anything parked and anything owed.
+Laws that bind every measurement: name the instrument's reach before
+reporting an absence; existence is Tooling's, visibility is design's;
+predictions lock in a commit before any purge; the liveness rule on
+absence rows; no tuning against expectation tables, ever; production
+read-only unconditionally.
 ```
-
----
-
-*End v2.9. This document is rewritten at every strong-session close and carries everything; prior versions do not exist. Execution sessions never rewrite it. Whether the rewrite-whole convention survives concurrency is section 4's open decision.*

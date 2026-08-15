@@ -337,7 +337,8 @@ public with sharing class AAO_Resolve {
         }
         List<AAO_Pair__c> remainder = [
             SELECT Id, AAO_Pair_Ref__c, AAO_About_Designator__c, AAO_About_Quote__c,
-                AAO_Evidence_Contract__c, AAO_Speaker_Key__c
+                AAO_Evidence_Contract__c, AAO_Speaker_Key__c,
+                AAO_Start_Offset__c, AAO_End_Offset__c
             FROM AAO_Pair__c
             WHERE AAO_Run_Key__c = :runKey AND AAO_Stage__c = :AAO_PairKey.LOCATED
                 AND AAO_Pair_Ref__c NOT IN :alreadyDisposed
@@ -473,14 +474,40 @@ public with sharing class AAO_Resolve {
                 }
                 if (req.kind == AAO_ResolveRequestCharter.NAMED_OFF_ARTIFACT ||
                     req.kind == AAO_ResolveRequestCharter.ON_ARTIFACT_NO_CONTACT) {
-                    mentionFor(req.designator, null, src, mentionByKey, mentionsToInsert);
-                    pending.add(disposition(p, src, runKey, 'Identified', null, false,
-                        'Model leg: "' + req.designator + '" is a real person of this ' +
-                        'deal (' + req.kind + ') with no match in the org. Subject ' +
-                        'minted; any Contact creation waits for projection, behind the ' +
-                        'verify, the toggle and the create-leg record. ' +
-                        blank(req.basis).abbreviate(100)));
-                    pendingKeys.add(mentionKey(req.designator));
+                    // THE FABRICATION RETIRES HERE. This branch used to mint a Participant with
+                    // no Contact for a person who was never on the call, so a read-shaped stage
+                    // wrote into the roster - the deterministic substrate coverage, the internal
+                    // check and participant placement all read - and three classes grew a
+                    // `mention:` prefix filter to compensate. A prefix convention is not a
+                    // constraint: any query that forgets it counts a mention as presence.
+                    //
+                    // The person is now HELD on the proof that somebody said their name, with
+                    // every anchor kept. Rung 3's flag is the surface a human works, and the
+                    // pair binds if and when the ladder resolves them.
+                    //
+                    // KEPT DELIBERATELY, AND NAMED AS DEBT: where rung 1 UNIQUELY LINKS a real
+                    // Contact, `run()`'s leg 3 still mints. That is not ratified architecture -
+                    // a Participant row for someone who was not on the call still asserts
+                    // something false - and the `mention:` filters survive for exactly that
+                    // subset until promotion is wired.
+                    AAO_Identity.Utterance u = new AAO_Identity.Utterance();
+                    u.designator = req.designator;
+                    u.sourceId = src.Id;
+                    u.startOffset = p.AAO_Start_Offset__c == null
+                        ? null : Integer.valueOf(p.AAO_Start_Offset__c);
+                    u.endOffset = p.AAO_End_Offset__c == null
+                        ? null : Integer.valueOf(p.AAO_End_Offset__c);
+                    u.quote = p.AAO_About_Quote__c;
+                    AAO_Identity.Resolution held = AAO_Identity.holdMention(
+                        u, src.AAO_Account__c, 'Unresolvable',
+                        'Held from the model leg: "' + req.designator + '" is a real person of ' +
+                        'this deal (' + req.kind + ') with no match in the org. No participation ' +
+                        'is fabricated; the utterance is the proof. ' +
+                        blank(req.basis).abbreviate(100)
+                    );
+                    rows.add(disposition(p, src, runKey, 'Held', null, false,
+                        'Held on its utterance, shadow ' + held.shadowPersonId + '. ' +
+                        blank(req.basis).abbreviate(120)));
                     r.mintedForCreation++;
                     continue;
                 }

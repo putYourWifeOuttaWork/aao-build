@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>AAO_Disposition__c</fullName>
-    <description>Written by: the resolution stage (call 2 until the twenty-seventh stamp). Read by: the gates; Ambiguous routes to the Identification flag. Exactly one per located pair, which is the one-for-one-for-one arithmetic. None and Ambiguous are NOT abstention rows: they say what happened to a pair that exists, never that the transcript was silent. Merged (twenty-seventh stamp) says the pair&apos;s establishment rides another read&apos;s canonical row, both receipts kept - a disposition, so the arithmetic still counts it. Blank on a Located row, required on an Identified row.</description>
+    <description>Written by: the resolution stage (call 2 until the twenty-seventh stamp). Read by: the gates; Ambiguous routes to the Identification flag. Exactly one per located pair, which is the one-for-one-for-one arithmetic. None and Ambiguous are NOT abstention rows: they say what happened to a pair that exists, never that the transcript was silent. Merged (twenty-seventh stamp) says the pair&apos;s establishment rides another read&apos;s canonical row, both receipts kept - a disposition, so the arithmetic still counts it. Blank on a Located row, required on an Identified row. HELD IS NOT NONE, and the difference is the one the ladder exists to make: None means we looked and there is nobody to bind, Held means we found a person and cannot bind them yet. A mention whose ladder missed, was ambiguous, or reached no Contact is Held with its utterance anchors on AAO_Shadow_Person__c, and rung 3's flag is the surface a human works. Collapsing the two into None would make an export unable to say which happened.</description>
     <label>Disposition</label>
     <required>false</required>
     <trackTrending>false</trackTrending>
@@ -19,6 +19,11 @@
                 <fullName>None</fullName>
                 <default>false</default>
                 <label>None</label>
+            </value>
+            <value>
+                <fullName>Held</fullName>
+                <default>false</default>
+                <label>Held</label>
             </value>
             <value>
                 <fullName>Ambiguous</fullName>

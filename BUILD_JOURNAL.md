@@ -834,3 +834,88 @@ the card writer reinforced one card rather than duplicating it.
 clear. Roughly 232 s serially.
 
 **retryNotes: none.** Call 0 did not flake, call 3 completed in one invocation, nothing was re-run.
+
+---
+
+## Session 114 · 15 August · WELLS FARGO s5 · THE STACK COMPLETES · Priya became a real person and NEITHER FLAG CLEARED · the join model predicts a third measurement exactly · two defects found
+
+The ninety-seventh stamp's item 5: s5 on the current code, no answer-key fix first. Report and
+rows: `review/wf-s5/`.
+
+### 1 · PRIYA · reported as it happened
+
+She is on the s5 roster **with no email and no contactId**. **The mention resolved** — one pair,
+`r2q3`, designator `"Priya"`, disposition `Identified`, person Priya Natarajan. **Zero remainder,
+zero Held, no model leg fired.** A Contact was created for her at projection
+(`003WD00001RRgsrYAD`) and she carries a map row, `Approver` / `Brief contact`.
+
+**AND NEITHER FLAG CLEARED. All three still Standing, both shadows unpromoted, `flagsCleared = 0`.**
+
+**Two separable causes, both real.** First, a SEQUENCING FAULT: `reconcile` clears only on a
+Contact binding and runs at **call 2a**, while the Contact is created by the create leg at
+**projection**, six stages later. It asked the question while the answer was still no, and the
+answer arrived minutes afterwards in the same run. It would clear on a subsequent run and there is
+none. Second, and independent of ordering: **only ONE of her two flags could ever clear**, because
+the bound keys are `…|priya natarajan` and `…|priya` and the s5 pair carries `"Priya"`. **The
+other stays open forever.** That is the eighty-seventh stamp's key-collapse ruling at its final
+cost — one human, two shadows, two flags, and the reconciliation path reaching at most one.
+
+**S5-01 did not happen.** She reconciled as a speaker; her held identities did not.
+
+### 2 · THE RETIREMENT DELTA FIRED, and Jared stayed put
+
+Held by run: **s3 = 2, s4 = 6, s5 = 0.** Eight held pairs across s3 and s4 — DELTA-1's predicted
+movement arriving. **s5's zero is correct rather than a failure**: Priya is rostered and Bettina
+is not mentioned. **Jared's single pair, `wf-s4 r1q35`, stayed `Identified`** — the MUST-NOT-MOVE
+half held.
+
+### 3 · CARDS AND COVERAGE
+
+**One card was reinforced rather than duplicated — on s4.** Created/reinforced/unchanged by run:
+s3 10/0/0, s4 6/1/10, s5 12/0/16. **28 cards, 0 duplicates retired.** The 16 unchanged on s5 is
+dedup holding across three calls.
+
+**Coverage did NOT move again and CANNOT.** Everyone on two or more calls hit `Multiple contacts`
+at s4, which is the derivable ceiling because `In-depth` is deliberately underivable. **Coverage
+saturates after two calls**, which matters: it is the one dimension carrying the maps-firm-up
+thesis now that the counters cannot accumulate, and it has a two-step range.
+
+### 4 · THE JOIN'S DML · the model predicts a third measurement exactly
+
+**39 of 150 measured, 39 predicted** (30 candidates + 9). Across the three runs: **133 → 35 → 39**,
+against 31 / 25 / 30 candidates. **The model has now predicted three measurements exactly, once
+before the change and twice after.**
+
+**SOQL is the governor to watch next: 81 of 100 on s5**, against DML's 39 of 150. It did not fall
+with the DML and is now the closer ceiling.
+
+### Ledger and timings
+
+s5: 83 located, 83 identified, HELD. Verified 64: upheld 30, refused 34. Deal after three calls:
+**86 claims, 70 answers, 28 cards, 7 map rows, claim basis {Transcript = 86}** — still no `State`,
+still no `Both`.
+
+`RCPT-00000006`: 8 stages, 195,888 ms, 5 callouts, WARM. **Worst callout 87,593 ms against the
+120,000 ceiling — 73%, up from 46% and 60%. Three runs, monotonically rising.**
+
+### TWO DEFECTS, NEITHER FIXED
+
+**1 · The card-face call 400s on a duplicate ref.** `output_config.format.schema … ['r1q1','r1q2',
+…,'r1q2',…] has non-unique elements`, request `req_011Ce5Ai58ejU8LLzuK12t1q`. The writer builds an
+enum containing `r1q2` twice. **The deterministic fallback wrote the faces**, so no card was lost,
+but s5's twelve carry raw verbatim rather than inferred summaries and the fifty-fourth stamp's
+content spec is not met on them.
+
+**2 · Call 3 needed five invocations.** Four produced no output; the fifth did all five batches.
+**Undiagnosed and not invented.** Counts reconcile (30 + 34 = 64). Second occurrence — s3 needed
+two, s5 needed five.
+
+### retryNotes
+
+1. **Call 0 invocation 1 failed both attempts and stopped**; invocation 2 succeeded, DUAL. Error
+   captured this time: *"Call 0 returned no `opportunity_content_because`."* The thirty-fifth
+   stamp's second named flake face, fifth instance.
+2. Call 3's five invocations, above.
+
+**Nothing graded by CODE, no number tuned, s3 and s4 untouched. Stopping: the answer-key fix
+scopes next with all three runs in hand.**

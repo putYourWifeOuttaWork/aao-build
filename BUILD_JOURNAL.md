@@ -751,3 +751,86 @@ are proposals, per the receipt rule.
 
 **s3's rows are untouched, nothing was re-run, and the instrument still carries exactly one graded
 run.**
+
+---
+
+## Session 113 · 15 August · THE JOIN IS BULKIFIED, 133 DML BECOMES 35 · s4 STACKED ON s3 · and the stack found the thing it exists to find: THE COUNTERS CANNOT ACCUMULATE ACROSS CALLS
+
+The ninety-sixth stamp, in its order: bulkify, prove byte-identical, re-measure, run s4.
+Reports: `review/wf-s4/README.md`, rows in `review/wf-s4/rows/`.
+
+### The bulkification · commit `bd4987a`
+
+Three of `commitCandidate`'s four per-candidate statements plus the criterion upsert move out of
+the loop, via a deferred buffer in `AAO_Commit` and the same shape in `AAO_Criteria`. **One
+implementation, two invocation moments** per the twenty-eighth stamp: a caller that opens no batch
+gets the per-row behaviour byte for byte. **`persist` stays per-candidate** as scoped.
+
+**THE BAR CAUGHT A REAL DIVERGENCE.** The first batch boundary put the criteria flush after
+`mintCriteria`, but the typing pass INSIDE that method updates the rows the naming loop minted and
+needs their Ids. `AAO_CriteriaTest` failed `MISSING_ARGUMENT`. Boundary moved, suite restored.
+
+**BYTE-IDENTICAL, no version moves.** Suite 516, 515 AAO passing. The frozen-corpus replay diffs
+sit in `AAO_Spans__c` and `AAO_Element_Completeness__c`, and **the diff contains zero references to
+either field** — a pre-existing replay-versus-live serialization property, not a commit property.
+Failure semantics identical: the join is one transaction, so a throw rolls back either way, and
+both upserts use `allOrNone = true`. **Honest limit: the fully decisive test is not runnable**,
+because claims are insert-only and the join cannot re-run on the same pairs; s4 is the first live
+exercise and its ledger reconciles.
+
+### The re-measurement, confirmed against the org
+
+**Join DML 133 → 35 of 150. SOQL 83 → 69. Join wall 4,186 → 2,148 ms.** Predicted `C + 9`;
+25 candidates gave 34 predicted against 35 measured, the extra being a bulk statement that fired
+on s4 and not s3. **Ceiling moves from 35 candidates to roughly 140.**
+
+### THE FINDING · counters cannot accumulate across calls, and it is structural
+
+**Rohan and Alison did NOT increment. Neither did Katherine. Tom got a second establishment and it
+created a SECOND ANSWER ROW at −1 rather than moving him to −2.**
+
+```
+A1|Participant|a1ZWD000002bZnI2AU|<contract>  counter -1   (s3)
+A1|Participant|a1ZWD000002bZs82AE|<contract>  counter -1   (s4)
+```
+
+**The answer key is scoped to `AAO_Participant__c`, and a Participant is one row per Source per
+person.** Measured: three Tom rows, one per call, all pointing at the same Contact. **So a person
+on two calls has two answer keys and cross-call accumulation cannot happen for any dimension keyed
+this way.**
+
+**It is a ruled design and `AAO_AnswerKey`'s own header says why** — the key moved to Participant
+at addendum 18 so the replay invariant holds for a person with no Contact. **The consequence on a
+stacked read was never priced.**
+
+**What it costs:** the ninety-fifth stamp left open whether the counter's arithmetic earns its
+place, to be settled by whether three calls of accumulation produce bands the ontology would not
+name alone. **That experiment cannot run as designed, because the counter cannot accumulate across
+calls at all.** The maps-firm-up thesis is carried today by **Coverage**, which derives from
+distinct occasion counts and did move, and not by the counters. **Not fixed, not tuned; design's
+to rule.**
+
+### The other two answers
+
+**Priya's flag stayed open and was never reopened — correct. Her shadow was NOT reused.** s3 said
+"Priya Natarajan", s4 said "Priya"; different normalised designators, so different shadow and
+bound keys, so **a second shadow row (`SP-00000002`) and a second standing flag for one human.**
+This is the eighty-seventh stamp's key-collapse reading behaving exactly as ruled — different
+forms never collapse at the key — and **this run is that ruling's cost arriving on real data.**
+Within a form the key held: three s3 pairs gave one flag, two s4 pairs gave one more.
+
+**No claim carried `State` or `Both`.** 56 claims, all `Transcript`; `AAO_Claim_Basis__c` still 0
+org-wide. The latent gap stays latent.
+
+### The ledger and the map
+
+s4: 74 located, 74 identified, one for one for one. Dispositions Identified 48, **Merged 20,
+Held 6**. Verified 48: upheld 25, refused 23. Deal after the stack: 56 claims, 47 answers,
+8 criteria. **Projection 0 created, 3 populated, 0 blocked, 14 unchanged** — three dimensions
+filled that were blank after s3, nothing overwritten. **People and Problems carried forward**, and
+the card writer reinforced one card rather than duplicating it.
+
+**Worst callout 72,230 ms (call 3) against the 120,000 ceiling — 60%**, up from s3's 46% and
+clear. Roughly 232 s serially.
+
+**retryNotes: none.** Call 0 did not flake, call 3 completed in one invocation, nothing was re-run.

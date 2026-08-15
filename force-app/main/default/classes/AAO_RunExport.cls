@@ -75,6 +75,13 @@ public with sharing class AAO_RunExport {
                 AAO_Verification_Note__c, AAO_Claim__c, AAO_Artifact_SHA256__c,
                 AAO_Person__r.AAO_Display_Name__c, AAO_Person__r.AAO_Contact__c,
                 AAO_Evidence_Contract__r.AAO_Proposition_Code__c,
+                // THE DECLARED FAMILY, and selecting it is the whole fix. `familyOf(String)` is
+                // the prefix ladder and THROWS on any code it does not recognise; the export was
+                // calling it and so refused every Problems pair with a message blaming the data.
+                // The data was correct - AAO_PB_GOAL declares `Problems` - and the export simply
+                // never asked for it. The forty-third stamp added the declared-family overload
+                // for exactly this and the export predates it.
+                AAO_Evidence_Contract__r.AAO_Family__c,
                 AAO_Located_Pair__r.AAO_Answer_Text__c,
                 AAO_Located_Pair__r.AAO_Meaning__c,
                 AAO_Located_Pair__r.AAO_Coverage__c,
@@ -88,11 +95,14 @@ public with sharing class AAO_RunExport {
             String code = p.AAO_Evidence_Contract__r == null
                 ? null
                 : p.AAO_Evidence_Contract__r.AAO_Proposition_Code__c;
+            String family = p.AAO_Evidence_Contract__r == null
+                ? null
+                : AAO_LocateCharter.familyOf(p.AAO_Evidence_Contract__r);
             Decimal startAt = loc == null ? null : loc.AAO_Start_Offset__c;
             Decimal endAt = loc == null ? null : loc.AAO_End_Offset__c;
             lines.add(row(new List<Object>{
                 p.AAO_Pair_Ref__c,
-                AAO_LocateCharter.familyOf(code),
+                family,
                 code,
                 loc == null ? null : loc.AAO_Answer_Text__c,
                 startAt,

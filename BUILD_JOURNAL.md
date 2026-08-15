@@ -590,3 +590,84 @@ gate-1 and EBV era plus a UI controller.
 the §P8 path would have nowhere to record what it cited or whether that row still exists.
 Nothing is broken today, and "nothing is broken today" is the sentence that preceded the
 anchor-field day.
+
+---
+
+## Session 111 · 15 August · WELLS FARGO SESSION 3 · THE MEASUREMENT RUN · one run, no rehearsal, no tuning · 78 located, 78 disposed, HELD · the shadow object wrote its first row ever · the two-read merge fired 24 times after measuring zero
+
+Authorising bytes, ninety-fourth stamp item 7: *"Run Wells Fargo session 3 alone."*
+
+`SRC-00000045`, occurred 2026-08-05T18:00:00Z, run key `wf-s3`, org `00DWD00000DV7iT2AT` from
+`/Users/thefinalmachine/Downloads/claude` on `main`. **Sequenced by
+`AAO_Evidence_Occurred__c`, never by name** — 45 is the earliest call despite the highest number.
+The other two were not run. Prior state verified clean: 0 claims, 0 pairs, 0 flags, 0 map rows,
+0 shadows.
+
+Full report and rows: `review/wf-s3/`.
+
+### THE THREE ANSWERS DESIGN COULD NOT RECOVER AFTERWARDS
+
+**1 · Terminal.** **Zero AMBIGUOUS. The deterministic leg raised no flag at all.** It left a
+two-ref remainder, both "Priya Natarajan", which the model leg disposed `Held` as
+`named-off-artifact` with candidate NONE. **So on this transcript the Identification flag fires
+only after a callout.** S4-09's liveness here depends on the model leg running, not on the
+deterministic stage. A third Priya pair merged rather than holding, so three located pairs about
+one person produced one flag — the bound key working on real data.
+
+**2 · Shadow.** **`SP-00000000`, the first row this object has ever held.** Key
+`001WD00000uYd9xYAC|mention:priya natarajan` — the third branch, account plus `mention:` plus
+normalised designator, exactly as the eighty-seventh stamp ruled. Provenance `Utterance`,
+anchors 2, offsets 21061-21198, reason `Unresolvable`. **The provenance boundary held**: identity
+columns empty, nothing minted from verbatim.
+
+**3 · Refusal branches.** **Two fired, both first walks.** `Merged` 24 and `Held` 2, against
+`Identified` 52. **`Merged` is the larger result:** the eighty-first stamp measured 0 of 67
+corroborated and diagnosed `AAO_Resolve` as having zero callers. **It is live — 24 of 78 merged**,
+each carrying its reason. The twenty-seventh stamp's byte-intersection merge on real speech at
+last.
+
+### Ledger
+
+78 located, 78 disposed, one for one for one, **HELD**. 52 verified: 31 upheld, 21 refused.
+31 claims, 26 answers, 5 criteria, 1 shadow. Map 6 rows, cards 10 (Goal 3, Initiative 3,
+Obstacle 3, Pressure 1), 9 owner links.
+
+### Timings, from the receipt rather than recomputed
+
+`RCPT-00000004`, 7 stages, 174,172 ms, cache WARM, 0 splits. **Worst single callout 55,162 ms
+(call 3, 4 batches) against the 120,000 ms ceiling — 46%.** Reads 47,592 COLD and 38,847 WARM;
+call 0 5,885; deterministic leg **281 ms**. Driven serially end to end at roughly 192 s, which is
+NOT comparable to the ratified concurrent ~59 s per the seventy-fourth stamp's caution.
+
+### THREE FINDINGS, none fixed except the one blocking a standing obligation
+
+**1 · THE JOIN RAN DML AT 133 OF 150 — 89% of the ceiling**, at only 31 claims, with 196 DML
+rows. The sixteenth stamp's join wall, closer than ever measured. The caller-side split exists
+and was not needed here, but **the margin is 17 statements** and s4/s5 stack onto existing state.
+Reported, not fixed; no tuning during the read.
+
+**2 · THE RECEIPT DOES NOT JOURNAL THE MODEL LEG.** It records 4 callouts; the pass made 5.
+`call2_requests` at 4,577 ms is absent from the stages array — the model leg has no receipt leg
+wired, the same gap the card writer had before the seventieth stamp closed it.
+
+**3 · LAWFUL FIX · the row export refused every Problems pair and blamed the data.**
+`AAO_RunExport.pairs()` threw *"Contract AAO_PB_GOAL … declares no AAO_Family__c. THE FIX IS
+DATA, NOT CODE."* **The message is wrong about its own cause.** `AAO_PB_GOAL` does declare
+`AAO_Family__c = 'Problems'`; the export called `familyOf(String)`, the prefix ladder, instead of
+the `familyOf(AAO_Evidence_Contract__c)` overload the forty-third stamp added for this, and never
+selected the field. Fixed by selecting it and calling the record overload. **Read-only reporting
+path: every row in the report was written before the fix and is unchanged by it.**
+
+**The general lesson, second instance today: an error message that names its own cause can be
+wrong**, and this one would have sent the next reader to edit correct data.
+
+### retryNotes
+
+1. **Call 0 quote-law retry**, fourth instance of the known cold-flake: attempt 1 answered yes
+   with no quote and was refused, attempt 2 succeeded. Both on the record.
+2. **Call 3 invocation 1 threw and was NOT diagnosed.** The second completed all 4 batches and
+   verified all 52. **The error text was not captured and is not invented here.** Counts
+   reconcile exactly (31 + 21 = 52), so nothing was lost.
+
+**Nothing in this run is graded by CODE, no number was tuned toward any expectation, and the run
+was not repeated.**

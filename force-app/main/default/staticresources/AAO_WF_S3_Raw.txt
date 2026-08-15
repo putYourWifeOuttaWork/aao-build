@@ -1,0 +1,694 @@
+WEBVTT
+
+NOTE
+Wells Fargo CIB x OpenText, Aviator evaluation session 3, 2026-08-05 14:00 ET, Microsoft Teams export
+NOTE
+Attendees: Katherine Villanueva, Rohan Deshpande, Meredith Cho, Tom Brzezinski, Alison Reyes, Jared Kim (Wells Fargo); Dana Whitfield, Marcus Oyelaran (OpenText)
+
+1
+00:00:08.000 --> 00:00:19.757
+<v Dana Whitfield>Good afternoon, everyone. I see people still joining, so we will give it one more minute. Kate, thanks for pulling this group together, I know August calendars are brutal.
+
+2
+00:00:21.057 --> 00:00:28.759
+<v Katherine Villanueva>No problem at all. We have a hard stop in forty five minutes, so let's use the time well.
+
+3
+00:00:30.059 --> 00:00:36.546
+<v Marcus Oyelaran>Hello all, Marcus Oyelaran, solutions consulting at OpenText. I will be driving the product portion today.
+
+4
+00:00:37.846 --> 00:00:49.603
+<v Dana Whitfield>And I am Dana Whitfield, I run the strategic account team for Wells Fargo on the OpenText side. Kate, do you want to do quick intros on your end?
+
+5
+00:00:50.903 --> 00:01:00.632
+<v Katherine Villanueva>Sure. Kate Villanueva, managing director, investment banking technology. The pilot decision for the coverage groups sits with my team. Rohan you want to go?
+
+6
+00:01:01.932 --> 00:01:16.122
+<v Rohan Deshpande>Rohan Deshpande, director of banker platforms and digital workflow. My team owns the deal library, the pitch infrastructure, and the workflow tooling the bankers live in. I have been running the technical evaluation of Aviator.
+
+7
+00:01:17.422 --> 00:01:21.881
+<v Meredith Cho>Meredith Cho, I am a VP in AI model risk governance.
+
+8
+00:01:22.481 --> 00:01:35.859
+<v Meredith Cho>I sit in the second line, so my job today is to understand what the model is doing under the hood and what you are going to hand us for the validation file.
+
+9
+00:01:37.159 --> 00:01:47.700
+<v Tom Brzezinski>Tom Brzezinski, banker enablement. I own training and adoption for the platform stack in the investment bank. Full disclosure, I am the skeptic on this call.
+
+10
+00:01:49.000 --> 00:01:53.054
+<v Dana Whitfield>Skeptics are welcome, Tom. Honestly they make these sessions better.
+
+11
+00:01:54.354 --> 00:02:03.678
+<v Katherine Villanueva>We also have Alison Reyes from our vendor management office, and Jared Kim from my team is shadowing today, he is just listening.
+
+12
+00:02:04.978 --> 00:02:07.178
+<v Alison Reyes>Hi everyone.
+
+13
+00:02:08.478 --> 00:02:21.451
+<v Dana Whitfield>Great to meet you all. So, agenda. Marcus will spend fifteen minutes on where Aviator has landed since the June session, focused on the deal document use cases Rohan scoped with us.
+
+14
+00:02:22.051 --> 00:02:35.024
+<v Dana Whitfield>Then we walk the commercial structure for the pilot, and then Kate, I want to leave the last ten minutes for the decision path and what you need from us. Sound right?
+
+15
+00:02:36.324 --> 00:02:45.243
+<v Katherine Villanueva>That works. Before Marcus starts, let me frame why we are here, because half this group was not in the June session.
+
+16
+00:02:46.543 --> 00:03:00.327
+<v Katherine Villanueva>The coverage teams produce an enormous volume of documents. Pitch books, credit memos, precedent decks, diligence summaries. Our bankers spend real hours hunting for the paragraph they know exists somewhere in the deal library.
+
+17
+00:03:00.927 --> 00:03:17.549
+<v Katherine Villanueva>Rohan's team measured it in the spring, the average associate spends about nine hours a week just looking for prior work product. That is the problem we are paying to solve, and that is the lens I want everyone using today.
+
+18
+00:03:18.849 --> 00:03:33.038
+<v Rohan Deshpande>And to put a sharper point on it, we scoped the evaluation to the deal library and the pitch archive only. We deliberately kept client communications and anything supervision related out of the pilot scope.
+
+19
+00:03:34.338 --> 00:03:40.824
+<v Katherine Villanueva>Right. And just so this group has the wider context, because Meredith's team will ask anyway.
+
+20
+00:03:41.424 --> 00:04:00.073
+<v Katherine Villanueva>The bank is running a broader AI governance program this year, every line of business is standing up its own model inventory under the enterprise framework, and how Wells Fargo approaches generative AI across the company is being set at that level, not by this purchase.
+
+21
+00:04:00.673 --> 00:04:10.403
+<v Katherine Villanueva>That is a bank wide conversation and it is bigger than any one vendor. For today, we stay on the investment banking use case.
+
+22
+00:04:11.703 --> 00:04:17.784
+<v Meredith Cho>Understood, and I will keep my questions scoped to this model and this use case.
+
+23
+00:04:19.084 --> 00:04:23.543
+<v Dana Whitfield>That is helpful framing, Kate, thank you. Marcus, take it away.
+
+24
+00:04:24.843 --> 00:04:40.249
+<v Marcus Oyelaran>Thanks Dana. So, quick recap for the new folks. Aviator is the assistant layer that sits on top of your existing content repositories. For this pilot, that means your Documentum estate and the deal library Rohan's team manages.
+
+25
+00:04:40.849 --> 00:04:51.389
+<v Marcus Oyelaran>It does not move your documents anywhere. The content stays where it lives, under the permissions it already has, and Aviator retrieves and summarizes against it.
+
+26
+00:04:52.689 --> 00:05:06.068
+<v Marcus Oyelaran>Since June we have closed out the two items Rohan's team flagged. First, entitlement passthrough. When an associate asks a question, the answer is assembled only from documents that associate could already open.
+
+27
+00:05:06.668 --> 00:05:13.154
+<v Marcus Oyelaran>We honor the repository ACLs at query time, not at index time. Second, the citation model.
+
+28
+00:05:13.754 --> 00:05:30.376
+<v Marcus Oyelaran>Every generated answer now carries clickable citations down to the page level of the source document, and if the model cannot ground a sentence in a retrievable source, that sentence does not ship. It says it could not find support instead.
+
+29
+00:05:31.676 --> 00:05:37.757
+<v Rohan Deshpande>I want to jump in here because this is the piece my team actually tested.
+
+30
+00:05:38.357 --> 00:05:54.978
+<v Rohan Deshpande>We took forty redacted CIMs and pitch decks from closed deals, loaded them into the sandbox repository, and ran about three hundred banker style questions against the API over two weeks. We scored every answer by hand against the source documents.
+
+31
+00:05:56.278 --> 00:06:00.738
+<v Marcus Oyelaran>And I have been waiting to hear how that went, honestly.
+
+32
+00:06:02.038 --> 00:06:19.065
+<v Rohan Deshpande>It went well. Better than I expected on the retrieval side. The grounding held up, when the answer was there it cited the right page almost every time. Where it struggled was tables, anything where the number lives inside a dense exhibit.
+
+33
+00:06:19.665 --> 00:06:26.962
+<v Rohan Deshpande>It would find the right document and the wrong cell. My write up goes to Kate this week.
+
+34
+00:06:28.262 --> 00:06:31.505
+<v Katherine Villanueva>Which I will read on the plane Thursday.
+
+35
+00:06:32.805 --> 00:06:44.968
+<v Marcus Oyelaran>The table extraction point is fair, and it is a known area. The next release moves exhibit parsing to a dedicated pipeline, I can share the release notes under NDA.
+
+36
+00:06:46.268 --> 00:07:01.673
+<v Rohan Deshpande>Send them. For what it is worth, the bar for us is simple. If an answer is going in front of a committee, a banker has to be able to click through to the page it came from.
+
+37
+00:07:02.273 --> 00:07:11.192
+<v Rohan Deshpande>We will not put an uncited number in front of a committee, full stop. That is the requirement everything else hangs off.
+
+38
+00:07:12.492 --> 00:07:17.357
+<v Marcus Oyelaran>Understood, and that is exactly the design center of the citation model.
+
+39
+00:07:18.657 --> 00:07:21.495
+<v Tom Brzezinski>Can I ask the unpopular question early?
+
+40
+00:07:22.795 --> 00:07:25.632
+<v Katherine Villanueva>That is why you are here, Tom.
+
+41
+00:07:26.932 --> 00:07:43.554
+<v Tom Brzezinski>We already pay for Copilot across the bank. My honest position going into this, the Copilot we already own covers most of what my bankers ask for day to day, drafting, summarizing the doc that is open in front of them.
+
+42
+00:07:44.154 --> 00:07:54.289
+<v Tom Brzezinski>I would rather do nothing new and push harder on the tool we already own than add another assistant to the stack. Convince me otherwise.
+
+43
+00:07:55.589 --> 00:08:10.589
+<v Dana Whitfield>It is a fair challenge and we hear it in every bank we work with. I would say the difference is where the intelligence sits. A general assistant is brilliant on the document in front of you.
+
+44
+00:08:11.189 --> 00:08:22.946
+<v Dana Whitfield>Aviator is built for the estate behind you, fifteen years of deal history with entitlements, retention rules, and audit posture intact. We are not competing on drafting an email.
+
+45
+00:08:24.246 --> 00:08:31.949
+<v Tom Brzezinski>I hear that. I remain to be convinced the bankers see the difference. To them it is another icon.
+
+46
+00:08:33.249 --> 00:08:47.032
+<v Rohan Deshpande>Tom, the forty CIM test is the answer to that. Copilot cannot see the deal library at all today, and the day it can, it does not do page level grounding against Documentum entitlements.
+
+47
+00:08:47.632 --> 00:08:54.930
+<v Rohan Deshpande>I evaluated both paths side by side in the spring, that comparison is in the write up too.
+
+48
+00:08:56.230 --> 00:09:06.365
+<v Tom Brzezinski>Like I said, I remain to be convinced. But I did read your interim numbers and the time to first answer stat was not nothing.
+
+49
+00:09:07.665 --> 00:09:19.016
+<v Marcus Oyelaran>Let me make it concrete with the worked example Rohan's team gave us. I am sharing my screen. This is the sandbox tenant with the forty redacted documents.
+
+50
+00:09:19.616 --> 00:09:30.562
+<v Marcus Oyelaran>The question I am typing is the one your associates apparently ask most, show me precedent pitch decks for payments companies with EBITDA multiples, last three years.
+
+51
+00:09:31.862 --> 00:09:48.484
+<v Marcus Oyelaran>Watch the right panel. It comes back with a synthesized answer, the four relevant decks, and every number in the summary carries a superscript. I click the multiple, and it opens the source deck at page nineteen, with the exhibit highlighted.
+
+52
+00:09:49.084 --> 00:09:58.408
+<v Marcus Oyelaran>That page open in front of you is the whole trust model. The banker never has to take the assistant's word for anything.
+
+53
+00:09:59.708 --> 00:10:04.168
+<v Rohan Deshpande>Show them the failure mode too, the one from my testing.
+
+54
+00:10:05.468 --> 00:10:22.495
+<v Marcus Oyelaran>Fair. If I ask for the same multiples but from the dense comp table in the appendix, this is the one where the model finds the right document and occasionally reads the wrong row. You can see it flags lower confidence here.
+
+55
+00:10:23.095 --> 00:10:27.554
+<v Marcus Oyelaran>This is the exhibit parsing work I mentioned, mid quarter release.
+
+56
+00:10:28.854 --> 00:10:38.989
+<v Rohan Deshpande>One more, the entitlement edge case. A banker leaves the firm, their deals get restricted, what happens to answers that used to cite those documents.
+
+57
+00:10:40.289 --> 00:10:54.884
+<v Marcus Oyelaran>The next query re resolves entitlements live, so the restricted deck simply stops being retrievable, and any answer that needed it says it no longer has sufficient sources. We do not cache answers across permission changes.
+
+58
+00:10:55.484 --> 00:10:59.538
+<v Marcus Oyelaran>Your repository is the truth at query time, every time.
+
+59
+00:11:00.838 --> 00:11:17.865
+<v Rohan Deshpande>That matches what we saw in the sandbox. I tried to trick it with a mid session permission flip and it refused the second answer. I put that in the write up, it was one of the better moments of the evaluation.
+
+60
+00:11:19.165 --> 00:11:32.543
+<v Dana Whitfield>And for context beyond the sandbox, we run this same pattern in production at two global banks today, one of them a top ten European institution, on document estates considerably messier than yours.
+
+61
+00:11:33.143 --> 00:11:41.251
+<v Dana Whitfield>I cannot name them on this call but references are available at the right stage, under NDA, banker to banker.
+
+62
+00:11:42.551 --> 00:11:53.903
+<v Katherine Villanueva>We will want one of those calls before Priya sees anything. What is the implementation lift on our side, honestly. My team has no spare capacity this quarter.
+
+63
+00:11:55.203 --> 00:12:00.068
+<v Marcus Oyelaran>For the pilot scope, two repositories, our team does the heavy lifting.
+
+64
+00:12:00.668 --> 00:12:14.857
+<v Marcus Oyelaran>Six weeks from signature to first banker query is the standard plan, and the long pole is usually your entitlement mapping workshop, which needs about four hours total from Rohan's engineers, spread over two sessions.
+
+65
+00:12:16.157 --> 00:12:22.238
+<v Rohan Deshpande>Four hours we can find. If it creeps to forty we have a different conversation.
+
+66
+00:12:23.538 --> 00:12:30.024
+<v Marcus Oyelaran>It is scoped and capped in the statement of work, you will see it in writing.
+
+67
+00:12:31.324 --> 00:12:46.730
+<v Dana Whitfield>One thing I will offer, most banks we work with also put deployment speed itself on the scorecard, time from signature to first value, because it separates platform vendors from science projects. Worth considering as you finalize criteria.
+
+68
+00:12:48.030 --> 00:12:58.165
+<v Rohan Deshpande>Speed is nice. The citation bar is the bar. We will judge you on grounding and entitlements, and if you are fast as well, lovely.
+
+69
+00:12:59.465 --> 00:13:01.665
+<v Dana Whitfield>Understood, message received.
+
+70
+00:13:02.965 --> 00:13:16.343
+<v Tom Brzezinski>Adoption question, because this is where these things die. What do bankers actually type on day three, after the novelty wears off? Do you have usage curves from those two banks, even anonymized?
+
+71
+00:13:17.643 --> 00:13:23.319
+<v Marcus Oyelaran>We do, and I will include the anonymized curves in the follow up pack.
+
+72
+00:13:23.919 --> 00:13:38.919
+<v Marcus Oyelaran>The honest pattern is a spike, a dip in week two, and then a climb that tracks whether the first ten queries produced a citation the banker actually used. Enablement matters enormously, which is your world, Tom.
+
+73
+00:13:39.519 --> 00:13:45.600
+<v Marcus Oyelaran>The banks that assigned a named enablement owner saw roughly double the steady state usage.
+
+74
+00:13:46.900 --> 00:13:54.197
+<v Tom Brzezinski>At least you did not pretend the dip does not happen. Fine, put the curves in the pack.
+
+75
+00:13:55.497 --> 00:13:58.741
+<v Katherine Villanueva>Good. Meredith, you have been patient, go ahead.
+
+76
+00:14:00.041 --> 00:14:15.851
+<v Meredith Cho>Marcus, before we get to pricing I need to walk through the governance side. Walk me through your evaluation cadence. How often do you re benchmark the retrieval and the generation layer, and what changes trigger a re test.
+
+77
+00:14:17.151 --> 00:14:26.881
+<v Marcus Oyelaran>Sure. The retrieval layer is benchmarked quarterly against a fixed golden set, plus any time we change the embedding model or the chunking strategy.
+
+78
+00:14:27.481 --> 00:14:43.697
+<v Marcus Oyelaran>The generation layer sits behind our model gateway, so a model version change on our side triggers the full evaluation suite before it reaches any customer tenant, and you control when your tenant moves versions. You are never moved silently.
+
+79
+00:14:44.997 --> 00:14:59.592
+<v Meredith Cho>Okay. And when a version does move, what lands in my inbox? Because for our validation file we need the model card, the evaluation evidence, the intended use statement, and the change log, per model version.
+
+80
+00:15:00.192 --> 00:15:12.354
+<v Meredith Cho>That documentation set is a requirement from model risk, it has to be attached to the submission, and without it the model does not get an approval to operate here.
+
+81
+00:15:13.654 --> 00:15:24.600
+<v Marcus Oyelaran>All four artifacts exist per release. I will send you the documentation pack for the current version this week so you can judge the depth for yourself.
+
+82
+00:15:25.900 --> 00:15:33.603
+<v Meredith Cho>Good. I want to be clear that I am not scoring the product today, that is not my role.
+
+83
+00:15:34.203 --> 00:15:45.149
+<v Meredith Cho>But this is a key step for us, and honestly this part of the conversation is the part that determines the timeline more than anything Rohan tests.
+
+84
+00:15:46.449 --> 00:15:56.989
+<v Alison Reyes>On that, let me sketch the procurement path so expectations are set. Once Kate's team sponsors it, the request goes into the third party risk portal.
+
+85
+00:15:57.589 --> 00:16:09.346
+<v Alison Reyes>You will get the standard assessment, that is two questionnaires, the information security one and the AI addendum, they go to whoever on your side can speak to controls.
+
+86
+00:16:09.946 --> 00:16:20.081
+<v Alison Reyes>Then there is the model risk submission Meredith described, that is a separate track with its own reviewers. Legal runs the data terms in parallel.
+
+87
+00:16:20.681 --> 00:16:31.222
+<v Alison Reyes>The sequencing matters, the model risk track does not start until the questionnaires are complete, so the earlier your responses land, the earlier everything downstream moves.
+
+88
+00:16:32.522 --> 00:16:45.495
+<v Dana Whitfield>Understood. We keep a completed standard pack, SOC 2, the AI controls addendum, penetration summaries. I will send the bundle to you directly, Alison, and the model documentation pack to Meredith separately.
+
+89
+00:16:46.795 --> 00:16:53.686
+<v Alison Reyes>Perfect. Send it to the vendor mailbox and copy me, the portal is the system of record.
+
+90
+00:16:54.986 --> 00:17:08.770
+<v Tom Brzezinski>And on cost, since we are circling. What I care about is the per seat number, because I have eleven hundred bankers and the math gets ugly fast. Last time the number floated was
+
+91
+00:17:10.070 --> 00:17:18.178
+<v Meredith Cho>Sorry to cut in, Tom, but before we leave governance, Marcus, one more thing I need on the record. Training.
+
+92
+00:17:18.778 --> 00:17:28.914
+<v Meredith Cho>Does anything from our tenant, prompts, documents, feedback, flow back into training for any model you operate or any third party model behind the gateway?
+
+93
+00:17:30.214 --> 00:17:46.024
+<v Marcus Oyelaran>No. Nothing from your tenant is used to train anything, ours or any underlying provider's. Tenant isolation is contractual and technical, and the data terms Alison's legal team will review carry it explicitly. Your data stays yours, full stop.
+
+94
+00:17:47.324 --> 00:17:54.622
+<v Meredith Cho>That is the answer I needed, and I want it in the contract language, not just the slide.
+
+95
+00:17:55.922 --> 00:18:01.597
+<v Dana Whitfield>It is in the standard terms and we will flag the clause for legal.
+
+96
+00:18:02.897 --> 00:18:05.330
+<v Katherine Villanueva>Tom, you were saying, on seats.
+
+97
+00:18:06.630 --> 00:18:12.305
+<v Tom Brzezinski>I lost the thread. It will come back to me when we see numbers.
+
+98
+00:18:13.605 --> 00:18:20.092
+<v Dana Whitfield>Then let us do numbers. Marcus, drop the commercial slide. So, the structure we are proposing.
+
+99
+00:18:20.692 --> 00:18:36.503
+<v Dana Whitfield>The pilot is one hundred fifty seats across two coverage groups for ninety days, fixed fee, ninety five thousand dollars, and that includes the implementation work, connecting the two repositories, entitlement mapping, and the evaluation support Meredith's process needs.
+
+100
+00:18:37.103 --> 00:18:46.022
+<v Dana Whitfield>If you convert to the enterprise agreement inside sixty days of pilot end, the ninety five thousand credits fully against year one.
+
+101
+00:18:47.322 --> 00:18:57.457
+<v Dana Whitfield>The enterprise tier for the investment bank, up to fifteen hundred seats, lands at seven hundred forty thousand a year on a three year term.
+
+102
+00:18:58.057 --> 00:19:14.678
+<v Dana Whitfield>That is a per seat rate about forty percent under our list, and it is tiered, so if you crest fifteen hundred seats the marginal rate steps down again. One year terms we honestly do not do at this discount level.
+
+103
+00:19:15.278 --> 00:19:18.927
+<v Dana Whitfield>The three year is where the rate comes from.
+
+104
+00:19:20.227 --> 00:19:25.497
+<v Katherine Villanueva>And the pilot fee is the only committed spend before a conversion decision.
+
+105
+00:19:26.797 --> 00:19:29.635
+<v Dana Whitfield>Correct. No license commitment until you convert.
+
+106
+00:19:30.935 --> 00:19:44.314
+<v Tom Brzezinski>There it is, that was my thread. Seven forty a year is real money against a tool people already have. That is the sentence I will have to defend in every budget meeting.
+
+107
+00:19:45.614 --> 00:19:55.749
+<v Katherine Villanueva>It is real money against nine hours a week of associate time, Tom. Run that math instead. Look, I will be direct with this group.
+
+108
+00:19:56.349 --> 00:20:06.889
+<v Katherine Villanueva>I have watched the coverage teams bleed hours into document hunting for two years, and this is the highest leverage line on my roadmap this year.
+
+109
+00:20:07.489 --> 00:20:22.084
+<v Katherine Villanueva>I will take the business case to Priya myself and I will put my name on it, and what I need from the people on this call is a clean evaluation file underneath it, not enthusiasm.
+
+110
+00:20:23.384 --> 00:20:26.222
+<v Rohan Deshpande>You will have the write up Thursday.
+
+111
+00:20:27.522 --> 00:20:44.143
+<v Katherine Villanueva>Two commercial mechanics questions before we leave the slide. First, seat flexibility. Headcount in the investment bank moves with the cycle, if we are at fifteen hundred seats in year one and twelve hundred in year two, what happens at renewal.
+
+112
+00:20:45.443 --> 00:20:55.578
+<v Dana Whitfield>The tier is a ceiling, not a floor, inside the term. You can run under it freely, the fee is the fee for the tier.
+
+113
+00:20:56.178 --> 00:21:05.503
+<v Dana Whitfield>At renewal you can step down a tier with ninety days notice, and the rate card for the smaller tier applies without penalty.
+
+114
+00:21:06.103 --> 00:21:16.643
+<v Dana Whitfield>What we do not do is mid term reductions, and I would rather tell you that plainly today than have it surprise anyone in legal review.
+
+115
+00:21:17.943 --> 00:21:30.105
+<v Katherine Villanueva>Plain is what I want. Second question, the pilot fee credit. You said it credits against year one if we convert inside sixty days. What happens on day sixty one.
+
+116
+00:21:31.405 --> 00:21:41.135
+<v Dana Whitfield>Then it lapses, and I would rather say so plainly. The credit exists to keep the decision moving while the evaluation evidence is fresh.
+
+117
+00:21:41.735 --> 00:21:51.465
+<v Dana Whitfield>Sixty days from pilot end lands you in the February window with the evidence still current, so the calendar works in your favor here.
+
+118
+00:21:52.765 --> 00:22:09.792
+<v Alison Reyes>On paper, one thing that will help. There is an existing master agreement with OpenText on file from the enterprise content side of the bank. If this rides as an order under that master with an AI addendum, legal review shortens considerably.
+
+119
+00:22:10.392 --> 00:22:19.311
+<v Alison Reyes>If your team papers it as a net new agreement, add four to six weeks. I would push hard for the former.
+
+120
+00:22:20.611 --> 00:22:27.097
+<v Dana Whitfield>Agreed, and that is how we will submit it. Our legal team knows that master well.
+
+121
+00:22:28.397 --> 00:22:36.100
+<v Rohan Deshpande>Back to substance for a second. The golden set my team built, the three hundred questions with scored answers.
+
+122
+00:22:36.700 --> 00:22:51.295
+<v Rohan Deshpande>When the pilot starts, I want that exact set runnable against the production tenant, repeatably, so the pilot numbers are comparable to the sandbox numbers. Is there tooling for that or does my team script it?
+
+123
+00:22:52.595 --> 00:23:05.568
+<v Marcus Oyelaran>There is an evaluation harness in the admin console, you load the question set with expected source references and it produces the scoring report per run, exportable. Your sandbox set imports directly.
+
+124
+00:23:06.168 --> 00:23:14.681
+<v Marcus Oyelaran>And runs are versioned, so the before and after on the exhibit parsing release will be visible in the same report.
+
+125
+00:23:15.981 --> 00:23:29.359
+<v Rohan Deshpande>Good. That report format, send me a sample this week too, I want to see whether it captures per question citation status or just aggregates. Aggregates hide exactly the failures I care about.
+
+126
+00:23:30.659 --> 00:23:37.146
+<v Marcus Oyelaran>It is per question, with the citation chain per answer. Sample coming with the release notes.
+
+127
+00:23:38.446 --> 00:23:53.851
+<v Meredith Cho>One operational item for my file. When something goes wrong in production, a bad answer with a real consequence, walk me through the incident path. Who gets notified, in what window, and what does the rollback look like.
+
+128
+00:23:55.151 --> 00:24:06.908
+<v Marcus Oyelaran>Severity one incidents notify your named administrators within one hour, contractually. Rollback for a model version is immediate, the prior version stays warm for thirty days after any move.
+
+129
+00:24:07.508 --> 00:24:21.697
+<v Marcus Oyelaran>Rollback for a retrieval index rebuild is under four hours for an estate your size. The incident history for the platform is part of the documentation pack, you will see the actuals, not a promise.
+
+130
+00:24:22.997 --> 00:24:35.565
+<v Meredith Cho>Include the last twelve months in the pack. That kind of transparency, for the record, is the difference between a two month review and a five month review with my team.
+
+131
+00:24:36.865 --> 00:24:41.730
+<v Dana Whitfield>Twelve months of incident history goes in the pack. Anything else operational?
+
+132
+00:24:43.030 --> 00:24:58.841
+<v Tom Brzezinski>Enablement logistics, quick one. Eleven hundred bankers across three time zones, mostly New York, some Charlotte, a desk in London. Your training, is it live, recorded, both, and does the pilot include it or is that another line item.
+
+133
+00:25:00.141 --> 00:25:08.249
+<v Marcus Oyelaran>Both, and for the pilot it is included. Two live sessions per coverage group, recorded, plus the in product walkthroughs.
+
+134
+00:25:08.849 --> 00:25:20.605
+<v Marcus Oyelaran>For the enterprise rollout the enablement program is a line in the statement of work, and Tom, we would build the schedule with your team rather than around them.
+
+135
+00:25:21.905 --> 00:25:32.041
+<v Tom Brzezinski>Fine. The sandbox setup was smooth, by the way, credit where due, my team barely noticed the lift. That is rarer than it should be.
+
+136
+00:25:33.341 --> 00:25:35.541
+<v Marcus Oyelaran>Appreciated.
+
+137
+00:25:36.841 --> 00:25:39.678
+<v Katherine Villanueva>Okay. Decision path, and then we close.
+
+138
+00:25:40.978 --> 00:25:55.978
+<v Katherine Villanueva>Then let me name the decision path out loud so the vendor side hears it too. Anything over two million in term value goes to Priya Natarajan, she is our CIO for the corporate and investment bank.
+
+139
+00:25:56.578 --> 00:26:11.173
+<v Katherine Villanueva>A three year at seven forty is well over that line, so Priya approves this or it does not happen, and her office will want the model risk approval closed before it even reaches her calendar.
+
+140
+00:26:11.773 --> 00:26:16.232
+<v Katherine Villanueva>I control the pilot decision, I do not control that one.
+
+141
+00:26:17.532 --> 00:26:22.397
+<v Dana Whitfield>Understood. And is there anything we should prepare specifically for her review?
+
+142
+00:26:23.697 --> 00:26:31.400
+<v Rohan Deshpande>Yes, and I will coach you on this because I want this deal to survive contact with our process.
+
+143
+00:26:32.000 --> 00:26:43.351
+<v Rohan Deshpande>If you want this through third party risk before fiscal close, get Alison the security bundle and Meredith the model documentation this week, not after the pilot paperwork.
+
+144
+00:26:43.951 --> 00:26:52.465
+<v Rohan Deshpande>And when the business case lands with Priya, lead with the entitlement passthrough and the audit trail, not the productivity story.
+
+145
+00:26:53.065 --> 00:27:09.281
+<v Rohan Deshpande>She has been burned before by a platform that could not produce an audit trail when compliance came asking, and the vendor that reassured her fastest lost the room. Show the click through citations live if you get the chance.
+
+146
+00:27:09.881 --> 00:27:13.124
+<v Rohan Deshpande>That is the demo that wins that meeting.
+
+147
+00:27:14.424 --> 00:27:17.262
+<v Dana Whitfield>That is genuinely useful, Rohan, thank you.
+
+148
+00:27:18.562 --> 00:27:25.859
+<v Marcus Oyelaran>Noted on the live citation demo. We will build the Priya version of the deck around exactly that.
+
+149
+00:27:27.159 --> 00:27:43.781
+<v Meredith Cho>I would add, do not present model accuracy numbers to her office that my team has not validated. If your deck says ninety four percent and our validation file says ninety one, that discrepancy costs you more than the three points.
+
+150
+00:27:45.081 --> 00:27:51.162
+<v Marcus Oyelaran>Understood. We will source every number in that deck from your evaluation file, not ours.
+
+151
+00:27:52.462 --> 00:28:08.273
+<v Dana Whitfield>So let me play back what I am hearing as the shape of a decision. Rohan's evaluation write up lands with Kate Thursday. We deliver the security bundle to Alison and the model documentation pack to Meredith this week.
+
+152
+00:28:08.873 --> 00:28:24.684
+<v Dana Whitfield>The pilot paperwork can move in parallel once Kate sponsors it in the portal. Pilot runs ninety days on the two coverage groups, and the conversion decision rides on the evaluation file plus Priya's approval. Am I missing anything?
+
+153
+00:28:25.984 --> 00:28:41.389
+<v Alison Reyes>Only that the pilot itself still goes through the portal as a limited engagement. It is a lighter review than the enterprise agreement but it is not zero. Two to three weeks if the questionnaires come back clean.
+
+154
+00:28:42.689 --> 00:28:47.149
+<v Dana Whitfield>Understood, we will turn the questionnaires around inside five business days.
+
+155
+00:28:48.449 --> 00:29:03.449
+<v Katherine Villanueva>Good. And Dana, one more thing for your side. The pilot needs to produce the evidence the enterprise case requires, not just happy users. Time to answer, citation accuracy against Rohan's golden set, and adoption by group.
+
+156
+00:29:04.049 --> 00:29:12.157
+<v Katherine Villanueva>Design the pilot reporting around those three from day one, because that is the spine of what goes to Priya.
+
+157
+00:29:13.457 --> 00:29:23.997
+<v Dana Whitfield>We will draft the pilot success criteria document around exactly those three measures and get it to you and Rohan for edit before anything is signed.
+
+158
+00:29:25.297 --> 00:29:41.514
+<v Rohan Deshpande>Send it to me first, I will mark it up before it hits Kate's desk. And include the table extraction caveat honestly. If the pilot report hides the weak spot my write up already named, it discredits the strong spots.
+
+159
+00:29:42.814 --> 00:29:50.111
+<v Marcus Oyelaran>Agreed. The exhibit parsing release should land mid pilot, so we will report it before and after, transparently.
+
+160
+00:29:51.411 --> 00:30:02.357
+<v Tom Brzezinski>I will say one thing for the record so nobody mistakes my position. If Kate converts this, my team will run the enablement properly, skeptic or not.
+
+161
+00:30:02.957 --> 00:30:15.930
+<v Tom Brzezinski>I still think the Copilot overlap question deserves a real answer in the business case, because the first thing every managing director will ask me is why we bought a second assistant.
+
+162
+00:30:16.530 --> 00:30:21.800
+<v Tom Brzezinski>Give me the one pager that answers that and I will carry it.
+
+163
+00:30:23.100 --> 00:30:31.614
+<v Dana Whitfield>You will have it. We drafted exactly that comparison for another bank this quarter, I will tailor it to your stack.
+
+164
+00:30:32.914 --> 00:30:40.211
+<v Katherine Villanueva>That is a fair ask and it goes in the case file. Meredith, anything else you need today?
+
+165
+00:30:41.511 --> 00:30:57.322
+<v Meredith Cho>No, my list is complete. Documentation pack this week, and I will schedule the intake review once it arrives. I would just repeat that the model risk clock does not start until Alison's questionnaires are done, so sequence accordingly.
+
+166
+00:30:58.622 --> 00:31:07.541
+<v Katherine Villanueva>Heard. Then we are at time. Dana, Marcus, thank you, this was the most concrete session of the three we have had.
+
+167
+00:31:08.841 --> 00:31:14.516
+<v Dana Whitfield>Appreciate you all, and especially the candor. Tom, I owe you a one pager.
+
+168
+00:31:15.816 --> 00:31:18.016
+<v Tom Brzezinski>Looking forward to it.
+
+169
+00:31:19.316 --> 00:31:22.965
+<v Rohan Deshpande>Thanks all. Marcus, the release notes when you can.
+
+170
+00:31:24.265 --> 00:31:27.508
+<v Marcus Oyelaran>Same day as the documentation pack. Thanks everyone.
+
+171
+00:31:28.808 --> 00:31:31.008
+<v Alison Reyes>Thanks all, bye.
+
+172
+00:31:32.308 --> 00:31:34.508
+<v Katherine Villanueva>Thanks everyone. Bye now.

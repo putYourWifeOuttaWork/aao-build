@@ -583,6 +583,24 @@ One piece of evidence, from arrival to incremental progress to the next question
 
 ## 1 · The write path
 
+> **[RETIRED, 15 August 2026, ninety-third stamp item 3(c). MARKED IN PLACE, NEVER DELETED.]**
+>
+> **Everything in Part II below — loop one, loop two, the seventeen-stage write path, the
+> propose/adjudicate split, span check and blind re-check per loop, and both diagrams — describes
+> a pipeline that NO LONGER RUNS.** It was superseded on 8 August by the twenty-seventh stamp: the
+> family sweep became two comprehensive reads, identification stopped being a model job and became
+> the deterministic resolution stage, and the shape became call 0 / call 1 / call 2 / call 3 /
+> join / projection.
+>
+> **The current flow, stage by stage with the object written at each stage, is
+> `review/schema-reference/c-current-flow.md`.**
+>
+> This text stands unedited because a superseded statement is marked where it stands with a
+> pointer forward, never removed: deleting it would destroy the record of what the system used to
+> believe, which is the only way to read the stamps that changed it. Read it as history.
+
+
+
 ```mermaid
 flowchart TB
   E["Evidence item<br/><i>one shape, any source</i>"] --> PW["Participant<br/><i>Source after-insert, sync</i>"]

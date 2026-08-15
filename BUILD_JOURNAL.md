@@ -498,3 +498,95 @@ live and leaves permanent evidence. It cannot do both. Choose deliberately and s
 
 516 ran, one failure, the standing non-AAO `ConvertToOpportunityTest`. 515 AAO passing,
 unchanged by the wiring.
+
+---
+
+## Session 110 · 15 August · THE SCHEMA AND FLOW REFERENCE · four deliverables, 1,161 lines, all from the org or the repo · THE FLS DIFF IS CLEAN AT 317 = 317 · zero declarative validation rules · the Claim Basis question answered: the link moved, it is not missing
+
+The ninety-third stamp's item 3. Every file names the tree and the org id, per the tree-and-org
+hazard: `/Users/thefinalmachine/Downloads/claude` on `main`, org `00DWD00000DV7iT2AT`.
+
+Design's `aao-org-field-inventory-2026-08-15.md` committed first as `045615d`, unmodified, as
+the baseline for the diff.
+
+### (a) The FLS-blind schema dump · `review/schema-reference/a-schema-dump-tooling.md`
+
+All 17 entities through the **Tooling API**, which does not enforce FLS: 13 custom objects and
+4 metadata types, with every picklist's full value set from
+`CustomField.Metadata.valueSet.valueSetDefinition` including the `isActive` flag.
+
+**THE DIFF IS CLEAN. 317 fields FLS-blind, 317 FLS-aware, and every one of the 17 per-entity
+counts identical.** Nothing to grant. The only FLS gap this org had was the eight anchor fields
+on `AAO_Shadow_Person__c`, closed this morning by adding their `fieldPermissions` to `AAO_Admin`
+(job `0AfWD00000FuquX0AR`); design now reads 21 on that object and so does the Tooling API,
+which is that grant verified from the other side.
+
+**Stated so it is not over-read: the check is repeatable, not permanent.** A field deployed
+through the Metadata API grants FLS to nobody, System Administrator included, so the next new
+field is invisible to design the moment it lands and until its permission does.
+
+**40 picklist fields, 163 values, ZERO inactive.** No value anywhere is a ghost.
+
+### (b) The Apex inventory · `review/schema-reference/b-apex-inventory.md`
+
+128 classes: 83 production, 45 test. 9 triggers. Every production class one line, taken from its
+own opening description rather than paraphrased. Two maps: **class to call** (call 0, the two
+comprehensive reads, call 2a deterministic and 2b model leg, call 3, join, projection, cards) and
+**class to charter** (People, Problems, Politics, Process, the resolver, the scope resolver).
+
+**THE FINDING: THERE ARE ZERO DECLARATIVE VALIDATION RULES IN THIS PROJECT.** `find force-app
+-name '*.validationRule-meta.xml'` returns nothing. **All 44 guards are Apex `addError` across 8
+trigger handlers — 17 on `AAO_Pair__c` alone, more than any other object.** That is exactly why
+the org's laws are unreadable from the metadata tree and surface only when something breaks one,
+which is how CODE learned two of them today. Both are quoted verbatim in the file.
+
+Recorded honestly: **two entries exist for call 2** — `AAO_IdentifyCharter` (model over every
+pair) and `AAO_Resolve` (deterministic). Both are in the tree; the deterministic one now runs
+first and `identify` takes the remainder. **The twenty-eighth stamp's one-implementation rule is
+not yet satisfied, and that is named debt rather than glossed.**
+
+### (c) The current flow · `review/schema-reference/c-current-flow.md`
+
+Fifteen stages, admission through projection, **each naming the object written**, plus the four
+stages that deliberately write nothing (admission refusal, call 0's verdict, abstention, silence
+at projection).
+
+**Loop one and loop two are RETIRED and MARKED IN PLACE.** A retirement block now sits at the
+head of `aao-model-and-flow.md` Part II §1 pointing here; the loops, the seventeen-stage write
+path and both diagrams stand unedited beneath it. Nothing deleted.
+
+### (d) The ALTF projection map · `review/schema-reference/d-altf-projection-map.md`
+
+Field level, from `AAO_P8Codes` and `AAO_Project` rather than prose. Every dimension's target
+`ALTF__` object and field API name with its watermark, and the value-to-value mapping: support
+counter to band, eight political codes to three placements, five buyer-role codes with their
+overridable ranks, occasions to coverage, four problem codes to card types. Plus the
+eighteen `ALTF__` API names we read and never write, and the two that are read-only by ruling.
+
+### THE THREE FINDINGS, ANSWERED
+
+**1 · `AAO_Pair__c`, 371 rows and 29 fields, is undocumented because it is TWO PHYSICAL SHAPES IN
+ONE TABLE.** A `Located` pair is call 1's proposal and is FORBIDDEN the person; an `Identified`
+pair is call 2's disposition, points at its parent, and carries the person only when the
+disposition is `Identified`. Measured today: **236 Located, 135 Identified; 134 dispositions
+`Identified` and exactly 1 `Ambiguous`** — and that one is CODE's own from the wiring proof. So
+**every refusal branch on this object is essentially unexercised on real data.**
+
+**2 · `AAO_Shadow_Person__c` has 21 fields and has NEVER held a row.** Zero ever, not zero lately.
+With the eighty-eighth stamp's zero-coverage disclosure beside it, the Wells Fargo read writes
+this object's first row during a graded run. **There is no known-good state to regress from**, so
+a divergence there is a finding about a never-walked path rather than a regression.
+
+**3 · `AAO_Claim_Basis__c` at zero against 100 claims: THE CHAIN IS NOT A LINK SHORT, THE LINK
+MOVED.** Measured: **all 100 claims are `Basis = Transcript`, all 100 carry spans, all 100 carry
+a Source.** A transcript-basis claim records its basis on itself, and the receipt walks end to
+end. The junction exists for `Basis = State` — it cites pre-existing org rows and tombstones them
+if deleted — and **zero of 100 claims are State or Both.** Decisively: the §P8 pipeline
+references `AAO_Claim_Basis__c` **zero times across all seven** of `AAO_Pass`, `AAO_Resolve`,
+`AAO_PairCommit`, `AAO_Commit`, `AAO_Accumulate`, `AAO_Project`, `AAO_Cards`. Its writers are
+gate-1 and EBV era plus a UI controller.
+
+**The latent gap, named rather than left to be rediscovered:** the first `State`-basis claim on
+the §P8 path would have nowhere to record what it cited or whether that row still exists.
+Nothing is broken today, and "nothing is broken today" is the sentence that preceded the
+anchor-field day.

@@ -919,3 +919,78 @@ two, s5 needed five.
 
 **Nothing graded by CODE, no number tuned, s3 and s4 untouched. Stopping: the answer-key fix
 scopes next with all three runs in hand.**
+
+---
+
+## Session 115 · 15 August · PROMOTION, THE CARD-FACE ROOT CAUSE, THE A2 PERSON-DURABLE KEY, AND THE CLEAN RE-RUN · the key fix worked and was NOT sufficient · three predictions failed and all three trace to one unexplained defect
+
+The ninety-ninth stamp's items 4(a) through (d). Predictions committed at `b2a2514` **before the
+purge**. Full report: `review/wf-clean/`.
+
+### What was built
+
+**(a) `AAO_Promotion.runAfterProjection`** — shadows whose designator resolves to a Contact bound
+on this deal gain `AAO_Promoted_Contact__c`; every Identification flag of that PERSON clears
+whatever form raised it. **Clear by person, never by key**, which is the only way both of Priya's
+flags could close while the eighty-seventh stamp's key-collapse ruling stays intact. Ambiguity
+promotes nothing. Plus the sequencing half: `reconcile` runs again after projection. Gives
+`AAO_Promoted_Contact__c` its first writer.
+
+**(b) THE CARD-FACE ROOT CAUSE.** The face was keyed by `AAO_Pair_Ref__c`, unique **per run**,
+while the writer reads **every run on the deal** — so s3's, s4's and s5's `r1q2` all arrived.
+`required` is a List so they duplicated and 400'd; `props` is a Map so **a colliding ref silently
+overwrote the earlier pair's words**. The 400 was the lucky half: a refused call is visible, a
+wrong face is not. Now keyed by pair Id.
+
+**(c) `AAO_AnswerKey` A1 → A2.** A Participant answer resolves to its Contact where one exists.
+And the tension it surfaced, caught by `AAO_ProjectTest`: the create leg lands a Contact AFTER an
+answer exists, so the key moves and the frozen guard refused. **Permitted exactly one transition**
+— participant to that participant's own Contact, verified by reading the participant from the org.
+Every other key change still throws.
+
+### (d) THE CLEAN RE-RUN · what it proved and what it did not
+
+**THE KEY FIX WORKED.** Every answer is `A2|Participant|<CONTACT ID>|…`. **Answers fell 70 → 34.
+Tom is ONE row, not two.**
+
+**AND THE COUNTER STILL DID NOT ACCUMULATE.** Tom carries **three** sentiment claims on that one
+row and reads **−1**: one `Established`, two `Reinforced`. `AAO_Accumulate.movesTheAnswer` returns
+false for `Reinforced`, so confirming evidence moves no counter — the seventy-first stamp's ruled
+behaviour, working as written.
+
+**So there is a SECOND, INDEPENDENT mechanism blocking accumulation that the key fix could never
+reach.** The ninety-fifth stamp's open question is answered and the answer is negative: a person
+who says a non-supportive thing on three calls scores −1. Recorded against the eightieth stamp's
+own reasoning, which predicted the opposite — *"claims from different calls never intersect and
+always count"* — they did not count, because the already-standing-verdict test decided it, not the
+intersection test, and the two were never reconciled.
+
+**THE SECOND FINDING, and three failed predictions trace to it.** Priya produced **16 pairs
+identified to her, 9 upheld, and ZERO claims.** No claims → no projection → no Contact → nothing
+for promotion to promote → her flags stayed Standing. **Promotion was never reached, so it is
+untested, and I am not guessing the cause at the end of a long session.** Measured and named as
+the first thing to diagnose next.
+
+**Predictions: 4 met, 2 half, 4 failed.** Answers fell further than predicted (34 against 45–55).
+Bettina's flag correctly stayed standing — promotion is not too loose. **Three of the four
+failures are the one Priya defect.**
+
+**The card-face fix is confirmed and revealed the next constraint.** The duplicate-ref 400 is gone
+and s3 and s4 inferred their faces cleanly; s5 now fails with **`The compiled grammar is too
+large`** — the thirty-fourth stamp's keyed-grammar ceiling, previously invisible behind the
+duplicate error. The card-face call is the one keyed call with no shard cap, and `keyedShardCount`
+already exists for exactly this. **Not built: this run was the verification.**
+
+### A PROTOCOL GAP
+
+**`AAO_Purge` does not cover cards, shadows or flags** — 28 cards, 3 shadows and 3 flags survived a
+full purge. Cards were deleted by hand card-first per the fifty-second and seventy-third stamps.
+Shadows and flags were deliberately left, and that was better: they are the exact rows that failed
+before, so promotion was tested against real specimens. Reported, not changed.
+
+### The run
+
+Worst callout 82,566 ms, **69% of the ceiling**. Join DML **39 and 31 of 150**, SOQL 78 and 62.
+Deal totals: 51 claims, 34 answers, 29 cards, 6 map rows. Coverage held; cards deduped across
+calls (6 unchanged at s4, 16 at s5). **Call 0 did not flake on any of the three — the first clean
+sweep in six sessions.** Nothing re-run, nothing tuned.

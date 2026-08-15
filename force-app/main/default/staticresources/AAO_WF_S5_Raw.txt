@@ -1,0 +1,562 @@
+WEBVTT
+
+NOTE
+Wells Fargo CIB x OpenText, Aviator mid pilot readout and CIO review session 5, 2026-09-25 15:00 ET, Microsoft Teams export
+NOTE
+Attendees: Katherine Villanueva, Rohan Deshpande, Priya Natarajan, Meredith Cho, Tom Brzezinski, Alison Reyes (Wells Fargo); Dana Whitfield, Marcus Oyelaran (OpenText)
+
+1
+00:00:06.000 --> 00:00:18.135
+<v Katherine Villanueva>Afternoon everyone. Before we start, Priya Natarajan has joined us. Priya is our CIO for the corporate and investment bank.
+
+2
+00:00:19.435 --> 00:00:32.408
+<v Katherine Villanueva>She is here earlier than I planned, and I want to be transparent about why, because it changes what this hour is for.
+
+3
+00:00:33.708 --> 00:00:45.870
+<v Katherine Villanueva>I briefed the enterprise AI governance council two weeks ago on where we are. That went well. It also produced a question I did not anticipate.
+
+4
+00:00:47.170 --> 00:00:59.332
+<v Katherine Villanueva>The council's draft framework requires a named accountable executive for every model in the enterprise inventory, with quarterly attestation. For anything in the investment bank, that is Priya.
+
+5
+00:01:00.632 --> 00:01:12.794
+<v Priya Natarajan>Which is how I found out I am accountable for a thing I have not seen. I am not annoyed, Kate did the right thing going early. But here I am.
+
+6
+00:01:14.094 --> 00:01:17.337
+<v Dana Whitfield>Glad to meet you, Priya. Dana Whitfield, I run the account.
+
+7
+00:01:18.637 --> 00:01:22.691
+<v Marcus Oyelaran>Marcus Oyelaran, solutions consulting. I have been running the pilot on our side.
+
+8
+00:01:23.991 --> 00:01:36.964
+<v Priya Natarajan>Good. I have forty minutes and I have read Kate's summary, so let us not re present anything. I want three things and then I will get out of your way.
+
+9
+00:01:38.264 --> 00:01:50.426
+<v Priya Natarajan>What the pilot has actually produced, what it has not, and what I am signing my name to on the attestation. In that order.
+
+10
+00:01:51.726 --> 00:01:55.780
+<v Katherine Villanueva>Rohan, that is you for the first two. Go.
+
+11
+00:01:57.080 --> 00:02:10.053
+<v Rohan Deshpande>Four weeks in, one hundred fifty seats live across the two coverage groups. I will give you the golden set numbers first because those are the ones that are comparable to anything.
+
+12
+00:02:11.353 --> 00:02:25.948
+<v Rohan Deshpande>Three hundred questions, same set we ran in the sandbox in July, run against the production tenant twice. Once before the exhibit parsing release, once after it landed on the twelfth.
+
+13
+00:02:27.248 --> 00:02:41.032
+<v Rohan Deshpande>Before the release, questions where the answer lives inside a table or a dense exhibit came back with the correct cell sixty one percent of the time. After the release, eighty nine.
+
+14
+00:02:42.332 --> 00:02:46.386
+<v Priya Natarajan>That is the thing you flagged in your July write up as the weakness.
+
+15
+00:02:47.686 --> 00:03:01.470
+<v Rohan Deshpande>It is, and I want to be careful about how I say this. Eighty nine is a real improvement and it is not a hundred. Eleven percent of table questions still read the wrong row.
+
+16
+00:03:02.770 --> 00:03:15.743
+<v Rohan Deshpande>What changed is that it now flags low confidence on most of the ones it gets wrong, so the banker sees a warning rather than a clean wrong number. That is worth more to me than the eighty nine.
+
+17
+00:03:17.043 --> 00:03:20.286
+<v Priya Natarajan>Most of the ones it gets wrong. Not all.
+
+18
+00:03:21.586 --> 00:03:34.559
+<v Rohan Deshpande>Not all. Four questions out of three hundred produced a confident wrong cell. I have those four written up individually and they are in the pack, not buried in the percentage.
+
+19
+00:03:35.859 --> 00:03:48.832
+<v Priya Natarajan>Good. Four is a number I can hold in my head. Ninety seven percent is not, and I have learned not to trust anyone who leads with it.
+
+20
+00:03:50.132 --> 00:04:03.105
+<v Rohan Deshpande>On what the pilot has not produced. In August I flagged that about a fifth of the pitch archive sits in a departmental store outside Documentum, and that it skews recent.
+
+21
+00:04:04.405 --> 00:04:14.540
+<v Rohan Deshpande>That has borne out and it is the single largest drag on the numbers. Questions about the last two quarters underperform everything older by a wide margin.
+
+22
+00:04:15.840 --> 00:04:19.083
+<v Priya Natarajan>How wide.
+
+23
+00:04:20.383 --> 00:04:34.167
+<v Rohan Deshpande>Last two quarters, the retrieval finds a usable precedent about half the time. Anything older than that, eighty seven percent. It is not the product, it is that we did not connect the store.
+
+24
+00:04:35.467 --> 00:04:48.440
+<v Marcus Oyelaran>And to be straight about it, we connected that store read only at no charge mid pilot, without entitlement mapping, and it is labelled unsupported in the report for exactly that reason.
+
+25
+00:04:49.740 --> 00:05:02.713
+<v Rohan Deshpande>Which is the honest label. I would rather the report say we did not connect it properly than have the number look better than the estate deserves.
+
+26
+00:05:04.013 --> 00:05:17.986
+<v Priya Natarajan>I want to sit on that for a second because it is the most useful thing anyone has said so far. The pilot is measuring our estate, not their product.
+
+27
+00:05:19.286 --> 00:05:31.448
+<v Katherine Villanueva>Both, really. But yes, and it is the part I did not expect to learn. We have a document problem that is ours regardless of what we buy.
+
+28
+00:05:32.748 --> 00:05:46.532
+<v Katherine Villanueva>The nine hours a week the associates spend hunting for prior work, which is the number this whole business case rests on, that number does not go away by buying a search layer over an estate that is missing the recent work.
+
+29
+00:05:47.832 --> 00:05:51.075
+<v Priya Natarajan>Say more about the nine hours. Where does it come from?
+
+30
+00:05:52.375 --> 00:06:05.348
+<v Rohan Deshpande>My team measured it in the spring. Time and motion across two coverage groups, six weeks, self reported and then validated against system telemetry. Nine hours a week per associate, median.
+
+31
+00:06:06.648 --> 00:06:19.621
+<v Priya Natarajan>And in the pilot, what is it now?
+
+32
+00:06:20.921 --> 00:06:33.894
+<v Rohan Deshpande>Four weeks is too short for a clean time and motion repeat and I am not going to give you a number I cannot defend. What I have is time to first usable answer, which went from a median of eleven minutes to under two.
+
+33
+00:06:35.194 --> 00:06:48.167
+<v Rohan Deshpande>That is not the same as nine hours becoming two hours and I will not let anyone present it that way. The full measurement repeats at day seventy five.
+
+34
+00:06:49.467 --> 00:06:53.521
+<v Priya Natarajan>Understood, and I appreciate you not giving me the number I wanted.
+
+35
+00:06:54.821 --> 00:07:07.794
+<v Priya Natarajan>Third thing. The attestation. If my name goes on this quarterly, what am I attesting to, and what happens the quarter it stops being true?
+
+36
+00:07:09.094 --> 00:07:22.067
+<v Meredith Cho>Let me take that, because the attestation language is model risk's. You attest that the model is operating within its approved intended use and that the controls in the submission are in place.
+
+37
+00:07:23.367 --> 00:07:36.340
+<v Meredith Cho>You do not attest to accuracy. You attest that the thing doing the accuracy measurement is running and that its results are being reviewed. Those are very different exposures.
+
+38
+00:07:37.640 --> 00:07:41.694
+<v Priya Natarajan>They are. Where is the submission?
+
+39
+00:07:42.994 --> 00:07:56.778
+<v Meredith Cho>Intake closed on the twenty seventh of August, clean. Reviewers assigned the ninth. I expect a decision in the second half of October, which is ahead of the pilot close.
+
+40
+00:07:58.078 --> 00:08:11.051
+<v Meredith Cho>And I will say the same thing to you I have said to this group twice. I am not telling you to buy it. I am telling you it can be approved to operate. Those are different sentences.
+
+41
+00:08:12.351 --> 00:08:16.405
+<v Priya Natarajan>I know the difference, Meredith. That is why I asked you and not Kate.
+
+42
+00:08:17.705 --> 00:08:30.678
+<v Priya Natarajan>Now the part I actually came for. Show me the audit trail. Not the accuracy, not the adoption curve. If compliance walks in here in March and asks where a number in a committee deck came from, show me what happens.
+
+43
+00:08:31.978 --> 00:08:35.221
+<v Rohan Deshpande>Marcus, live. Not the deck.
+
+44
+00:08:36.521 --> 00:08:49.494
+<v Marcus Oyelaran>Sharing now. This is the production tenant. I am going to take a real answer one of the associates generated on Tuesday, and I have not pre selected it, Rohan picked it this morning.
+
+45
+00:08:50.794 --> 00:09:03.767
+<v Marcus Oyelaran>Here is the answer as the banker saw it. Four sourced statements, each with a superscript. I click the third one, the EBITDA multiple.
+
+46
+00:09:05.067 --> 00:09:18.040
+<v Marcus Oyelaran>It opens the source deck at page thirty one with the exhibit highlighted, and this panel is the part you want. Document identifier, version, the entitlement that permitted the read, the user, the timestamp, and the query that produced it.
+
+47
+00:09:19.340 --> 00:09:23.394
+<v Priya Natarajan>Can I get that panel for a query from four months ago?
+
+48
+00:09:24.694 --> 00:09:37.667
+<v Marcus Oyelaran>Yes, and that is the retention question rather than the product question. The audit record is retained for the term of the agreement plus seven years by default, and it is exportable.
+
+49
+00:09:38.967 --> 00:09:43.021
+<v Priya Natarajan>And if the source document was deleted in the interim?
+
+50
+00:09:44.321 --> 00:09:57.294
+<v Marcus Oyelaran>The audit record keeps the identifier, the version and the hash of what was read at the time. It cannot show you a document that no longer exists, but it can prove what was read and prove the copy has not changed.
+
+51
+00:09:58.594 --> 00:10:02.648
+<v Priya Natarajan>That is the correct answer. Most vendors say yes to that question.
+
+52
+00:10:03.948 --> 00:10:16.921
+<v Priya Natarajan>I will tell you why I ask, and Kate has heard this. Three years ago we put in a platform that could not produce a chain of custody when compliance came asking, and I spent a quarter of my year on it.
+
+53
+00:10:18.221 --> 00:10:31.194
+<v Priya Natarajan>The vendor's account team reassured me faster than they investigated. That is the thing I watch for now, and it is the reason I get in the room early rather than at signature.
+
+54
+00:10:32.494 --> 00:10:36.548
+<v Dana Whitfield>Then I will not reassure you about anything I have not checked.
+
+55
+00:10:37.848 --> 00:10:50.821
+<v Priya Natarajan>We will see. Tom, you are the enablement lead. Kate's summary says you are the skeptic. Say the skeptical thing to me directly, I would rather hear it now.
+
+56
+00:10:52.121 --> 00:11:05.094
+<v Tom Brzezinski>Happy to. We already own Copilot. Every managing director is going to ask me why we bought a second assistant, and the true answer is that the first one cannot see our documents.
+
+57
+00:11:06.394 --> 00:11:19.367
+<v Tom Brzezinski>That is a sentence that sounds like an excuse even though it is a fact. My position has not moved since August and I am not going to pretend it has because you are in the room.
+
+58
+00:11:20.667 --> 00:11:24.721
+<v Priya Natarajan>Good. What would move it?
+
+59
+00:11:26.021 --> 00:11:38.183
+<v Tom Brzezinski>Bankers saying it found the thing. I asked for that in August, Marcus built it into the pilot, and my team picked the associates including two who did not like it.
+
+60
+00:11:39.483 --> 00:11:52.456
+<v Tom Brzezinski>I have watched four of the six clips. They are more persuasive than anything on a slide. The two detractors are the most useful ones and I told Marcus to leave them in.
+
+61
+00:11:53.756 --> 00:11:57.810
+<v Priya Natarajan>So has your position moved or has your evidence improved?
+
+62
+00:11:59.110 --> 00:12:12.083
+<v Tom Brzezinski>My evidence has improved. My position is the same. I think this is probably right and I think we will pay seven hundred thousand dollars a year to work around a document management failure of our own making.
+
+63
+00:12:13.383 --> 00:12:17.437
+<v Tom Brzezinski>Both of those can be true and I intend to keep saying both.
+
+64
+00:12:18.737 --> 00:12:22.791
+<v Priya Natarajan>That is the most useful thing anyone has said to me this week.
+
+65
+00:12:24.091 --> 00:12:37.064
+<v Katherine Villanueva>Which is exactly why he is on the call. Priya, on the pricing, Tom made us fix something in August that would have been embarrassing in front of you.
+
+66
+00:12:38.364 --> 00:12:51.337
+<v Katherine Villanueva>Dana's original slide priced fifteen hundred seats. We have eleven hundred bankers. Tom did the division and the real rate was thirty five percent higher than the slide implied.
+
+67
+00:12:52.637 --> 00:12:56.691
+<v Priya Natarajan>And what happened when he raised it?
+
+68
+00:12:57.991 --> 00:13:10.964
+<v Katherine Villanueva>Dana said it was a convenient read on her part, in those words, and put both tiers in the case file with the headcount assumptions written next to each. The twelve hundred tier is six hundred twenty thousand.
+
+69
+00:13:12.264 --> 00:13:25.237
+<v Katherine Villanueva>Priya, I want to say for the record and in front of them, this team has been straight with us the whole way. When the pricing was convenient they said so out loud rather than waiting to be caught.
+
+70
+00:13:26.537 --> 00:13:29.780
+<v Dana Whitfield>That is generous, Kate.
+
+71
+00:13:31.080 --> 00:13:44.053
+<v Priya Natarajan>Noted, and I will form my own view. Meredith, you said second half of October. Kate, what is the shape of the decision after that?
+
+72
+00:13:45.353 --> 00:13:58.326
+<v Katherine Villanueva>Pilot closes the twenty ninth of November. Rohan's day seventy five measurement lands mid November so the full evidence file is assembled before close. The case comes to you in the first week of December.
+
+73
+00:13:59.626 --> 00:14:12.599
+<v Katherine Villanueva>And the commercial mechanic that matters, the ninety five thousand pilot fee credits fully against year one only if we convert inside sixty days of pilot close. That is the twenty eighth of January.
+
+74
+00:14:13.899 --> 00:14:17.643
+<v Priya Natarajan>Which puts the decision squarely in the January window.
+
+75
+00:14:18.943 --> 00:14:31.916
+<v Katherine Villanueva>It does, and I would rather not be deciding a two million dollar term commitment in the last week before a credit lapses. So I would like the case in front of you in early December with room.
+
+76
+00:14:33.216 --> 00:14:46.189
+<v Priya Natarajan>Then get it to me the first week of December and I will give you a decision before the holidays or I will tell you what is missing. I do not sit on things.
+
+77
+00:14:47.489 --> 00:14:51.543
+<v Alison Reyes>On the paper, one procedural note so nobody is surprised in December.
+
+78
+00:14:52.843 --> 00:15:05.816
+<v Alison Reyes>The pilot rode as an order under the existing master. The enterprise agreement is a separate submission with a full third party risk assessment, and that runs four to six weeks even when everything is clean.
+
+79
+00:15:07.116 --> 00:15:20.089
+<v Alison Reyes>If the decision lands in December and the submission starts in December, you are signing in late January at the earliest. That is inside your credit window but it is not comfortable.
+
+80
+00:15:21.389 --> 00:15:25.443
+<v Priya Natarajan>Can the submission start before the decision?
+
+81
+00:15:26.743 --> 00:15:39.716
+<v Alison Reyes>It can start on Kate's sponsorship without a commitment, which is how most groups do it. That is a question for Kate, not for me. I run the portal, I do not have a view on the deal.
+
+82
+00:15:41.016 --> 00:15:53.178
+<v Katherine Villanueva>Start it in November then, on my sponsorship. Alison, tell me what you need from me to open it. Dana, that means your team responds to a second full assessment before we have decided anything.
+
+83
+00:15:54.478 --> 00:15:58.532
+<v Dana Whitfield>We will run it. Five business days on our turnarounds, same as the pilot.
+
+84
+00:15:59.832 --> 00:16:12.805
+<v Rohan Deshpande>Before we lose the room, I want to close a loop and then ask for something that has nothing to do with this purchase.
+
+85
+00:16:14.105 --> 00:16:27.078
+<v Rohan Deshpande>In August, Marcus reframed a problem I had been carrying for two years. Our archive systematically loses the final version of a deck, because the version that ships goes out as an attachment and never comes back to the library.
+
+86
+00:16:28.378 --> 00:16:41.351
+<v Rohan Deshpande>I had been trying to solve it as a capture problem, twice, by asking bankers to upload. Marcus pointed out the artifact already exists in the supervision archive and the real question is whether a controlled copy can be promoted out of it.
+
+87
+00:16:42.651 --> 00:16:55.624
+<v Rohan Deshpande>I took that to records management and supervision three weeks ago. We have a draft promotion policy in review. That would not have happened if he had not reframed it, and I want that on the record in front of Priya.
+
+88
+00:16:56.924 --> 00:17:00.978
+<v Priya Natarajan>That is a bigger win than the pilot, if it lands.
+
+89
+00:17:02.278 --> 00:17:15.251
+<v Rohan Deshpande>It might be. Which brings me to the ask, and Dana, tell me if this is not something you can help with. It is not about Aviator.
+
+90
+00:17:16.551 --> 00:17:29.524
+<v Rohan Deshpande>My team runs a vendor evaluation like the one we just ran maybe three times a year, and every time we build the harness from scratch. The golden set, the scoring rubric, all of it.
+
+91
+00:17:30.824 --> 00:17:43.797
+<v Rohan Deshpande>I want it to be a standing capability rather than a scramble. You sit across a lot of institutions. Have you seen anyone do that well, and what did it actually look like structurally?
+
+92
+00:17:45.097 --> 00:17:58.070
+<v Dana Whitfield>I have, twice, and both times it was owned by an engineering team rather than by procurement, which is the counterintuitive part. When procurement owns it the rubric drifts toward what is easy to score.
+
+93
+00:17:59.370 --> 00:18:12.343
+<v Dana Whitfield>The one that worked best kept a permanent question corpus that grew every evaluation and was never thrown away, so by the fourth vendor they had a two thousand question set that was genuinely their own.
+
+94
+00:18:13.643 --> 00:18:26.616
+<v Dana Whitfield>And they published the rubric to vendors up front. Which sounds like it helps the vendor, and it does, but it also means nobody wastes a cycle on a demo that was never going to matter.
+
+95
+00:18:27.916 --> 00:18:40.889
+<v Rohan Deshpande>Publishing the rubric up front is the part I would have got wrong. I would have kept it back thinking it was leverage. Send me whatever you can share on how the second one was structured.
+
+96
+00:18:42.189 --> 00:18:46.243
+<v Dana Whitfield>I will put something together. No account team involved, it will come from me.
+
+97
+00:18:47.543 --> 00:19:00.516
+<v Katherine Villanueva>Dana, while we are there, a different one and it is my problem not Rohan's. The council's named accountable executive requirement.
+
+98
+00:19:01.816 --> 00:19:14.789
+<v Katherine Villanueva>Priya ends up personally attesting quarterly for every model in this business. That is going to make her office the bottleneck on every AI purchase in the investment bank, not just this one.
+
+99
+00:19:16.089 --> 00:19:29.062
+<v Katherine Villanueva>How have other banks kept that from becoming a chokepoint? And I am asking because I would rather design around it now than complain about it in eighteen months.
+
+100
+00:19:30.362 --> 00:19:43.335
+<v Dana Whitfield>The pattern I have seen work is delegation with a materiality threshold. The executive attests personally above a line and delegates below it to a named deputy, with the same attestation language.
+
+101
+00:19:44.635 --> 00:19:57.608
+<v Dana Whitfield>The ones that struggled tried to solve it with tooling first, a dashboard that rolls everything up, and it did not help because the exposure is personal, not informational.
+
+102
+00:19:58.908 --> 00:20:11.881
+<v Priya Natarajan>That matches my instinct and it is not what my team has been proposing. They have been building me a dashboard. Kate, take that to the council as a comment on the draft.
+
+103
+00:20:13.181 --> 00:20:17.235
+<v Katherine Villanueva>I will, and I will send you the wording before it goes.
+
+104
+00:20:18.535 --> 00:20:31.508
+<v Katherine Villanueva>One more, Dana, and then I will stop. Sequencing. Meredith's approval lands second half of October, the pilot closes end of November, and the enterprise submission wants to start in November.
+
+105
+00:20:32.808 --> 00:20:45.781
+<v Katherine Villanueva>Do the banks that get this right run those in parallel and accept some rework, or sequence them and accept the calendar? I have argued myself into both positions this week.
+
+106
+00:20:47.081 --> 00:21:00.054
+<v Dana Whitfield>Parallel, with one condition. Run them in parallel but do not let the enterprise submission cite pilot results that are not final, because when the final number moves you re open a closed review.
+
+107
+00:21:01.354 --> 00:21:14.327
+<v Dana Whitfield>Cite the model risk approval, which will be final, and cite the pilot as in progress with a date. The reviewers accept that. What they will not accept is a number that changed after they read it.
+
+108
+00:21:15.627 --> 00:21:19.681
+<v Katherine Villanueva>That is the answer. Alison, that works with the portal?
+
+109
+00:21:20.981 --> 00:21:33.954
+<v Alison Reyes>It works. An in progress citation with a date is standard. A number that moves triggers a re review and that is where people lose four weeks without understanding why.
+
+110
+00:21:35.254 --> 00:21:48.227
+<v Meredith Cho>And I will hold the same line on my side. My submission cites Rohan's golden set numbers as of a stated run date, not as a live figure. If the day seventy five run moves them I file an addendum rather than restating.
+
+111
+00:21:49.527 --> 00:21:53.581
+<v Priya Natarajan>Good. Anything else I need to know that nobody has said?
+
+112
+00:21:54.881 --> 00:22:07.854
+<v Rohan Deshpande>One thing. The four confidently wrong answers. I want a commitment that the pilot report names them individually with the query and the source, not a footnote.
+
+113
+00:22:09.154 --> 00:22:22.127
+<v Rohan Deshpande>If the report hides the four, it discredits the two hundred ninety six. I said that in August about the aggregate and I am saying it again about these four specifically.
+
+114
+00:22:23.427 --> 00:22:27.481
+<v Marcus Oyelaran>Named individually, with query and source. It is already drafted that way.
+
+115
+00:22:28.781 --> 00:22:41.754
+<v Priya Natarajan>Then let me say what I need and I will let you go. First week of December, the case, with the day seventy five measurement in it and the four failures in it.
+
+116
+00:22:43.054 --> 00:22:56.027
+<v Priya Natarajan>Model risk approval closed, not pending. The two pricing tiers with the headcount assumption, because I will not have that argument in a decision meeting. And the audit trail demonstration in the deck, live if the room allows it.
+
+117
+00:22:57.327 --> 00:23:01.381
+<v Katherine Villanueva>That is the list. Anything on the political side you want me to handle?
+
+118
+00:23:02.681 --> 00:23:15.654
+<v Priya Natarajan>The council. Bettina Marchetti and I have a standing monthly and I will raise the delegation point there myself, but the comment on the draft should come from you, not me.
+
+119
+00:23:16.954 --> 00:23:29.927
+<v Priya Natarajan>It reads differently coming from the line of business than from the person trying to reduce her own exposure. And that is a real thing, not a courtesy.
+
+120
+00:23:31.227 --> 00:23:35.281
+<v Katherine Villanueva>Understood. It goes from me, this week.
+
+121
+00:23:36.581 --> 00:23:49.554
+<v Priya Natarajan>Dana, one last thing directly to you. I have not decided anything today and nothing I said should be read as a signal. You will hear the decision from Kate in December.
+
+122
+00:23:50.854 --> 00:23:54.908
+<v Dana Whitfield>Understood, and thank you for the time and the directness.
+
+123
+00:23:56.208 --> 00:24:00.262
+<v Priya Natarajan>Kate, walk me through the council wording tomorrow. Thanks everyone.
+
+124
+00:24:01.562 --> 00:24:05.616
+<v Katherine Villanueva>Will do. Thanks Priya.
+
+125
+00:24:06.916 --> 00:24:19.889
+<v Tom Brzezinski>For what it is worth, that is the first CIO conversation I have sat in where nobody performed. I will take the clips to the managing directors in October and I will use both halves of what I said.
+
+126
+00:24:21.189 --> 00:24:25.243
+<v Katherine Villanueva>Use both halves. That is why it works.
+
+127
+00:24:26.543 --> 00:24:39.516
+<v Rohan Deshpande>Marcus, day seventy five run, I want the harness output the same day rather than a week later. Meredith needs it and I need it and neither of us wants a summary.
+
+128
+00:24:40.816 --> 00:24:44.870
+<v Marcus Oyelaran>Same day, per question export, both of you on it.
+
+129
+00:24:46.170 --> 00:24:50.224
+<v Meredith Cho>Thank you. That keeps my addendum simple.
+
+130
+00:24:51.524 --> 00:25:04.497
+<v Alison Reyes>Kate, send me the sponsorship note and I will open the enterprise submission on the third of November. I will need the same two contacts on their side for the questionnaires.
+
+131
+00:25:05.797 --> 00:25:09.851
+<v Dana Whitfield>Same two. I will confirm in writing so it is on the record.
+
+132
+00:25:11.151 --> 00:25:24.124
+<v Katherine Villanueva>Good. Rohan, day seventy five. Meredith, October. Alison, the third. Tom, the managing directors. That is everything.
+
+133
+00:25:25.424 --> 00:25:29.478
+<v Dana Whitfield>Thanks all. This was the session that mattered.
+
+134
+00:25:30.778 --> 00:25:34.832
+<v Rohan Deshpande>Thanks everyone. Marcus, the evaluation practice note when you can.
+
+135
+00:25:36.132 --> 00:25:40.186
+<v Dana Whitfield>That one is mine, not Marcus's. It will come from me next week.
+
+136
+00:25:41.486 --> 00:25:43.686
+<v Rohan Deshpande>Even better. Thanks.
+
+137
+00:25:44.986 --> 00:25:47.186
+<v Meredith Cho>Thanks all.
+
+138
+00:25:48.486 --> 00:25:50.686
+<v Alison Reyes>Bye everyone.
+
+139
+00:25:51.986 --> 00:25:55.229
+<v Katherine Villanueva>Thanks all. Good session.

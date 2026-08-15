@@ -1,0 +1,562 @@
+WEBVTT
+
+NOTE
+Wells Fargo CIB x OpenText, Aviator pilot kickoff and governance working session 4, 2026-08-19 10:00 ET, Microsoft Teams export
+NOTE
+Attendees: Katherine Villanueva, Rohan Deshpande, Meredith Cho, Tom Brzezinski, Alison Reyes (Wells Fargo); Dana Whitfield, Marcus Oyelaran (OpenText)
+
+1
+00:00:06.000 --> 00:00:17.432
+<v Dana Whitfield>Morning everyone. Shorter group than the fifth, which I think is a good sign, it means we are past the introductions and into the work.
+
+2
+00:00:18.732 --> 00:00:30.189
+<v Katherine Villanueva>Morning. Jared Kim is not with us, he is building the pilot reporting on my side and I told him to keep building rather than sit on a call.
+
+3
+00:00:31.489 --> 00:00:35.943
+<v Dana Whitfield>Sensible. We have an hour, and I want to leave ten minutes at the end.
+
+4
+00:00:37.243 --> 00:00:49.700
+<v Katherine Villanueva>Agenda from my side. Where the paperwork actually is, what Meredith has found in the documentation pack, the entitlement workshop, and then enablement.
+
+5
+00:00:51.000 --> 00:00:56.081
+<v Katherine Villanueva>Alison, you go first, because everything else is downstream of you.
+
+6
+00:00:57.381 --> 00:01:10.354
+<v Alison Reyes>Both questionnaires came back from OpenText inside the five days Dana committed to, which I will note because it does not usually happen. They are logged in the portal.
+
+7
+00:01:11.654 --> 00:01:22.600
+<v Alison Reyes>The information security review is complete with no findings. The AI addendum has two follow up questions from the reviewer, they went to your vendor mailbox Friday.
+
+8
+00:01:23.900 --> 00:01:27.143
+<v Dana Whitfield>We have them. Answers go back today.
+
+9
+00:01:28.443 --> 00:01:41.416
+<v Alison Reyes>Then the limited engagement review closes this week or early next. That unblocks the pilot order. It does not touch the enterprise agreement, that is a separate submission when you get there.
+
+10
+00:01:42.716 --> 00:01:53.662
+<v Alison Reyes>And to confirm what I raised on the fifth, your legal team did paper it as an order under the existing master. That saved the four to six weeks.
+
+11
+00:01:54.962 --> 00:01:58.205
+<v Dana Whitfield>We took the advice. It was good advice.
+
+12
+00:01:59.505 --> 00:02:04.370
+<v Alison Reyes>It is the same advice I give every vendor. Most of them do not take it.
+
+13
+00:02:05.670 --> 00:02:09.319
+<v Katherine Villanueva>Good. Meredith, the documentation pack.
+
+14
+00:02:10.619 --> 00:02:24.403
+<v Meredith Cho>It arrived on the ninth, which was the week you said. I have read all four artifacts for the current version and I have the intake review on the calendar for the twenty seventh.
+
+15
+00:02:25.703 --> 00:02:38.676
+<v Meredith Cho>The model card is more detailed than most of what crosses my desk. The intended use statement is written for a general audience and I will need it narrowed to our use case, but that is normal and it is a rewrite, not a gap.
+
+16
+00:02:39.976 --> 00:02:44.030
+<v Marcus Oyelaran>We can produce a scoped intended use statement. What granularity?
+
+17
+00:02:45.330 --> 00:02:59.925
+<v Meredith Cho>Deal library and pitch archive retrieval for investment banking associates and above, with the explicit exclusions Rohan named on the fifth, client communications and anything supervision related. Name what it is not for as clearly as what it is for.
+
+18
+00:03:01.225 --> 00:03:04.468
+<v Marcus Oyelaran>Understood. I will have that back before the twenty seventh.
+
+19
+00:03:05.768 --> 00:03:19.146
+<v Meredith Cho>The evaluation evidence is the piece I want to flag. Your golden set is yours. Our validation file cannot rest on a benchmark the vendor built and the vendor scored.
+
+20
+00:03:20.446 --> 00:03:33.419
+<v Meredith Cho>So my submission will lean on Rohan's three hundred question set and the pilot numbers off it, and yours becomes supporting evidence rather than primary. I want you to know that now rather than in October.
+
+21
+00:03:34.719 --> 00:03:38.773
+<v Dana Whitfield>That is fair and it is how it should work. No objection.
+
+22
+00:03:40.073 --> 00:03:52.230
+<v Meredith Cho>And the twelve months of incident history was in the pack. Two severity ones, both notified inside the hour, both with the root cause written up. I want to say plainly that I expected that section to be thinner.
+
+23
+00:03:53.530 --> 00:03:56.773
+<v Marcus Oyelaran>We would rather you see the actuals.
+
+24
+00:03:58.073 --> 00:04:11.046
+<v Meredith Cho>Noted. To be clear about my role, same as the fifth, I am not evaluating whether you should buy this. I am evaluating whether it can be approved to operate. Those are different questions and I only answer the second one.
+
+25
+00:04:12.346 --> 00:04:15.589
+<v Katherine Villanueva>Understood, and that boundary is why we trust the answer.
+
+26
+00:04:16.889 --> 00:04:29.862
+<v Rohan Deshpande>Since we are on delivery, I have a complaint and I would rather air it here than let it sit. The release notes were ten days late.
+
+27
+00:04:31.162 --> 00:04:45.757
+<v Rohan Deshpande>Marcus said same day as the documentation pack on the fifth. The documentation pack went to Meredith on the ninth and the release notes reached me on the nineteenth, which is this morning, which is the morning of this call.
+
+28
+00:04:47.057 --> 00:04:57.192
+<v Rohan Deshpande>And when they arrived the exhibit parsing section was two paragraphs with no scope statement. That is the one section I asked for by name.
+
+29
+00:04:58.492 --> 00:05:02.546
+<v Marcus Oyelaran>That is on me. Both parts of it, the delay and the depth.
+
+30
+00:05:03.846 --> 00:05:17.630
+<v Rohan Deshpande>I am not making it bigger than it is. It is release notes, nobody died. But you are asking my team to plan a workshop against a release, and I cannot plan against two paragraphs.
+
+31
+00:05:18.930 --> 00:05:31.092
+<v Marcus Oyelaran>You will have the engineering scope document by Thursday, and it will say which exhibit structures are in the release and which are explicitly not. Including the ones we do not fix.
+
+32
+00:05:32.392 --> 00:05:35.635
+<v Rohan Deshpande>Including the ones you do not fix is the part I care about.
+
+33
+00:05:36.935 --> 00:05:47.881
+<v Dana Whitfield>Rohan, that is a fair hit and I am not going to soften it. Ten days is ten days. It will not happen again on my account.
+
+34
+00:05:49.181 --> 00:06:01.038
+<v Katherine Villanueva>Let us move. Rohan, the workshop. Marcus said four hours from your engineers across two sessions and you said four you can find.
+
+35
+00:06:02.338 --> 00:06:14.500
+<v Rohan Deshpande>Four still looks right for the deal library. The pitch archive is where it gets interesting, and I found something in the mapping prep that we need to talk about.
+
+36
+00:06:15.800 --> 00:06:29.176
+<v Rohan Deshpande>About a fifth of the pitch archive does not live in Documentum. It lives in a departmental store the coverage teams stood up years ago that nobody has ever formally owned.
+
+37
+00:06:30.476 --> 00:06:34.530
+<v Marcus Oyelaran>Is it in the pilot scope as you and I wrote it, or outside?
+
+38
+00:06:35.830 --> 00:06:47.581
+<v Rohan Deshpande>Outside, as written. Which is fine for the pilot. My worry is that the fifth that is missing is disproportionately the recent work, because that is where the coverage teams have been saving.
+
+39
+00:06:48.881 --> 00:07:01.043
+<v Rohan Deshpande>So the pilot could look worse than the product is, because the associate asks for last quarter's precedent and last quarter's precedent is the part we did not connect.
+
+40
+00:07:02.343 --> 00:07:06.397
+<v Marcus Oyelaran>That is a real risk to the pilot numbers and I am glad you caught it now.
+
+41
+00:07:07.697 --> 00:07:22.292
+<v Marcus Oyelaran>Two options. We connect it as a third repository, which is scope change and I would have to price it, or we scope the pilot questions to periods the connected estate actually covers and say so in the report.
+
+42
+00:07:23.592 --> 00:07:28.457
+<v Rohan Deshpande>I do not love the second one. It reads like we chose the questions to flatter the result.
+
+43
+00:07:29.757 --> 00:07:42.730
+<v Marcus Oyelaran>Then a third option. Connect it read only for the pilot at no charge, no entitlement mapping, inherit whatever permissions the store already carries, and treat it as an unsupported source in the report.
+
+44
+00:07:44.030 --> 00:07:57.003
+<v Rohan Deshpande>That could work. The permissions on that store are inconsistent, which is the whole reason nobody owns it, so an unsupported label is honest rather than convenient.
+
+45
+00:07:58.303 --> 00:08:11.276
+<v Marcus Oyelaran>Then let us do that, and I will write the caveat language rather than leave it to the report writer. And Rohan, while we are here, who would own that store if somebody had to?
+
+46
+00:08:12.576 --> 00:08:26.360
+<v Rohan Deshpande>That is the question I have been trying to answer for two years, and it is bigger than your product. The coverage teams save locally, they always have, and then the final version that actually went to the client never comes back to the library.
+
+47
+00:08:27.660 --> 00:08:38.606
+<v Rohan Deshpande>So the archive is systematically missing the versions that mattered. We have the drafts and we do not have the deck that was in the room.
+
+48
+00:08:39.906 --> 00:08:43.149
+<v Marcus Oyelaran>How do you know it is the final versions that are missing?
+
+49
+00:08:44.449 --> 00:08:58.030
+<v Rohan Deshpande>Because we sampled it. Forty deals, we pulled what the library had and asked the deal teams for what actually went out. Sixty percent of the time the library's newest version was not the one that shipped.
+
+50
+00:08:59.330 --> 00:09:03.384
+<v Marcus Oyelaran>Sixty percent. Have you tried to fix it at the workflow or at the storage layer?
+
+51
+00:09:04.684 --> 00:09:19.279
+<v Rohan Deshpande>Workflow, twice, both times by asking people to upload. Which is asking bankers to do administrative work at the exact moment the deal is closing, so it fails, and it deserves to fail.
+
+52
+00:09:20.579 --> 00:09:34.665
+<v Marcus Oyelaran>Then do not ask them. Every one of those decks goes out as an email attachment from a banker's mailbox. The capture point is the send, not the save, and nobody has to do anything.
+
+53
+00:09:35.965 --> 00:09:39.208
+<v Rohan Deshpande>Say more about that, because I have not thought about it that way.
+
+54
+00:09:40.508 --> 00:09:55.103
+<v Marcus Oyelaran>Journaling is already on for supervision, so the artifact already exists in a store you already keep. The problem is not capture, it is that the captured copy is in a compliance archive rather than a working library, and those are different systems by design.
+
+55
+00:09:56.403 --> 00:10:10.187
+<v Rohan Deshpande>And nobody is allowed to read the compliance archive for anything except supervision. That is exactly the wall I hit the second time. But you are right that the artifact exists, which is not where I had the problem framed.
+
+56
+00:10:11.487 --> 00:10:24.460
+<v Marcus Oyelaran>Then the question is narrower than you thought. It is not how do we capture final decks, it is whether a controlled copy can be promoted out of the archive into the library under a defined policy.
+
+57
+00:10:25.760 --> 00:10:36.706
+<v Rohan Deshpande>Which is a conversation with supervision and records management, not with a vendor. But it is a better question than the one I have been asking, and I am going to take it to them.
+
+58
+00:10:38.006 --> 00:10:42.060
+<v Marcus Oyelaran>If it helps, two of our banking customers have that policy written already.
+
+59
+00:10:43.360 --> 00:10:48.225
+<v Rohan Deshpande>Send me the shape of it, redacted, whatever you can. That would genuinely help.
+
+60
+00:10:49.525 --> 00:10:53.579
+<v Marcus Oyelaran>I will get you what I can share by the end of the week.
+
+61
+00:10:54.879 --> 00:11:08.257
+<v Katherine Villanueva>That is a better use of ten minutes than most of what we do. Rohan, if that lands anywhere it goes on your roadmap, not this pilot, and I do not want it entangled with the purchase.
+
+62
+00:11:09.557 --> 00:11:12.800
+<v Rohan Deshpande>Agreed. Different track entirely.
+
+63
+00:11:14.100 --> 00:11:26.262
+<v Katherine Villanueva>Dana, while we are off product for a second, I want your read on something and you can tell me if it is not your place to answer.
+
+64
+00:11:27.562 --> 00:11:29.762
+<v Dana Whitfield>Go ahead.
+
+65
+00:11:31.062 --> 00:11:45.657
+<v Katherine Villanueva>The bank is standing up the enterprise AI governance program this year. Bettina Marchetti chairs the council that owns it, and everything any line of business buys eventually has to map to her framework.
+
+66
+00:11:46.957 --> 00:12:00.335
+<v Katherine Villanueva>My problem is timing. If I move at line of business speed I am ahead of the framework and I own the exception. If I wait for the framework I lose a year of the thing I am trying to fix.
+
+67
+00:12:01.635 --> 00:12:11.770
+<v Katherine Villanueva>You sit across a lot of banks. How have the ones that got this right actually sequenced it? And I am not asking you to sell me anything.
+
+68
+00:12:13.070 --> 00:12:26.043
+<v Dana Whitfield>I will answer it straight and some of it is unflattering to vendors. The banks that got hurt are the ones that let a purchase become the test case for the framework.
+
+69
+00:12:27.343 --> 00:12:41.127
+<v Dana Whitfield>What worked, and I have seen this three times now, is a line of business going first on a narrow use case and volunteering it to the council as a worked example rather than being caught as an exception.
+
+70
+00:12:42.427 --> 00:12:55.400
+<v Dana Whitfield>The difference is whether the council hears about it from you or from someone else. When it comes from you it is a contribution to the framework. When it comes from anyone else it is a compliance finding.
+
+71
+00:12:56.700 --> 00:13:07.646
+<v Katherine Villanueva>That is the answer I was afraid of, which usually means it is right. So I should be briefing the council chair before I am asked to, not after.
+
+72
+00:13:08.946 --> 00:13:22.322
+<v Dana Whitfield>That would be my read. And the useful thing you have that most first movers do not is Meredith's file. Going to a governance council with a completed model risk submission is a different conversation than going with a plan.
+
+73
+00:13:23.622 --> 00:13:35.784
+<v Katherine Villanueva>Meredith, does that create work for you? I am not going to volunteer your file to a council without asking, and I do not want it read as second line endorsing a purchase.
+
+74
+00:13:37.084 --> 00:13:50.457
+<v Meredith Cho>It creates no extra work and I would want the distinction stated in writing. The submission says this model can be approved to operate under these conditions. It does not say the bank should buy it.
+
+75
+00:13:51.757 --> 00:13:56.622
+<v Katherine Villanueva>Then it goes with that sentence attached, verbatim.
+
+76
+00:13:57.922 --> 00:14:01.165
+<v Meredith Cho>That works.
+
+77
+00:14:02.465 --> 00:14:16.249
+<v Tom Brzezinski>Can I go back to money for a minute, because I have been carrying a sentence around for two weeks that Meredith drove a truck through and I never finished it.
+
+78
+00:14:17.549 --> 00:14:19.749
+<v Meredith Cho>Guilty, sorry Tom.
+
+79
+00:14:21.049 --> 00:14:35.635
+<v Tom Brzezinski>On the fifth I was saying what I care about is the per seat number, and the number that floated back in the June conversation was eight hundred and change a seat. That is the sentence I lost.
+
+80
+00:14:36.935 --> 00:14:50.311
+<v Tom Brzezinski>The reason it matters is Dana's slide on the fifth was seven hundred forty thousand for up to fifteen hundred seats, and I have eleven hundred bankers, not fifteen hundred.
+
+81
+00:14:51.611 --> 00:15:04.584
+<v Tom Brzezinski>So my actual rate is six hundred seventy three a seat, not four ninety three. The tier is priced for a headcount I do not have, and that gap is the number I have to defend.
+
+82
+00:15:05.884 --> 00:15:10.749
+<v Dana Whitfield>That is the right math and it is the honest version of the tier. Let me answer it directly.
+
+83
+00:15:12.049 --> 00:15:26.632
+<v Dana Whitfield>The tier is a ceiling, so you are paying for headroom you may not use in year one. If eleven hundred is genuinely where you stay, the twelve hundred seat tier exists and it lands at six hundred twenty thousand.
+
+84
+00:15:27.932 --> 00:15:31.586
+<v Tom Brzezinski>Why was that not the slide on the fifth?
+
+85
+00:15:32.886 --> 00:15:45.859
+<v Dana Whitfield>Because Kate framed the pilot around two coverage groups scaling to the investment bank and I priced the direction of travel. That was my read and you are entitled to say it was a convenient one.
+
+86
+00:15:47.159 --> 00:15:51.213
+<v Tom Brzezinski>I will say exactly that. It was a convenient read.
+
+87
+00:15:52.513 --> 00:16:05.486
+<v Katherine Villanueva>Both tiers go in the case file, Dana, with the headcount assumption written next to each. I will not have that argument for the first time in front of Priya.
+
+88
+00:16:06.786 --> 00:16:10.029
+<v Dana Whitfield>Both tiers, with assumptions. You will have it Thursday.
+
+89
+00:16:11.329 --> 00:16:25.913
+<v Tom Brzezinski>And while I have the floor, the Copilot question. I asked for a one pager on the fifth and I want to say the version Dana sent was better than I expected.
+
+90
+00:16:27.213 --> 00:16:39.970
+<v Tom Brzezinski>It did not pretend Copilot was bad. It drew the line at the estate boundary, which is a line I can actually defend in a room full of managing directors.
+
+91
+00:16:41.270 --> 00:16:45.324
+<v Dana Whitfield>That was the intent, and thank you for saying so.
+
+92
+00:16:46.624 --> 00:16:59.597
+<v Tom Brzezinski>Do not get excited. My position has not moved. I still think we are buying a second assistant because the first one cannot see our documents, and that is a sentence that sounds bad no matter how true it is.
+
+93
+00:17:00.897 --> 00:17:13.870
+<v Tom Brzezinski>Every managing director is going to ask me why Microsoft cannot just fix theirs. And the one pager answers it for me. It does not answer it for them, because they will not read a one pager.
+
+94
+00:17:15.170 --> 00:17:19.224
+<v Katherine Villanueva>So what would answer it for them, Tom? Genuinely asking.
+
+95
+00:17:20.524 --> 00:17:34.108
+<v Tom Brzezinski>A banker who used it saying it found the thing. Not a slide. If the pilot gives me three associates on camera saying I found the precedent in ninety seconds, I can carry the room.
+
+96
+00:17:35.408 --> 00:17:39.462
+<v Marcus Oyelaran>That we can build into the pilot. It costs nothing and it is the strongest asset you get.
+
+97
+00:17:40.762 --> 00:17:53.735
+<v Tom Brzezinski>Then build it. But I want them picked by my team, not yours, and I want the ones who did not like it included. If it is all glowing nobody believes it.
+
+98
+00:17:55.035 --> 00:17:58.278
+<v Marcus Oyelaran>Your team picks. Including the detractors.
+
+99
+00:17:59.578 --> 00:18:11.740
+<v Rohan Deshpande>Related, and this is the thing I will not move on. The pilot report has to keep per question citation status. The sample Marcus sent does, and I checked.
+
+100
+00:18:13.040 --> 00:18:27.635
+<v Rohan Deshpande>Nothing that a banker cannot trace back to a page goes into a committee document. That is not a preference of mine, it is the condition the whole evaluation is built on, and it does not soften because the pilot is going well.
+
+101
+00:18:28.935 --> 00:18:41.908
+<v Rohan Deshpande>If the aggregate looks good and four questions in the set produced an uncited number, the four are the finding. Not the aggregate.
+
+102
+00:18:43.208 --> 00:18:47.262
+<v Marcus Oyelaran>Understood, and the harness reports it that way by default.
+
+103
+00:18:48.562 --> 00:19:01.535
+<v Meredith Cho>I want that in my file too, Rohan, the per question output rather than the summary. My reviewers will ask for the failures and if I hand them a percentage they will send it back.
+
+104
+00:19:02.835 --> 00:19:06.078
+<v Rohan Deshpande>You will get the same export I get.
+
+105
+00:19:07.378 --> 00:19:20.351
+<v Alison Reyes>Procedurally, if the pilot report is going to be attached to the enterprise submission, it needs to be a named deliverable in the pilot order, not something we produce informally at the end.
+
+106
+00:19:21.651 --> 00:19:25.705
+<v Dana Whitfield>We will name it in the order. Title and format both.
+
+107
+00:19:27.005 --> 00:19:39.167
+<v Alison Reyes>Then I have what I need. My part is the portal, and the portal is moving. I do not have a view on the product and it would not be appropriate for me to have one.
+
+108
+00:19:40.467 --> 00:19:53.440
+<v Katherine Villanueva>Nobody is asking you for one, Alison. Enablement. Tom, six weeks from signature to first query means your training window is real and it is soon.
+
+109
+00:19:54.740 --> 00:20:07.713
+<v Tom Brzezinski>Two live sessions per coverage group, recorded, that was the commitment. I want them in the first ten days of the pilot, not spread across ninety, because of the week two dip Marcus described.
+
+110
+00:20:09.013 --> 00:20:22.389
+<v Tom Brzezinski>If the dip is real and it tracks whether the first ten queries produced something useful, then the training has to be front loaded and the follow up has to hit exactly at the dip.
+
+111
+00:20:23.689 --> 00:20:36.662
+<v Marcus Oyelaran>That is the right read of our own data and it is better than what we usually do. We normally schedule the second session at week four. Week two is where it should be.
+
+112
+00:20:37.962 --> 00:20:43.043
+<v Tom Brzezinski>Then move it. And send me your slides, I will rewrite them for bankers.
+
+113
+00:20:44.343 --> 00:20:48.397
+<v Marcus Oyelaran>Sent today. Rewrite freely.
+
+114
+00:20:49.697 --> 00:21:03.481
+<v Katherine Villanueva>Priya. She has the business case on her desk the week the pilot closes and not before, because I am not walking in there with a plan when I could walk in with numbers.
+
+115
+00:21:04.781 --> 00:21:18.157
+<v Katherine Villanueva>Her office confirmed she wants model risk closed first, exactly as I said on the fifth. Meredith, the twenty seventh intake, does that put approval before or after the pilot ends?
+
+116
+00:21:19.457 --> 00:21:32.430
+<v Meredith Cho>Before, if the intake is clean. Intake on the twenty seventh, reviewer assignment inside two weeks, and a standard submission of this quality runs six to eight weeks from there.
+
+117
+00:21:33.730 --> 00:21:37.784
+<v Meredith Cho>So late October, assuming nothing in the pilot changes the model.
+
+118
+00:21:39.084 --> 00:21:43.138
+<v Katherine Villanueva>That works. Dana, anything you need from us before the twenty seventh?
+
+119
+00:21:44.438 --> 00:21:57.411
+<v Dana Whitfield>The scoped intended use statement is ours, that is Marcus by the twenty seventh. The engineering scope document is Thursday. The two tier pricing with assumptions is Thursday.
+
+120
+00:21:58.711 --> 00:22:11.684
+<v Dana Whitfield>And I will say, this group has been the most straightforward buying team I have worked with this year. The candor on both sides has been genuinely unusual and I think it is why we are where we are.
+
+121
+00:22:12.984 --> 00:22:16.227
+<v Katherine Villanueva>That is kind. Let us see if it survives contract.
+
+122
+00:22:17.527 --> 00:22:30.500
+<v Rohan Deshpande>One more from me on the workshop scheduling. My two engineers are Priya's org, not Kate's, so their time comes out of a budget I do not control.
+
+123
+00:22:31.800 --> 00:22:44.773
+<v Rohan Deshpande>Four hours is inside what I can approve. If the departmental store connection adds hours to my side rather than yours, I have to go ask, and asking is slow.
+
+124
+00:22:46.073 --> 00:22:50.127
+<v Marcus Oyelaran>Read only, no mapping, no hours from your engineers. That is the shape.
+
+125
+00:22:51.427 --> 00:22:55.481
+<v Rohan Deshpande>Then it stays inside four and I do not have to ask anyone.
+
+126
+00:22:56.781 --> 00:23:10.157
+<v Katherine Villanueva>Good. Last item, and it is mine. When the case goes up, it goes with the numbers Rohan's golden set produces, not the numbers OpenText produces.
+
+127
+00:23:11.457 --> 00:23:24.430
+<v Katherine Villanueva>Meredith made that point to your side on the fifth about accuracy figures and I am extending it to everything. Adoption, time to answer, all of it. Our instrumentation, our numbers.
+
+128
+00:23:25.730 --> 00:23:29.784
+<v Dana Whitfield>Agreed, and we will source the deck from your file. Same as we said.
+
+129
+00:23:31.084 --> 00:23:43.246
+<v Katherine Villanueva>Then I think we are done. Alison, you will tell me when the portal clears. Meredith, the twenty seventh. Rohan, the workshop when the order lands.
+
+130
+00:23:44.546 --> 00:23:57.519
+<v Tom Brzezinski>And me on the training calendar as soon as there is a signature date, because I cannot book eleven hundred bankers into anything with two weeks notice.
+
+131
+00:23:58.819 --> 00:24:02.873
+<v Dana Whitfield>You will have the date the hour we have it.
+
+132
+00:24:04.173 --> 00:24:17.146
+<v Alison Reyes>One correction to the sequence, Kate. The council chair's office does not sit in the portal path at all, so if you are briefing them that is your own timeline, not mine.
+
+133
+00:24:18.446 --> 00:24:29.392
+<v Katherine Villanueva>Understood, and that is mine to run. I will handle the council separately and it does not gate anything we discussed today.
+
+134
+00:24:30.692 --> 00:24:34.746
+<v Dana Whitfield>Thanks all. Genuinely useful hour.
+
+135
+00:24:36.046 --> 00:24:39.289
+<v Rohan Deshpande>Marcus, Thursday. And the redacted policy shapes.
+
+136
+00:24:40.589 --> 00:24:43.832
+<v Marcus Oyelaran>Thursday and end of week. Thanks everyone.
+
+137
+00:24:45.132 --> 00:24:47.332
+<v Meredith Cho>Thanks all.
+
+138
+00:24:48.632 --> 00:24:50.832
+<v Alison Reyes>Bye everyone.
+
+139
+00:24:52.132 --> 00:24:55.375
+<v Katherine Villanueva>Thanks all. Talk next week.

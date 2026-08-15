@@ -994,3 +994,67 @@ Worst callout 82,566 ms, **69% of the ceiling**. Join DML **39 and 31 of 150**, 
 Deal totals: 51 claims, 34 answers, 29 cards, 6 map rows. Coverage held; cards deduped across
 calls (6 unchanged at s4, 16 at s5). **Call 0 did not flake on any of the three — the first clean
 sweep in six sessions.** Nothing re-run, nothing tuned.
+
+---
+
+## Session close · 15 August · the hundred-first stamp folds the day · CODE's queue for next session
+
+Ledger 509,326 bytes, hundred-first at the top. Board v3.0 at `e6d81e3`. Twenty-two stamps today,
+eightieth through hundred-first.
+
+### THE FIRST TASK NEXT SESSION, and everything queues behind it
+
+**Priya: nine upheld pairs produced zero claims. Show the refusing gate and NAME it, or it is a
+counting-law defect.** The bar is design's and it is the right one: **s3 wrote 31 claims from 31
+upheld, one for one.** Nine-to-zero has never been the lawful shape anywhere in this system, so
+one of two things is true and the diagnosis has to say which:
+
+- a gate refused all nine for a stated reason, in which case the refusal is lawful and the reason
+  goes on the record; **or**
+- nothing refused them and they were lost, which is a one-for-one-for-one violation and a defect
+  against the counting law.
+
+**Either outcome is a finding. Promotion stays UNTESTED until it has a specimen** — it was never
+reached on the clean re-run, and I will not report it as working or as failing until something
+exercises it.
+
+My own ruling stands and is unchanged: **a lawful refusal is a lawful refusal, and there is no
+build to force Priya onto the map.** The addendum does not soften that; it asks whether the
+refusal happened at all.
+
+### THE COUNTER IS RETIRED · a migration, not an amputation
+
+Bands derive from the ontology directly: the standing voiced state is the latest distinct verified
+establishment's, superseded by later evidence, with the contention flag carrying the full quoted
+sequence whenever polarity reverses. **A change of tune is lawful data.** The guard MOVED rather
+than vanished — Mentor and Enemy stay proof-gated on their own grade of words, and call 3 keeps
+refusing with reasons.
+
+**Four conditions before the writer retires, and none is optional:**
+
+1. The ontology-direct derivation **reproduces the first-fixture grading** — Adam lands
+   top-of-Supporter, not Mentor.
+2. It **reproduces the frozen corpus's recorded bands.**
+3. `AAO_Support_Counter__c` **stays in schema as history**; nothing is deleted.
+4. **Replay must still reconstruct standing state exactly.**
+
+Conditions 1 and 2 are the same shape as the ninety-sixth stamp's byte-identical bar, and they get
+the same treatment: proven before the change lands, not asserted after.
+
+### The two new standing hazards, kept where I will read them
+
+**INSTRUMENT REACH — four instances in one day.** Name what the instrument can see before
+reporting what it did not find. A grep reaches one file; a call graph is the subject. An
+FLS-aware describe reaches visibility, never existence.
+
+**THE SATURATION HAZARD.** With the counter retired, what "firms up over calls" now rests on
+cards, obstacles, LOR and stance supersession. Coverage saturates after two calls at `Multiple
+contacts` because `In-depth` is deliberately underivable. **Whether that is enough accrual is an
+unmeasured product question**, and it is unmeasured rather than answered.
+
+### What the day actually produced
+
+The system read three real calls, refused what it could not prove, cited everything it could, and
+**its two largest defects were found by its own instruments** — the org's validation rules caught
+a query shape that could never have matched, and a stacked read caught an answer key that could
+never have accumulated. Neither was found by reasoning about the code.

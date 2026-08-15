@@ -250,7 +250,9 @@ public with sharing class AAO_Cards {
                 o.notes.add('Pair ' + a.AAO_Pair_Ref__c + ' carries no words; no card written.');
                 continue;
             }
-            AAO_CardFace.Face inferred = headline.get(a.AAO_Pair_Ref__c);
+            // Keyed by pair Id: the ref is unique per RUN only, and this writer reads every
+            // run on the deal. See AAO_CardFace for what the collision cost on the WF stack.
+            AAO_CardFace.Face inferred = headline.get(a.Id);
             String face = inferred == null ? faceFrom(words) : inferred.face;
             String summary = inferred == null ? null : inferred.summary;
 

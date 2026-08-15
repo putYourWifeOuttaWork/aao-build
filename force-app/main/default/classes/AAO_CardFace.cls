@@ -67,8 +67,25 @@ public with sharing class AAO_CardFace {
             if (type == null) {
                 continue;
             }
-            block.add(p.AAO_Pair_Ref__c + ' [' + type + ']: "' + words + '"');
-            props.put(p.AAO_Pair_Ref__c, new Map<String, Object>{
+            // KEYED BY THE PAIR'S ID, NOT ITS REF, AND THE DISTINCTION IS THE WHOLE DEFECT.
+            //
+            // `AAO_Pair_Ref__c` is unique WITHIN A RUN - `r1q2` is read 1's second pair, and
+            // every run on a deal has one. The caller scopes by OPPORTUNITY across every run,
+            // so on a stacked deal s3's `r1q2`, s4's `r1q2` and s5's `r1q2` all arrive here.
+            //
+            // What that did, on the Wells Fargo stack: `required` is a List, so the refs
+            // duplicated and the gateway refused the whole call with `has non-unique elements`;
+            // the fallback then wrote raw verbatim onto twelve card faces and Matthew graded
+            // them unusable off the live map. **The 400 was the lucky half.** `props` is a Map,
+            // so a colliding ref SILENTLY OVERWROTE the earlier pair's words, and `out` is
+            // keyed the same way, so a face would have been attributed to the wrong card with
+            // nothing to catch it. A refused call is visible; a wrong face is not.
+            //
+            // The Id is unique per deal, per org, forever, so no ref can collide however many
+            // calls stack up. Nothing else about the shape changes.
+            String key = p.Id;
+            block.add(key + ' [' + type + ']: "' + words + '"');
+            props.put(key, new Map<String, Object>{
                 'type' => 'object',
                 'properties' => new Map<String, Object>{
                     'face' => new Map<String, Object>{
@@ -85,7 +102,7 @@ public with sharing class AAO_CardFace {
                 'required' => new List<String>{ 'face', 'summary' },
                 'additionalProperties' => false
             });
-            required.add(p.AAO_Pair_Ref__c);
+            required.add(key);
         }
         if (required.isEmpty()) {
             return out;

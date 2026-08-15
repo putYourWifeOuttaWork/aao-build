@@ -31,7 +31,11 @@ public class AAO_AnswerTriggerHandler {
         for (AAO_Answer__c a : rows) {
             String recomposed = AAO_AnswerKey.compose(a);
             AAO_Answer__c old = oldById.get(a.Id);
-            if (old.AAO_Answer_Key__c != null && old.AAO_Answer_Key__c != recomposed) {
+            if (
+                old.AAO_Answer_Key__c != null &&
+                old.AAO_Answer_Key__c != recomposed &&
+                !isOwnContactPromotion(old.AAO_Answer_Key__c, recomposed, a)
+            ) {
                 a.addError(
                     'The answer key would change from "' +
                     old.AAO_Answer_Key__c +
@@ -45,6 +49,62 @@ public class AAO_AnswerTriggerHandler {
             a.AAO_Answer_Key__c = recomposed;
         }
         enforce(rows, oldById);
+    }
+
+    /**
+     * THE ONE KEY TRANSITION THAT IS NOT AN IDENTITY MOVE · participant to that participant's
+     * OWN Contact, under the A2 person-durable key.
+     *
+     * The guard above exists because a key change usually means the row became an answer about
+     * somebody else, and it has been right every time until now. A2 introduced the one case where
+     * it is wrong: a person can be keyed on their per-Source participant row because the org had
+     * no Contact for them, and then **the create leg lands their Contact later in the same run**.
+     * Priya Natarajan is the live specimen - held across two calls, rostered on the third, a
+     * Contact created for her at projection.
+     *
+     * That is not a different subject. `AAO_AnswerKey`'s own header already says so in as many
+     * words: a Contact beside a Participant is *"a resolution outcome of that person, not a
+     * second subject"*. So this permits exactly that transition and nothing else:
+     *
+     *   - the old key must be Participant-resolved and the new key Contact-resolved;
+     *   - the contract half of both keys must be identical;
+     *   - and **the participant named in the old key must itself carry the Contact named in the
+     *     new one**, read from the org rather than assumed.
+     *
+     * Any other change still throws, including a Contact moving to a different Contact.
+     */
+    private static Boolean isOwnContactPromotion(
+        String oldKey,
+        String newKey,
+        AAO_Answer__c a
+    ) {
+        if (a.AAO_Subject_Type__c != 'Participant' || a.AAO_Subject_Contact__c == null) {
+            return false;
+        }
+        List<String> was = oldKey.split('\\|');
+        List<String> now = newKey.split('\\|');
+        if (was.size() != 4 || now.size() != 4) {
+            return false;
+        }
+        // Same version, same subject type, same contract; only the resolved identity differs.
+        if (was[0] != now[0] || was[1] != now[1] || was[3] != now[3]) {
+            return false;
+        }
+        if (now[2] != String.valueOf(a.AAO_Subject_Contact__c)) {
+            return false;
+        }
+        // MEASURED, NOT ASSUMED: the participant the row used to key on must be the very person
+        // whose Contact it now keys on.
+        Id wasParticipant;
+        try {
+            wasParticipant = (Id) was[2];
+        } catch (Exception e) {
+            return false;
+        }
+        List<AAO_Participant__c> p = [
+            SELECT AAO_Contact__c FROM AAO_Participant__c WHERE Id = :wasParticipant LIMIT 1
+        ];
+        return !p.isEmpty() && p[0].AAO_Contact__c == a.AAO_Subject_Contact__c;
     }
 
     // ---------------------------------------------------------------- the write law

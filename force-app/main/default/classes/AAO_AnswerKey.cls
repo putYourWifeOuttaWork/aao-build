@@ -17,7 +17,14 @@ public class AAO_AnswerKey {
     public class KeyException extends Exception {
     }
 
-    public static final String VERSION = 'A1';
+    /**
+     * **A2, 15 August 2026 · the person-durable key.** A1 keyed a Participant answer on the
+     * per-Source participant row, so nothing could accumulate across calls; A2 resolves to the
+     * Contact where one exists and falls back to the participant row only where none does. The
+     * shape below is otherwise unchanged, and A1 rows are left where they are rather than
+     * migrated - the clean re-run is the migration.
+     */
+    public static final String VERSION = 'A2';
     public static final String SEP = '|';
 
     /**
@@ -176,7 +183,33 @@ public class AAO_AnswerKey {
         if (subjectType == 'Opportunity') {
             resolved = opportunityId;
         } else if (subjectType == 'Participant') {
-            resolved = participantId;
+            // ================================================ THE PERSON-DURABLE KEY · A2
+            //
+            // **`AAO_Participant__c` IS ONE ROW PER SOURCE PER PERSON**, so keying an answer on
+            // it scoped the answer to a CALL. Measured on the Wells Fargo stack: Tom Brzezinski
+            // carried three participant rows, one per call, all pointing at the same Contact,
+            // and his second non-supporter establishment wrote a SECOND answer row at -1 instead
+            // of moving one row to -2. **Nothing keyed to Participant could accumulate across
+            // calls**, which is the premise the whole product rests on.
+            //
+            // The reason the key moved to Participant at addendum 18 was real and is preserved:
+            // replay must reconstruct an answer for a person who has NO Contact. So the fallback
+            // ladder, in order, is **the durable identity first and the per-Source row last**:
+            //
+            //   1. THE CONTACT, where the resolution produced one. Addendum 18 already keeps
+            //      `AAO_Subject_Contact__c` on a participant-keyed row for exactly this - it is
+            //      "a resolution outcome of that person, not a second subject" - so the field is
+            //      already there and already populated. Stable across every call forever.
+            //   2. THE SHADOW, for a person with no Contact, which is the `Shadow_Person`
+            //      subject type below and is ALREADY account-scoped rather than Source-scoped:
+            //      `001…|mention:priya natarajan`. Unchanged by this edit.
+            //   3. THE PARTICIPANT, last, for a person who is neither - which is the case
+            //      addendum 18 protected and which still composes exactly as it did.
+            //
+            // **VERSION MOVES TO A2 BECAUSE THIS CHANGES THE MIRROR'S UNIQUE KEY.** Rows written
+            // under A1 keep their A1 keys and are not migrated; the ninety-ninth stamp's clean
+            // re-run is what puts the corpus back on one version.
+            resolved = subjectContactId != null ? subjectContactId : participantId;
         } else if (subjectType == 'Shadow_Person') {
             resolved = shadowPersonId;
         } else if (subjectType == 'Decision_Criterion') {

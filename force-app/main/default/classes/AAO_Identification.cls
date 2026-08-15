@@ -284,6 +284,52 @@ public class AAO_Identification {
 
     // ========================================================================== helpers
 
+    /** Public so promotion normalises designators and Contact name forms the same single way. */
+    public static String normalise(String s) {
+        return norm(s);
+    }
+
+    /**
+     * CLEAR BY PERSON, NEVER BY KEY. Every standing flag whose designator is one of this
+     * person's resolved forms clears together, carrying the Contact as its receipt.
+     *
+     * This is the half a key-matched clear cannot do. Priya raised two flags under
+     * `…|priya natarajan` and `…|priya` because the eighty-seventh stamp's ruling forbids
+     * collapsing forms at the key; matching on the key would close one and strand the other
+     * forever. The forms differ, the person does not, and the person is what finishes the work.
+     */
+    public static Integer clearForPerson(
+        Id opportunityId,
+        Set<String> designators,
+        Id contactId
+    ) {
+        if (opportunityId == null || designators == null || designators.isEmpty()) {
+            return 0;
+        }
+        List<AAO_Flag__c> flags = [
+            SELECT Id, AAO_Bound_Key__c
+            FROM AAO_Flag__c
+            WHERE AAO_Opportunity__c = :opportunityId
+              AND AAO_Type__c = :TYPE
+              AND AAO_State__c != 'Cleared'
+        ];
+        List<AAO_Flag__c> cleared = new List<AAO_Flag__c>();
+        for (AAO_Flag__c f : flags) {
+            String d = designatorOf(f.AAO_Bound_Key__c, opportunityId);
+            if (d == null || !designators.contains(d)) {
+                continue;
+            }
+            f.AAO_State__c = 'Cleared';
+            f.AAO_Cleared_At__c = System.now();
+            f.AAO_Subject_Contact__c = contactId;
+            cleared.add(f);
+        }
+        if (!cleared.isEmpty()) {
+            update cleared;
+        }
+        return cleared.size();
+    }
+
     @TestVisible
     private static String norm(String designator) {
         if (designator == null) {

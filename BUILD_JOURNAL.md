@@ -414,3 +414,87 @@ is a reader waiting on a writer rather than a working path sold as one.
 516 ran, one failure, the standing non-AAO `ConvertToOpportunityTest`. 515 AAO passing, up 8 from
 508. Deploy target org named per the ninetieth stamp's item 8: `00DWD00000DV7iT2AT`, from
 `/Users/thefinalmachine/Downloads/claude` on `main`, every command carrying `-o aossb2`.
+
+---
+
+## Session 109 · 15 August · THE LADDER IS WIRED AND THE FLAG FIRES · rung 3 proven live through the driven path on a THROWAWAY, never Wells Fargo · `AAO_Resolve` has a production caller for the first time since the eighty-first stamp measured it had none
+
+Authorising bytes, ninety-first stamp item 4: *"The wiring is done when S4-09 fires on a live
+Wells Fargo run, not when the suite is green - the suite already passes with the mechanism
+unreachable, which is the field-with-no-readers pattern in its sixth instance, a mechanism with
+no caller."*
+
+### What was built
+
+`AAO_Pass.identifyDeterministic(sourceId, runKey)` returning `DeterministicRun`, plus
+`AAO_Pass.raiseHeld(requestRun)` for the model leg's terminal. The eighty-first stamp's option
+(a): the deterministic legs dispose what a byte lookup and a closed-list ladder can settle, and
+the model leg takes only the remainder. `identify()` already excluded already-identified refs,
+so the remainder falls out of ordering rather than a rewrite - **`AAO_Resolve` is retargeted,
+not rewritten**, which is what wiring proposal v3 ruled.
+
+**A NAME COLLISION CAUGHT BEFORE IT COMPILED.** The first draft called this `resolve` returning
+`ResolveRun`. Both are taken, and taken correctly: `AAO_Pass.resolve` is CALL 0, the SCOPE
+resolver. This leg resolves IDENTITY, which is call 2's job, so it took call 2's word. Two
+different questions must not share a verb on the class that dispatches both.
+
+**THE TRANSACTION BOUNDARY IS WHY IT IS ITS OWN ENTRY POINT.** This writes dispositions, mention
+participants and flags; `identify` makes a callout; callout-after-DML is refused by the platform
+and `AAO_Resolve.requests()` already throws by hand to say so. The caller runs this, commits,
+then calls `identify` only when `hasRemainder` - which on a clean transcript is never, and that
+zero is the twenty-seventh stamp's predicted arithmetic rather than a failure.
+
+### THE FLAG FIRES, measured
+
+Run through the wired entry point on a throwaway account, `-o aossb2`, org `00DWD00000DV7iT2AT`:
+
+```
+BEFORE: standing identification flags = 0
+pairs read               1 (unit: pairs)
+AFTER:  standing identification flags = 1
+FLAG Identification / Identity_Ambiguous / Standing / Identify "Bettina Marchetti"
+     key=ident|006WD00000TlT2fYAF|bettina marchetti
+```
+
+**NOT ON WELLS FARGO.** The eighty-eighth stamp's item 1 and Matthew's own words: the instrument
+gets no rehearsal, ever. Verified after: WF `006WD00000TWvH0YAL` still carries 3 sources and
+**0 identification flags**. S4-09 itself grades at the read; this proves its mechanism is
+reachable, which is precisely what item 4 says the suite could not prove.
+
+### A DESIGN FACT THE PROOF SURFACED, worth design's eye
+
+**LADDER-ZERO DOES NOT RAISE.** The first proof used a designator matching nobody and no flag
+appeared - correctly. Ladder-zero falls to the REMAINDER for the model leg, which may still
+resolve it, and flagging before that would cry wolf. The deterministic held site is AMBIGUOUS
+only; ladder-zero's flag comes from the model leg's HELD terminal through `raiseHeld`. So on a
+run where the caller does not fire the model leg, a ladder-zero designator raises nothing. That
+is deliberate and it is stated so nobody reads a missing flag as a defect.
+
+**Consequence for the read:** S4-09's path depends on which terminal Bettina and Priya land in.
+An ambiguous designator flags without a callout; an unmatched one flags only after the model leg
+runs. Both are wired.
+
+### THE RESIDUE, marked and reported rather than forced
+
+The proof deliberately ran the LIVE path (`AAO_Synthetic.MARK = false`) so it exercised what the
+read will exercise. That fidelity has a price: the rows it produced are real, and the org refused
+to delete them, twice, correctly.
+
+- `AAO_Flag__c`: *"not deletable on the live path. A flag is cleared by evidence... Deleting one
+  destroys the measurement it exists to produce."*
+- `AAO_Pair__c`: *"The pair ledger is the record that a stage ran at all... a deleted row makes
+  those counts lie rather than fail."*
+
+`AAO_Synthetic.deletable()` permits deletion only of synthetic rows while purging, so these
+stand. **Residue: 2 accounts (`001WD00000v1dL7YAI`, `001WD00000v1qWnYAI`, both named
+`AAO WIRE PROOF THROWAWAY`), 2 opportunities, 2 sources, 3 pairs, 1 flag.** Isolated from Wells
+Fargo, Emerson and Project Farma; it cannot contaminate a read. Marked and reported, the
+twenty-first stamp's own disposition for a machine row we cannot lawfully remove.
+
+**The lesson, kept:** a proof script either marks synthetic throughout and proves less, or runs
+live and leaves permanent evidence. It cannot do both. Choose deliberately and say which.
+
+### Suite
+
+516 ran, one failure, the standing non-AAO `ConvertToOpportunityTest`. 515 AAO passing,
+unchanged by the wiring.

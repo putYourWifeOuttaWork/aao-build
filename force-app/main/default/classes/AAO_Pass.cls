@@ -1105,6 +1105,80 @@ public with sharing class AAO_Pass {
         return identify(sourceId, runKey, MAX_UNITS_PER_KEYED_CALL);
     }
 
+    /** What the deterministic stage did, and what it left for the model leg. */
+    public class DeterministicRun {
+        public AAO_Resolve.Outcome outcome;
+        public Integer flagsRaised = 0;
+        public Integer flagsCleared = 0;
+
+        /** True when the model leg has work. A clean transcript leaves this false. */
+        public Boolean hasRemainder {
+            get {
+                return outcome != null && !outcome.remainder.isEmpty();
+            }
+        }
+
+        public override String toString() {
+            return outcome.toString() +
+                '\nidentification raised   ' + flagsRaised + ' (unit: people)' +
+                '\nidentification cleared  ' + flagsCleared + ' (unit: people)';
+        }
+    }
+
+    /**
+     * THE DETERMINISTIC STAGE, IN FRONT. The eighty-first stamp's item 3 ruled option (a),
+     * the twenty-seventh stamp's own shape: `AAO_Resolve`'s legs dispose what a byte lookup
+     * and a closed-list ladder can settle, and the model leg takes ONLY the remainder.
+     *
+     * Until this existed, `AAO_Resolve` had zero production callers and the pass drove
+     * `identify` over every located pair - the divergence that stamp measured and closed.
+     * Nothing in `AAO_Resolve` is rewritten here; it is retargeted, which is what wiring
+     * proposal v3 ruled and why `AAO_Resolve.cls`'s ambiguity refusal is untouched.
+     *
+     * NAMED FOR CALL 2, NOT CALL 0. `resolve` on this class is already taken, and taken
+     * correctly: it is call 0, the SCOPE resolver. This leg resolves IDENTITY, which is call
+     * 2's job, so it carries call 2's word. Two different questions must not share a verb on
+     * the one class that dispatches both.
+     *
+     * WHY IT IS ITS OWN ENTRY POINT AND ITS OWN TRANSACTION. This writes: dispositions,
+     * mention participants, and flags. `identify` makes a CALLOUT. Callout-after-DML is
+     * refused by the platform, and `AAO_Resolve.requests()` already throws by hand to say so.
+     * So the caller runs this, commits, and then calls `identify` only when
+     * `hasRemainder` - which on a clean transcript is never, and that zero is the
+     * twenty-seventh stamp's predicted arithmetic rather than a failure.
+     *
+     * THE FLAG FIRES HERE, and this is the line that makes the Identification flag a
+     * mechanism rather than a plan. `AAO_Resolve` collects held mentions and deliberately
+     * never writes them; this is the caller that raises. Raise first, then reconcile, so a
+     * run that both holds a designator and binds another closes what it can in one pass -
+     * which is the read sheet's S5-01, a flag closing by identification.
+     */
+    public static DeterministicRun identifyDeterministic(Id sourceId, String runKey) {
+        DeterministicRun r = new DeterministicRun();
+        r.outcome = AAO_Resolve.run(sourceId, runKey);
+
+        r.flagsRaised = AAO_Identification.raiseFor(r.outcome.held);
+
+        // Re-read rather than infer: reconcile asks the org whether any held designator is
+        // now bound to a Contact. A run that changed nothing clears nothing.
+        Id oppId = source(sourceId).AAO_Opportunity__c;
+        r.flagsCleared = AAO_Identification.reconcile(oppId);
+        return r;
+    }
+
+    /**
+     * The model leg's own raise, for the second held site. `AAO_Resolve.requests()` runs the
+     * callout and then acts on the typed fields, so by the time its `RequestRun` exists the
+     * callout is behind us and DML is lawful again. Kept as a separate call for the same
+     * reason `resolve` is: the caller owns the transaction boundary, not this class.
+     */
+    public static Integer raiseHeld(AAO_Resolve.RequestRun requestRun) {
+        if (requestRun == null) {
+            return 0;
+        }
+        return AAO_Identification.raiseFor(requestRun.held);
+    }
+
     /**
      * CALL 2 SPLITS BY PAIR BATCH, and the Project Farma run is why.
      *

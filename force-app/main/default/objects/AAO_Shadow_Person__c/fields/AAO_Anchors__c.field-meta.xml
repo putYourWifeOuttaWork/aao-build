@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Anchors__c</fullName>
+    <description>Written by: the create leg. EVERY utterance that anchors this person, as a serialized span set in the same shape AAO_Answer__c.AAO_Spans__c uses, merged through AAO_Accumulate.mergeSpans so the dedup is the one already ruled rather than a second one invented here. Each anchor keeps its own Source, offsets, quote and date. THE COUNT OF THESE IS WHAT THE MAP RENDERS as &quot;N anchors&quot;: how many distinct times somebody said this name, which is the same question the reinforcement counter answers at the answer grain and is answered the same way. Long text, so it is never filtered in SOQL; AAO_Anchor_Count__c carries the queryable number.</description>
+    <externalId>false</externalId>
+    <label>Anchors</label>
+    <length>32768</length>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>4</visibleLines>
+</CustomField>

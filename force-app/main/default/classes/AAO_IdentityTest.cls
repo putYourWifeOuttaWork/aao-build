@@ -564,6 +564,43 @@ private class AAO_IdentityTest {
         );
     }
 
+    @IsTest
+    static void ANCHORSACCUMULATEANDTHESECONDREADOFONEUTTERANCEISNOTASECONDANCHOR() {
+        // "N anchors" is what the map renders, so the number has to mean what it says. The dedup
+        // is the eightieth stamp's, reused: a later call saying the name again is a second
+        // anchor; the two comprehensive reads finding one utterance is not.
+        Fixture f = fixture();
+        participant(f, 'ryan', 'Couture, Ryan', null);
+
+        AAO_Identity.Utterance first = utteranceOf(f, 'Fatima');
+        AAO_Identity.Utterance sameAgain = utteranceOf(f, 'Fatima');
+        AAO_Identity.Utterance later = utteranceOf(f, 'Fatima');
+        later.startOffset = 9000;
+        later.endOffset = 9040;
+
+        Test.startTest();
+        AAO_Identity.holdMention(first, f.acctId, 'Single_Token', 'first');
+        AAO_Identity.holdMention(sameAgain, f.acctId, 'Single_Token', 'the other read');
+        AAO_Identity.Resolution r =
+            AAO_Identity.holdMention(later, f.acctId, 'Single_Token', 'said again');
+        Test.stopTest();
+
+        AAO_Shadow_Person__c row = [
+            SELECT AAO_Anchor_Count__c, AAO_Anchors__c
+            FROM AAO_Shadow_Person__c WHERE Id = :r.shadowPersonId
+        ];
+        System.assertEquals(
+            2, row.AAO_Anchor_Count__c,
+            'Two distinct utterances, not three. The second read of one sentence added no '
+            + 'anchor, which is the reinforcement rule answering the same question one object '
+            + 'over. Got anchors: ' + row.AAO_Anchors__c
+        );
+        System.assertEquals(
+            2, AAO_Model.parseSpans(row.AAO_Anchors__c).spans.size(),
+            'And the derived count agrees with the set it was derived from.'
+        );
+    }
+
     // ---------------------------------------------------------------------- fixtures
 
     private class Fixture {

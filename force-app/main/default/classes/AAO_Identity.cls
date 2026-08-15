@@ -433,8 +433,25 @@ public with sharing class AAO_Identity {
             );
         }
 
+        // THE ANCHORS ACCUMULATE, and the dedup is the eightieth stamp's, not a new one.
+        // Somebody saying the name on a later call is a second anchor; the two comprehensive
+        // reads finding one utterance is not. `mergeSpans` already unions by (source, offsets)
+        // and keeps the first occurrence, which is exactly that rule, so it is reused rather
+        // than reimplemented one object over where the two could drift apart.
+        String key = mentionKey(u.designator, accountId);
+        List<AAO_Shadow_Person__c> standing = [
+            SELECT Id, AAO_Anchors__c FROM AAO_Shadow_Person__c
+            WHERE AAO_Shadow_Key__c = :key LIMIT 1
+        ];
+        List<AAO_Model.Span> anchors = AAO_Accumulate.mergeSpans(
+            standing.isEmpty() ? null : standing[0].AAO_Anchors__c,
+            AAO_Model.serializeSpans(new List<AAO_Model.Span>{ spanOf(u) })
+        );
+
         AAO_Shadow_Person__c row = new AAO_Shadow_Person__c(
-            AAO_Shadow_Key__c = mentionKey(u.designator, accountId),
+            AAO_Shadow_Key__c = key,
+            AAO_Anchors__c = AAO_Model.serializeSpans(anchors),
+            AAO_Anchor_Count__c = anchors.size(),
             AAO_Account__c = accountId,
             // NO PARTICIPANT. That is the whole change, and it is left null rather than
             // pointed at something plausible.
@@ -475,6 +492,16 @@ public with sharing class AAO_Identity {
         r.rung = 'held on its utterance, ' + reasonCode;
         r.reason = detail;
         return r;
+    }
+
+    /** One utterance as a Span, so the anchor set is the same shape every receipt in this system uses. */
+    private static AAO_Model.Span spanOf(Utterance u) {
+        AAO_Model.Span sp = new AAO_Model.Span();
+        sp.sourceId = u.sourceId;
+        sp.startOffset = u.startOffset;
+        sp.endOffset = u.endOffset;
+        sp.quote = u.quote;
+        return sp;
     }
 
     /**

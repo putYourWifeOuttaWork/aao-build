@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Anchor_Count__c</fullName>
+    <description>Written by: the create leg, derived from AAO_Anchors__c on every write. How many distinct utterances anchor this person. Stored rather than computed on read because the map and the Inspector both render it and a long text field cannot be filtered or sorted in SOQL. A DERIVED NUMBER IS NEVER THE AUTHORITY: AAO_Anchors__c is, and this is rebuilt from it, never edited beside it.</description>
+    <externalId>false</externalId>
+    <label>Anchor Count</label>
+    <precision>9</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

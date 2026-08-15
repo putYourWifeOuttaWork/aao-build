@@ -671,3 +671,83 @@ wrong**, and this one would have sent the next reader to edit correct data.
 
 **Nothing in this run is graded by CODE, no number was tuned toward any expectation, and the run
 was not repeated.**
+
+---
+
+## Session 112 · 15 August · THE STATIC DML COUNT · the answer to the question asked is ZERO, and the ceiling is breached for a different reason · s4 DOES NOT RUN · a DML split trigger proposed, and a cheaper fix that should land first
+
+The ninety-fifth stamp's item 6, a read of the code rather than a run. Full working:
+`review/wf-s3/DML-CEILING.md`.
+
+### THE QUESTION ASKED · zero, and the premise is wrong in the safe direction
+
+**Not one DML statement on the pass path is conditional on prior state existing.** There is
+exactly one prior-state branch in the whole join, `AAO_Commit.persist`: `update answer` when the
+answer has an Id, `Database.insert` when it does not. **One statement either way — the update leg
+REPLACES the insert rather than adding to it.** Every other statement fires identically whether
+or not s3 ran first. Stacking adds no update legs and there is no patch-leg growth vector.
+
+The only prior-state branch that could add one is the `DUPLICATE_VALUE` collision (`update
+colliding`, +1), and prior state makes that branch LESS likely, not more, because an answer
+carrying an Id never reaches the insert.
+
+### THE SECOND PREMISE IS ALSO WRONG, AND THIS ONE IS NOT SAFE · there is DML inside a loop
+
+`AAO_PairCommit.run` line 324 calls `AAO_Commit.commitCandidate` once per candidate, and that
+method performs **four DML statements per call**: persist (1), `insert claim`, `update answer` for
+the last-claim pointer, and `update cand` in `stampCandidate`. Plus `AAO_Criteria.mint` line 124
+does a **single-row `Database.upsert` inside the same loop**, once per criteria pair.
+
+`AAO_PairCommit`'s own five statements are genuinely bulk and `isEmpty`-guarded, at most one each.
+
+### THE MODEL, EXACT AGAINST THE MEASUREMENT
+
+```
+DML = 4·C + M + B      C = candidates, M = criteria minted, B = bulk statements fired
+```
+
+**s3: C=31, M=5, B=4 → 4(31) + 5 + 4 = 133. Measured 133.** Exact, not approximate.
+
+**Ceiling: 4C + M + B ≤ 150, worst constants M=5 B=5 → C ≤ 35.** 35 candidates = 149 and fits;
+36 = 153 and does not. **s3 used 31. The headroom is four candidates.**
+
+### THE VERDICT · s4 DOES NOT RUN
+
+**Nothing in the code caps C.** The join commits every eligible candidate for its run key in one
+transaction: no batch, no split, no guard. The worst case is unbounded and crosses 150 at 36.
+
+**The expected case is stated too rather than hidden:** the join is keyed by run key, so s4 commits
+s4's candidates only, not the cumulative set, and s4's transcript is 25,779 bytes against s3's
+25,598 — so s4 will probably land near 133 again. **Probably is not a ceiling.** Four candidates
+of margin, on the measurement instrument, on a run that cannot be rehearsed, where a breach rolls
+the entire join back, is not a margin. Stopped per the stamp's own instruction.
+
+### PROPOSED · the DML split trigger, deliberately the same shape as the 90-second wall
+
+> Any stage whose DML statement count crosses **112 (75% of 150)** inside one transaction
+> completes its remaining work in a continuation call in the next transaction: **never redo,
+> never retry-by-growing.** Split units: the join by **candidate batch**, projection by
+> **map-row batch**, cards by **card batch**. **Every split event journals** —
+> `AAO_Run_Receipt__c.AAO_Split_Events__c` exists and read **0** this run.
+
+75% is taken from the existing trigger rather than invented. At 112 the join has committed about
+27 candidates and can still finish any single candidate's four-statement group in the remaining
+38, which is what makes the threshold safe rather than merely early.
+
+### AND A CHEAPER FIX THAT SHOULD LAND FIRST · bulkify three of the four
+
+`insert claim`, the last-claim `update answer`, `update cand`, and the criterion upsert are all
+collectable with no semantic change. **`persist` must stay per-candidate and that is deliberate:**
+it reads standing state, branches on it, and handles `DUPLICATE_VALUE` per row, and the
+forty-eighth stamp's read-then-branch semantics have to stay byte-identical — bulkifying it would
+be the clobber defect returning.
+
+**After bulkification: C + ~9 instead of 4C + 9. At 31 candidates that is 40 statements instead
+of 133**, and the ceiling moves from 35 candidates to roughly 140. This is the same move the
+forty-eighth stamp made for the join's SOQL at 101, applied to the other governor.
+
+**Recommended order: bulkify, then add the split trigger as the backstop.** Neither is built; both
+are proposals, per the receipt rule.
+
+**s3's rows are untouched, nothing was re-run, and the instrument still carries exactly one graded
+run.**

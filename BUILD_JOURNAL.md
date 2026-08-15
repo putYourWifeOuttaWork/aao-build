@@ -340,3 +340,77 @@ its comparison "mechanically derivable." **Prose is not a source for a mechanica
 re-verified against the bytes it was made from rather than against a memory of them.
 
 **The originals remain in `~/Downloads` untouched.** Nothing was moved or deleted; these are copies.
+
+---
+
+## Session 108 · 15 August · THE IDENTIFICATION FLAG IS BUILT AS A MECHANISM · the org refused a wrong fixture and exposed a real defect in the class it was testing · suite 516, 515 AAO passing · THE RAISE HAS NO PRODUCTION CALLER YET, and that is stated rather than glossed
+
+The ninetieth stamp's item 10, second clause: "the Identification flag as a BUILT MECHANISM -
+`AAO_Flag__c.AAO_Type__c` still has no `Identification` value, and a picklist value is not the
+mechanism: type, raise at both held sites, bound key, clear-by-identification-only, test."
+
+**All five parts built.** `AAO_Identification` plus `AAO_IdentificationTest`, 8 tests, and the
+two collection points in `AAO_Resolve`.
+
+### The five parts
+
+**TYPE.** `Identification` on `AAO_Type__c`; `Identity_Ambiguous` and `Identity_Unresolved` on
+`AAO_Cause__c`. Two causes, not one, because they are different work: one asks a human to PICK
+between candidates, the other to NAME somebody the org has never heard of. Verified in
+`00DWD00000DV7iT2AT` through the FLS-aware Apex describe, which is the running org's answer:
+`TYPE has Identification: true`, both causes true.
+
+**RAISE AT BOTH HELD SITES.** `AAO_Resolve`'s AMBIGUOUS terminal and the model leg's HELD
+terminal. **Both COLLECT onto the result object; neither writes.** Raising is DML and
+`AAO_Resolve.requests()` throws when DML has already run in the transaction, so a write on
+that path would arm the very guard that protects the callout. A test greps the deployed class
+body and fails if `AAO_Resolve` ever gains a `raiseFor` call.
+
+**BOUND KEY.** `ident|<oppId>|<normalised designator>`, the cardinality guard's own pattern
+reused. Priya in s3 and Priya in s4 are ONE unidentified person; three mentions raise one flag,
+and `"  priya  "` normalises onto the same key. A cleared flag is never reopened by a later
+mention.
+
+**CLEAR BY IDENTIFICATION ONLY.** `reconcile` re-reads the org and clears exactly those
+designators now bound to a Contact, recording WHO on `AAO_Subject_Contact__c` as the receipt.
+It does not clear on acknowledgement (tested), on age, or because a later run stopped
+mentioning the person.
+
+### The org refused a wrong fixture, and the refusal found a real defect
+
+The first fixture put the designator and the person on one pair. The insert was refused:
+*"A Located pair carries the person (AAO_Person__c), which is not call 1's to write."*
+
+That is `AAO_PairTriggerHandler` enforcing the charter separation as a database error rather
+than a sentence in a prompt, and **it exposed a defect in the class the fixture was testing.**
+Call 1 writes `AAO_About_Designator__c` onto the Located pair and is forbidden the person; call
+2 writes the person onto an Identified pair pointing back at it, and `AAO_Resolve.disposition()`
+does not copy the designator forward. **My clear path queried both columns on one row, so it
+could never have matched, ever, and the flag would never have cleared.** Corrected to read the
+designator through `AAO_Located_Pair__r`. The code was fixed, not the test.
+
+Recorded because it is the discipline paying in an unusual direction: the fixture was wrong, and
+being wrong against a real org is what made the defect visible. A hand-rolled in-memory fixture
+would have passed and shipped a flag that never clears.
+
+### THE BOUNDARY, named because a mechanism with no caller is a plan
+
+**`AAO_Resolve` still has ZERO production callers** - the eighty-first stamp's finding, unchanged
+and re-measured this session. So the two raise sites cannot fire in production until the ladder
+is driven from the pass, which is item 10's FIRST clause and is still to do. **The flag does not
+raise on a live run today.** Saying otherwise would be the field-with-no-readers pattern wearing
+a new coat, one paragraph after this class's own header warns about it.
+
+What is true: the mechanism is built, deployed, and tested against the org, and it needs no
+further change when the ladder lands - the collection points are already in both terminals.
+
+**Also disclosed:** the clear path reads `AAO_Shadow_Person__c.AAO_Promoted_Contact__c` as its
+second binding, and **nothing writes that field** - promotion is the eighty-eighth stamp's named
+debt. It is read deliberately so wiring promotion clears these flags with no change here, and it
+is a reader waiting on a writer rather than a working path sold as one.
+
+### Suite
+
+516 ran, one failure, the standing non-AAO `ConvertToOpportunityTest`. 515 AAO passing, up 8 from
+508. Deploy target org named per the ninetieth stamp's item 8: `00DWD00000DV7iT2AT`, from
+`/Users/thefinalmachine/Downloads/claude` on `main`, every command carrying `-o aossb2`.

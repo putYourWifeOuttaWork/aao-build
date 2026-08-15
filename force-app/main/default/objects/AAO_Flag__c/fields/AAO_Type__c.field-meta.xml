@@ -40,6 +40,11 @@
                 <default>false</default>
                 <label>Ratification</label>
             </value>
+            <value>
+                <fullName>Identification</fullName>
+                <default>false</default>
+                <label>Identification</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

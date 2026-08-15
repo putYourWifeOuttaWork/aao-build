@@ -45,6 +45,16 @@
                 <default>false</default>
                 <label>Awaiting_Ratification</label>
             </value>
+            <value>
+                <fullName>Identity_Ambiguous</fullName>
+                <default>false</default>
+                <label>Identity Ambiguous</label>
+            </value>
+            <value>
+                <fullName>Identity_Unresolved</fullName>
+                <default>false</default>
+                <label>Identity Unresolved</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

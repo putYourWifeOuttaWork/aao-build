@@ -77,6 +77,13 @@ public with sharing class AAO_Resolve {
         public Integer mentionParticipants = 0;
         /** Located refs the deterministic legs could not dispose. The model leg's input. */
         public List<String> remainder = new List<String>();
+        /**
+         * Mentions this leg refused to guess, for the Identification flag. COLLECTED, NEVER
+         * RAISED HERE: raising is DML, and `requests()` throws if any DML has run in the
+         * transaction, so a write on this path would arm the very guard that protects the
+         * callout. The caller raises after the legs it intends to run.
+         */
+        public List<AAO_Identification.Held> held = new List<AAO_Identification.Held>();
         public List<String> notes = new List<String>();
 
         public override String toString() {
@@ -233,6 +240,13 @@ public with sharing class AAO_Resolve {
                     'than one candidate and context cannot separate them here. ' +
                     'The Identification flag\'s case; never a pick. ' +
                     blank(ladder.because).abbreviate(140)));
+                o.held.add(heldFor(
+                    src, p.AAO_About_Designator__c,
+                    AAO_Identification.CAUSE_AMBIGUOUS,
+                    'Matches more than one candidate on this account and context cannot ' +
+                    'separate them. ' + blank(ladder.because).abbreviate(400),
+                    null
+                ));
                 o.designatorAmbiguous++;
                 continue;
             }
@@ -260,12 +274,32 @@ public with sharing class AAO_Resolve {
 
     // ================================================================== the model leg
 
+    /**
+     * One held mention, shaped for the flag. Reads the deal and the clock off the Source so
+     * the flag ages from when the words were spoken rather than from when this ran.
+     */
+    private static AAO_Identification.Held heldFor(
+        AAO_Source__c src, String designator, String cause, String basis, Id shadowPersonId
+    ) {
+        AAO_Identification.Held h = new AAO_Identification.Held();
+        h.opportunityId = src.AAO_Opportunity__c;
+        h.accountId = src.AAO_Account__c;
+        h.designator = designator;
+        h.cause = cause;
+        h.basis = basis;
+        h.shadowPersonId = shadowPersonId;
+        h.occurred = src.AAO_Evidence_Occurred__c;
+        return h;
+    }
+
     public class RequestRun {
         public AAO_Extract.StageResult call;
         public List<AAO_ResolveRequestCharter.Request> requests;
         public Integer attachedToCandidate = 0;
         public Integer mintedForCreation = 0;
         public Integer heldNone = 0;
+        /** Same contract as `Outcome.held`: collected here, raised by the caller. */
+        public List<AAO_Identification.Held> held = new List<AAO_Identification.Held>();
 
         public override String toString() {
             return String.join(
@@ -508,6 +542,14 @@ public with sharing class AAO_Resolve {
                     rows.add(disposition(p, src, runKey, 'Held', null, false,
                         'Held on its utterance, shadow ' + held.shadowPersonId + '. ' +
                         blank(req.basis).abbreviate(120)));
+                    r.held.add(heldFor(
+                        src, req.designator,
+                        AAO_Identification.CAUSE_UNRESOLVED,
+                        'A real person of this deal (' + req.kind + ') with no match in the ' +
+                        'org. Held on the utterance; no participation is fabricated. ' +
+                        blank(req.basis).abbreviate(400),
+                        held.shadowPersonId
+                    ));
                     r.mintedForCreation++;
                     continue;
                 }

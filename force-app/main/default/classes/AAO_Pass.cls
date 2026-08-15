@@ -1261,7 +1261,21 @@ public with sharing class AAO_Pass {
 
     private static Integer indexOfTurn(List<AAO_NormalForm.Turn> turns, Integer offset) {
         for (Integer i = 0; i < turns.size(); i++) {
-            if (offset >= turns[i].utteranceStart && offset <= turns[i].utteranceEnd) {
+            // END-EXCLUSIVE, and this comparison used to read it as inclusive.
+            //
+            // `AAO_NormalForm` sets `utteranceEnd = lineStart + line.length()`, so the end is
+            // ONE PAST the last character, and the last turn's end equals the body length
+            // exactly (measured on the WF fixtures: 19,858 and 20,102 on bodies of exactly
+            // those lengths). A point test written `offset <= utteranceEnd` therefore matches
+            // BOTH the turn that ends at that offset and the turn that begins there, and takes
+            // whichever comes first in the list - so a span starting exactly on a turn boundary
+            // was attributed to the previous speaker.
+            //
+            // The sibling reader at `AAO_NormalForm:111` is NOT wrong and is deliberately left
+            // alone: it tests a SPAN with `endOffset <= utteranceEnd`, and a span ending exactly
+            // at the exclusive end genuinely is inside the turn. Point tests and range tests
+            // read the same bound differently, which is exactly how this survived.
+            if (offset >= turns[i].utteranceStart && offset < turns[i].utteranceEnd) {
                 return i;
             }
         }

@@ -300,6 +300,27 @@ public with sharing class AAO_Resolve {
      *   construction and the join's gate would refuse the claim anyway.
      */
     public static RequestRun requests(Id sourceId, String runKey) {
+        // THE TRANSACTION BOUNDARY, ENFORCED AT THE CALL SITE rather than left to a comment or
+        // to a driver's habits (wiring proposal v3, section 3, adopted as a wiring constraint).
+        //
+        // `run()` writes rows and this leg makes a callout, so the two are separate transactions
+        // BY DESIGN - this method re-queries the org rather than taking `run()`'s in-memory
+        // output precisely so it can be. A caller that runs both in one transaction gets
+        // "uncommitted work pending" from the platform, at the callout, after the DML has
+        // already landed.
+        //
+        // THE PRECEDENT IS CITED BECAUSE IT ALREADY COST US ONCE: at the eightieth stamp both
+        // verify buckets ran in one transaction and the callout followed the DML, and the run
+        // had to be rebuilt from the untouched harvest. A rule that only exists in prose gets
+        // rediscovered by whoever writes the next driver.
+        if (Limits.getDmlStatements() > 0) {
+            throw new ResolveException(
+                'The model leg must start its own transaction. ' + Limits.getDmlStatements() +
+                ' DML statement(s) have already run here, so the callout below would fail with ' +
+                'uncommitted work pending. Call run() and requests() in separate transactions: ' +
+                'requests() re-reads the org by design, so nothing is lost by splitting them.'
+            );
+        }
         AAO_Source__c src = [
             SELECT Id, AAO_Normalized_Text__c, AAO_Diarization__c, AAO_SHA256__c,
                 AAO_Opportunity__c, AAO_Account__c, AAO_Evidence_Occurred__c,

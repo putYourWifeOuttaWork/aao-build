@@ -342,4 +342,27 @@ private class AAO_ResolveTest {
         );
         AAO_Synthetic.MARK = false;
     }
+
+    /**
+     * THE BOUNDARY IS A GUARD, NOT A COMMENT. A rule that lives only in prose gets rediscovered
+     * by whoever writes the next driver - which is exactly how the eightieth stamp's verify
+     * buckets ran a callout after DML and cost a rebuilt run.
+     */
+    @IsTest
+    static void theMODELLEGREFUSESTOSTARTAFTERDMLHASALREADYRUN() {
+        Account a = new Account(Name = 'AAO Boundary Test');
+        insert a;   // any DML at all is enough; the platform does not care whose it was
+
+        try {
+            AAO_Resolve.requests(null, 'boundary-probe');
+            System.assert(false, 'The model leg must refuse to start after DML.');
+        } catch (AAO_Resolve.ResolveException e) {
+            System.assert(
+                e.getMessage().contains('own transaction') &&
+                e.getMessage().contains('uncommitted work pending'),
+                'And it names the failure it is preventing, so the fix is obvious from the '
+                + 'message rather than from a stack trace. Got: ' + e.getMessage()
+            );
+        }
+    }
 }

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Identity_Provenance__c</fullName>
+    <description>Written by: the create leg and the ladder. WHERE THE IDENTITY FACTS ON THIS ROW CAME FROM, which is a different question from where the evidence came from. THE PROVENANCE BOUNDARY (wiring proposal v3, section 2): the ESTABLISHMENT is evidence-bound and the IDENTITY is not. Last name, email and title arriving from a Contact match or an enrichment partner are SOURCED FACTS carrying their own provenance; they are never rendered as verbatim, never blended into a quote, and never citable as speech. This field is what lets a reader tell the two apart on one row. Utterance means the only identity we hold is the name as heard.</description>
+    <label>Identity Provenance</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value><fullName>Utterance</fullName><default>false</default><label>Utterance</label></value>
+            <value><fullName>Roster</fullName><default>false</default><label>Roster</label></value>
+            <value><fullName>Account_Contact_Match</fullName><default>false</default><label>Account_Contact_Match</label></value>
+            <value><fullName>Enrichment_Partner</fullName><default>false</default><label>Enrichment_Partner</label></value>
+            <value><fullName>Human</fullName><default>false</default><label>Human</label></value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

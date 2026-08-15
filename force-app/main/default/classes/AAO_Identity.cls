@@ -36,6 +36,9 @@
  */
 public with sharing class AAO_Identity {
     /** resolved | created | shadowed */
+    public class IdentityException extends Exception {
+    }
+
     public class Resolution {
         public Id contactId;
         public Id shadowPersonId;
@@ -369,6 +372,123 @@ public with sharing class AAO_Identity {
             ? p.AAO_Email__c.toLowerCase()
             : 'roster:' + p.AAO_Roster_Key__c;
         return String.valueOf(accountId) + '|' + tail;
+    }
+
+    // ------------------------------------------------- the mention, and its own proof
+
+    /**
+     * THE UTTERANCE: a person's whole existence, when all we have is that somebody said them.
+     *
+     * Carries its own byte anchor because that is the point. A mention proved by an utterance
+     * needs no fabricated participation row, which is what retires the `mention:` Participant
+     * mechanism rather than compensating for it.
+     */
+    public class Utterance {
+        public String designator;
+        public Id sourceId;
+        public Integer startOffset;
+        public Integer endOffset;
+        public String quote;
+
+        public Boolean isProven() {
+            return String.isNotBlank(designator) &&
+                sourceId != null &&
+                startOffset != null &&
+                endOffset != null;
+        }
+    }
+
+    /**
+     * HOLD A MENTIONED PERSON, on the proof that somebody said their name.
+     *
+     * **The second admissible existence proof** (wiring proposal v3, section 4). Both this
+     * object and `AAO_Participant__c` used to make "was on the call" the proof that a person
+     * exists, and a mentioned person violates that by definition; `AAO_Resolve` did not solve
+     * it, it FABRICATED PARTICIPATION to route around it, and the `mention:` prefix filter
+     * spreading through three classes was that fabrication leaking outward. A prefix convention
+     * is not a constraint: any future query that forgets it counts a mention as presence.
+     *
+     * So the proof moves to where the evidence already is. **A mention's proof of existence is
+     * that someone said the name, verbatim-anchored, which is the same evidence class
+     * everything else in this system stands on.** The participation lookup stays nullable and
+     * stays Restrict; nothing about the attendee path changes.
+     *
+     * **THIS LEG NEVER CREATES A CONTACT AND NEVER BINDS ONE.** Binding is the ladder's job and
+     * happens above this; ladder-zero and AMBIGUOUS both land here, held, with their reason.
+     * The eightieth stamp's bar is untouched: a single token may link and may never create.
+     */
+    public static Resolution holdMention(Utterance u, Id accountId, String reasonCode, String detail) {
+        Resolution r = new Resolution();
+        if (u == null || !u.isProven()) {
+            throw new IdentityException(
+                'A mention is held on its utterance or it is not held at all. Designator, ' +
+                'Source and both offsets are the proof; a row without them would assert a ' +
+                'person on nothing, which is the fabrication this whole leg exists to end.'
+            );
+        }
+        if (accountId == null) {
+            throw new IdentityException(
+                'A shadow is keyed per account, so a mention with no account has no key. ' +
+                'Refused rather than keyed on something weaker.'
+            );
+        }
+
+        AAO_Shadow_Person__c row = new AAO_Shadow_Person__c(
+            AAO_Shadow_Key__c = mentionKey(u.designator, accountId),
+            AAO_Account__c = accountId,
+            // NO PARTICIPANT. That is the whole change, and it is left null rather than
+            // pointed at something plausible.
+            AAO_Designator__c = u.designator,
+            AAO_Utterance_Source__c = u.sourceId,
+            AAO_Utterance_Start__c = u.startOffset,
+            AAO_Utterance_End__c = u.endOffset,
+            AAO_Utterance_Quote__c = u.quote,
+            AAO_Source_Name__c = u.designator,
+            // THE PROVENANCE BOUNDARY, section 2. All we hold is the name as heard, so the
+            // identity columns stay EMPTY rather than being filled from the designator. A
+            // spoken token is not a surname, and writing it into `Last_Name` would launder
+            // evidence into sourced identity in the one place a reader cannot tell.
+            AAO_Identity_Provenance__c = 'Utterance',
+            AAO_Reason__c = reasonCode,
+            AAO_Reason_Detail__c = detail,
+            AAO_Synthetic__c = AAO_Synthetic.MARK
+        );
+
+        // IDEMPOTENT BY THE KEY, which is the discipline the retired mention-Participant
+        // mechanism had and is the half of it worth carrying: `mentionFor()` deduped within
+        // the transaction and queried before minting, so reruns did not accumulate. Here the
+        // unique external id does it structurally instead of by remembering to check.
+        Database.UpsertResult ur = Database.upsert(
+            row, AAO_Shadow_Person__c.AAO_Shadow_Key__c, false
+        );
+        if (ur.isSuccess()) {
+            r.shadowPersonId = ur.getId();
+        } else {
+            List<String> errs = new List<String>();
+            for (Database.Error e : ur.getErrors()) {
+                errs.add(e.getMessage());
+            }
+            detail = detail + ' (and the shadow row could not be written either: ' +
+                String.join(errs, '; ') + ')';
+        }
+        r.action = 'shadowed';
+        r.rung = 'held on its utterance, ' + reasonCode;
+        r.reason = detail;
+        return r;
+    }
+
+    /**
+     * THE KEY'S THIRD BRANCH. A mention has neither an email nor a roster key.
+     *
+     * Lowercased so one spelling is one row across reruns; NOT normalized beyond that, because
+     * folding "Fatima" into "Fatema" here would undo the ASR-name law one layer below where it
+     * was written. A misheard spelling makes its own row, which is correct: it is a different
+     * thing heard, and the ladder is where the two are ever reconciled.
+     */
+    @TestVisible
+    private static String mentionKey(String designator, Id accountId) {
+        return String.valueOf(accountId) + '|mention:' +
+            designator.trim().toLowerCase().replaceAll('\\s+', ' ');
     }
 
     private static String sourceName(AAO_Participant__c p) {

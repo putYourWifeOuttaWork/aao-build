@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Designator__c</fullName>
+    <description>Written by: the create leg, for a person known only from a MENTION. The name AS HEARD, rendered exactly as the designator was spoken, per the ASR-name law: what was said is the source form and we never correct a transcript&apos;s spelling into what we think was meant. &quot;Fatima&quot; stays &quot;Fatima&quot; even where the account carries a Fatema. THIS FIELD IS EVIDENCE, not sourced identity: it is words somebody said, and it is the half of this row that may be quoted. Compare AAO_Last_Name__c, which may not.</description>
+    <externalId>false</externalId>
+    <label>Designator (as heard)</label>
+    <length>255</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

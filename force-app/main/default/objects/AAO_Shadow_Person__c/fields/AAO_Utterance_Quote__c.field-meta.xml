@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Utterance_Quote__c</fullName>
+    <description>Written by: the create leg. The words that introduced this person, byte-exact against the utterance Source. Carried rather than derived on read for the reason every Span carries its quote: a byte range with no quote beside it cannot be checked without fetching the artifact, and a receipt nobody can check is not a receipt. THIS FIELD IS EVIDENCE and may be quoted. Long text, so it is never filtered in SOQL.</description>
+    <externalId>false</externalId>
+    <label>Utterance Quote</label>
+    <length>4096</length>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
+</CustomField>

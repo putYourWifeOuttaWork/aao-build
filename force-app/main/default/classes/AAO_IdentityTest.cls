@@ -439,6 +439,131 @@ private class AAO_IdentityTest {
         System.assertEquals('Lewis', made.LastName);
     }
 
+    // ================== the mention held on its own utterance (wiring proposal v3, section 4)
+
+    private static AAO_Identity.Utterance utteranceOf(Fixture f, String designator) {
+        AAO_Identity.Utterance u = new AAO_Identity.Utterance();
+        u.designator = designator;
+        u.sourceId = f.sourceId;
+        u.startOffset = 100;
+        u.endOffset = 100 + designator.length();
+        u.quote = 'I believe ' + designator + ' will be the one signing it, yes.';
+        return u;
+    }
+
+    @IsTest
+    static void aMentionISHELDONITSUTTERANCEANDFABRICATESNOPARTICIPATION() {
+        // THE WHOLE POINT of the second existence proof. Both objects used to make "was on the
+        // call" the proof a person exists, and a mentioned person violates that by definition;
+        // the old leg fabricated a Participant to route around it.
+        Fixture f = fixture();
+        participant(f, 'ryan', 'Couture, Ryan', null);
+
+        Test.startTest();
+        AAO_Identity.Resolution r = AAO_Identity.holdMention(
+            utteranceOf(f, 'Fatima'), f.acctId, 'Single_Token', 'Held for the Identification flag.'
+        );
+        Test.stopTest();
+
+        System.assertEquals('shadowed', r.action, r.toString());
+        AAO_Shadow_Person__c row = [
+            SELECT AAO_Participant__c, AAO_Designator__c, AAO_Utterance_Source__c,
+                AAO_Utterance_Start__c, AAO_Utterance_End__c, AAO_Utterance_Quote__c,
+                AAO_Identity_Provenance__c, AAO_Last_Name__c, AAO_First_Name__c, AAO_Email__c
+            FROM AAO_Shadow_Person__c WHERE Id = :r.shadowPersonId
+        ];
+        System.assertEquals(
+            null, row.AAO_Participant__c,
+            'NO PARTICIPATION IS FABRICATED. The lookup is left null rather than pointed at '
+            + 'something plausible; the utterance is the proof.'
+        );
+        System.assertEquals('Fatima', row.AAO_Designator__c, 'The name AS HEARD, per the ASR law.');
+        System.assertEquals(f.sourceId, row.AAO_Utterance_Source__c);
+        System.assertNotEquals(null, row.AAO_Utterance_Start__c, 'A byte anchor, or no row.');
+        System.assert(row.AAO_Utterance_Quote__c.contains('Fatima'), 'And its own words beside it.');
+    }
+
+    @IsTest
+    static void theUTTERANCEISTHEPROOFANDAROWWITHOUTONEISREFUSED() {
+        Fixture f = fixture();
+        AAO_Identity.Utterance bare = new AAO_Identity.Utterance();
+        bare.designator = 'Fatima';
+        try {
+            AAO_Identity.holdMention(bare, f.acctId, 'Single_Token', 'no anchor');
+            System.assert(false, 'A mention with no anchor must be refused.');
+        } catch (AAO_Identity.IdentityException e) {
+            System.assert(
+                e.getMessage().contains('held on its utterance'),
+                'Refused for the stated reason, not by a null pointer. Got: ' + e.getMessage()
+            );
+        }
+    }
+
+    @IsTest
+    static void theTHIRDKEYBRANCHMAKESTWOMENTIONSOFONESPELLINGONEROW() {
+        // The ruling on the key: a later call saying the name again is the same person named
+        // again, not a second human. Idempotent structurally, by the unique external id, rather
+        // than by a caller remembering to check.
+        Fixture f = fixture();
+        participant(f, 'ryan', 'Couture, Ryan', null);
+        Test.startTest();
+        AAO_Identity.Resolution one = AAO_Identity.holdMention(
+            utteranceOf(f, 'Fatima'), f.acctId, 'Single_Token', 'first call'
+        );
+        AAO_Identity.Resolution two = AAO_Identity.holdMention(
+            utteranceOf(f, ' fatima '), f.acctId, 'Single_Token', 'second call, same name'
+        );
+        Test.stopTest();
+
+        System.assertEquals(one.shadowPersonId, two.shadowPersonId, 'One spelling, one row.');
+        System.assertEquals(
+            1, [SELECT COUNT() FROM AAO_Shadow_Person__c WHERE AAO_Account__c = :f.acctId]
+        );
+    }
+
+    @IsTest
+    static void aMISHEARDSPELLINGMAKESITSOWNROWANDTHATISCORRECT() {
+        Fixture f = fixture();
+        participant(f, 'ryan', 'Couture, Ryan', null);
+        Test.startTest();
+        AAO_Identity.holdMention(utteranceOf(f, 'Fatima'), f.acctId, 'Single_Token', 'as heard');
+        AAO_Identity.holdMention(utteranceOf(f, 'Fatema'), f.acctId, 'Single_Token', 'as heard');
+        Test.stopTest();
+        System.assertEquals(
+            2, [SELECT COUNT() FROM AAO_Shadow_Person__c WHERE AAO_Account__c = :f.acctId],
+            'Folding one spelling into the other here would undo the ASR-name law one layer '
+            + 'below where it was written. Reconciling them is the ladder\'s job, not the key\'s.'
+        );
+    }
+
+    @IsTest
+    static void thePROVENANCEBOUNDARYHOLDSATTHEMENTIONLEG() {
+        // THE ESTABLISHMENT IS EVIDENCE-BOUND, THE IDENTITY IS NOT. All this row holds is a name
+        // as heard, so the identity columns stay EMPTY. Writing the spoken token into LastName
+        // would launder evidence into sourced identity in the one place a reader cannot tell.
+        Fixture f = fixture();
+        participant(f, 'ryan', 'Couture, Ryan', null);
+        Test.startTest();
+        AAO_Identity.Resolution r = AAO_Identity.holdMention(
+            utteranceOf(f, 'Fatima'), f.acctId, 'Single_Token', 'held'
+        );
+        Test.stopTest();
+
+        AAO_Shadow_Person__c row = [
+            SELECT AAO_Last_Name__c, AAO_First_Name__c, AAO_Email__c, AAO_Display_Name__c,
+                AAO_Identity_Provenance__c, AAO_Designator__c
+            FROM AAO_Shadow_Person__c WHERE Id = :r.shadowPersonId
+        ];
+        System.assertEquals('Utterance', row.AAO_Identity_Provenance__c);
+        System.assertEquals(null, row.AAO_Last_Name__c, 'A spoken token is not a surname.');
+        System.assertEquals(null, row.AAO_First_Name__c);
+        System.assertEquals(null, row.AAO_Email__c);
+        System.assertEquals(
+            'Fatima', row.AAO_Designator__c,
+            'The as-heard form is the half of this row that may be quoted, and it is populated.'
+        );
+    }
+
     // ---------------------------------------------------------------------- fixtures
 
     private class Fixture {

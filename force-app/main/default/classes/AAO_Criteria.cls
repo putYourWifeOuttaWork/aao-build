@@ -121,8 +121,54 @@ public with sharing class AAO_Criteria {
             AAO_Evidence_Occurred__c = occurred,
             AAO_Synthetic__c = AAO_Synthetic.MARK
         );
+        if (deferring) {
+            // DEDUPED BY KEY, LAST WINS, which is what the per-row upsert did. A bulk upsert
+            // REFUSES duplicate external ids in one call, and two naming pairs can name the
+            // same criterion, so the map is required rather than tidy. Both callers get the
+            // SAME instance back, so both see the Id the flush writes onto it.
+            AAO_Criterion__c held = pending.get(criterionKey);
+            if (held == null) {
+                pending.put(criterionKey, row);
+                return row;
+            }
+            held.AAO_Subject__c = row.AAO_Subject__c;
+            held.AAO_Voiced_By__c = row.AAO_Voiced_By__c;
+            held.AAO_Source__c = row.AAO_Source__c;
+            held.AAO_Evidence_Occurred__c = row.AAO_Evidence_Occurred__c;
+            return held;
+        }
         Database.upsert(row, AAO_Criterion__c.AAO_Criterion_Key__c, true);
         return row;
+    }
+
+    // ============================================ THE DEFERRED MINT, one statement per run
+    //
+    // `mint` is called once per naming pair inside the join's loop, and its single-row upsert
+    // was four of the 133 DML statements s3's join spent. Same contract as
+    // `AAO_Commit`'s buffer: a caller that opens no batch gets the per-row behaviour byte for
+    // byte, and the retired-row guard above still runs per call because it is a read.
+    private static Boolean deferring = false;
+    private static Map<String, AAO_Criterion__c> pending = new Map<String, AAO_Criterion__c>();
+
+    public static void beginDeferred() {
+        deferring = true;
+        pending = new Map<String, AAO_Criterion__c>();
+    }
+
+    /** Returns the DML statements spent: one, or none when nothing was minted. */
+    public static Integer flushDeferred() {
+        Integer stmts = 0;
+        if (!pending.isEmpty()) {
+            Database.upsert(
+                pending.values(),
+                AAO_Criterion__c.AAO_Criterion_Key__c,
+                true
+            );
+            stmts++;
+        }
+        deferring = false;
+        pending = new Map<String, AAO_Criterion__c>();
+        return stmts;
     }
 
     // ------------------------------------------------------- the byte-range join

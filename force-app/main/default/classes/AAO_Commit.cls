@@ -86,6 +86,91 @@ public class AAO_Commit {
      * Fetch a whole batch's candidates in one query. Optional: an unprimed id falls through to
      * its own read, so a single-candidate caller behaves exactly as it always has.
      */
+    // ================================================ THE DEFERRED WRITE BUFFER
+    //
+    // THE PROBLEM IT SOLVES, measured rather than feared: the join reached DML 133 of 150 on
+    // Wells Fargo s3 at only 31 candidates. `commitCandidate` runs once per candidate and did
+    // FOUR statements each, so the ceiling was 35 candidates and nothing in the code caps the
+    // candidate count. The ninety-sixth stamp ruled bulkification first and the split trigger
+    // as the backstop.
+    //
+    // THREE OF THE FOUR MOVE OUT OF THE LOOP. `insert claim`, the last-claim pointer on the
+    // answer, and the candidate stamp are all collected here and written once at `flush`.
+    // `4C + 9` becomes `C + 9`.
+    //
+    // **`persist` STAYS PER-CANDIDATE AND THAT IS DELIBERATE.** It reads standing state,
+    // branches on it, and handles DUPLICATE_VALUE per row against the unique index. The
+    // forty-eighth stamp's read-then-branch semantics have to stay byte-identical, and the
+    // cache invalidation below depends on each candidate seeing whatever is actually standing.
+    // Bulkifying it would be the clobber defect returning.
+    //
+    // ONE IMPLEMENTATION, TWO INVOCATION MOMENTS, per the twenty-eighth stamp: a caller that
+    // does not open a batch gets the per-row behaviour byte for byte, which is what every
+    // existing test and every non-join caller relies on.
+    private static Boolean deferring = false;
+    private static List<AAO_Claim__c> claimQueue = new List<AAO_Claim__c>();
+    /** Parallel to claimQueue: the answer whose last-claim pointer that claim sets. */
+    private static List<AAO_Answer__c> pointerQueue = new List<AAO_Answer__c>();
+    private static List<AAO_Candidate__c> candQueue = new List<AAO_Candidate__c>();
+    /** Parallel to candQueue; null where the candidate produced no claim. */
+    private static List<AAO_Claim__c> candClaimQueue = new List<AAO_Claim__c>();
+
+    /** Open a batch. Every write below is collected until `flushDeferred`. */
+    public static void beginDeferred() {
+        deferring = true;
+        claimQueue = new List<AAO_Claim__c>();
+        pointerQueue = new List<AAO_Answer__c>();
+        candQueue = new List<AAO_Candidate__c>();
+        candClaimQueue = new List<AAO_Claim__c>();
+    }
+
+    /**
+     * Write what the batch collected, in the one order that works: claims first, because the
+     * last-claim pointer and the candidate stamp both need Ids that do not exist until the
+     * insert returns.
+     *
+     * Returns the DML statement count it spent, so a caller can report it rather than infer it.
+     */
+    public static Integer flushDeferred() {
+        Integer stmts = 0;
+        if (!claimQueue.isEmpty()) {
+            insert claimQueue;
+            stmts++;
+        }
+        // DEDUPED BY ID, LAST WINS, which is exactly what the per-row path did. Two candidates
+        // can share an answer key, and after the cache invalidation the second one re-reads a
+        // DIFFERENT sObject instance carrying the same Id; `update` refuses duplicate ids in
+        // one list, so the map both dedupes and keeps the later pointer.
+        Map<Id, AAO_Answer__c> pointers = new Map<Id, AAO_Answer__c>();
+        for (Integer i = 0; i < claimQueue.size(); i++) {
+            AAO_Answer__c a = pointerQueue[i];
+            if (a == null || a.Id == null) {
+                continue;
+            }
+            a.AAO_Last_Claim__c = claimQueue[i].Id;
+            pointers.put(a.Id, a);
+        }
+        if (!pointers.isEmpty()) {
+            update pointers.values();
+            stmts++;
+        }
+        for (Integer i = 0; i < candQueue.size(); i++) {
+            if (candClaimQueue[i] != null) {
+                candQueue[i].AAO_Claim__c = candClaimQueue[i].Id;
+            }
+        }
+        if (!candQueue.isEmpty()) {
+            update candQueue;
+            stmts++;
+        }
+        deferring = false;
+        claimQueue = new List<AAO_Claim__c>();
+        pointerQueue = new List<AAO_Answer__c>();
+        candQueue = new List<AAO_Candidate__c>();
+        candClaimQueue = new List<AAO_Claim__c>();
+        return stmts;
+    }
+
     public static void primeCandidates(List<Id> candidateIds) {
         if (candidateIds == null || candidateIds.isEmpty()) {
             return;
@@ -483,10 +568,17 @@ public class AAO_Commit {
         // 6 ----------------------------------------------------------- the receipt
         claim.AAO_Answer__c = answer.Id;
         claim.AAO_Candidate__c = cand.Id;
-        insert claim;
-
-        answer.AAO_Last_Claim__c = claim.Id;
-        update answer;
+        if (deferring) {
+            // Collected, not written. The pointer needs an Id the insert has not produced yet,
+            // so both wait for the flush. `AAO_Last_Claim__c` has NO readers anywhere in the
+            // codebase, so nothing downstream in this run can observe the delay.
+            claimQueue.add(claim);
+            pointerQueue.add(answer);
+        } else {
+            insert claim;
+            answer.AAO_Last_Claim__c = claim.Id;
+            update answer;
+        }
 
         // AND THE KEY STAYS OUT OF THE CACHE AFTER A WRITE. Two candidates can share an answer
         // key (the same person and contract established twice in one run), and the old
@@ -510,7 +602,7 @@ public class AAO_Commit {
         if (r.candidateOutcome == null) {
             r.candidateOutcome = 'Upheld';
         }
-        stampCandidate(cand, r, claim.Id);
+        stampCandidate(cand, r, deferring ? null : claim.Id, claim);
         return r;
     }
 
@@ -729,9 +821,28 @@ public class AAO_Commit {
     }
 
     private static void stampCandidate(AAO_Candidate__c cand, Result r, Id claimId) {
+        stampCandidate(cand, r, claimId, null);
+    }
+
+    /**
+     * `pendingClaim` carries the claim whose Id this stamp wants when the claim has not been
+     * inserted yet. Five of the six call sites stamp a candidate that produced no claim and
+     * pass null for both.
+     */
+    private static void stampCandidate(
+        AAO_Candidate__c cand,
+        Result r,
+        Id claimId,
+        AAO_Claim__c pendingClaim
+    ) {
         cand.AAO_Stage__c = r.candidateStage;
         cand.AAO_Outcome__c = r.candidateOutcome;
         cand.AAO_Claim__c = claimId;
+        if (deferring) {
+            candQueue.add(cand);
+            candClaimQueue.add(pendingClaim);
+            return;
+        }
         update cand;
     }
 }

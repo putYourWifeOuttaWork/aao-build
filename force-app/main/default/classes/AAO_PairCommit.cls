@@ -321,15 +321,21 @@ public with sharing class AAO_PairCommit {
         Set<Id> touchedAnswers = new Set<Id>();
         Map<String, Id> sentimentPeople = new Map<String, Id>();
 
+        // THE BATCH IS OPEN FOR THE WHOLE LOOP. Three of `commitCandidate`'s four DML
+        // statements are collected and written once below; `persist` stays per-candidate.
+        // 4C + 9 becomes C + 9, measured at 133 on s3's 31 candidates.
+        AAO_Commit.beginDeferred();
+        List<AAO_Commit.Result> results = new List<AAO_Commit.Result>();
+
         for (Integer i = 0; i < candidates.size(); i++) {
             AAO_Pair__c p = eligible[i];
             AAO_Commit.Result r = AAO_Commit.commitCandidate(
                 candidates[i].Id,
                 internalDomains == null ? new Set<String>() : internalDomains
             );
+            results.add(r);
             if (r.claim != null) {
                 o.claimsWritten++;
-                committed.add(new AAO_Pair__c(Id = p.Id, AAO_Claim__c = r.claim.Id));
             }
             if (r.answer != null) {
                 o.answersWritten++;
@@ -349,6 +355,16 @@ public with sharing class AAO_PairCommit {
                     String.valueOf(p.AAO_Person__c) + '|' + oppId,
                     p.AAO_Person__c
                 );
+            }
+        }
+
+        // FLUSH, THEN READ THE IDS. A deferred claim has no Id until this runs, so the
+        // pair-to-claim backlink is built after the flush rather than inside the loop.
+        AAO_Commit.flushDeferred();
+        for (Integer i = 0; i < results.size(); i++) {
+            AAO_Commit.Result r = results[i];
+            if (r.claim != null) {
+                committed.add(new AAO_Pair__c(Id = eligible[i].Id, AAO_Claim__c = r.claim.Id));
             }
         }
 
@@ -455,6 +471,11 @@ public with sharing class AAO_PairCommit {
             return out;
         }
 
+        // THE MINT BATCHES, AND IT CLOSES BEFORE THE TYPING PASS BELOW. The typing pass
+        // UPDATES the rows the naming loop minted, so those rows need real Ids by then; a
+        // deferred mint has none until its flush. The suite caught this as
+        // MISSING_ARGUMENT on the typing update, which is the byte-identical bar doing its job.
+        AAO_Criteria.beginDeferred();
         List<AAO_Criteria.Span> namedSpans = new List<AAO_Criteria.Span>();
         // Parallel to namedSpans, NOT to namings: a nameless naming mints nothing and must
         // not shift which criterion a typing span attaches to.
@@ -492,6 +513,9 @@ public with sharing class AAO_PairCommit {
             mintedNamings.add(p);
             o.criteriaMinted++;
         }
+
+        // ONE UPSERT FOR EVERY CRITERION THIS RUN MINTS, replacing one per naming pair.
+        AAO_Criteria.flushDeferred();
 
         // Keyed by Id rather than listed: DC_F and DC_R on one criterion are two pairs and
         // one row, and Apex refuses a duplicate Id in an update list.

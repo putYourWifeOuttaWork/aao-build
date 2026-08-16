@@ -42,6 +42,31 @@ public with sharing class AAO_CardFace {
     /**
      * Pair ref to one-line face. Refs absent from the map fall back to the caller's own rule.
      */
+    /**
+     * SHARDED, because the face call is a keyed strict schema and the grammar ceiling is a
+     * property of every one of them.
+     *
+     * The thirty-fourth stamp measured the ceiling and the thirty-fifth ruled that
+     * `keyedShardCount` drives it, on the reasoning that this is not a verify quirk: one
+     * required property per unit means the compiled grammar scales with unit count, whatever
+     * the call is for. The face call was the last keyed call still handing the gateway
+     * everything at once, and on the clean Wells Fargo re-run it 400'd with **"The compiled
+     * grammar is too large"** on twenty-nine cards. Before that it 400'd on duplicate refs, and
+     * fixing the key was what let this one become visible - the second constraint was always
+     * underneath.
+     *
+     * WHAT IT COSTS TO GET THIS WRONG, which is why it is not just a face problem: the
+     * deterministic fallback writes RAW VERBATIM as the face, and Matthew graded exactly that
+     * off the live map at the ninety-ninth stamp - goals that are not goals, no metrics,
+     * nothing anyone can understand from the titles. **And the face is layer 2 of the card
+     * dedup**, the meaning layer the sixty-first stamp ruled must never be replaced by layer 1,
+     * so a board of verbatim faces cannot recognise a restatement as reinforcement either. One
+     * 400 costs the surface AND the dedup's reach.
+     *
+     * A SHARD THAT FAILS LOSES ONLY ITS OWN FACES, and says so with its index. All-or-nothing
+     * was the previous behaviour and it is strictly worse: twenty-nine cards went blunt because
+     * one call was too big for the gateway.
+     */
     public static Map<String, Face> infer(List<AAO_Pair__c> pairs) {
         Map<String, Face> out = new Map<String, Face>();
         if (stubbed != null) {
@@ -50,6 +75,27 @@ public with sharing class AAO_CardFace {
         if (pairs == null || pairs.isEmpty()) {
             return out;
         }
+
+        Integer cap = AAO_Pass.MAX_UNITS_PER_KEYED_CALL;
+        Integer shards = AAO_Pass.keyedShardCount(pairs.size());
+        for (Integer i = 0; i < shards; i++) {
+            List<AAO_Pair__c> shard = new List<AAO_Pair__c>();
+            for (Integer j = i * cap; j < Math.min((i + 1) * cap, pairs.size()); j++) {
+                shard.add(pairs[j]);
+            }
+            if (!shard.isEmpty()) {
+                out.putAll(inferShard(shard, i + 1, shards));
+            }
+        }
+        return out;
+    }
+
+    private static Map<String, Face> inferShard(
+        List<AAO_Pair__c> pairs,
+        Integer shardNo,
+        Integer shardCount
+    ) {
+        Map<String, Face> out = new Map<String, Face>();
 
         List<String> block = new List<String>();
         Map<String, Object> props = new Map<String, Object>();
@@ -150,12 +196,30 @@ public with sharing class AAO_CardFace {
             // Not fatal, deliberately. The caller has a deterministic fallback, and a deal whose
             // cards all carry blunt faces is a worse board than this one and a far better board
             // than an empty one.
-            System.debug(LoggingLevel.WARN, 'Card faces not inferred: ' + e.getMessage());
+            System.debug(
+                LoggingLevel.WARN,
+                'Card faces not inferred for shard ' + shardNo + ' of ' + shardCount +
+                ' (' + pairs.size() + ' units): ' + e.getMessage()
+            );
         }
         return out;
     }
 
-    public static final String VERSION = 'cardface-1.0.0';
+    /**
+     * **1.1.1, 16 August** - 3b writes the number as DIGITS and 3c requires the line to finish.
+     * 1.1.0 said "spelled as they said it", and on its first real board that spent twenty of
+     * the sixty characters on "ninety five thousand" and delivered FIVE OF TWENTY-NINE faces
+     * cut mid-thought, ending on "for", "by", "does not". That is the unreadable-title class
+     * Matthew graded at the ninety-ninth stamp, reintroduced by the rule meant to cure it. The
+     * repair is a shorter spelling of the same number, never a different number.
+     *
+     * **1.1.0, 16 August** - the face carries the measurable where the words carry one (rule
+     * 3b), per the hundred-fourth stamp's item 3(b). The guidance moved, so the version moves
+     * with it: the two-halves law binds a face the same as any other model output, and a board
+     * written under 1.0.0 must be distinguishable from one written under 1.1.0. Sharding is a
+     * transport change and would not have moved it on its own.
+     */
+    public static final String VERSION = 'cardface-1.1.1';
 
     /**
      * Bound the face WITHOUT an ellipsis, cutting at a word boundary.
@@ -197,6 +261,21 @@ public with sharing class AAO_CardFace {
             'be caught downstream, because the face is what a seller reads and believes.\n' +
             '3. DROP NOTHING LOAD-BEARING. If the words name what is wanted, what pushes, what ' +
             'is underway or what blocks, that belongs on the line.\n' +
+            '3b. CARRY THE NUMBER, AS DIGITS. Where the words themselves carry a measurable - ' +
+            'a quantity, a currency amount, a percentage, a count, a duration or a deadline - ' +
+            'it goes ON THE FACE, in their units. "9 hrs/week hunting prior work", "$95k ' +
+            'credits, year one", "60 days" are the whole difference between a line a seller ' +
+            'can act on and a line they have to open the card to understand. WRITE THE NUMBER ' +
+            'AS DIGITS even where they said it in words: the face is hard-capped at ' +
+            MAX_CHARS + ' characters, "ninety five thousand" spends twenty of them and "$95k" ' +
+            'spends four, and the verbatim on the card already carries how they said it. This ' +
+            'RULE 3b NEVER OVERRIDES RULE 2: where the words carry no measurable, the face ' +
+            'carries none, and a number that is not in the words is a fabrication on the one ' +
+            'line the reader believes. Do not derive, round, convert, annualise or total ' +
+            'anything - digits are a shorter spelling of their number, never a different one.\n' +
+            '3c. THE FACE ENDS ON A WHOLE THOUGHT. It is cut to the cap at a word boundary, so ' +
+            'a line that runs long is delivered ending on "for", "by", "does not" or "plus", ' +
+            'which reads as broken rather than brief. Write it short enough to finish.\n' +
             '4. Their terms, not ours. No vendor vocabulary, no coaching, no advice, no ' +
             'recommendation.\n' +
             '5. The face is a CLAUSE and is hard-capped; a face that runs to a full ' +

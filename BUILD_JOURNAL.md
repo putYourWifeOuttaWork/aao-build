@@ -1159,3 +1159,64 @@ re-graded rather than silently invalidated.
 Wire the split into every join caller; wire `assertOneForOne`; put **`SOQL ≈ 2.33·C + 9`** beside
 `DML ≈ C + 9` in the ceiling record as the binding one. The card-face grammar 400 is unchanged and
 untouched.
+
+---
+
+## Session 116 (cont.) · v0.1 ITEM 3(b) · THE CARD-FACE CALL IS SHARDED AND THE FACE CARRIES THE NUMBER · my own first-pass wording cut five faces mid-thought and was repaired · the dedup half is NOT verified and I say so
+
+The hundred-fourth stamp's item 3(b). Report: `review/wf-clean/CARD-FACE-SHARDING.md`.
+
+### Built
+
+**`keyedShardCount` drives the card-face call** at the ratified cap of 15. It was the last keyed
+strict schema handing the gateway everything at once, which the thirty-fifth stamp already ruled
+against on the reasoning that the grammar ceiling belongs to every keyed schema. **A failing shard
+now loses only its own faces and names its index**; all-or-nothing cost twenty-nine cards their
+faces on one oversized call.
+
+**Rule 3b, metric-oriented**, and **rule 3c**. `VERSION` `cardface-1.0.0` → `1.1.0` → `1.1.1`;
+sharding is transport and would not have moved it, the guidance is what does.
+
+### Result
+
+**No 400, no fallback warning on any shard. 17 of 29 faces carry a measurable**: `$95k credits
+year 1 only if convert by Jan 28`, `9 hrs/week hunting prior work`, `150 seats live, 2 coverage
+groups`, `Enterprise agreement: 4-6 weeks risk review`, `~20% archive outside Documentum`. Against
+the verbatim they replaced — *"Three years ago we put in a platform that could not produce a chain
+of custody..."* — that is the ninety-ninth stamp's grade answered on its own surface.
+
+### MY DEFECT, FIRST PASS, REPAIRED
+
+**1.1.0 said "spelled as they said it", which spent twenty of sixty characters on "ninety five
+thousand" and delivered FIVE OF TWENTY-NINE FACES CUT MID-THOUGHT** — ending on "for", "by", "does
+not", "plus". **That is the unreadable-title class Matthew graded, reintroduced by the rule written
+to cure it.** Repair at 1.1.1: **digits** (`$95k` is four characters where the words are twenty,
+and the verbatim already carries how they said it), plus 3c stating the failure directly. **Digits
+are a shorter spelling of their number, never a different one**; rule 2 still forbids deriving,
+rounding, converting, totalling. **Re-measured: 0 cut, measurables 15 → 17.** One correction, one
+rerun.
+
+### WHAT I CANNOT REPORT AS VERIFIED
+
+The stamp says the shard restores inferred faces **and card dedup's reach**. **The first is
+measured. The second is not, and this rebuild structurally could not measure it.**
+
+`AAO_Cards.run` scopes its pair query by **opportunity, not run key** — the same fact behind the
+duplicate-ref 400. So the first invocation wrote all 29 and s4/s5 found nothing new. **Every card
+met an empty board, so layer 2 had nothing to compare against.** 29 before and 29 after is an
+artifact of the method, not evidence.
+
+**And the board visibly carries same-meaning pairs layer 2 would be expected to catch:** `9
+hrs/week hunting prior work persists` beside `9 hrs/week hunting prior work`; `1/5 of archive in
+unowned departmental store` beside `~20% archive outside Documentum`; `Final deck version lost as
+attachment` beside `Final client versions never return to library`. Plus one cross-type pair
+(`$740/year` as both Obstacle and Pressure), which is the eightieth stamp's calibration class and
+not a duplicate by construction.
+
+**Whether layer 2 works on restored faces is now testable and untested.** It needs a stacked write
+where later cards meet an earlier standing board, which the opportunity-scoped query prevents a
+rebuild from producing. **Named, not guessed.** It also touches the ninety-ninth stamp's open s5
+card-count item, since at least three pairs above are candidates for the excess it asks about —
+design's row pass, not mine.
+
+**Suite 516, 515 AAO passing. Nothing tuned toward any expectation table.**

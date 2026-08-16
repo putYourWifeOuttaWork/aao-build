@@ -1,0 +1,6 @@
+pf0813-uphold: located=67 MERGED=19 speakerAttached=43 designatorOnRoster=1 designatorLadderOrModel=4  => deterministic 63 of 67
+   merged pairs: r1q1+r2q1 r1q2+r2q2 r1q9+r2q8 r1q3+r2q3 r1q4+r2q4 r1q6+r2q6 r1q7+r2q9 r1q12+r2q17 r1q15+r2q12 r1q13+r2q15 r1q14+r2q16 r1q16+r2q32 r1q24+r2q28 r1q25+r2q29 r1q27+r2q21 r1q29+r2q20 r1q28+r2q14 r1q17+r2q18 r1q18+r2q19
+em0813-stack-c1: located=42 MERGED=10 speakerAttached=32 designatorOnRoster=0 designatorLadderOrModel=0  => deterministic 42 of 42
+   merged pairs: r1q6+r2q5 r1q8+r2q10 r1q4+r2q3 r1q19+r2q19 r1q2+r2q1 r1q5+r2q8 r1q12+r2q14 r1q10+r2q12 r1q21+r2q17 r1q14+r2q13
+em0813-stack-c2: located=25 MERGED=7 speakerAttached=14 designatorOnRoster=4 designatorLadderOrModel=0  => deterministic 25 of 25
+   merged pairs: r1q3+r2q1 r1q6+r2q6 r1q5+r2q4 r1q10+r2q7 r1q1+r2q3 r1q9+r2q12 r1q8+r2q11

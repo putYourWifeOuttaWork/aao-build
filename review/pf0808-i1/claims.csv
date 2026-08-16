@@ -1,0 +1,18 @@
+Name,AAO_Evidence_Contract__r.AAO_Proposition_Code__c,AAO_Subject_Type__c,AAO_Participant__r.AAO_Display_Name__c,AAO_Criterion__r.AAO_Subject__c,AAO_Verdict_After__c
+CLM-00000199,AAO_POL_PS1,Participant,Adam Pfeiffer,,TRUE
+CLM-00000200,AAO_BR_USER,Participant,Adam Pfeiffer,,TRUE
+CLM-00000201,AAO_PS_1,Participant,Adam Pfeiffer,,TRUE
+CLM-00000202,AAO_PS_1,Participant,Adam Pfeiffer,,TRUE
+CLM-00000203,AAO_PS_1,Participant,Dan Lewis,,TRUE
+CLM-00000204,AAO_BR_EVAL,Participant,Dan Lewis,,TRUE
+CLM-00000205,AAO_BR_EVAL,Participant,Adam Pfeiffer,,TRUE
+CLM-00000206,AAO_BR_EVAL,Participant,Adam Pfeiffer,,TRUE
+CLM-00000207,AAO_BR_EVAL,Participant,Kayla Stanley,,UNVERIFIED
+CLM-00000208,AAO_BR_DM,Participant,Adam Pfeiffer,,TRUE
+CLM-00000209,AAO_BR_DM,Participant,Rich,,UNVERIFIED
+CLM-00000210,AAO_BR_EVAL,Participant,Dan Lewis,,TRUE
+CLM-00000211,AAO_BR_EVAL,Participant,Dan Lewis,,TRUE
+CLM-00000212,AAO_POL_PS2,Participant,Kayla Stanley,,UNVERIFIED
+CLM-00000213,AAO_BR_APP,Participant,Rich,,UNVERIFIED
+CLM-00000214,AAO_BR_EVAL,Participant,Dan Lewis,,TRUE
+CLM-00000215,AAO_BR_EVAL,Participant,Dan Lewis,,TRUE

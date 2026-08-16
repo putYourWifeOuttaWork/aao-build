@@ -12,3 +12,6 @@ node_modules/
 
 # Local, machine-specific session settings
 .claude/settings.local.json
+
+# Quarantined git lock artifacts (see BUILD_JOURNAL, 16 August). Debris, not record.
+_to_delete/

@@ -1,0 +1,46 @@
+AAO_Pair_Ref__c,AAO_Disposition__c,AAO_Corroborated__c,AAO_Verification__c,AAO_Verification_Note__c,AAO_Person__r.AAO_Display_Name__c
+r1q11,Identified,true,Upheld,"Identifies himself as part of the implementation team, which speaks to executing after approval.",Adam Pfeiffer
+r1q12,Identified,true,Upheld,"The words describe a diverse user group within Salesforce including the speaker and Dan, indicating the speaker is a user.",Adam Pfeiffer
+r1q13,Identified,true,Upheld,"Describes users of the product including all 46 users, indicating usage.",Jennae Jizdeortega
+r1q14,Identified,false,Refused,"Stating that the speaker and Dan report to Kalia shows a reporting relationship upward, not that others seek this person for advice.",Adam Pfeiffer
+r1q15,Merged,false,,,
+r1q16,Identified,true,Upheld,"The speaker states we are the current front-runner, an explicitly positive stance toward us though qualified by pricing.",Adam Pfeiffer
+r1q17,Identified,true,Upheld,An explicit statement of liking everything seen so far from us.,Adam Pfeiffer
+r1q18,Identified,false,Refused,placeholder,Adam Pfeiffer
+r1q19,Identified,false,Upheld,"The speaker reports positive internal feedback and that we rank best, voicing favorable support.",Dan Lewis
+r1q2,Identified,false,Upheld,"Probes whether the AI capability is an extra-cost add-on or included, i.e., pricing/packaging.",Dan Lewis
+r1q20,Identified,true,Refused,placeholder,Adam Pfeiffer
+r1q21,Identified,false,Refused,placeholder,Dan Lewis
+r1q22,Merged,false,,,
+r1q23,Merged,false,,,
+r1q25,Identified,true,Refused,placeholder,Dan Lewis
+r1q3,Identified,true,Upheld,Probes configurability against their specific need of 8 practice areas in Salesforce.,Adam Pfeiffer
+r1q4,Identified,false,Upheld,"The speaker presses on how the offering would layer into their Salesforce instance beyond one project, testing capability against a need.",Adam Pfeiffer
+r1q5,Identified,true,Upheld,"The speaker probes whether the feature supports multiple users, testing capability against a need.",Kayla Stanley
+r1q6,Identified,true,Upheld,"States the recommendation and approval chain, indicating who commits to the direction.",Adam Pfeiffer
+r1q7,Identified,false,Upheld,"The speaker asserts that their and Rich's recommendation effectively determines the outcome, indicating they drive the commitment.",Rich
+r1q8,Identified,false,Refused,"The words describe approval residing with Rich and Perkerwicz and Elmer, not with the speaker.",Rich
+r1q9,None,false,,,
+r2q1,Merged,false,,,
+r2q10,Merged,false,,,
+r2q11,Merged,false,,,
+r2q12,Merged,false,,,
+r2q13,Identified,true,Upheld,"States a company-wide sales target and how it is measured, which is a stated company objective.",Jennae Jizdeortega
+r2q14,Identified,true,Refused,The words reference a revised AOP and a number for discussion but do not assert that this person sets goals or objectives.,Adam Pfeiffer
+r2q15,Identified,false,Upheld,"The speaker probes prerequisites and whether it is a separate paid add-on, testing fit and terms.",Dan Lewis
+r2q16,Identified,false,Upheld,The speaker compares two delivery options for feature parity.,Dan Lewis
+r2q17,Merged,false,,,
+r2q18,Identified,true,Upheld,"Commits to getting something turned on on their Salesforce side, indicating hands-on responsibility.",Kayla Stanley
+r2q19,Identified,false,Refused,placeholder,Kayla Stanley
+r2q2,Merged,false,,,
+r2q20,Identified,false,Refused,"The speaker expresses curiosity about how much effort Kayla must expend to get approval, indicating Kayla, not the speaker, is the one executing.",Kayla Stanley
+r2q21,Merged,false,,,
+r2q22,Identified,false,Refused,"The words raise a procedural NDA caution before sharing, not warmth or coaching support toward us.",Adam Pfeiffer
+r2q23,Merged,false,,,
+r2q3,Identified,false,Refused,placeholder,Adam Pfeiffer
+r2q4,Merged,false,,,
+r2q5,Identified,false,Upheld,"Describes the higher approval as a formality upon their recommendation, addressing who holds approval rights.",Rich
+r2q6,Merged,false,,,
+r2q7,Identified,false,Upheld,Saying they will look at other options asserts comparing alternatives.,Dan Lewis
+r2q8,Identified,false,Upheld,Explicitly states intent to compare offerings and probe pricing model.,Dan Lewis
+r2q9,Merged,false,,,

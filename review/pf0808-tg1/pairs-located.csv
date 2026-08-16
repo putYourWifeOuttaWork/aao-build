@@ -1,0 +1,45 @@
+AAO_Pair_Ref__c,AAO_Evidence_Contract__r.AAO_Proposition_Code__c,AAO_Answer_Text__c,AAO_Start_Offset__c,AAO_End_Offset__c,AAO_Meaning__c,AAO_Coverage__c,AAO_Criterion_Name__c,AAO_About_Designator__c,AAO_Speaker_Key__c
+r1q12,AAO_BR_USER,"We have such a diverse user group within Salesforce where some of us are like Dan and I, we're gonna, well Dan, I should, but Dan's better at following the process and doing everything the way we design it to do.",1185,1397,USER,Full,,,Adam Pfeiffer
+r2q23,AAO_POL_IC1,one of them hit 90 million company-wide sales target this year,2668,2730,INNER_CIRCLE,Partial,,,Jennae Jizdeortega
+r1q13,AAO_BR_USER,"two reps initially, that was Kayla and Adam, and now it's all 46 users.",3379,3450,USER,Partial,,,Jennae Jizdeortega
+r2q13,AAO_BR_USER,"two reps initially, that was Kayla and Adam, and now it's all 46 users.",3379,3450,USER,Full,,,Jennae Jizdeortega
+r2q24,AAO_POL_IC1,we're moving towards a key account model,9772,9812,INNER_CIRCLE,Partial,,,Adam Pfeiffer
+r1q14,AAO_POL_IC1,"we're moving towards a key account model. So some of our larger accounts are, you know, specific leader. We have names to accounts.",9772,9903,INNER_CIRCLE,Full,,,Adam Pfeiffer
+r2q14,AAO_BR_USER,"it's basically a collaboration between the commercial team, so Dan, myself, and our kind of peers within this group",13186,13301,USER,Partial,,,Adam Pfeiffer
+r2q2,AAO_BR_EVAL,"Would we have to have Agent Force enabled for this to work, or is this a separate add-on as well for your guys' AI?",17299,17414,EVALUATOR,Full,,,Dan Lewis
+r2q3,AAO_BR_EVAL,"Okay, is it an extra add-on to have the max AI ability or is that just included?",19348,19428,EVALUATOR,Full,,,Dan Lewis
+r1q2,AAO_BR_EVAL,"Okay, is it an extra add-on to have the max AI ability or is that just included?",19348,19428,EVALUATOR,Full,,,Dan Lewis
+r1q3,AAO_BR_EVAL,"Just out of curiosity, the columns there, those are obviously configurable. Where do we pull those? Because we have basically 8 practice areas that are products within Salesforce.",26297,26476,EVALUATOR,Full,,,Adam Pfeiffer
+r2q6,AAO_BR_EVAL,And these insight maps are visible to multiple users. It's not just like user specific.,39512,39599,EVALUATOR,Full,,,Kayla Stanley
+r1q17,AAO_BR_EVAL,And these insight maps are visible to multiple users. It's not just like user specific.,39512,39599,EVALUATOR,Partial,,,Kayla Stanley
+r1q15,AAO_POL_PS2,I'm sure we can get that turned on on our Salesforce side for tasks.,44575,44643,POLITICAL_STRUCTURE,Partial,,,Kayla Stanley
+r2q21,AAO_POL_PS2,I'm sure we can get that turned on on our Salesforce side for tasks.,44575,44643,POLITICAL_STRUCTURE,Partial,,,Kayla Stanley
+r1q10,AAO_PS_1,"So... I like that. So far, I mean, honestly, I like everything we've seen so far.",45098,45179,SUPPORTER,,,,Adam Pfeiffer
+r2q16,AAO_PS_1,"I like that. So far, I mean, honestly, I like everything we've seen so far.",45104,45179,SUPPORTER,,,,Adam Pfeiffer
+r2q12,AAO_POL_IC3,"at configuration, Adam, you let us know the rules of engagement",48988,49051,INNER_CIRCLE,Partial,,,Jennae Jizdeortega
+r2q11,AAO_POL_PS1,"If, if, if we get there, I think this is this is our implementation team right here between Kalia and Dan and myself.",49256,49373,POLITICAL_STRUCTURE,Full,,,Adam Pfeiffer
+r2q10,AAO_POL_PS2,"If, if, if we get there, I think this is this is our implementation team right here between Kalia and Dan and myself.",49256,49373,POLITICAL_STRUCTURE,Full,,,Adam Pfeiffer
+r1q11,AAO_POL_PS1,"If, if, if we get there, I think this is this is our implementation team right here between Kalia and Dan and myself.",49256,49373,POLITICAL_STRUCTURE,Full,,,Adam Pfeiffer
+r1q5,AAO_BR_DM,"It's going to be us, our recommendation, and really just, it'll go to our president, Rich, and then ultimately there's going to be some sort of a approval required from the Perkerwicz and Elmer.",49882,50076,DECISION_MAKER,Full,,,Adam Pfeiffer
+r2q7,AAO_BR_DM,"It's going to be us, our recommendation, and really just, it'll go to our president, Rich, and then ultimately there's going to be some sort of a approval required from the Perkerwicz and Elmer.",49882,50076,DECISION_MAKER,Partial,,,Adam Pfeiffer
+r1q7,AAO_PS_1,"It's going to be us, our recommendation, and really just, it'll go to our president, Rich, and then ultimately there's going to be some sort of a approval required from the Perkerwicz and Elmer. There's an advisory committee for kind of new platforms, especially those that leverage AI.",49882,50168,MENTOR,,,,Adam Pfeiffer
+r2q9,AAO_BR_APP,"There's an advisory committee for kind of new platforms, especially those that leverage AI. So there would be some approval required",50077,50209,APPROVER,Full,,advisory committee,Adam Pfeiffer
+r2q8,AAO_BR_APP,"but I mean ultimately upon the recommendation from us and Rich, like that's kind of just a formality, right?",50211,50319,APPROVER,Partial,,Rich,Adam Pfeiffer
+r1q6,AAO_BR_APP,"ultimately upon the recommendation from us and Rich, like that's kind of just a formality, right?",50222,50319,APPROVER,Partial,,Rich,Adam Pfeiffer
+r2q18,AAO_PS_1,"So, so far, the feedback's been, from what I've seen, has been pretty good. And so, yeah, we're starting, I guess, with the best from the rankings.",50944,51091,SUPPORTER,,,,Dan Lewis
+r2q1,AAO_BR_EVAL,"over the next couple of weeks and comparing what you guys offer to them and especially the pricing. I know we haven't got to that point, but I think it would be good to kind of go over the pricing model and how that would, how that would shake out.",51165,51413,EVALUATOR,Full,,,Dan Lewis
+r1q1,AAO_BR_EVAL,"over the next couple of weeks and comparing what you guys offer to them and especially the pricing. I know we haven't got to that point, but I think it would be good to kind of go over the pricing model",51165,51367,EVALUATOR,Full,,,Dan Lewis
+r2q4,AAO_BR_EVAL,the only other thing I would like to prod on before we run out of time is when it comes to building it,51597,51699,EVALUATOR,Full,,,Adam Pfeiffer
+r2q5,AAO_BR_EVAL,"how user-friendly is it for, you know, anybody of any computer skill level to go in and just sort of understand how that map gets built?",52379,52515,EVALUATOR,Full,,,Adam Pfeiffer
+r1q4,AAO_BR_EVAL,"how user-friendly is it for, you know, anybody of any computer skill level to go in and just sort of understand how that map gets built?",52379,52515,EVALUATOR,Full,,,Adam Pfeiffer
+r2q22,AAO_POL_PS2,I was just kind of curious on how much of A lift it's going to be for Kayla to get approval from Perkerwicz and Elmer,61110,61227,POLITICAL_STRUCTURE,Partial,,,Dan Lewis
+r1q16,AAO_POL_PS2,I was just kind of curious on how much of A lift it's going to be for Kayla to get approval from Perkerwicz and Elmer,61110,61227,POLITICAL_STRUCTURE,Partial,,,Dan Lewis
+r1q19,AAO_PS_1,"I will say we haven't like signed any sort of an NDA with you. And if we're going to just share anything like that, it may be good to have that in place before we do. I have no problem sharing that if we put an NDA in place.",62607,62831,MENTOR,,,,Adam Pfeiffer
+r2q17,AAO_PS_1,"an NDA would be, you know, preferred on my side if we can do that.",63073,63139,MENTOR,,,,Adam Pfeiffer
+r1q20,AAO_BR_APP,"as long as it's bilateral, we can review it on our legal side and that's fine if you want to share yours.",63284,63389,APPROVER,Partial,,,Adam Pfeiffer
+r1q18,AAO_PS_1,"Right. And our opportunities are all a project pharma specific template. So our opportunity template is different than one source, which is different than everybody else. So like if we knew to adjust and change ours as this is going, it's only going to affect project pharma opportunities, not one source and everybody else.",64209,64533,MENTOR,,,,Kayla Stanley
+r1q8,AAO_PS_1,"full transparency, like if we were going to jump today, like you're the leader in the clubhouse for sure. But there's also pricing and other things that kind of make that contingent.",65209,65391,SUPPORTER,,,,Adam Pfeiffer
+r2q15,AAO_PS_1,"full transparency, like if we were going to jump today, like you're the leader in the clubhouse for sure. But there's also pricing and other things that kind of make that contingent.",65209,65391,SUPPORTER,,,,Adam Pfeiffer
+r2q20,AAO_DC_N,"if we were going to jump today, like you're the leader in the clubhouse for sure. But there's also pricing and other things that kind of make that contingent.",65233,65391,CRITERION,Full,Competitive pricing,,Adam Pfeiffer
+r1q9,AAO_DC_N,"if we were going to jump today, like you're the leader in the clubhouse for sure. But there's also pricing and other things that kind of make that contingent.",65233,65391,CRITERION,Full,Competitive pricing within budget,,Adam Pfeiffer
+r2q19,AAO_DC_N,ask them if they're Salesforce native and ask them if they're methodology driven,67593,67673,CRITERION,Partial,"Salesforce-native, methodology-driven",,Jennae Jizdeortega

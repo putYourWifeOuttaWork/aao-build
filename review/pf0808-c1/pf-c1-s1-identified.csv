@@ -1,0 +1,32 @@
+AAO_Pair_Ref__c,AAO_Disposition__c,AAO_Corroborated__c,AAO_Verification__c,AAO_Located_Pair__r.AAO_Evidence_Contract__r.AAO_Proposition_Code__c,AAO_Located_Pair__r.AAO_Start_Offset__c,AAO_Located_Pair__r.AAO_Meaning__c,AAO_Person__r.AAO_Display_Name__c
+r1q7,Identified,true,Upheld,AAO_POL_PS2,7721,POLITICAL_STRUCTURE,"Vargas, Jefferson [EMR/SYSS/AT/MEDI]"
+r2q8,Merged,false,,AAO_POL_PS2,7721,POLITICAL_STRUCTURE,
+r2q11,Identified,false,Refused,AAO_POL_PS2,10348,POLITICAL_STRUCTURE,Neeraja Chimata
+r1q10,Identified,false,Refused,AAO_POL_PS3,10348,POLITICAL_STRUCTURE,Neeraja Chimata
+r2q9,Merged,false,,AAO_BR_EVAL,13593,EVALUATOR,
+r1q8,Identified,true,Upheld,AAO_BR_EVAL,13593,EVALUATOR,Neeraja Chimata
+r2q1,Identified,false,Refused,AAO_BR_EVAL,14309,EVALUATOR,"Vargas, Jefferson [EMR/SYSS/AT/MEDI]"
+r1q2,Identified,true,Upheld,AAO_DC_N,14315,CRITERION,"Vargas, Jefferson [EMR/SYSS/AT/MEDI]"
+r2q2,Merged,false,,AAO_DC_N,14347,CRITERION,
+r1q3,Merged,false,,AAO_DC_F,14363,FORMAL,
+r2q3,Identified,true,Upheld,AAO_DC_F,14363,FORMAL,"Vargas, Jefferson [EMR/SYSS/AT/MEDI]"
+r1q1,Identified,true,Upheld,AAO_BR_EVAL,14670,EVALUATOR,"Vargas, Jefferson [EMR/SYSS/AT/MEDI]"
+r2q4,Merged,false,,AAO_BR_EVAL,14670,EVALUATOR,
+r1q13,Identified,false,Upheld,AAO_BR_EVAL,21368,EVALUATOR,Ryan Couture
+r1q14,Identified,true,Upheld,AAO_BR_EVAL,21812,EVALUATOR,Ryan Couture
+r2q14,Merged,false,,AAO_BR_EVAL,21812,EVALUATOR,
+r2q13,Identified,true,Upheld,AAO_BR_EVAL,23678,EVALUATOR,Neeraja Chimata
+r1q12,Merged,false,,AAO_BR_EVAL,23678,EVALUATOR,
+r2q12,Merged,false,,AAO_POL_PS1,25394,POLITICAL_STRUCTURE,
+r1q11,Identified,true,Refused,AAO_POL_PS1,25394,POLITICAL_STRUCTURE,Neeraja Chimata
+r1q5,Identified,false,Upheld,AAO_POL_OPS1,31449,OUTSIDE_POLITICAL_STRUCTURE,"Vargas, Jefferson [EMR/SYSS/AT/MEDI]"
+r2q5,Merged,false,,AAO_PS_1,31801,MENTOR,
+r1q4,Identified,true,Upheld,AAO_PS_1,31801,MENTOR,"Vargas, Jefferson [EMR/SYSS/AT/MEDI]"
+r2q6,Identified,false,Upheld,AAO_POL_PS2,32135,POLITICAL_STRUCTURE,"Vargas, Jefferson [EMR/SYSS/AT/MEDI]"
+r2q15,Identified,false,Refused,AAO_BR_USER,35515,USER,Ryan Couture
+r1q16,Identified,false,Upheld,AAO_POL_PS2,35552,POLITICAL_STRUCTURE,Ryan Couture
+r1q15,Identified,false,Upheld,AAO_DC_N,38075,CRITERION,Neeraja Chimata
+r2q10,Merged,false,,AAO_PS_1,38811,SUPPORTER,
+r1q9,Identified,true,Upheld,AAO_PS_1,38811,SUPPORTER,Neeraja Chimata
+r2q7,Merged,false,,AAO_POL_PS2,41411,POLITICAL_STRUCTURE,
+r1q6,Identified,true,Upheld,AAO_POL_PS2,41411,POLITICAL_STRUCTURE,"Vargas, Jefferson [EMR/SYSS/AT/MEDI]"

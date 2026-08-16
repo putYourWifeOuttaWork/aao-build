@@ -1058,3 +1058,104 @@ The system read three real calls, refused what it could not prove, cited everyth
 **its two largest defects were found by its own instruments** — the org's validation rules caught
 a query shape that could never have matched, and a stacked read caught an answer key that could
 never have accumulated. Neither was found by reasoning about the code.
+
+---
+
+## Session 116 · 16 August · THE REVIEW RECORD IS COMMITTED · AND THE s5 JOIN DIAGNOSIS: NO GATE REFUSED ANYTHING, THE TRANSACTION DIED ON SOQL 101 · both the fix and the alarm were built and uncalled · PROMOTION FINALLY HAS ITS SPECIMEN AND IT WORKS
+
+The hundred-third stamp's queue, in its order. Report: `review/wf-clean/S5-JOIN-DIAGNOSIS.md`,
+rows in `review/wf-clean/rows-s5/`.
+
+### 1 · THE UNTRACKED RECORD IS COMMITTED · `138fa09`
+
+All sixteen review paths, 56 files, plus `CODE-INBOX.md` so the ledger carrying the 102nd and
+103rd is durable. The gate run `pf0808-tg1` is among them.
+
+**`_to_delete/` excluded with its reason**, per the stamp's own "a stated reason" clause: it is not
+record, it is a quarantine of **28 git lock artifacts, 15 August 12:43 to 17:24, 1.8 MB, sixteen
+non-zero** because next-index locks carry binary index content. Committing lock files puts them
+where a future session could restore one into `.git/`, which is the failure they came from. **The
+census is the evidence; the bytes are not.** Added to `.gitignore`. Cleared one stale
+`.git/next-index-9.lock`; verified no `index.lock` before staging and checked HEAD after.
+
+### 2 · THE s5 JOIN · the cause, named
+
+```
+System.LimitException: Too many SOQL queries: 101
+```
+
+**No gate refused anything.** Measured before re-running: **39 pairs ELIGIBLE, upheld,
+`alreadyCommitted = 0`**, zero claims from SRC-00000040. The stage never completed. It is an
+`allOrNone` transaction, so 39 claims died together — which is why the number is 39-to-0 rather
+than 30-to-9. **A governor does not discriminate between people.**
+
+Matthew's bar asks for the refusing gate or a counting-law defect. **Neither half fits as written**:
+no gate refused these pairs and no claim-writing rule dropped them.
+
+**DESIGN'S HYPOTHESIS IS REFUTED BY MEASUREMENT.** Running the join in ratified 12-pair batches
+gives **SOQL ≈ 2.33·C + 9**. At 39 candidates that is **100.9 against the measured 101**. And the
+same slope predicts the PRE-change run: dirty s5 measured 81/100 at 30 candidates, model 79.9.
+**The slope did not move, so `b2a2514` did not raise the per-candidate query cost.** What changed
+is C: the clean run upheld 39 where the dirty run upheld 30, and 39 is the first value that
+crosses. **Priya being Contact-less is real and is downstream, not the cause.**
+
+**THE CEILING: C ≈ 39 on SOQL against C ≈ 140 on DML. SOQL is the binding governor by three and a
+half times**, exactly as the s5 report flagged.
+
+### 3 · THE SECOND EDGE, and it doubles
+
+**`assertOneForOne` did not report BROKEN because IT HAS NO PRODUCTION CALLER.** Two source
+references exist and both are prose in comments; every executing reference is in its own test.
+
+**And the fix has none either.** `AAO_PairCommit.run(runKey, domains, maxPairs)` — the ratified
+caller-side split — **has zero production callers.** Its own doc comment already records this
+identical failure from 13 August. **The wall was known, the fix was built, and the overload that
+skips it is the one every driver calls, mine included.**
+
+**TWO MECHANISMS, BOTH CORRECT, BOTH UNCALLED: the split that would have prevented this and the
+alarm that would have reported it.** Between them, 39 upheld pairs produced zero claims and nothing
+said so. Third instance of the class, after `AAO_Resolve` at the 81st and the field-with-no-readers
+law. **A mechanism with no caller is a plan, not a mechanism.**
+
+### 4 · MY OWN REPORTING MISS
+
+The clean re-run report put `—` in the s5 join cell and **did not name the stage as failed** —
+absence recorded without being called a failure, which is why design had to re-scope. Mechanical
+cause: **this error class prints no debug log at all**, and my driver piped every stage through
+`grep USER_DEBUG`, so the LimitException produced empty output and the loop continued. I hit the
+same thing twice more while diagnosing. **A stage whose output is empty is not a stage that ran
+quietly.**
+
+### 5 · THE REPAIR, AND PROMOTION'S SPECIMEN
+
+The split completed the join lawfully — 12, 12, 12, 3, SOQL peak 38/100 — and the pass was carried
+to its end: projection 1 created / 1 populated / 15 unchanged, cards 0 created / 29 unchanged.
+
+**PROMOTION FIRED AND ITS NEGATIVE CONTROL HELD.**
+
+```
+Cleared   "Priya Natarajan"    clearedBy = Priya Natarajan
+Cleared   "Priya"              clearedBy = Priya Natarajan
+Standing  "Bettina Marchetti"  clearedBy = null
+SP-00000000 -> Priya Natarajan · SP-00000002 -> Priya Natarajan · SP-00000001 -> null
+```
+
+**Both of Priya's flags cleared under two different bound keys, both carrying the Contact as
+receipt — N forms, N shadows, ONE Contact, N flags cleared, keys uncollapsed.** That is the
+ninety-ninth stamp's clear-by-person working on the exact rows that failed before. **Bettina
+unpromoted and still standing** is the control: promotion discriminates.
+
+**The ninety-eighth stamp's shippability failure is closed.**
+
+### 6 · STATE CHANGE, DECLARED
+
+Deal now: **claims 90 {45=29, 39=22, 40=39}, answers 51, map rows 7, cards 29.** Design's grading
+record was built against the pre-repair state; **six rows it marks blocked-by-the-s5-join-defect
+are now unblocked and the s5 claim column moved from zero to 39.** Stated so the record is
+re-graded rather than silently invalidated.
+
+### Owed, not built
+
+Wire the split into every join caller; wire `assertOneForOne`; put **`SOQL ≈ 2.33·C + 9`** beside
+`DML ≈ C + 9` in the ceiling record as the binding one. The card-face grammar 400 is unchanged and
+untouched.

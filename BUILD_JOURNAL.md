@@ -1335,3 +1335,42 @@ no LWC stretch reports done until it has been opened where it ships. Placing `aa
 Opportunity page and looking is the remaining step, Matthew's five minutes as the Inspector's was.
 
 **Suite 516, 515 AAO passing. Wells Fargo untouched.**
+
+---
+
+## Session 116 (cont.) · THE STACKED-WRITE CARD-DEDUP TEST RAN, THROUGH THE DEMO SURFACE, AND LAYER 2 DID NOT FIRE
+
+The hundred-seventh's item 4, taken opportunistically. Report:
+`review/demo/CARD-DEDUP-STACKED-TEST.md`. **On the harness deal, never Wells Fargo.**
+
+**The shape the empty-board rebuild could not run:** a second call meeting a STANDING board,
+carrying a restatement and a genuine new insight as its control.
+
+Board before: one card, `6 hrs/week chasing prior approvals`. Call 2 said the same thing in
+deliberately different words — *"the sign-off chase is still swallowing the best part of a working
+day every single week"* — plus a new four-week security review.
+
+**RESULT, NEGATIVE: the restatement created a SECOND CARD rather than reinforcing the first**, with
+no count prepended to the parent. **The control passed**: the genuinely new obstacle created
+correctly, so the writer discriminates rather than blindly creating.
+
+**THE CAUSE IS NOT A BUG AND THE CODE SAYS SO.** `meaningKey` is type plus the normalised face
+STRING, and its own comment states the choice: *"this deliberately does NOT try to detect
+paraphrase: a writer that guessed at sameness would silently merge two things a person said."* So
+**layer 2 catches an identical face and nothing else**, which leaves the ratified draft's law —
+*"the same problem restated in new words is reinforcement, not a new card"* — unimplemented.
+
+**A law-versus-implementation divergence of the eighty-first stamp's class**, after
+coverage-Internal, model separation and `AAO_Resolve`. It differs in one respect worth crediting:
+**it is not silent**, the code documents the narrowing where the decision is made. But prose and
+behaviour still disagree, and the rule stands: the path comes back to the law or the law is
+re-ruled in the open.
+
+**Three options with costs are on the record and NONE is chosen; nothing built.** Design's ruling,
+because each changes what a seller sees. Recorded lean: the sixty-first stamp built layer 1
+*beneath* layer 2 so the meaning layer would survive, and called replacing it with byte identity a
+silent retirement of reinforcement — **layer 2 as string equality is that retirement arriving by
+another route.**
+
+**And the harness paid for itself:** this ran entirely through the on-record surface, two pastes,
+no shell driving, no CODE in the loop.

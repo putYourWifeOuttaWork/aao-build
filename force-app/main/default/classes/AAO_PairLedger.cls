@@ -47,6 +47,18 @@ public with sharing class AAO_PairLedger {
         public Integer verified = 0;
         public Integer verificationsUpheld = 0;
         public Integer verificationsRefused = 0;
+        /**
+         * **THE THIRD LEG, and it did not exist until 16 August.** This class is named for
+         * "one for one, for one" and counted only two of them: located against disposed, and
+         * dispositions against verdicts. Nothing counted UPHELD against CLAIMS WRITTEN.
+         *
+         * That gap is not theoretical. On the clean Wells Fargo s5 join, 39 upheld pairs
+         * produced ZERO claims because the transaction threw `Too many SOQL queries: 101` and
+         * rolled back whole, and this class reported HELD throughout, because located and
+         * disposed were both 83 and every verdict was in. **The one number that would have
+         * said something was wrong was the one nobody was counting.**
+         */
+        public Integer claimed = 0;
 
         public override String toString() {
             return String.join(
@@ -58,6 +70,7 @@ public with sharing class AAO_PairLedger {
                     'verdicts returned        ' + verified + ' (unit: claims)',
                     '  upheld                 ' + verificationsUpheld + ' (unit: claims)',
                     '  refused                ' + verificationsRefused + ' (unit: claims)',
+                    'claims written           ' + claimed + ' (unit: claims)',
                     'outcome                  ' + outcome +
                         (outcome != INCOMPLETE
                             ? ''
@@ -104,6 +117,17 @@ public with sharing class AAO_PairLedger {
                 c.verified += n;
             }
         }
+        // The third leg, read from the pair's own claim watermark rather than from the claim
+        // table, because a claim carries no run key (the sixty-fourth stamp measured that) and
+        // the watermark is what the join itself branches on.
+        c.claimed = [
+            SELECT COUNT()
+            FROM AAO_Pair__c
+            WHERE AAO_Run_Key__c = :runKey
+              AND AAO_Stage__c = :AAO_PairKey.IDENTIFIED
+              AND AAO_Verification__c = 'Upheld'
+              AND AAO_Claim__c != null
+        ];
         return c;
     }
 
@@ -115,7 +139,55 @@ public with sharing class AAO_PairLedger {
      * the shape of the data is a state with two shapes. Called after call 2, a pass with no
      * verdicts yet is correct; called after call 3, the same data is an omission.
      */
-    public static Counts assertOneForOne(String runKey, Boolean afterVerify) {
+    /**
+     * THE THIRD LEG'S ASSERTION, added 16 August, and it is exact rather than approximate.
+     *
+     * **Every eligible pair either becomes a claim or is refused for a NAMED reason.** The
+     * named reasons are the graded trap (Addendum 17, reported and never projected) and the
+     * internal-subject gate (ruled 8 August, a seller cannot be on the buying committee). A
+     * pair that is none of those and carries no claim was DROPPED, and dropping is the one
+     * outcome the counting law does not allow.
+     *
+     * **Why per-transaction and not per-run.** The first draft asserted run-wide upheld against
+     * run-wide claims and threw on `theSellerGateDoesNotTouchBuyerSideClaims`, because a
+     * lawfully refused pair is upheld forever and never carries a claim, so the run-wide form
+     * can only ever be approximate. The per-transaction form is exact: the join knows what it
+     * took and what it refused, in the same frame.
+     *
+     * **AND THE HONEST LIMIT, stated rather than implied.** This cannot catch the failure that
+     * prompted it. On 16 August the s5 join threw `Too many SOQL queries: 101` and rolled back
+     * whole; an in-transaction assertion dies with the transaction it was going to warn about.
+     * **What prevents that class is the split, which is now structural rather than optional.
+     * What this catches is the other class: a join that returns normally having quietly lost
+     * evidence the blind verifier had already upheld.**
+     */
+    public static void assertEligibleAccountedFor(
+        String runKey,
+        Integer eligible,
+        Integer claimed,
+        Integer trapped,
+        Integer internalSubject
+    ) {
+        // `eligible` is ALREADY NET of both named refusals - the trap loop and the
+        // seller-subject gate each rebuild the list before the count is taken - so the
+        // invariant is one for one and not a sum. The refusal counts ride the message as
+        // context, never as terms; the first draft added them and inverted the arithmetic,
+        // which the seller-gate test caught immediately.
+        if (eligible == claimed) {
+            return;
+        }
+        throw new ArithmeticException(
+            'One for one, FOR ONE is broken on run ' + runKey + ': ' + eligible +
+            ' pairs eligible this transaction (already net of ' + trapped +
+            ' graded-trap and ' + internalSubject + ' seller-subject refusals), but ' +
+            claimed + ' claims written, ' + (eligible - claimed) +
+            ' unaccounted (unit: pairs). The join read evidence the blind verifier had already ' +
+            'upheld and it reached neither a claim nor a named refusal. This is our bug, never ' +
+            'a model behaviour, per the parse law.'
+        );
+    }
+
+        public static Counts assertOneForOne(String runKey, Boolean afterVerify) {
         Counts c = counts(runKey);
 
         if (c.located != c.disposed) {

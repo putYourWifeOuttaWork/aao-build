@@ -44,6 +44,14 @@ public with sharing class AAO_PairCommit {
         public String runKey;
         public Integer pairsRead = 0;
         public Integer pairsEligible = 0;
+        /**
+         * Eligible pairs this transaction did NOT take, because the split capped it. The
+         * caller loops while this is above zero. It exists because the split's own note told
+         * callers to "call again until pairs eligible reaches zero" while `pairsEligible`
+         * reports the BATCH rather than the backlog, so the instruction and the number it
+         * named disagreed.
+         */
+        public Integer pairsRemaining = 0;
         public Integer pairsNotUpheld = 0;
         public Integer pairsNotIdentified = 0;
         public Integer pairsAlreadyCommitted = 0;
@@ -75,6 +83,7 @@ public with sharing class AAO_PairCommit {
                 new List<String>{
                     'pairs read               ' + pairsRead + ' (unit: pairs)',
                     '  eligible               ' + pairsEligible + ' (unit: pairs)',
+                    '  eligible, not yet taken' + ' ' + pairsRemaining + ' (unit: pairs)',
                     '  verification refused   ' + pairsNotUpheld + ' (unit: pairs)',
                     '  no identification      ' + pairsNotIdentified + ' (unit: pairs)',
                     '  already committed      ' + pairsAlreadyCommitted + ' (unit: pairs)',
@@ -134,17 +143,69 @@ public with sharing class AAO_PairCommit {
     public static Outcome run(String runKey, Set<String> internalDomains, Integer maxPairs) {
         BATCH = maxPairs;
         try {
-            return run(runKey, internalDomains);
+            return runBatch(runKey, internalDomains);
         } finally {
             BATCH = null;
         }
+    }
+
+    /**
+     * THE UNBATCHED DOOR IS GONE. This delegates; it no longer skips the split.
+     *
+     * The hundred-fifth stamp ruled it, and the reason is the where-an-instruction-fails-twice
+     * law: **structure, not discipline.** The split was built on 13 August with this exact
+     * failure recorded in its own doc comment, and then every driver called the two-argument
+     * overload and the wall was hit again on 16 August, 39 eligible pairs rolled back whole.
+     * An instruction that says "remember to pass a batch" has now failed twice. So the batch
+     * is no longer something a caller can forget: there is one implementation and both doors
+     * lead through the split.
+     *
+     * **A caller still has to LOOP** - one transaction cannot exceed one transaction's budget -
+     * and `pairsRemaining` on the Outcome is what tells it to, so the loop condition is read
+     * from the run rather than guessed.
+     */
+    public static Outcome run(String runKey, Set<String> internalDomains) {
+        return run(runKey, internalDomains, defaultBatch());
+    }
+
+    // ================================================== the batch is DERIVED, never authored
+    //
+    // Measured on the clean Wells Fargo s5 join, 16 August, by running it in 12-pair batches:
+    // 12 candidates cost 37 queries and 3 cost 16, so the slope is (37-16)/(12-3) = 2.33 and
+    // the base is about 9. **`SOQL = 2.33·C + 9`**, and it predicted both the failure (39
+    // candidates, 100.9 against a measured 101) and the pre-change run (30 candidates, 79.9
+    // against a measured 81).
+    //
+    // The budget is taken at **75% of what is LEFT**, not 75% of the ceiling: the join is not
+    // always the first thing in its transaction, and a batch sized against a limit somebody
+    // else already spent is the same arithmetic-against-the-wrong-denominator this build has
+    // been caught by before. 75% is the same headroom fraction the 90-second callout wall and
+    // the 112-statement DML trigger already use, so the three read as one rule in three units.
+    //
+    // This is `keyedShardCount`'s own shape at a different governor: **a required function of
+    // measured capacity, never a tuning knob.**
+    @TestVisible
+    private static final Integer SOQL_BASE = 9;
+    @TestVisible
+    private static final Decimal SOQL_PER_CANDIDATE = 2.33;
+
+    @TestVisible
+    private static Integer defaultBatch() {
+        Decimal budget =
+            (Limits.getLimitQueries() * 0.75) - Limits.getQueries() - SOQL_BASE;
+        Integer c = budget <= 0
+            ? 1
+            : (Integer) (budget / SOQL_PER_CANDIDATE).round(System.RoundingMode.DOWN);
+        // At least one, so a transaction that is already deep into its budget still makes
+        // progress rather than looping forever on an empty batch.
+        return Math.max(1, c);
     }
 
     /** The current transaction's pair budget, or null for "everything eligible". */
     @TestVisible
     private static Integer BATCH = null;
 
-    public static Outcome run(String runKey, Set<String> internalDomains) {
+    private static Outcome runBatch(String runKey, Set<String> internalDomains) {
         if (String.isBlank(runKey)) {
             throw new JoinException('Cannot join pairs with no run key.');
         }
@@ -237,6 +298,7 @@ public with sharing class AAO_PairCommit {
                 ' taken this transaction. Call again until pairs eligible reaches zero; the ' +
                 'pair watermark makes the join resumable.'
             );
+            o.pairsRemaining = eligible.size() - thisTransaction.size();
             eligible = thisTransaction;
         }
 
@@ -379,6 +441,26 @@ public with sharing class AAO_PairCommit {
         AAO_Receipt.record(
             runKey, AAO_Receipt.sourceForRun(runKey), AAO_Receipt.STAGE_JOIN,
             System.currentTimeMillis() - startedAt, o.claimsWritten
+        );
+
+        // THE COUNTING LAW'S ALARM, WIRED. The hundred-fifth stamp's item 5(ii).
+        //
+        // `AAO_PairLedger` has existed since the ledger era with no production caller at all -
+        // two references in the whole source tree and both of them prose in comments - so on 16
+        // August 39 upheld pairs produced zero claims and nothing anywhere said so. **An alarm
+        // with no caller did not fail; it was absent.**
+        //
+        // It runs LAST and inside the same transaction, so a break rolls the join back with it
+        // rather than leaving half a ledger standing behind a thrown assertion. `pairsRemaining`
+        // is passed as the mid-flight state, so a legitimately split join reports INCOMPLETE
+        // between transactions and only a finished one with unclaimed upholds throws.
+        // EXACT and per-transaction: eligible equals claimed plus the two NAMED refusals, the
+        // graded trap and the seller-subject gate. A run-wide form could only be approximate,
+        // because a lawfully refused pair stays upheld forever and never carries a claim - the
+        // first draft asserted run-wide and threw on a legitimate seller-gate test, which is
+        // the org teaching the arithmetic again.
+        AAO_PairLedger.assertEligibleAccountedFor(
+            runKey, o.pairsEligible, o.claimsWritten, o.pairsTrapped, o.pairsInternalSubject
         );
         return o;
     }

@@ -1220,3 +1220,63 @@ card-count item, since at least three pairs above are candidates for the excess 
 design's row pass, not mine.
 
 **Suite 516, 515 AAO passing. Nothing tuned toward any expectation table.**
+
+---
+
+## Session 116 (cont.) · THE TWO WIRINGS · the unbatched join door is GONE, the batch is DERIVED, and the counting law's third leg is COUNTED for the first time
+
+The hundred-fifth stamp's item 5, (i) and (ii), ahead of 3(c).
+
+### (i) THE SPLIT IS STRUCTURAL, NOT OPTIONAL
+
+**The two-argument `AAO_PairCommit.run` no longer skips the split — it delegates.** There is one
+implementation (`runBatch`, private) and both doors lead through it. This is the
+where-an-instruction-fails-twice law applied as **structure, not discipline**: the split was built
+13 August with this exact SOQL 101 recorded in its own doc comment, every driver kept calling the
+two-argument door, and the wall was hit again on 16 August with 39 pairs rolled back whole. An
+instruction that says "remember to pass a batch" has now failed twice, so the batch stopped being
+something a caller can forget.
+
+**THE BATCH IS DERIVED, NEVER AUTHORED.** From the measured model `SOQL ≈ 2.33·C + 9`, taken at
+**75% of what is LEFT** rather than 75% of the ceiling, because the join is not always first in
+its transaction and sizing against a budget somebody else already spent is arithmetic against the
+wrong denominator. 75% is the same headroom fraction the 90-second callout wall and the
+112-statement DML trigger use, so the three read as one rule in three units. **This is
+`keyedShardCount`'s shape at a different governor: a required function of measured capacity, never
+a tuning knob.** Proved live: **27 candidates** at 2 queries used.
+
+**`pairsRemaining` added**, because the split's own note told callers to "call again until pairs
+eligible reaches zero" while `pairsEligible` reports the BATCH rather than the backlog — the
+instruction and the number it named disagreed.
+
+### (ii) THE THIRD LEG WAS NEVER COUNTED
+
+**`AAO_PairLedger` is named for "one for one, for one" and counted two of them.** Located against
+disposed, and dispositions against verdicts. **Nothing counted upheld against claims written.**
+That is why the s5 join reported HELD while 39 upheld pairs produced zero claims: located and
+disposed were both 83 and every verdict was in. **The one number that would have said something
+was wrong was the one nobody was counting.** `Counts.claimed` now exists, read from the pair's own
+claim watermark because a claim carries no run key.
+
+**And the alarm is wired**, last and inside the join's transaction, so a break rolls the join back
+with it rather than leaving half a ledger behind a thrown assertion.
+
+**TWO CORRECTIONS THE ORG MADE TO MY ARITHMETIC, both caught by the suite:**
+1. My first draft asserted **run-wide** upheld against run-wide claims, and threw on
+   `theSellerGateDoesNotTouchBuyerSideClaims` — because **a lawfully refused pair stays upheld
+   forever and never carries a claim**, so the run-wide form can only ever be approximate.
+2. The second draft summed `claimed + trapped + internalSubject` and **inverted** (`1 eligible, 2
+   accounted for`), because both refusal loops REBUILD the eligible list before the count is
+   taken. `pairsEligible` is already net of them.
+
+**The exact invariant is `pairsEligible == claimsWritten`**, one for one, with the refusal counts
+riding the message as context and never as terms.
+
+**THE HONEST LIMIT, written into the method rather than implied: this cannot catch the failure
+that prompted it.** An in-transaction assertion dies with the transaction it was going to warn
+about. **What prevents that class is the split, now structural. What this catches is the other
+class: a join that returns normally having quietly lost upheld evidence.**
+
+**Suite 516, 515 AAO passing. Both wirings proved from the runtime**, not asserted: the two-arg
+door returns through the split, the derived batch reads 27, the alarm fires on 5-eligible/3-claimed
+and stays silent on 3/3 whatever the refusal counts.

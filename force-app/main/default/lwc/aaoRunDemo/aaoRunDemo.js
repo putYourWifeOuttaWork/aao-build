@@ -70,6 +70,20 @@ export default class AaoRunDemo extends LightningElement {
         );
     }
 
+    /**
+     * THE TEMPLATE CANNOT SAY `!canRun`, and that is why this getter exists rather than being
+     * inlined. LWC markup has no negation operator, so an inverted condition has to be exposed
+     * as its own name - and the first draft bound `disabled={canRun}`, which disabled the
+     * button exactly when the run WAS possible and enabled it when it was not.
+     *
+     * Found by opening the page, which is the sixty-fifth stamp's whole point: the suite was
+     * green, the controller was proved end to end from the runtime, and the one thing neither
+     * could see was the button.
+     */
+    get cannotRun() {
+        return !this.canRun;
+    }
+
     get running() {
         return !!this.runKey && !(this.view && this.view.finished);
     }

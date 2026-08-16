@@ -1374,3 +1374,36 @@ another route.**
 
 **And the harness paid for itself:** this ran entirely through the on-record surface, two pastes,
 no shell driving, no CODE in the loop.
+
+---
+
+## Session 116 (cont.) · THE RENDER CHECK IS DONE, AND IT FOUND AN INVERTED BUTTON · controller-proven is not rendered-proven, second confirmed instance
+
+Report: `review/demo/RENDER-CHECK.md`.
+
+Deployed `AAO_Demo_Run`, a NEW Opportunity record page carrying `aaoRunDemo` above
+`aaoRunInspector`, mirroring `AAO_Pipeline_Internal`'s precedent, and opened it in App Builder.
+**Not activated, no existing page edited, no assignment changed** — nothing moved for any user.
+The preview record App Builder chose is an unrelated opportunity; **Wells Fargo untouched.**
+
+**SEEN:** all four inputs with their placeholders, the helper text, the Run Inspector beneath
+correctly reporting no runs for that record.
+
+**THE DEFECT: `disabled={canRun}`.** `canRun` is true when the run is POSSIBLE, so **the button was
+disabled exactly when it could run and enabled when it could not** — the one control on the
+surface doing the opposite of its job.
+
+**Why it survived everything:** suite green, controller proved end to end from the runtime, and the
+pass ran twice through this component's own controller. **None of them can see a button.** The
+sixty-fifth stamp's law, second confirmed instance.
+
+**Why the shape exists, kept as a standing note: LWC markup has NO negation operator**, so an
+inverted condition must be exposed as its own named getter. `disabled={!canRun}` is not
+expressible and `disabled={canRun}` compiles, deploys and reads almost right. Fixed with a
+`cannotRun` getter carrying that reason. **Re-rendered: the button is correctly greyed.**
+
+**STILL NOT PROVED, named rather than implied: the polling loop under a real render cycle.** The
+App Builder canvas is a preview and does not execute Apex actions, so `startRun`, the three-second
+poll and the finish-and-stop behaviour are proved only from the runtime. Seeing stages tick over
+live needs the page activated and a real paste — one click, and Matthew's call whether it becomes
+the org's Opportunity page.

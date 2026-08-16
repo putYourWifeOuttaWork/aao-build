@@ -577,6 +577,33 @@ public with sharing class AAO_Resolve {
             rows.add(pending[i]);
         }
         insert rows;
+
+        // THE MODEL LEG JOURNALS ITS OWN CALLOUT. Named as debt at the eighty-first stamp
+        // ("the receipt does not journal the model leg's callout") and closed here because the
+        // hundred-fourth stamp's demo polls this object to draw the pipeline, and **a surface
+        // cannot visualize a callout the receipt never journals.**
+        //
+        // It records AFTER the writes, so a leg that threw mid-flight leaves no row claiming it
+        // finished - the receipt says what happened, never what was attempted. Telemetry is
+        // never evidence (sixty-eighth stamp), so this swallows its own failure: a lost timing
+        // is small and a lost resolution is not.
+        try {
+            // The StageResult overload, not the milliseconds one: the point of closing this
+            // gap was that the demo could not draw a CALLOUT the receipt never journalled, and
+            // the ms-only form records the wall while leaving the callout count at zero - which
+            // understates the one number the gap was named for. Caught on the first live demo
+            // run, where this leg read "5148ms, 0 callouts".
+            AAO_Receipt.record(
+                runKey, sourceId, AAO_Receipt.STAGE_IDENTIFY_MODEL,
+                r.call == null
+                    ? new List<AAO_Extract.StageResult>()
+                    : new List<AAO_Extract.StageResult>{ r.call },
+                r.requests == null ? 0 : r.requests.size(),
+                0
+            );
+        } catch (Exception e) {
+            System.debug(LoggingLevel.WARN, 'Model-leg receipt not journalled: ' + e.getMessage());
+        }
         return r;
     }
 

@@ -1,0 +1,88 @@
+<template>
+    <lightning-card title="Run the pass on this deal" icon-name="standard:einstein_replies">
+        <div class="slds-p-horizontal_medium">
+
+            <!-- THE PASTE SURFACE. Componentized deliberately: this block and the run view
+                 below share nothing but the controller, so either lifts out standalone. -->
+            <template if:false={runKey}>
+                <lightning-input
+                    label="What was this? (optional)"
+                    placeholder="Discovery call, 16 August"
+                    value={label}
+                    onchange={handleLabel}
+                    class="slds-m-bottom_x-small"
+                ></lightning-input>
+                <lightning-textarea
+                    label="Who was on the call? (key, Display Name, email — one per line)"
+                    placeholder="marcus, Marcus Reyes, marcus.reyes@northbank.example"
+                    value={roster}
+                    onchange={handleRoster}
+                    class="slds-m-bottom_x-small"
+                ></lightning-textarea>
+                <lightning-textarea
+                    label="Paste the transcript, note or email"
+                    placeholder="speaker&#9;their words..."
+                    value={text}
+                    onchange={handleText}
+                    class="slds-m-bottom_small"
+                ></lightning-textarea>
+                <lightning-button
+                    variant="brand"
+                    label="Run the pass"
+                    disabled={canRun}
+                    onclick={handleRun}
+                ></lightning-button>
+                <p class="slds-text-body_small slds-m-top_x-small slds-text-color_weak">
+                    The pass reads what is here and establishes only what the words carry.
+                    Every stage below is drawn from what the run journalled, never estimated.
+                </p>
+            </template>
+
+            <template if:true={error}>
+                <div class="slds-box slds-theme_error slds-m-vertical_small">{error}</div>
+            </template>
+
+            <!-- THE RUN VIEW -->
+            <template if:true={runKey}>
+                <div class="slds-grid slds-grid_align-spread slds-m-bottom_small">
+                    <span class="slds-text-title_caps">{runKey}</span>
+                    <template if:true={running}>
+                        <lightning-spinner size="small" variant="brand"></lightning-spinner>
+                    </template>
+                </div>
+
+                <template if:true={view.stoppedBecause}>
+                    <div class="slds-box slds-theme_warning slds-m-bottom_small">
+                        <strong>The pass stopped.</strong> {view.stoppedBecause}
+                    </div>
+                </template>
+
+                <template for:each={stageRows} for:item="s">
+                    <div key={s.key} class={s.css}>
+                        <span class="stage-name">{s.name}</span>
+                        <span class="stage-state">{s.state}</span>
+                        <span class="stage-detail">{s.detail}</span>
+                    </div>
+                </template>
+
+                <div class="slds-m-top_small slds-text-body_small">
+                    <strong>{wallSeconds}s</strong> journalled across
+                    <strong>{view.callouts}</strong> callouts
+                    <template if:true={view.cacheState}> · {view.cacheState}</template>
+                </div>
+                <template if:true={worstCalloutLine}>
+                    <div class="slds-text-body_small slds-text-color_weak">{worstCalloutLine}</div>
+                </template>
+
+                <div class="slds-m-top_medium">
+                    <template for:each={ledgerRows} for:item="r">
+                        <div key={r.key} class="ledger-row">
+                            <span class="ledger-value">{r.value}</span>
+                            <span class="ledger-label">{r.label}</span>
+                        </div>
+                    </template>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

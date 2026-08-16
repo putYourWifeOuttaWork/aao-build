@@ -1280,3 +1280,58 @@ class: a join that returns normally having quietly lost upheld evidence.**
 **Suite 516, 515 AAO passing. Both wirings proved from the runtime**, not asserted: the two-arg
 door returns through the split, the derived batch reads 27, the alarm fires on 5-eligible/3-claimed
 and stays silent on 3/3 whatever the refusal counts.
+
+---
+
+## Session 116 (cont.) · 3(c) · THE ON-RECORD DEMO · the pass driver that never existed, the receipt gap closed, and FOUR of my own defects found by proving it instead of asserting it
+
+The hundred-sixth's item 4. Report: `review/demo/README.md`. **Proved on a throwaway deal, never
+on Wells Fargo.**
+
+### Built
+
+The **model-leg receipt gap closed first**, as the stamp required — `AAO_Resolve` made a callout
+and journalled nothing, named as debt at the eighty-first. Then `AAO_PassQueueable`, **the async
+pass driver that did not exist**: the only Queueable in the tree was for ingest, and every graded
+run in this project has been driven by CODE from a shell. One stage per transaction, because
+callout-after-DML, the 120-second ceiling and the governors each independently force it; looping
+stages re-enqueue themselves rather than growing. Then `AAO_DemoController` (plain DTOs, no
+Lightning knowledge, so the surface lifts out standalone) and `lwc/aaoRunDemo`.
+
+### Proved end to end, 38 seconds, from the record
+
+**8 legs, 4 callouts, WARM. located 9, identified 9 — one for one.** upheld 2, refused 1, claims 2,
+answers 2, cards 1. Every stage a real journalled leg; nothing estimated.
+
+### FOUR DEFECTS, ALL MINE, FOUND BY PROVING
+
+**1 · The failure reporter was broken in exactly the way it exists to prevent.** `recordFailure`
+built a Leg with null numerics, `mergeLeg` dereferenced them, and its own swallow ate the throw —
+so **a stage that died left no trace at all.** The first run stalled after read 2 with four jobs
+`Completed`, zero errors, nothing anywhere. Found by probing whether the leg landed rather than
+trusting it had. Zero-filled.
+
+**2 · The pass refused the first run LAWFULLY, and the refusal is the finding.** *"Source has no
+participants. Participation is written at ingest; a Source with none is an ingest defect."* A
+pasted transcript carries no roster, and the eighty-eighth stamp is explicit that **the side split
+never comes from the transcript body.** The paste surface now asks for it, which is what a
+connector supplies. **The pass stopped rather than inventing a speaker.**
+
+**3 · `AAO_Origin__c` is restricted to {ECI, ingest}** and refused `demo-paste`. Corrected to
+`ingest` rather than by adding a value — inventing an origin to make a demo look distinct would
+put a word in the provenance column no connector ever wrote.
+
+**4 · The model leg journalled its wall and read ZERO callouts**, understating the one number the
+gap was named for. Caught live and switched to the StageResult overload.
+
+**Unplanned, observed working:** re-running identical text against the same deal was refused on
+`AAO_Scope_Key__c`. The same bytes cannot ingest twice against one opportunity.
+
+### THE HONEST LIMIT
+
+**The controller is proved end to end from the runtime. The component has NOT been opened on a
+Lightning page.** The sixty-fifth stamp is exact: **CONTROLLER-PROVEN IS NOT RENDERED-PROVEN**, and
+no LWC stretch reports done until it has been opened where it ships. Placing `aaoRunDemo` on an
+Opportunity page and looking is the remaining step, Matthew's five minutes as the Inspector's was.
+
+**Suite 516, 515 AAO passing. Wells Fargo untouched.**

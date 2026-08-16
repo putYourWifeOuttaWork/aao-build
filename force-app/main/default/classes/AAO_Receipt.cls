@@ -50,6 +50,19 @@ public with sharing class AAO_Receipt {
         public Integer produced;
         public String charters;
         public Datetime at;
+        /**
+         * **WHAT WENT WRONG, where something did.** Null on every healthy leg.
+         *
+         * A stage that throws leaves NO leg at all, which is correct for a receipt that says
+         * what happened rather than what was attempted - but it makes a failed pass and an
+         * unfinished pass identical to any reader, and that is exactly the shape that let a
+         * `LimitException` read as quiet on 16 August. A driver that catches its own stage
+         * failure records it here so a surface can draw a stopped pass as STOPPED.
+         *
+         * It costs no schema: legs serialise into `AAO_Stages__c`, so a new field on this class
+         * is a new key in a JSON blob, nothing to deploy and nothing to grant.
+         */
+        public String error;
     }
 
     /**
@@ -64,6 +77,19 @@ public with sharing class AAO_Receipt {
     public static final String STAGE_RESOLVE = 'call 0 resolve';
     public static final String STAGE_LOCATE = 'call 1 locate';
     public static final String STAGE_IDENTIFY = 'resolution';
+    /**
+     * **THE MODEL LEG'S OWN STAGE, added 16 August, because it made a callout and journalled
+     * nothing.** `STAGE_IDENTIFY` covers the deterministic resolution stage; the model leg on
+     * the remainder is a SECOND callout in a SEPARATE transaction (`AAO_Resolve.requests`
+     * enforces that boundary itself), so folding it into the same stage would merge two
+     * callouts into one line and lose the one that costs money.
+     *
+     * It is its own stage rather than a merged leg for a product reason as well: the
+     * hundred-fourth stamp's demo visualizes the pipeline by polling this object, and **a
+     * surface cannot draw a callout the receipt never journals.** The gap was named as debt at
+     * the eighty-first stamp and closes here.
+     */
+    public static final String STAGE_IDENTIFY_MODEL = 'resolution model leg';
     public static final String STAGE_VERIFY = 'call 3 verify';
     public static final String STAGE_JOIN = 'join';
     public static final String STAGE_PROJECT = 'projection';
@@ -75,6 +101,50 @@ public with sharing class AAO_Receipt {
      * Returns the row for a caller that wants it and null on any failure, INCLUDING a failure that
      * would otherwise have thrown. Callers are not expected to check.
      */
+    /**
+     * A STAGE THAT FAILED, journalled as a leg carrying its reason.
+     *
+     * Deliberately separate from `record`: a failure has no limits worth reporting, and
+     * conflating the two would let a healthy-looking leg carry an error nobody reads. Swallows
+     * its own failure for the standing reason telemetry always does - a driver that dies trying
+     * to report a death is worse than one that dies quietly.
+     */
+    public static void recordFailure(String runKey, Id sourceId, String stage, String message) {
+        if (!ENABLED) {
+            return;
+        }
+        try {
+            // EVERY NUMERIC IS ZERO-FILLED, and this is not defensive padding.
+            //
+            // The first draft set only `stage`, `at`, `wallMs` and `error`, and `mergeLeg`
+            // dereferenced the nulls while moving its roll-ups: the failure reporter threw,
+            // its own swallow ate the throw, and a stage that died left NO trace at all. **The
+            // reporter failed in exactly the way it exists to prevent**, and it was found by
+            // probing whether the leg landed rather than by trusting that it had.
+            Leg leg = new Leg();
+            leg.stage = stage;
+            leg.at = System.now();
+            leg.wallMs = 0;
+            leg.callouts = 0;
+            leg.worstCalloutMs = 0;
+            leg.splits = 0;
+            leg.produced = 0;
+            leg.soql = Limits.getQueries();
+            leg.soqlLimit = Limits.getLimitQueries();
+            leg.dml = Limits.getDmlStatements();
+            leg.dmlLimit = Limits.getLimitDmlStatements();
+            leg.dmlRows = Limits.getDmlRows();
+            leg.cpuMs = Limits.getCpuTime();
+            leg.cpuLimit = Limits.getLimitCpuTime();
+            leg.heap = Limits.getHeapSize();
+            leg.heapLimit = Limits.getLimitHeapSize();
+            leg.error = message == null ? 'unknown' : message.abbreviate(500);
+            mergeLeg(runKey, sourceId, leg);
+        } catch (Exception e) {
+            System.debug(LoggingLevel.WARN, 'Failure leg not journalled: ' + e.getMessage());
+        }
+    }
+
     public static AAO_Run_Receipt__c record(
         String runKey,
         Id sourceId,

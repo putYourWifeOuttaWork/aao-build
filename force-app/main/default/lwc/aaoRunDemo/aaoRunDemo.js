@@ -1,6 +1,8 @@
 import { LightningElement, api, track } from 'lwc';
 import startRun from '@salesforce/apex/AAO_DemoController.startRun';
 import progress from '@salesforce/apex/AAO_DemoController.progress';
+import purgeDeal from '@salesforce/apex/AAO_DemoController.purgeDeal';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 /**
  * THE ON-RECORD DEMO. Paste evidence, run the pass, watch it happen.
@@ -38,6 +40,8 @@ export default class AaoRunDemo extends LightningElement {
     @track view;
     @track error;
     @track busy = false;
+    @track confirmingPurge = false;
+    @track purging = false;
 
     pollId;
 
@@ -105,6 +109,47 @@ export default class AaoRunDemo extends LightningElement {
             this.error = (e && e.body && e.body.message) || 'Could not start the run.';
         } finally {
             this.busy = false;
+        }
+    }
+
+    // ---------------------------------------------------------------- purge this deal
+    //
+    // Two clicks, deliberately. The confirm names the deal so a mis-drop on a record page that
+    // is NOT the harness is caught by eye before anything is deleted - which is the whole reason
+    // it is a dialog rather than a button that just fires.
+
+    handlePurgeAsk() {
+        this.confirmingPurge = true;
+    }
+
+    handlePurgeCancel() {
+        this.confirmingPurge = false;
+    }
+
+    async handlePurgeConfirm() {
+        this.purging = true;
+        try {
+            const summary = await purgeDeal({ opportunityId: this.recordId });
+            // The component resets its OWN view rather than reloading: the run it was showing no
+            // longer exists, and leaving its stages on screen would be the surface asserting
+            // something the org no longer holds.
+            this.stopPolling();
+            this.runKey = undefined;
+            this.view = undefined;
+            this.error = undefined;
+            this.text = '';
+            this.label = '';
+            this.dispatchEvent(
+                new ShowToastEvent({ title: 'Deal purged', message: summary, variant: 'success' })
+            );
+        } catch (e) {
+            const msg = (e && e.body && e.body.message) || 'The purge refused.';
+            this.dispatchEvent(
+                new ShowToastEvent({ title: 'Nothing deleted', message: msg, variant: 'warning' })
+            );
+        } finally {
+            this.purging = false;
+            this.confirmingPurge = false;
         }
     }
 

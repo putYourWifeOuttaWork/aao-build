@@ -75,6 +75,12 @@ public with sharing class AAO_DemoController {
             SELECT Id, AccountId FROM Opportunity WHERE Id = :opportunityId LIMIT 1
         ];
 
+        // NORMALISED BEFORE IT IS HASHED, never after. The hash is the byte-provenance key every
+        // span is checked against, so it must be taken of the bytes actually STORED - hashing the
+        // raw paste and storing the normalised form would make every offset check compare against
+        // a string the org does not hold.
+        String normalized = normalizePaste(text, roster);
+
         String runKey =
             'demo-' + UserInfo.getUserId().left(8).toLowerCase() + '-' +
             System.now().format('yyyyMMddHHmmss');
@@ -88,7 +94,7 @@ public with sharing class AAO_DemoController {
             // connector, and inventing an origin value to make a demo look distinct would put
             // a word in the provenance column that no connector ever wrote.
             AAO_Origin__c = 'ingest',
-            AAO_Normalized_Text__c = text,
+            AAO_Normalized_Text__c = normalized,
             AAO_Diarization__c = 'Attributed',
             AAO_Evidence_Occurred__c = System.now(),
             AAO_Meeting_Title__c = String.isBlank(label) ? null : label.abbreviate(120),
@@ -109,7 +115,7 @@ public with sharing class AAO_DemoController {
         // computed from the very bytes stored rather than supplied by the caller - the same
         // reason the normalizer stamp is writer-supplied and never caller-supplied.
         src.AAO_Artifact_SHA256__c = EncodingUtil.convertToHex(
-            Crypto.generateDigest('SHA-256', Blob.valueOf(text))
+            Crypto.generateDigest('SHA-256', Blob.valueOf(normalized))
         );
         src.AAO_Part_Index__c = 1;
         src.AAO_Part_Count__c = 1;
@@ -121,6 +127,152 @@ public with sharing class AAO_DemoController {
         v.runKey = runKey;
         v.sourceId = src.Id;
         return v;
+    }
+
+    /**
+     * PASTE TOLERANCE · `key: utterance` and `Display Name: utterance` become the canonical
+     * `key<TAB>utterance`. The hundred-eleventh stamp's item 3, recommended and not blocking.
+     *
+     * A thirty-minute transcript pasted out of a document is exactly where a tab gets lost, and
+     * the normal form wants tabs. So a line whose leading token before a colon matches a roster
+     * KEY or a roster DISPLAY NAME is rewritten to the tab form; **everything else is left
+     * exactly as it arrived.**
+     *
+     * THE CONSERVATISM IS THE POINT, and it is the never-invented law at the intake:
+     *   - a line already carrying a tab is untouched, so the delivered tab-delimited transcripts
+     *     take this path and come out byte-identical;
+     *   - a colon that is not a speaker (`"Ideal state: two per person"`, a time, a URL) does not
+     *     match a roster entry and is left alone;
+     *   - an unmatched leading token is NEVER promoted to a speaker, because inventing a speaker
+     *     is the one thing the roster law exists to prevent.
+     *
+     * Matching is on the roster the caller supplied, so this cannot reach past what the human
+     * already declared about who was in the room.
+     */
+    // Public rather than TestVisible-private so it can be PROVED from the runtime, which is
+    // where this project's capability law says a claim about behaviour has to be checked.
+    public static String normalizePaste(String text, String roster) {
+        if (String.isBlank(text)) {
+            return text;
+        }
+        Set<String> known = new Set<String>();
+        if (String.isNotBlank(roster)) {
+            for (String line : roster.split('\n')) {
+                List<String> parts = line.split(',');
+                for (Integer i = 0; i < Math.min(2, parts.size()); i++) {
+                    if (String.isNotBlank(parts[i])) {
+                        known.add(parts[i].trim().toLowerCase());
+                    }
+                }
+            }
+        }
+        if (known.isEmpty()) {
+            return text;
+        }
+
+        List<String> out = new List<String>();
+        for (String line : text.split('\n')) {
+            if (line.contains('\t') || !line.contains(':')) {
+                out.add(line);
+                continue;
+            }
+            String head = line.substringBefore(':').trim();
+            if (String.isBlank(head) || !known.contains(head.toLowerCase())) {
+                out.add(line);
+                continue;
+            }
+            out.add(head + '\t' + line.substringAfter(':').trim());
+        }
+        return String.join(out, '\n');
+    }
+
+    /**
+     * PURGE THIS DEAL · the lawful purge, given a button.
+     *
+     * The hundred-eleventh stamp's item 1, and its own words on scope: **nothing here is new
+     * about the deletion.** `AAO_Purge` is ruled, watermark-guarded and enumerated; this
+     * discovers the run keys, deletes cards first so their junctions cascade rather than being
+     * hand-deleted (the fifty-second stamp's incident), and hands the rest to the purge that
+     * already exists.
+     *
+     * **A purge button on a sandbox harness is not a dismiss button on customer evidence** —
+     * different object, different law, and the no-dismiss ruling is untouched.
+     *
+     * THE GUARDS ARE THE PURGE'S OWN AND ARE NOT WEAKENED HERE: a hand-edited map value still
+     * aborts it, machine-Contact deletion is still bounded by the create-leg record, and a
+     * non-synthetic flag stays undeletable. **A refusal is surfaced, never forced** - the caller
+     * gets the reason as a message and the deal is left exactly as it was.
+     */
+    @AuraEnabled
+    public static String purgeDeal(Id opportunityId) {
+        if (opportunityId == null) {
+            throw new AuraHandledException('No opportunity. This runs against a record.');
+        }
+        try {
+            // The keys come from what the deal actually carries, never from a caller's memory:
+            // receipts for runs that journalled, pairs for runs that did not get that far.
+            Set<String> keys = new Set<String>();
+            for (AAO_Run_Receipt__c r : [
+                SELECT AAO_Run_Key__c FROM AAO_Run_Receipt__c
+                WHERE AAO_Opportunity__c = :opportunityId AND AAO_Run_Key__c != null
+            ]) {
+                keys.add(r.AAO_Run_Key__c);
+            }
+            for (AAO_Pair__c p : [
+                SELECT AAO_Run_Key__c FROM AAO_Pair__c
+                WHERE AAO_Source__r.AAO_Opportunity__c = :opportunityId
+                  AND AAO_Run_Key__c != null
+                LIMIT 5000
+            ]) {
+                keys.add(p.AAO_Run_Key__c);
+            }
+
+            // CARDS FIRST. Deleting a card takes its placements and contact links by cascade;
+            // deleting the junctions first orphans the card and was a live incident once.
+            List<ALTF__Insight_Card__c> cards = [
+                SELECT Id FROM ALTF__Insight_Card__c WHERE ALTF__Opportunity__c = :opportunityId
+            ];
+            Integer cardCount = cards.size();
+            if (!cards.isEmpty()) {
+                delete cards;
+            }
+
+            if (keys.isEmpty()) {
+                return 'Nothing to purge beyond ' + cardCount + ' card(s): this deal carries no ' +
+                    'run keys.';
+            }
+            AAO_Purge.Outcome o = AAO_Purge.run(keys, opportunityId);
+
+            // THE RESET CANNOT REMOVE THE PASTED ARTIFACT, and the org is right to refuse.
+            //
+            // A reset that leaves the bytes behind has a real consequence, so it is stated here
+            // rather than discovered in a room: `AAO_Scope_Key__c` is `S1|opportunity|hash` and
+            // unique, so **the same transcript cannot be pasted twice on one opportunity, purge
+            // or no purge.** Rehearse a call on this deal and that call's bytes are spent here
+            // forever.
+            //
+            // A first draft of this method tried to delete the spent Sources. The org refused it
+            // outright - *"AAO_Source__c is not deletable on the live path. Claims cite it and
+            // spans verify against it. Sources leave by retirement, confirm-then-purge"* - which
+            // is the never-delete law holding, and the hundred-eleventh stamp's own line that
+            // this button adds "nothing new about the deletion" turning out to be a description
+            // of what the platform allows, not just a scope fence.
+            //
+            // **THE ANSWER IS A SECOND DEAL, NOT A DELETION**: rehearse on one opportunity and
+            // present on another, so the room's deal meets each transcript for the first time.
+
+            return 'Purged ' + cardCount + ' cards, ' + o.claims + ' claims, ' + o.answers +
+                ' answers, ' + o.pairs + ' pairs, ' + o.mapRows + ' map rows, ' + o.receipts +
+                ' receipts across ' + keys.size() + ' run(s). The pasted artifacts stay (they ' +
+                'are not deletable), so this deal will refuse those same transcripts again.';
+        } catch (Exception e) {
+            // SURFACED, NEVER FORCED. The commonest refusal is the human-watermark guard, which
+            // is the purge protecting a person's edit and is exactly right.
+            throw new AuraHandledException(
+                'The purge refused and nothing was deleted beyond any cards already removed: ' +
+                e.getMessage()
+            );
+        }
     }
 
     /**

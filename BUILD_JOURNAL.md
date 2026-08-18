@@ -1446,3 +1446,52 @@ ruling.** Committing on that number would have merged the quarantine.
 
 **The lesson generalises and is the instrument-reach law again: a diff needs its two ends named
 before its size means anything.** A number with no base is not a measurement.
+
+---
+
+## Session 117 · 18 August · THE PURGE BUTTON AND PASTE TOLERANCE · and the LWC's SECOND null-gap defect, caught by Matthew running it for real
+
+The hundred-eleventh's items 1 and 3. **Demo surface only** — `aaoRunDemo` and `AAO_DemoController`
+and nothing else; the pass, reads, resolution, join, projection and charters are untouched.
+
+### Built and proved
+
+**The purge button.** `AAO_DemoController.purgeDeal` discovers run keys from receipts and pairs,
+deletes **cards first** so junctions cascade, then hands the rest to the ruled `AAO_Purge`. Proved
+live on the harness deal: **3 cards, 5 claims, 3 answers, 40 pairs, 1 map row, 3 receipts across
+3 runs.** Wells Fargo untouched at 90 claims / 29 cards. Two clicks, the confirm names the deal.
+
+**Paste tolerance**, proved on all five cases: `dana:` and `Marcus Reyes:` become tabs by matching
+the SUPPLIED roster; an already-tabbed line is untouched; `The ideal state: two per person` is left
+alone; **and unrostered `Priya:` is never promoted to a speaker.** Normalisation happens BEFORE
+hashing, so the hash is of the bytes actually stored.
+
+### THE ORG REFUSED MY EXTENSION, AND IT WAS RIGHT
+
+The reset leaves the pasted Source behind, and `AAO_Scope_Key__c` is `S1|opportunity|hash` and
+unique — so **the same transcript cannot be pasted twice on one deal, purge or no purge.** I tried
+deleting spent Sources. The org refused: *"AAO_Source__c is not deletable on the live path. Claims
+cite it and spans verify against it."* **The never-delete law holding, and the stamp's "nothing
+new about the deletion" turning out to describe what the platform allows, not just a scope fence.**
+Reverted; the hazard is stated in the method. **The answer is a second deal, not a deletion** —
+rehearsal opportunity `006WD00000TrFg9YAF` created so tonight's practice does not spend the room's
+bytes.
+
+### THE DEFECT MATTHEW FOUND, AND IT IS THE SIXTY-FOURTH STAMP'S AGAIN
+
+`Cannot read properties of undefined (reading 'stoppedBecause')`, thrown on the real page.
+
+**`runKey` and `view` resolve independently:** runKey is set the instant the run starts, `view`
+does not exist until the first poll returns, and the template read `view.*` in that gap. **That is
+byte-for-byte the Inspector's defect at the sixty-fourth stamp** — *"the template read
+`view.stages` in the gap after the run list arrived and before the view did, and threw"* — in the
+same component family, by the same author, four stamps after the render check that was supposed to
+catch this class.
+
+**Guarded on the thing being READ, never on the thing that looks ready.** And the run survived: the
+UI froze, the pass did not — `demo-005v4000-20260818110715`, 4 stages, 61.7 s, 76 pairs located,
+which is the async driver doing exactly what it was built for.
+
+**Standing lesson, sharpened: rendering a component once proves it renders. It does not prove the
+states it passes through.** The render check saw the empty state; the null gap only exists after a
+run starts.

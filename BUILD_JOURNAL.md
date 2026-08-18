@@ -1407,3 +1407,42 @@ App Builder canvas is a preview and does not execute Apex actions, so `startRun`
 poll and the finish-and-stop behaviour are proved only from the runtime. Seeing stages tick over
 live needs the page activated and a real paste — one click, and Matthew's call whether it becomes
 the org's Opportunity page.
+
+---
+
+## Session 116 close · 18 August · THE RUN SHEET FOR THE SURFACE AS BUILT · and 3(d) is deliberately NOT started the night before a demo
+
+The hundred-ninth's item 3(v). Sheet: `review/demo/RUN-SHEET.md`, written against the org rather
+than remembered.
+
+**The old run-sheet satellite lives in the project, not this tree**, so this is the sheet for the
+thing that actually exists. Verified state: `AAO_Demo_Run` deployed and **NOT activated** (nothing
+changed for any user); harness deal carries 3 Sources, 5 claims, 3 answers, 3 cards, 1 map row;
+**Wells Fargo at 90 claims and 29 cards, untouched.**
+
+Carries the four operational hazards as verified facts rather than warnings: the roster is required
+BY LAW and not by omission; rehearse with different bytes because the scope-key guard will
+correctly refuse a re-paste in the room; a restatement WILL duplicate a card and that is the
+hundred-eighth's open decision to narrate rather than hide; and a failed stage draws itself with
+its reason, which was built deliberately. Measured timings from the two real runs so the expected
+shape is a number and not a hope: ~38s total on a short paste.
+
+**3(d) IS DELIBERATELY NOT STARTED.** It is the autonomy skeleton plus the config home plus the
+bounded ORG-CONTEXT channel — three surfaces, one of them touching `AAO_Publication_State__c`,
+which is what projection reads. **The ninety-sixth stamp's logic applies by analogy: do not change
+the writer between the calls of a measurement.** The demo is the measurement tomorrow morning, and
+the last thing that should move tonight is the plane it runs on. It queues for after.
+
+### A CATCH WORTH RECORDING, from Matthew's own question
+
+He read an uncommitted diff of **+44,540 / −24,911** and asked whether to commit it. **It is not
+uncommitted work.** The live tree had exactly ONE modified file, `CODE-INBOX.md` at +98/−1.
+
+**The `−24,911` matches `main..origin/code-main` exactly** — 845 files, 33,165 insertions, 24,911
+deletions. That is the **quarantined pre-loss lineage** (`code-main`, `aao-sandbox/master`,
+`preloss-aao-sandbox/master`, all three identical against main), and the standing law is exact:
+**MERGE NOTHING, CHECK OUT NOTHING onto main; the old history stays quarantined until design's diff
+ruling.** Committing on that number would have merged the quarantine.
+
+**The lesson generalises and is the instrument-reach law again: a diff needs its two ends named
+before its size means anything.** A number with no base is not a measurement.

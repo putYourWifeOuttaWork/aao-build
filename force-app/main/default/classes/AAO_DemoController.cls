@@ -119,13 +119,54 @@ public with sharing class AAO_DemoController {
         );
         src.AAO_Part_Index__c = 1;
         src.AAO_Part_Count__c = 1;
-        insert src;
 
-        System.enqueueJob(new AAO_PassQueueable(src.Id, runKey));
+        // ===================== THE SAME BYTES ARE THE SAME OCCASION, SO THE SOURCE IS REUSED ==
+        //
+        // The hundred-twelfth stamp's item 3. Purge clears claims, answers, pairs, cards,
+        // receipts and map rows, but **`AAO_Source__c` is undeletable on the live path** - claims
+        // cite it and spans verify against it, which is the never-delete law holding correctly.
+        // So `AAO_Scope_Key__c` (opportunity plus artifact hash) survives every purge, and
+        // re-pasting the same transcript used to throw `DUPLICATE_VALUE` and make a deal
+        // single-use per transcript.
+        //
+        // **REUSE IS MORE CORRECT THAN A SECOND ROW, not a workaround.** The same bytes on the
+        // same deal ARE the same occasion; minting a second Source would assert a second
+        // conversation happened, which is the thing this system exists not to do. Purge has
+        // already removed everything derived from it, so re-enqueueing regenerates them.
+        //
+        // Matched on opportunity plus artifact hash rather than by rebuilding the scope key,
+        // because the key's internal format is the trigger's to own and a caller reconstructing
+        // it would be a second implementation of somebody else's rule.
+        List<AAO_Source__c> standing = [
+            SELECT Id FROM AAO_Source__c
+            WHERE AAO_Opportunity__c = :opp.Id
+              AND AAO_Artifact_SHA256__c = :src.AAO_Artifact_SHA256__c
+            LIMIT 1
+        ];
+
+        Id sourceId;
+        if (!standing.isEmpty()) {
+            sourceId = standing[0].Id;
+        } else {
+            try {
+                insert src;
+            } catch (Exception e) {
+                // THE CAUSE IS SURFACED, NEVER SWALLOWED (item 4). A generic "could not start
+                // the run" hid a DUPLICATE_VALUE this morning, which is the silent-success
+                // hazard in its third demo-surface instance after the ingest swallow and the
+                // failure reporter. Whoever meets this next reads what actually happened.
+                throw new AuraHandledException(
+                    'The run could not start. The org said: ' + e.getMessage()
+                );
+            }
+            sourceId = src.Id;
+        }
+
+        System.enqueueJob(new AAO_PassQueueable(sourceId, runKey));
 
         RunView v = new RunView();
         v.runKey = runKey;
-        v.sourceId = src.Id;
+        v.sourceId = sourceId;
         return v;
     }
 

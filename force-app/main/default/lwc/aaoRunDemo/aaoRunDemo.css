@@ -1,18 +1,57 @@
+/* FLEX, NOT GRID, and every row carries its own height.
+   The first CSS laid the stage rows out on a three-column grid and they rendered on top of one
+   another on the record page - eight stage names superimposed on one line. Flex with an explicit
+   basis per cell and a min-height per row cannot collapse that way, and `position: relative` on
+   the list keeps any absolutely-positioned child of Lightning's from escaping over the top. */
+.runhead {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+.pip {
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #0176d3;
+    border: 1px solid #0176d3;
+    border-radius: 10px;
+    padding: 0.05rem 0.5rem;
+}
+.stages {
+    position: relative;
+}
 .stage {
-    display: grid;
-    grid-template-columns: 12rem 6rem 1fr;
-    gap: 0.5rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    min-height: 1.75rem;
     padding: 0.35rem 0.5rem;
     border-left: 3px solid #c9c7c5;
     margin-bottom: 2px;
-    align-items: baseline;
+    box-sizing: border-box;
 }
-.stage-name { font-weight: 600; }
-.stage-state { font-size: 0.75rem; letter-spacing: 0.05em; }
-.stage-detail { font-size: 0.8125rem; color: #514f4d; }
+.stage-name {
+    flex: 0 0 11rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.stage-state {
+    flex: 0 0 4.5rem;
+    font-size: 0.6875rem;
+    letter-spacing: 0.05em;
+}
+.stage-detail {
+    flex: 1 1 auto;
+    font-size: 0.8125rem;
+    color: #514f4d;
+    word-break: break-word;
+}
 .stage-done { border-left-color: #2e844a; background: #f3f9f4; }
 .stage-waiting { border-left-color: #c9c7c5; color: #706e6b; }
 .stage-failed { border-left-color: #ba0517; background: #fdf2f2; }
-.ledger-row { display: grid; grid-template-columns: 4rem 1fr; padding: 0.15rem 0; }
-.ledger-value { font-weight: 700; text-align: right; padding-right: 0.75rem; }
-.ledger-label { color: #514f4d; }
+.ledger-row { display: flex; gap: 0.75rem; padding: 0.15rem 0; }
+.ledger-value { flex: 0 0 3rem; font-weight: 700; text-align: right; }
+.ledger-label { flex: 1 1 auto; color: #514f4d; }

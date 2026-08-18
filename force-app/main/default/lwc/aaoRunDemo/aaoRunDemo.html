@@ -44,10 +44,14 @@
 
             <!-- THE RUN VIEW -->
             <template if:true={runKey}>
-                <div class="slds-grid slds-grid_align-spread slds-m-bottom_small">
+                <!-- NO OVERLAY SPINNER. `lightning-spinner` covers its whole container and
+                     greys what is behind it, which on this surface means it hides the stage
+                     list it is reporting on - the one thing the viewer is here to watch.
+                     THE STAGE LIST IS THE PROGRESS INDICATOR; this is just a live pip. -->
+                <div class="runhead">
                     <span class="slds-text-title_caps">{runKey}</span>
                     <template if:true={running}>
-                        <lightning-spinner size="small" variant="brand"></lightning-spinner>
+                        <span class="pip">running</span>
                     </template>
                 </div>
 
@@ -65,6 +69,7 @@
                     </template>
                 </template>
 
+                <div class="stages">
                 <template for:each={stageRows} for:item="s">
                     <div key={s.key} class={s.css}>
                         <span class="stage-name">{s.name}</span>
@@ -72,6 +77,7 @@
                         <span class="stage-detail">{s.detail}</span>
                     </div>
                 </template>
+                </div>
 
                 <template if:true={view}>
                     <div class="slds-m-top_small slds-text-body_small">

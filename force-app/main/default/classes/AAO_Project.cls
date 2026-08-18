@@ -663,15 +663,66 @@ public with sharing class AAO_Project {
         }
         Integer n = 0;
         List<AAO_Answer__c> answers = [
-            SELECT Id FROM AAO_Answer__c
+            SELECT Id, AAO_Evidence_Contract__c FROM AAO_Answer__c
             WHERE AAO_Participant__c = :participantId AND AAO_Subject_Contact__c = null
         ];
-        for (AAO_Answer__c a : answers) {
-            a.AAO_Subject_Contact__c = contactId;
+        if (answers.isEmpty()) {
+            return 0;
         }
-        if (!answers.isEmpty()) {
-            update answers;
-            n += answers.size();
+
+        // ===== THE SLOT MAY ALREADY BE TAKEN, AND THAT MUST NOT KILL THE PROJECTION ==========
+        //
+        // Stamping the Contact MIGRATES the answer key from its participant form to its contact
+        // form (A2), and on a stacked deal an earlier call may already hold that slot: same
+        // person, same contract, keyed on the Contact because that call had one. The update then
+        // throws DUPLICATE_VALUE and, because projection is one transaction, **the entire
+        // projection rolls back** - the map, the cards, everything, for one row that was already
+        // represented.
+        //
+        // Measured on the demo harness three times, always on the third call: Karen Lindqvist,
+        // one contract, an answer keyed on her Contact from call 2 and another keyed on a
+        // participant with no Contact.
+        //
+        // **THE OCCUPIED SLOT IS NOT A CONFLICT, IT IS THE SAME ANSWER ALREADY THERE.** The
+        // standing Contact-keyed row is canonical - it is the one every downstream surface
+        // reads, and it is the one the person's identity now points at. So the orphan is LEFT
+        // EXACTLY AS IT IS: not migrated, not deleted, not edited. It keeps its own evidence and
+        // stops being projected, which is the never-delete law's own shape.
+        //
+        // **This is a containment, not the cure.** The cure is design's open derived-entity
+        // identity ruling (`review/demo/ANSWER-KEY-MIGRATION-BRIEF.md`), which has to decide
+        // whether the two rows MERGE and on what precedence. Until then a stacked deal must not
+        // lose its whole projection to a row that is already represented.
+        Set<Id> contractsTaken = new Set<Id>();
+        for (AAO_Answer__c standing : [
+            SELECT AAO_Evidence_Contract__c FROM AAO_Answer__c
+            WHERE AAO_Subject_Contact__c = :contactId
+              AND AAO_Subject_Type__c = 'Participant'
+        ]) {
+            contractsTaken.add(standing.AAO_Evidence_Contract__c);
+        }
+
+        List<AAO_Answer__c> toStamp = new List<AAO_Answer__c>();
+        for (AAO_Answer__c a : answers) {
+            if (contractsTaken.contains(a.AAO_Evidence_Contract__c)) {
+                // Already represented by the canonical row. Skipped, and skipped loudly enough
+                // to be found: a silent skip here would be the swallow this build keeps paying
+                // for.
+                System.debug(
+                    LoggingLevel.WARN,
+                    'Answer ' + a.Id + ' not migrated to Contact ' + contactId +
+                    ': that person already carries an answer on contract ' +
+                    a.AAO_Evidence_Contract__c + '. The standing row is canonical; this one ' +
+                    'keeps its evidence and stops projecting. Derived-entity identity is open.'
+                );
+                continue;
+            }
+            a.AAO_Subject_Contact__c = contactId;
+            toStamp.add(a);
+        }
+        if (!toStamp.isEmpty()) {
+            update toStamp;
+            n += toStamp.size();
         }
         // CLAIMS ARE DELIBERATELY NOT TOUCHED, and the org refuses the attempt: "AAO_Claim__c
         // is insert only apart from retirement ... A claim is one establishment from one piece

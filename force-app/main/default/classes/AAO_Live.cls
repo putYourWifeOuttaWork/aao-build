@@ -118,7 +118,7 @@ public class AAO_Live {
                 AAO_Element_Completeness__c,
                 AAO_Evidence_Contract__r.AAO_Proposition_Code__c
             FROM AAO_Answer__c
-            WHERE AAO_Opportunity__c = :oppId
+            WHERE AAO_Opportunity__c = :oppId AND AAO_Superseded_By__c = null
         ]) {
             out.add(
                 '    answer ' +

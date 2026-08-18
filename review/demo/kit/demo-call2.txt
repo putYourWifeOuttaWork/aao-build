@@ -1,0 +1,7 @@
+sam	Thanks both. I brought security into the room. Tomas, you've had the package a week.
+tomas	I have. Your SOC 2 Type Two checks out and single sign on through our Okta is clean. My one open item is data residency, because we need EU data to stay in region and I didn't see that spelled out.
+sam	It's configurable per workspace, and I'll get you the region controls document today.
+karen	Tomas, if residency holds, are you comfortable signing off on the security side?
+tomas	If it holds, yes, I'll sign off on security.
+karen	Then I'm a good deal more comfortable than I was two weeks ago. Dana, you were right to push this.
+dana	I'll get the region document to Tomas and we hold the Q1 date.

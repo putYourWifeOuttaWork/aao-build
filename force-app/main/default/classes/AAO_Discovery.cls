@@ -698,7 +698,7 @@ public class AAO_Discovery {
                 AAO_Evidence_Contract__r.AAO_Proposition_Code__c,
                 AAO_Evidence_Contract__r.AAO_Question_Record_Id__c
             FROM AAO_Answer__c
-            WHERE AAO_Opportunity__c = :oppId
+            WHERE AAO_Opportunity__c = :oppId AND AAO_Superseded_By__c = null
         ];
         if (answers.size() != 1) {
             fails.add('expected one answer, got ' + answers.size());

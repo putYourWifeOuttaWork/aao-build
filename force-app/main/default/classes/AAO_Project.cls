@@ -657,7 +657,9 @@ public with sharing class AAO_Project {
      * cheaper than paying them for everybody. Rows that already carry a link are untouched, so
      * this is idempotent and re-projection costs nothing.
      */
-    private static Integer backfillSubjectContact(Id participantId, Id contactId) {
+    // Public so the reconcile path can be PROVED from the runtime rather than only by test,
+    // which is where this project's capability law says a behaviour claim has to be checked.
+    public static Integer backfillSubjectContact(Id participantId, Id contactId) {
         if (participantId == null || contactId == null) {
             return 0;
         }
@@ -670,57 +672,60 @@ public with sharing class AAO_Project {
             return 0;
         }
 
-        // ===== THE SLOT MAY ALREADY BE TAKEN, AND THAT MUST NOT KILL THE PROJECTION ==========
+        // ================= READ BEFORE WRITE, THEN RECONCILE · the 116th and 117th stamps =====
         //
-        // Stamping the Contact MIGRATES the answer key from its participant form to its contact
-        // form (A2), and on a stacked deal an earlier call may already hold that slot: same
-        // person, same contract, keyed on the Contact because that call had one. The update then
-        // throws DUPLICATE_VALUE and, because projection is one transaction, **the entire
-        // projection rolls back** - the map, the cards, everything, for one row that was already
-        // represented.
+        // **The duplicate stops HAPPENING, rather than being survived.** Stamping a Contact
+        // migrates an answer's key from its participant form to its contact form (A2), and on a
+        // stacked deal an earlier call may already hold that slot: same person, same contract,
+        // keyed on the Contact because that call had one. Discovering that at INSERT time is the
+        // defect the hundred-sixteenth stamp names - so the standing slots are read FIRST, in the
+        // same pass that composes the write, and the branch is decided before any DML.
         //
-        // Measured on the demo harness three times, always on the third call: Karen Lindqvist,
-        // one contract, an answer keyed on her Contact from call 2 and another keyed on a
-        // participant with no Contact.
+        // **RECONCILE, DO NOT SKIP.** The hundred-fifteenth ruled the containment insufficient
+        // and it was right: skipping left TWO answer rows for one person and contract, which is
+        // the fragmentation A2 exists to kill wearing a different coat. The two rows were always
+        // ONE answer; they exist as two only because the person had no Contact when the earlier
+        // call ran.
         //
-        // **THE OCCUPIED SLOT IS NOT A CONFLICT, IT IS THE SAME ANSWER ALREADY THERE.** The
-        // standing Contact-keyed row is canonical - it is the one every downstream surface
-        // reads, and it is the one the person's identity now points at. So the orphan is LEFT
-        // EXACTLY AS IT IS: not migrated, not deleted, not edited. It keeps its own evidence and
-        // stops being projected, which is the never-delete law's own shape.
-        //
-        // **This is a containment, not the cure.** The cure is design's open derived-entity
-        // identity ruling (`review/demo/ANSWER-KEY-MIGRATION-BRIEF.md`), which has to decide
-        // whether the two rows MERGE and on what precedence. Until then a stacked deal must not
-        // lose its whole projection to a row that is already represented.
-        Set<Id> contractsTaken = new Set<Id>();
+        // **NO CLAIM IS TOUCHED, and that is not a preference - the org refuses it.** Probed from
+        // the runtime: *"AAO_Claim__c is insert only apart from retirement... A claim is one
+        // establishment from one piece of evidence, and it is never edited."* So the merge can
+        // only happen at READ time, which is what `AAO_Superseded_By__c` makes possible: the
+        // orphan keeps every claim, citation and verdict it was written with, points at the
+        // canonical row, and stops projecting and counting. The canonical row replays through it.
+        Map<Id, AAO_Answer__c> canonicalByContract = new Map<Id, AAO_Answer__c>();
         for (AAO_Answer__c standing : [
-            SELECT AAO_Evidence_Contract__c FROM AAO_Answer__c
+            SELECT Id, AAO_Evidence_Contract__c
+            FROM AAO_Answer__c
             WHERE AAO_Subject_Contact__c = :contactId
               AND AAO_Subject_Type__c = 'Participant'
+              AND AAO_Superseded_By__c = null
         ]) {
-            contractsTaken.add(standing.AAO_Evidence_Contract__c);
+            canonicalByContract.put(standing.AAO_Evidence_Contract__c, standing);
         }
 
         List<AAO_Answer__c> toStamp = new List<AAO_Answer__c>();
+        List<AAO_Answer__c> toSupersede = new List<AAO_Answer__c>();
         for (AAO_Answer__c a : answers) {
-            if (contractsTaken.contains(a.AAO_Evidence_Contract__c)) {
-                // Already represented by the canonical row. Skipped, and skipped loudly enough
-                // to be found: a silent skip here would be the swallow this build keeps paying
-                // for.
-                System.debug(
-                    LoggingLevel.WARN,
-                    'Answer ' + a.Id + ' not migrated to Contact ' + contactId +
-                    ': that person already carries an answer on contract ' +
-                    a.AAO_Evidence_Contract__c + '. The standing row is canonical; this one ' +
-                    'keeps its evidence and stops projecting. Derived-entity identity is open.'
-                );
+            AAO_Answer__c canonical = canonicalByContract.get(a.AAO_Evidence_Contract__c);
+            if (canonical != null) {
+                // The slot is this person's own canonical row. One answer, two rows, reconciled.
+                // THE POINTER IS THE MARKER, and deliberately the only one.
+                // `AAO_Publication_State__c` carries {Live, Held, Declined}; `Held` is the
+                // autonomy hold, waiting for a human to promote it. A superseded row is not
+                // waiting for anybody - it is already represented - and giving one value two
+                // meanings is how a surface later shows the wrong thing for a defensible
+                // reason. One marker, one meaning: a non-null pointer means superseded.
+                a.AAO_Superseded_By__c = canonical.Id;
+                toSupersede.add(a);
                 continue;
             }
             a.AAO_Subject_Contact__c = contactId;
             toStamp.add(a);
         }
-        if (!toStamp.isEmpty()) {
+        if (!toSupersede.isEmpty()) {
+            update toSupersede;
+        }        if (!toStamp.isEmpty()) {
             update toStamp;
             n += toStamp.size();
         }

@@ -800,11 +800,35 @@ public with sharing class AAO_PairCommit {
         if (answerIds.isEmpty()) {
             return 0;
         }
+        // ============ THE MERGED CHAIN IS READ HERE, and read time is the only place it can be.
+        //
+        // A person who gained a Contact mid-life carries a superseded answer: same person, same
+        // contract, written before the Contact existed. **Its claims are still that person's
+        // evidence** and the canonical row's standing state is not honest without them.
+        //
+        // The merge cannot happen by moving claims - the org refuses it in as many words, probed
+        // from the runtime: *"A claim is one establishment from one piece of evidence, and it is
+        // never edited."* So the claims stay exactly where they were written, and the READ
+        // gathers both chains and replays them together in evidence-occurred order.
+        //
+        // The superseded row keeps its own claims and therefore its own replay: reading it alone
+        // still reproduces what it said. Supersession routes around history; it never rewrites it.
+        Map<Id, Id> canonicalOf = new Map<Id, Id>();
+        Set<Id> chainIds = new Set<Id>(answerIds);
+        for (AAO_Answer__c sup : [
+            SELECT Id, AAO_Superseded_By__c
+            FROM AAO_Answer__c
+            WHERE AAO_Superseded_By__c IN :answerIds
+        ]) {
+            canonicalOf.put(sup.Id, sup.AAO_Superseded_By__c);
+            chainIds.add(sup.Id);
+        }
+
         Map<Id, List<AAO_Claim__c>> byAnswer = new Map<Id, List<AAO_Claim__c>>();
         for (AAO_Claim__c c : [
             SELECT AAO_Answer__c, AAO_Verdict_After__c, AAO_Evidence_Occurred__c
             FROM AAO_Claim__c
-            WHERE AAO_Answer__c IN :answerIds
+            WHERE AAO_Answer__c IN :chainIds
                 // RETIRED CLAIMS ESTABLISH NOTHING. Ruled 6 August: a claim that should never
                 // have established anything is marked rather than deleted, and this is where
                 // the marking does its work - the verdict replays from what is left, which is
@@ -812,17 +836,22 @@ public with sharing class AAO_PairCommit {
                 AND AAO_Retired__c = FALSE
             ORDER BY AAO_Evidence_Occurred__c ASC NULLS FIRST, Id ASC
         ]) {
-            if (!byAnswer.containsKey(c.AAO_Answer__c)) {
-                byAnswer.put(c.AAO_Answer__c, new List<AAO_Claim__c>());
+            // A superseded row's claim replays onto the CANONICAL row. The claim itself is
+            // untouched; only which chain the reader walks it under has moved.
+            Id target = canonicalOf.containsKey(c.AAO_Answer__c)
+                ? canonicalOf.get(c.AAO_Answer__c)
+                : c.AAO_Answer__c;
+            if (!byAnswer.containsKey(target)) {
+                byAnswer.put(target, new List<AAO_Claim__c>());
             }
-            byAnswer.get(c.AAO_Answer__c).add(c);
+            byAnswer.get(target).add(c);
         }
 
         List<AAO_Answer__c> moved = new List<AAO_Answer__c>();
         for (AAO_Answer__c a : [
             SELECT Id, AAO_Verdict__c, AAO_Established_By__c
             FROM AAO_Answer__c
-            WHERE Id IN :answerIds
+            WHERE Id IN :answerIds AND AAO_Superseded_By__c = null
         ]) {
             // A human-established answer is theirs. The replay reads machine claims and must
             // never reach across that line.
@@ -923,6 +952,7 @@ public with sharing class AAO_PairCommit {
                 AAO_Participant__c IN :participantIds
                 AND AAO_Opportunity__c IN :opportunityIds
                 AND AAO_Evidence_Contract__r.AAO_Proposition_Code__c = :AAO_P8Codes.SENTIMENT
+                AND AAO_Superseded_By__c = null
         ]) {
             answerByScope.put(
                 String.valueOf(a.AAO_Participant__c) + '|' + a.AAO_Opportunity__c,

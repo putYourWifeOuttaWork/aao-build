@@ -1,0 +1,6 @@
+sam	Appreciate the intro, Miguel. Tanya, Miguel tells me pipeline reliability has been the headache.
+miguel	It has. We lose about six hours a week chasing failed loads before anyone even tells us they broke, and I want that to be a standing alert instead of a fire drill.
+tanya	And I want to know it won't be another tool nobody adopts. What does it cost?
+sam	The mid tier is twenty two thousand a year, and we scope a thirty day pilot first.
+miguel	If the pilot shows the alerting works on our actual pipelines, I'll champion it internally, because that is the thing that matters to me.
+tanya	Then run the pilot, and I'll hold the budget conversation until I see the pilot number.

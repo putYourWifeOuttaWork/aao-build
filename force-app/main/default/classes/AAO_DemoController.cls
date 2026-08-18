@@ -547,7 +547,12 @@ public with sharing class AAO_DemoController {
         }
 
         v.claims = [SELECT COUNT() FROM AAO_Claim__c WHERE AAO_Opportunity__c = :opportunityId];
-        v.answers = [SELECT COUNT() FROM AAO_Answer__c WHERE AAO_Opportunity__c = :opportunityId];
+        // SUPERSEDED ROWS COUNT NOWHERE (117th, amendment one). A tile that counted them would
+        // turn the fragmentation into inflated numbers, which is quieter and worse than a crash.
+        v.answers = [
+            SELECT COUNT() FROM AAO_Answer__c
+            WHERE AAO_Opportunity__c = :opportunityId AND AAO_Superseded_By__c = null
+        ];
         v.cards = [
             SELECT COUNT() FROM ALTF__Insight_Card__c WHERE ALTF__Opportunity__c = :opportunityId
         ];

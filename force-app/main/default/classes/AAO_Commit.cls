@@ -669,7 +669,7 @@ public class AAO_Commit {
                 AAO_Account__c,
                 AAO_Publication_State__c
             FROM AAO_Answer__c
-            WHERE AAO_Answer_Key__c IN :answerKeys
+            WHERE AAO_Answer_Key__c IN :answerKeys AND AAO_Superseded_By__c = null
         ];
     }
 

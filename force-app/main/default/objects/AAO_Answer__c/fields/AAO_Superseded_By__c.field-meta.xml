@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Superseded_By__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>The canonical answer this row was reconciled into. Set at promotion when a person gains a Contact and a Contact-keyed answer for the same person and contract already stands. The superseded row keeps every claim, citation and verdict it was written with; it stops projecting and stops counting, and the canonical row replays through it. Nothing is deleted and no claim is ever edited - the org refuses that, and its refusal is why the merge happens at read time.</description>
+    <label>Superseded By</label>
+    <referenceTo>AAO_Answer__c</referenceTo>
+    <relationshipLabel>Superseded Answers</relationshipLabel>
+    <relationshipName>Superseded_Answers</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

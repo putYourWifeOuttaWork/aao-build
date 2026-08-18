@@ -241,6 +241,7 @@ public with sharing class AAO_RunInspector {
                 AAO_Source__r.AAO_Evidence_Occurred__c,
                 AAO_Claim__c, AAO_Claim__r.AAO_Outcome__c, AAO_Claim__r.AAO_Interpretation__c,
                 AAO_Claim__r.AAO_Retired__c, AAO_Claim__r.AAO_Answer__c,
+                AAO_Claim__r.AAO_Answer__r.AAO_Superseded_By__c,
                 AAO_Claim__r.AAO_Answer__r.AAO_Verdict__c,
                 AAO_Claim__r.AAO_Answer__r.AAO_Projected_Value__c,
                 AAO_Claim__r.AAO_Answer__r.AAO_Projected_Modstamp__c,

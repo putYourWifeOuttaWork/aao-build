@@ -11,6 +11,11 @@
     </externalCredentialPrincipalAccesses>
     <fieldPermissions>
         <editable>true</editable>
+        <field>AAO_Answer__c.AAO_Superseded_By__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>AAO_Answer__c.AAO_Answer_Key__c</field>
         <readable>true</readable>
     </fieldPermissions>

@@ -171,7 +171,7 @@ public with sharing class AAO_RunExport {
             row(new List<Object>{
                 'answer_key', 'contract_code', 'subject_type', 'participant', 'contact',
                 'criterion', 'verdict', 'support_counter', 'interpretation',
-                'publication_state', 'projected_value', 'projected_modstamp'
+                'publication_state', 'projected_value', 'projected_modstamp', 'superseded'
             })
         };
         for (AAO_Answer__c a : [
@@ -179,7 +179,12 @@ public with sharing class AAO_RunExport {
                 AAO_Participant__r.AAO_Display_Name__c, AAO_Criterion__r.AAO_Subject__c,
                 AAO_Verdict__c, AAO_Support_Counter__c, AAO_Interpretation__c,
                 AAO_Publication_State__c, AAO_Projected_Value__c, AAO_Projected_Modstamp__c,
-                AAO_Evidence_Contract__r.AAO_Proposition_Code__c
+                AAO_Evidence_Contract__r.AAO_Proposition_Code__c,
+                // MARKED, NOT HIDDEN. The export is the evidence record design verifies against,
+                // so a superseded row belongs in it - what must not happen is a reader COUNTING
+                // it. Every other consumer filters it out; here it is carried with its pointer
+                // so the row can be seen and discounted rather than silently missing.
+                AAO_Superseded_By__c
             FROM AAO_Answer__c
             WHERE AAO_Opportunity__c = :opportunityId
             ORDER BY AAO_Evidence_Contract__r.AAO_Proposition_Code__c, Id
@@ -198,7 +203,8 @@ public with sharing class AAO_RunExport {
                 a.AAO_Interpretation__c,
                 a.AAO_Publication_State__c,
                 a.AAO_Projected_Value__c,
-                a.AAO_Projected_Modstamp__c
+                a.AAO_Projected_Modstamp__c,
+                a.AAO_Superseded_By__c == null ? '' : 'SUPERSEDED'
             }));
         }
         return String.join(lines, NL);

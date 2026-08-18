@@ -138,6 +138,7 @@ public class AAO_Flags {
             WHERE
                 AAO_Opportunity__c = :opportunityId
                 AND AAO_Evidence_Contract__c = :contractId
+                AND AAO_Superseded_By__c = null
             LIMIT 1
         ];
         if (answers.isEmpty()) {

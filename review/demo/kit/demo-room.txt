@@ -1,0 +1,11 @@
+sam	Thanks for making time. Dana, last we spoke you wanted to walk Karen and Raj through where we fit. Where should we start?
+dana	I'll frame it. My team spends about nine hours a week just stitching lineage across our three warehouses every time something breaks, and if your platform cuts that it pays for itself, so I'll champion it internally.
+raj	The piece I care about is that we're standardizing on Snowflake by Q1, so anything we bring in has to read native Snowflake lineage rather than a copy, and that is non-negotiable for my team.
+sam	It reads it natively. Raj, you would be the one living in it day to day?
+raj	Every day. I would own the rollout for the analytics engineers.
+karen	I'll be honest, I'm the one who signs the check, and I've been burned. Three years ago we bought a platform that couldn't produce an audit trail when compliance came asking, and I lost a quarter of my year to it, so my bar is high.
+dana	That is exactly why I like this one, Karen. The audit trail is the product, not a bolt-on.
+karen	If that holds up I'm listening. What's the number?
+sam	For the two hundred seat tier it's forty thousand a year, and the pilot credits in full if you convert within sixty days.
+karen	Sixty days is tight for our procurement, but the credit helps. Send me the security package and I'll open the review.
+dana	I'll push it through before the Q1 migration, not after.

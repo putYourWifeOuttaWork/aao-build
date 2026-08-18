@@ -51,6 +51,17 @@ export default class AaoRunDemo extends LightningElement {
     @track confirmingPurge = false;
     @track purging = false;
     @track resuming = false;
+    /**
+     * A resume is in flight until the receipt stops saying the run is stopped.
+     *
+     * THE GAP THIS CLOSES: between the click and the resumed stage journalling ANYTHING, the
+     * receipt still carries only the old failure - so the very next poll reads "stopped", calls
+     * the run finished, and stops polling. The chain then runs to completion behind a frozen
+     * screen. That is what persisted in the room, and clearing the stale error alone did not fix
+     * it, because the surface stopped looking before the new leg existed.
+     */
+    resumeInFlight = false;
+    resumePolls = 0;
     @track past = [];
     @track showingPast = false;
 
@@ -215,7 +226,8 @@ export default class AaoRunDemo extends LightningElement {
             this.dispatchEvent(
                 new ShowToastEvent({ title: 'Resuming', message: msg, variant: 'info' })
             );
-            this.view = undefined;
+            this.resumeInFlight = true;
+            this.resumePolls = 0;
             this.startPolling();
         } catch (e) {
             this.error = (e && e.body && e.body.message) || 'Could not resume the run.';
@@ -278,10 +290,37 @@ export default class AaoRunDemo extends LightningElement {
         }
     }
 
+    // Roughly two minutes at the poll interval. A resumed stage that has journalled nothing by
+    // then has almost certainly failed again the same way, and polling forever would be a
+    // spinner pretending to be progress.
+    static get RESUME_PATIENCE() {
+        return 40;
+    }
+
     async poll() {
         try {
             const v = await progress({ opportunityId: this.recordId, runKey: this.runKey });
             this.view = v;
+
+            if (this.resumeInFlight) {
+                // KEEP LOOKING while the resume has not yet shown up on the receipt. The stage
+                // that failed appends a SECOND leg on success, and until it lands the receipt
+                // legitimately still reads stopped - so "stopped" is not an answer yet.
+                this.resumePolls += 1;
+                if (!v || !v.stoppedBecause) {
+                    this.resumeInFlight = false;
+                    this.resumePolls = 0;
+                } else if (this.resumePolls >= AaoRunDemo.RESUME_PATIENCE) {
+                    this.resumeInFlight = false;
+                    this.resumePolls = 0;
+                    this.stopPolling();
+                }
+                return;
+            }
+
+            // A run that STOPPED is not a run that finished, and the difference matters: a
+            // finished run has nothing left to watch, while a stopped one is waiting for a
+            // person. Both end the poll, and only one of them is done.
             if (v && v.finished) {
                 this.stopPolling();
             }

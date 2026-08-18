@@ -2,6 +2,7 @@ import { LightningElement, api, track } from 'lwc';
 import startRun from '@salesforce/apex/AAO_DemoController.startRun';
 import progress from '@salesforce/apex/AAO_DemoController.progress';
 import purgeDeal from '@salesforce/apex/AAO_DemoController.purgeDeal';
+import resumeRun from '@salesforce/apex/AAO_DemoController.resumeRun';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 /**
@@ -48,6 +49,7 @@ export default class AaoRunDemo extends LightningElement {
     @track busy = false;
     @track confirmingPurge = false;
     @track purging = false;
+    @track resuming = false;
 
     pollId;
 
@@ -115,6 +117,29 @@ export default class AaoRunDemo extends LightningElement {
             this.error = (e && e.body && e.body.message) || 'Could not start the run.';
         } finally {
             this.busy = false;
+        }
+    }
+
+    /**
+     * RESUME, offered only when the run actually stopped.
+     *
+     * A model callout can time out mid-pass; the work in front of it is banked and the pass's
+     * watermarks make everything after it idempotent, so the recovery is to re-enter at the
+     * failed stage rather than start over and re-locate every pair.
+     */
+    get canResume() {
+        return !!(this.view && this.view.stoppedBecause) && !this.resuming;
+    }
+
+    async handleResume() {
+        this.resuming = true;
+        try {
+            await resumeRun({ opportunityId: this.recordId, runKey: this.runKey });
+            this.startPolling();
+        } catch (e) {
+            this.error = (e && e.body && e.body.message) || 'Could not resume the run.';
+        } finally {
+            this.resuming = false;
         }
     }
 

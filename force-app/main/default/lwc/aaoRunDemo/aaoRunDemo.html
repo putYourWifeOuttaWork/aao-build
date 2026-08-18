@@ -55,19 +55,6 @@
                     </template>
                 </div>
 
-                <!-- GUARDED ON `view`, NOT ON `runKey`. They resolve independently: runKey is
-                     set the instant the run starts, and view does not exist until the first
-                     poll returns, so anything reading view.* in that gap throws and freezes
-                     the component. This is the sixty-fourth stamp's Inspector defect exactly,
-                     in the same component family, and it is why the guard is on the thing
-                     being read rather than on the thing that looks ready. -->
-                <template if:true={view}>
-                    <template if:true={view.stoppedBecause}>
-                        <div class="slds-box slds-theme_warning slds-m-bottom_small">
-                            <strong>The pass stopped.</strong> {view.stoppedBecause}
-                        </div>
-                    </template>
-                </template>
 
                 <!-- THE PROCESS BAR. Eight steps, laid out as a row of cells with a
                      connector between them, so a viewer sees WHERE the run is at a glance and
@@ -92,20 +79,21 @@
                 <template if:true={view}>
                     <template if:true={view.stoppedBecause}>
                         <div class="slds-box slds-theme_warning slds-m-bottom_small">
-                            <strong>The pass stopped.</strong> {view.stoppedBecause}
+                            <p><strong>The pass stopped.</strong> {view.stoppedBecause}</p>
+                            <p class="slds-text-body_small slds-m-top_x-small">
+                                Everything before this stage is banked. Resuming picks up there
+                                and does not repeat work already done.
+                            </p>
+                            <lightning-button
+                                variant="brand"
+                                label="Resume the run"
+                                disabled={resuming}
+                                onclick={handleResume}
+                                class="slds-m-top_x-small"
+                            ></lightning-button>
                         </div>
                     </template>
                 </template>
-
-                <div class="stages">
-                <template for:each={stageRows} for:item="s">
-                    <div key={s.key} class={s.css}>
-                        <span class="stage-name">{s.name}</span>
-                        <span class="stage-state">{s.state}</span>
-                        <span class="stage-detail">{s.detail}</span>
-                    </div>
-                </template>
-                </div>
 
                 <template if:true={view}>
                     <div class="slds-m-top_small slds-text-body_small">

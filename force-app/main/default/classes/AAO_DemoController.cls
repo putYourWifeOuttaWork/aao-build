@@ -354,6 +354,48 @@ public with sharing class AAO_DemoController {
     }
 
     /**
+     * RESUME A RUN THAT STOPPED, from the stage it stopped at.
+     *
+     * A callout timeout killed call 3 on a live run with twenty-seven identified pairs banked.
+     * Everything before the failure is committed and the pass's watermarks make everything after
+     * it idempotent, so the honest recovery is to re-enter at the failed stage rather than
+     * re-run from the top and duplicate the reads.
+     */
+    @AuraEnabled
+    public static String resumeRun(Id opportunityId, String runKey) {
+        if (opportunityId == null || String.isBlank(runKey)) {
+            throw new AuraHandledException('No run to resume.');
+        }
+        AAO_Run_Receipt__c row = AAO_Receipt.forRun(opportunityId, runKey);
+        if (row == null) {
+            throw new AuraHandledException('That run journalled nothing, so there is no stage to resume from.');
+        }
+        Set<String> done = new Set<String>();
+        for (AAO_Receipt.Leg leg : AAO_Receipt.legsOf(row)) {
+            // A leg carrying an error is NOT done - it is precisely where to pick up.
+            if (String.isBlank(leg.error)) {
+                done.add(leg.stage);
+            }
+        }
+        String next = AAO_PassQueueable.nextStageAfter(done);
+        if (next == AAO_PassQueueable.S_DONE) {
+            return 'Nothing left to run: every stage has journalled.';
+        }
+        // `AAO_Receipt.forRun` does not select the Source lookup, and reading a field a SOQL
+        // never asked for throws rather than returning null - so it is queried here rather than
+        // assumed present on somebody else's row.
+        List<AAO_Run_Receipt__c> withSource = [
+            SELECT AAO_Source__c FROM AAO_Run_Receipt__c WHERE Id = :row.Id LIMIT 1
+        ];
+        Id sourceId = withSource.isEmpty() ? null : withSource[0].AAO_Source__c;
+        if (sourceId == null) {
+            throw new AuraHandledException('That run has no Source to resume against.');
+        }
+        AAO_PassQueueable.resumeAt(sourceId, runKey, next);
+        return 'Resuming at "' + next + '". Work already done is not repeated.';
+    }
+
+    /**
      * What the run has journalled. Called on a poll; cheap and read-only by construction.
      *
      * `finished` is derived from the receipt's own last leg rather than from elapsed time,

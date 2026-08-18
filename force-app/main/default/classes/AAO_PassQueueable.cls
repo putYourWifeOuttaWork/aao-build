@@ -60,6 +60,58 @@ public class AAO_PassQueueable implements Queueable, Database.AllowsCallouts {
         this(sourceId, runKey, S_RESOLVE, 0);
     }
 
+    /**
+     * RESUME AT A NAMED STAGE, so a stage that died does not cost the whole run.
+     *
+     * A model callout can time out - `System.CalloutException: Read timed out` killed call 3 on a
+     * live demo run with twenty-seven identified pairs already waiting - and the work in front of
+     * it is banked. **Re-running from the start would re-locate and duplicate pairs**, so a
+     * resume enters at the stage that failed and the pass's own watermarks make everything after
+     * it idempotent: verify skips what is verified, the join skips what carries a claim.
+     *
+     * This is the ninety-second stamp's split rule reaching failure as well as size - complete
+     * the remaining work in a continuation, never redo.
+     */
+    public static void resumeAt(Id sourceId, String runKey, String stage) {
+        System.enqueueJob(new AAO_PassQueueable(sourceId, runKey, stage, 0));
+    }
+
+    /** The stage the receipt says to pick up at: the first one with no journalled leg. */
+    public static String nextStageAfter(Set<String> journalled) {
+        for (String st : ORDER) {
+            if (st == S_DONE) {
+                return S_DONE;
+            }
+            // The reads and the model leg journal under the receipt's own names, so a stage this
+            // driver names differently is matched on the receipt's spelling, never on ours.
+            if (!journalled.contains(receiptNameOf(st))) {
+                return st;
+            }
+        }
+        return S_DONE;
+    }
+
+    /** This driver's stage names against the names the receipt actually writes. */
+    private static String receiptNameOf(String stage) {
+        if (stage == S_READ1) {
+            return 'call 1 locate read 1';
+        }
+        if (stage == S_READ2) {
+            return 'call 1 locate read 2';
+        }
+        if (stage == S_DETERMINISTIC) {
+            // Journals no leg of its own; treated as done once the model leg or verify has run.
+            return 'resolution model leg';
+        }
+        if (stage == S_MODEL_LEG) {
+            return 'resolution model leg';
+        }
+        if (stage == S_PROMOTION) {
+            return 'projection';
+        }
+        return stage;
+    }
+
     private AAO_PassQueueable(Id sourceId, String runKey, String stage, Integer pass) {
         this.sourceId = sourceId;
         this.runKey = runKey;

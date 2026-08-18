@@ -485,7 +485,27 @@ public with sharing class AAO_DemoController {
                 ? 0
                 : row.AAO_Worst_Callout_Ms__c.longValue();
             v.cacheState = row.AAO_Cache_State__c;
+            // **THE LAST LEG PER STAGE IS THE ONE THAT COUNTS**, and this is the whole reason a
+            // resume looked like it did nothing.
+            //
+            // A resumed stage appends a SECOND leg: the failure, then the success. The first
+            // version reported `stoppedBecause` from ANY leg carrying an error, so a stage that
+            // failed and was then resumed successfully still painted the run as stopped -
+            // forever. The surface froze at the failure while the pass ran on behind it, which
+            // is the same class of lie as a progress bar on a timer, pointing the other way.
+            //
+            // **A stage that later succeeded is not a stage that is stopped.** The last word on
+            // a stage is what it ended up doing, exactly as it is for a whole run.
+            Map<String, AAO_Receipt.Leg> lastByStage = new Map<String, AAO_Receipt.Leg>();
+            List<String> order = new List<String>();
             for (AAO_Receipt.Leg leg : AAO_Receipt.legsOf(row)) {
+                if (!lastByStage.containsKey(leg.stage)) {
+                    order.add(leg.stage);
+                }
+                lastByStage.put(leg.stage, leg);
+            }
+            for (String stageName : order) {
+                AAO_Receipt.Leg leg = lastByStage.get(stageName);
                 StageView s = new StageView();
                 s.stage = leg.stage;
                 s.wallMs = leg.wallMs;
@@ -500,7 +520,7 @@ public with sharing class AAO_DemoController {
                     v.stoppedBecause = leg.stage + ' — ' + leg.error;
                     v.finished = true;
                 }
-                if (leg.stage == AAO_Receipt.STAGE_CARDS) {
+                if (leg.stage == AAO_Receipt.STAGE_CARDS && String.isBlank(leg.error)) {
                     v.finished = true;
                 }
             }

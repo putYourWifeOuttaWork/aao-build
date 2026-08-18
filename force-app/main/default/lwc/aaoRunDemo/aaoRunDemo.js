@@ -208,7 +208,14 @@ export default class AaoRunDemo extends LightningElement {
     async handleResume() {
         this.resuming = true;
         try {
-            await resumeRun({ opportunityId: this.recordId, runKey: this.runKey });
+            const msg = await resumeRun({ opportunityId: this.recordId, runKey: this.runKey });
+            // SAY THAT IT WAS ASKED, because a resume that re-runs the same stage and fails the
+            // same way looks byte-for-byte like a button that does nothing. The toast is the
+            // only proof the click landed before the next leg journals.
+            this.dispatchEvent(
+                new ShowToastEvent({ title: 'Resuming', message: msg, variant: 'info' })
+            );
+            this.view = undefined;
             this.startPolling();
         } catch (e) {
             this.error = (e && e.body && e.body.message) || 'Could not resume the run.';

@@ -129,8 +129,12 @@ public class AAO_PassQueueable implements Queueable, Database.AllowsCallouts {
         } catch (Exception e) {
             // THE CHAIN STOPS AND SAYS WHY. Never re-thrown: a thrown queueable is retried by
             // the platform and would repeat the failing stage against half-written state.
+            // Recorded under the RECEIPT'S name for the stage, not the driver's, so the
+            // surface can mark the right step failed. The driver calls it "call 2b model leg";
+            // the receipt writes "resolution model leg", and a failure filed under a name no
+            // reader knows is a failure nobody can place.
             AAO_Receipt.recordFailure(
-                runKey, sourceId, stage,
+                runKey, sourceId, receiptNameOf(stage),
                 e.getTypeName() + ': ' + e.getMessage()
             );
             return;
@@ -229,14 +233,44 @@ public class AAO_PassQueueable implements Queueable, Database.AllowsCallouts {
         ];
     }
 
+    /**
+     * UNDISPOSED pairs - the only thing the model leg exists to work on.
+     *
+     * The first version counted LOCATED pairs carrying a designator, which is always above zero
+     * after the reads because the located rows are the PARENTS and they stay. So the guard never
+     * skipped, the model leg fired on a run the deterministic pass had fully disposed, and
+     * `AAO_Resolve` refused it correctly: *"No undisposed pairs. The model leg fires only when
+     * the deterministic legs leave a remainder."* The pass was right; the driver's question was
+     * the wrong one.
+     *
+     * A pair is disposed when an Identified row points back at it, so undisposed is exactly the
+     * located rows with no such child - which is the same set `AAO_Resolve` itself works from.
+     */
     private Integer remainingUnresolved() {
-        return [
-            SELECT COUNT()
+        // Counted in Apex rather than by a semi-join: SOQL refuses an inner and outer select on
+        // the SAME object, and located and identified rows are both AAO_Pair__c. The org said so
+        // on the first deploy, which is the schema teaching the query again.
+        Set<Id> disposed = new Set<Id>();
+        for (AAO_Pair__c p : [
+            SELECT AAO_Located_Pair__c
             FROM AAO_Pair__c
             WHERE AAO_Run_Key__c = :runKey
-              AND AAO_Stage__c = :AAO_PairKey.LOCATED
-              AND AAO_About_Designator__c != null
-        ];
+              AND AAO_Stage__c = :AAO_PairKey.IDENTIFIED
+              AND AAO_Located_Pair__c != null
+        ]) {
+            disposed.add(p.AAO_Located_Pair__c);
+        }
+        Integer undisposed = 0;
+        for (AAO_Pair__c p : [
+            SELECT Id
+            FROM AAO_Pair__c
+            WHERE AAO_Run_Key__c = :runKey AND AAO_Stage__c = :AAO_PairKey.LOCATED
+        ]) {
+            if (!disposed.contains(p.Id)) {
+                undisposed++;
+            }
+        }
+        return undisposed;
     }
 
     private Id opportunityId() {

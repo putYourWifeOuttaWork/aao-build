@@ -28,6 +28,8 @@ public with sharing class AAO_RunInspector {
         @AuraEnabled public String runKey;
         @AuraEnabled public String label;
         @AuraEnabled public Datetime latestActivity;
+        /** When the run's first pair landed - the run's own start, in order of the calls. */
+        @AuraEnabled public Datetime startedAt;
         @AuraEnabled public Integer pairCount;
     }
 
@@ -183,7 +185,10 @@ public with sharing class AAO_RunInspector {
             if (o == null) {
                 o = new RunOption();
                 o.runKey = p.AAO_Run_Key__c;
+                // The label carries WHEN, because a run key is a timestamp nobody can read at a
+                // glance and the first question of a stacked deal is always which call came first.
                 o.label = p.AAO_Run_Key__c;
+                o.startedAt = p.CreatedDate;
                 o.latestActivity = p.CreatedDate;
                 o.pairCount = 0;
                 byKey.put(o.runKey, o);
@@ -347,7 +352,16 @@ public with sharing class AAO_RunInspector {
         v.stages.add(new StageCount('Cards', cards, STAGE_CARDS));
         // The last step's second number is the card count, which the stepper needs and the
         // stage list already carries. Composed here so the template stitches nothing.
-        v.pipeline[v.pipeline.size() - 1].countLabel = mapRows + ' map rows, ' + cards + ' cards';
+        // **THE LAST TILE IS DEAL STATE, NOT RUN OUTPUT, and it now says so.**
+        //
+        // Every tile before it is scoped to this run's pairs. The map and the board are not:
+        // a map row has no run key and a card has none either, because THE MAP IS THE
+        // ACCUMULATION OF EVERY CALL and resetting it per call would be the opposite of the
+        // product. So three runs on one deal legitimately show the same map count while every
+        // earlier tile moves - which reads as a bug when the label implies per-run output, and
+        // reads as the whole thesis when it says what it is.
+        v.pipeline[v.pipeline.size() - 1].countLabel =
+            mapRows + ' map rows, ' + cards + ' cards (deal total, all calls)';
 
         List<String> notes = new List<String>();
         if (identified.isEmpty()) {

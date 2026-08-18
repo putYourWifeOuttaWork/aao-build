@@ -353,6 +353,61 @@ public with sharing class AAO_DemoController {
         return JSON.serialize(new Map<String, Object>{ 'v' => 1, 'speakers' => speakers });
     }
 
+    /** One past run, enough to pick it out of a list without opening it. */
+    public class RunOption {
+        @AuraEnabled public String runKey;
+        @AuraEnabled public String label;
+        @AuraEnabled public Datetime startedAt;
+        @AuraEnabled public Boolean finished = false;
+        @AuraEnabled public Boolean stopped = false;
+    }
+
+    /**
+     * EVERY RUN THIS DEAL STILL CARRIES, newest first.
+     *
+     * A refresh empties the component's own memory of what it ran, and before this the past was
+     * simply unreachable from the paste surface - the work was still on the deal, but the
+     * surface behaved as though nothing had happened. **A run that happened should be findable
+     * from the place it was started.**
+     *
+     * Read from receipts, which is where a run's own account of itself lives; a run that
+     * journalled nothing has nothing to show and is correctly absent.
+     */
+    @AuraEnabled
+    public static List<RunOption> recentRuns(Id opportunityId) {
+        List<RunOption> out = new List<RunOption>();
+        if (opportunityId == null) {
+            return out;
+        }
+        for (AAO_Run_Receipt__c r : [
+            SELECT AAO_Run_Key__c, AAO_Stages__c, AAO_First_Stage_At__c, AAO_Last_Stage_At__c
+            FROM AAO_Run_Receipt__c
+            WHERE AAO_Opportunity__c = :opportunityId AND AAO_Run_Key__c != null
+            ORDER BY AAO_First_Stage_At__c DESC NULLS LAST
+            LIMIT 25
+        ]) {
+            RunOption o = new RunOption();
+            o.runKey = r.AAO_Run_Key__c;
+            o.startedAt = r.AAO_First_Stage_At__c;
+            for (AAO_Receipt.Leg leg : AAO_Receipt.legsOf(r)) {
+                if (String.isNotBlank(leg.error)) {
+                    o.stopped = true;
+                }
+                if (leg.stage == AAO_Receipt.STAGE_CARDS && String.isBlank(leg.error)) {
+                    o.finished = true;
+                }
+            }
+            // A stopped run that was later resumed to the end is finished, not stopped: the
+            // last word on a run is what it ended up doing, never what went wrong on the way.
+            if (o.finished) {
+                o.stopped = false;
+            }
+            o.label = o.runKey;
+            out.add(o);
+        }
+        return out;
+    }
+
     /**
      * RESUME A RUN THAT STOPPED, from the stage it stopped at.
      *

@@ -36,6 +36,30 @@
                     The pass reads what is here and establishes only what the words carry.
                     Every stage below is drawn from what the run journalled, never estimated.
                 </p>
+
+                <!-- EARLIER RUNS. The form stays the default after a refresh, because that is
+                     what someone arriving wants; the past is a click away rather than gone. -->
+                <template if:true={hasPast}>
+                    <div class="slds-m-top_small">
+                        <lightning-button
+                            variant="base"
+                            label={pastLabel}
+                            onclick={handleTogglePast}
+                        ></lightning-button>
+                        <template if:true={showingPast}>
+                            <div class="slds-m-top_x-small">
+                                <template for:each={pastRows} for:item="r">
+                                    <div key={r.runKey} class={r.css}
+                                         data-key={r.runKey} onclick={handleOpenPast}>
+                                        <span class="past-ord">{r.ordinal}</span>
+                                        <span class="past-when">{r.when}</span>
+                                        <span class="past-status">{r.status}</span>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </template>
             </template>
 
             <template if:true={error}>
@@ -49,6 +73,11 @@
                      list it is reporting on - the one thing the viewer is here to watch.
                      THE STAGE LIST IS THE PROGRESS INDICATOR; this is just a live pip. -->
                 <div class="runhead">
+                    <lightning-button
+                        variant="base"
+                        label="New run"
+                        onclick={handleNewRun}
+                    ></lightning-button>
                     <span class="slds-text-title_caps">{runKey}</span>
                     <template if:true={running}>
                         <span class="pip">running</span>

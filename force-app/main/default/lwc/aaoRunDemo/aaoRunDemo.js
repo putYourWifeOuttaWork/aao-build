@@ -3,6 +3,7 @@ import startRun from '@salesforce/apex/AAO_DemoController.startRun';
 import progress from '@salesforce/apex/AAO_DemoController.progress';
 import purgeDeal from '@salesforce/apex/AAO_DemoController.purgeDeal';
 import resumeRun from '@salesforce/apex/AAO_DemoController.resumeRun';
+import recentRuns from '@salesforce/apex/AAO_DemoController.recentRuns';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 /**
@@ -50,11 +51,84 @@ export default class AaoRunDemo extends LightningElement {
     @track confirmingPurge = false;
     @track purging = false;
     @track resuming = false;
+    @track past = [];
+    @track showingPast = false;
 
     pollId;
 
+    connectedCallback() {
+        this.loadPast();
+    }
+
     disconnectedCallback() {
         this.stopPolling();
+    }
+
+    /**
+     * PAST RUNS, loaded on every render of the form.
+     *
+     * A refresh wipes the component's memory of what it ran, and the work stays on the deal - so
+     * before this, a run that happened became unreachable from the surface that started it. The
+     * form still opens ready for a new paste, which is what a demo wants; the past is one click
+     * away rather than gone.
+     */
+    async loadPast() {
+        try {
+            this.past = await recentRuns({ opportunityId: this.recordId });
+        } catch (e) {
+            this.past = [];
+        }
+    }
+
+    get hasPast() {
+        return this.past && this.past.length > 0;
+    }
+
+    get pastLabel() {
+        const n = this.past ? this.past.length : 0;
+        return this.showingPast
+            ? 'Hide earlier runs'
+            : `Earlier runs on this deal (${n})`;
+    }
+
+    get pastRows() {
+        return (this.past || []).map((r, i) => ({
+            runKey: r.runKey,
+            when: this.stamp(r.startedAt),
+            ordinal: `Call ${this.past.length - i}`,
+            status: r.stopped ? 'stopped' : r.finished ? 'complete' : 'incomplete',
+            css: r.stopped ? 'pastrow past-stopped' : 'pastrow'
+        }));
+    }
+
+    stamp(iso) {
+        if (!iso) return 'unknown time';
+        const d = new Date(iso);
+        return d.toLocaleString(undefined, {
+            month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'
+        });
+    }
+
+    handleTogglePast() {
+        this.showingPast = !this.showingPast;
+        if (this.showingPast) this.loadPast();
+    }
+
+    /** Open a past run in the same process bar the live run uses. Read-only; starts nothing. */
+    handleOpenPast(e) {
+        this.runKey = e.currentTarget.dataset.key;
+        this.showingPast = false;
+        this.error = undefined;
+        this.poll();
+    }
+
+    /** Back to the form, without touching anything the deal holds. */
+    handleNewRun() {
+        this.stopPolling();
+        this.runKey = undefined;
+        this.view = undefined;
+        this.error = undefined;
+        this.loadPast();
     }
 
     handleText(e) {

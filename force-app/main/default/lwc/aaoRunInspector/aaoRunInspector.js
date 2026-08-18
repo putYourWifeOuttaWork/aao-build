@@ -57,9 +57,18 @@ export default class AaoRunInspector extends LightningElement {
 
     // ------------------------------------------------------------------ what exists yet
 
+    /** A readable local date and time, so the picker orders the calls for the reader. */
+    stamp(iso) {
+        if (!iso) return 'unknown time';
+        const d = new Date(iso);
+        return d.toLocaleString(undefined, {
+            month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'
+        });
+    }
+
     get runOptions() {
         return this.runs.map((r) => ({
-            label: `${r.runKey}  (${r.pairCount} pairs)`,
+            label: `${this.stamp(r.startedAt)} — ${r.runKey}  (${r.pairCount} pairs)`,
             value: r.runKey
         }));
     }

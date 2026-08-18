@@ -76,19 +76,25 @@ public class AAO_PassQueueable implements Queueable, Database.AllowsCallouts {
         System.enqueueJob(new AAO_PassQueueable(sourceId, runKey, stage, 0));
     }
 
-    /** The stage the receipt says to pick up at: the first one with no journalled leg. */
-    public static String nextStageAfter(Set<String> journalled) {
+    /**
+     * THE STAGE TO RESUME AT IS THE ONE THAT FAILED, not the first one with no leg.
+     *
+     * The first version looked for the first unjournalled stage, and that is wrong for a reason
+     * this pass has by design: **stages that legitimately do nothing journal nothing.** The
+     * deterministic leg never writes a leg of its own, and the model leg writes none when the
+     * deterministic pass leaves no remainder - so "first stage with no leg" resolved to a stage
+     * near the FRONT of a run that had failed at the END, and the resume marched forward through
+     * work already done until it hit `AAO_Pass.verify` on a fully verified run and threw.
+     *
+     * A failed leg names the stage exactly. Resume there, and nowhere else.
+     */
+    public static String stageForReceiptName(String receiptName) {
         for (String st : ORDER) {
-            if (st == S_DONE) {
-                return S_DONE;
-            }
-            // The reads and the model leg journal under the receipt's own names, so a stage this
-            // driver names differently is matched on the receipt's spelling, never on ours.
-            if (!journalled.contains(receiptNameOf(st))) {
+            if (receiptNameOf(st) == receiptName) {
                 return st;
             }
         }
-        return S_DONE;
+        return null;
     }
 
     /** This driver's stage names against the names the receipt actually writes. */
@@ -196,6 +202,14 @@ public class AAO_PassQueueable implements Queueable, Database.AllowsCallouts {
             return false;
         }
         if (stage == S_VERIFY) {
+            // GUARDED LIKE THE MODEL LEG, and for the identical reason. `AAO_Pass.verify` throws
+            // "No unverified identified claims" when there is nothing to do - correct for a stage
+            // that should never be called pointlessly, and fatal for a DRIVER that calls it on a
+            // resume after verify already finished. The stage asks a fair question; asking it at
+            // the wrong moment is the driver's fault, not the pass's.
+            if (unverifiedCount() == 0) {
+                return false;
+            }
             AAO_Pass.verify(runKey);
             return unverifiedCount() > 0;
         }

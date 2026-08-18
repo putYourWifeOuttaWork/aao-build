@@ -425,16 +425,27 @@ public with sharing class AAO_DemoController {
         if (row == null) {
             throw new AuraHandledException('That run journalled nothing, so there is no stage to resume from.');
         }
-        Set<String> done = new Set<String>();
+        // THE LAST FAILED LEG IS WHERE TO PICK UP - not the first stage with no leg.
+        //
+        // Stages that legitimately do nothing journal nothing: the deterministic leg never
+        // writes one, and the model leg writes none when there is no remainder. Reading absence
+        // as "unfinished" sent a resume back to the FRONT of a run that had failed at the END,
+        // and it walked forward into a fully verified run and threw. A failed leg names its
+        // stage; that is the only thing worth trusting here.
+        String failedStage;
         for (AAO_Receipt.Leg leg : AAO_Receipt.legsOf(row)) {
-            // A leg carrying an error is NOT done - it is precisely where to pick up.
-            if (String.isBlank(leg.error)) {
-                done.add(leg.stage);
+            if (String.isNotBlank(leg.error)) {
+                failedStage = leg.stage;
             }
         }
-        String next = AAO_PassQueueable.nextStageAfter(done);
-        if (next == AAO_PassQueueable.S_DONE) {
-            return 'Nothing left to run: every stage has journalled.';
+        if (String.isBlank(failedStage)) {
+            return 'Nothing to resume: no stage on this run recorded a failure.';
+        }
+        String next = AAO_PassQueueable.stageForReceiptName(failedStage);
+        if (String.isBlank(next)) {
+            throw new AuraHandledException(
+                'The run failed at "' + failedStage + '", which is not a stage this driver runs.'
+            );
         }
         // `AAO_Receipt.forRun` does not select the Source lookup, and reading a field a SOQL
         // never asked for throws rather than returning null - so it is queried here rather than

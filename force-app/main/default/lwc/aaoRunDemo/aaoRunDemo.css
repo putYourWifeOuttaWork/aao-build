@@ -1,57 +1,62 @@
-/* FLEX, NOT GRID, and every row carries its own height.
-   The first CSS laid the stage rows out on a three-column grid and they rendered on top of one
-   another on the record page - eight stage names superimposed on one line. Flex with an explicit
-   basis per cell and a min-height per row cannot collapse that way, and `position: relative` on
-   the list keeps any absolutely-positioned child of Lightning's from escaping over the top. */
-.runhead {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 0.5rem;
-}
+/* A ROW OF STEPS, each one an equal cell, with the connector drawn as a pseudo-element rather
+   than as its own div - so there is no separate element to fall out of alignment, and no grid
+   that can collapse the way the first version did on the record page. */
+.runhead { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
 .pip {
-    font-size: 0.6875rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: #0176d3;
-    border: 1px solid #0176d3;
-    border-radius: 10px;
-    padding: 0.05rem 0.5rem;
+    font-size: 0.6875rem; letter-spacing: 0.06em; text-transform: uppercase;
+    color: #0176d3; border: 1px solid #0176d3; border-radius: 10px; padding: 0.05rem 0.5rem;
 }
-.stages {
-    position: relative;
+
+.steps { display: flex; align-items: flex-start; width: 100%; margin: 0.5rem 0 1rem; }
+.step {
+    flex: 1 1 0; min-width: 0; position: relative;
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    padding: 0 0.25rem;
 }
-.stage {
-    display: flex;
-    align-items: baseline;
-    gap: 0.75rem;
-    min-height: 1.75rem;
-    padding: 0.35rem 0.5rem;
-    border-left: 3px solid #c9c7c5;
-    margin-bottom: 2px;
+/* the connector, from this step's dot to the next one */
+.step::after {
+    content: ''; position: absolute; top: 13px; left: 50%; width: 100%; height: 2px;
+    background: #dddbda; z-index: 0;
+}
+.step:last-child::after { display: none; }
+.step-done::after, .step-skipped::after { background: #2e844a; }
+
+.dot {
+    position: relative; z-index: 1;
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 700;
+    background: #fff; border: 2px solid #dddbda; color: #706e6b;
     box-sizing: border-box;
 }
-.stage-name {
-    flex: 0 0 11rem;
-    font-weight: 600;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.steplabel {
+    margin-top: 0.35rem; font-size: 0.75rem; font-weight: 600; color: #181818;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
 }
-.stage-state {
-    flex: 0 0 4.5rem;
-    font-size: 0.6875rem;
-    letter-spacing: 0.05em;
+.stepdetail {
+    font-size: 0.6875rem; color: #706e6b; min-height: 1rem;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
 }
-.stage-detail {
-    flex: 1 1 auto;
-    font-size: 0.8125rem;
-    color: #514f4d;
-    word-break: break-word;
+
+.step-done .dot { background: #2e844a; border-color: #2e844a; color: #fff; }
+.step-skipped .dot { background: #fff; border-color: #2e844a; color: #2e844a; }
+.step-failed .dot { background: #ba0517; border-color: #ba0517; color: #fff; }
+.step-failed .stepdetail { color: #ba0517; white-space: normal; }
+.step-waiting .dot { background: #fff; border-color: #dddbda; color: #c9c7c5; }
+
+/* THE ONLY THING THAT MOVES IS THE STAGE THAT IS ACTUALLY RUNNING. */
+.step-running .dot {
+    background: #0176d3; border-color: #0176d3; color: #fff;
+    animation: aao-pulse 1.2s ease-in-out infinite;
 }
-.stage-done { border-left-color: #2e844a; background: #f3f9f4; }
-.stage-waiting { border-left-color: #c9c7c5; color: #706e6b; }
-.stage-failed { border-left-color: #ba0517; background: #fdf2f2; }
+.step-running .steplabel { color: #0176d3; }
+.step-running .stepdetail { color: #0176d3; }
+@keyframes aao-pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(1, 118, 211, 0.55); }
+    70%  { box-shadow: 0 0 0 9px rgba(1, 118, 211, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(1, 118, 211, 0); }
+}
+
 .ledger-row { display: flex; gap: 0.75rem; padding: 0.15rem 0; }
 .ledger-value { flex: 0 0 3rem; font-weight: 700; text-align: right; }
 .ledger-label { flex: 1 1 auto; color: #514f4d; }

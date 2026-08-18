@@ -69,6 +69,34 @@
                     </template>
                 </template>
 
+                <!-- THE PROCESS BAR. Eight steps, laid out as a row of cells with a
+                     connector between them, so a viewer sees WHERE the run is at a glance and
+                     the detail underneath answers HOW LONG. The running step animates; nothing
+                     else moves, because nothing else is happening. -->
+                <div class="steps">
+                    <template for:each={stageRows} for:item="s">
+                        <div key={s.key} class={s.css}>
+                            <div class="dot"><span class="dotnum">{s.num}</span></div>
+                            <div class="steplabel">{s.label}</div>
+                            <div class="stepdetail">{s.detail}</div>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- GUARDED ON `view`, NOT ON `runKey`. They resolve independently: runKey is
+                     set the instant the run starts, and view does not exist until the first
+                     poll returns, so anything reading view.* in that gap throws and freezes
+                     the component. This is the sixty-fourth stamp's Inspector defect exactly,
+                     in the same component family, and it is why the guard is on the thing
+                     being read rather than on the thing that looks ready. -->
+                <template if:true={view}>
+                    <template if:true={view.stoppedBecause}>
+                        <div class="slds-box slds-theme_warning slds-m-bottom_small">
+                            <strong>The pass stopped.</strong> {view.stoppedBecause}
+                        </div>
+                    </template>
+                </template>
+
                 <div class="stages">
                 <template for:each={stageRows} for:item="s">
                     <div key={s.key} class={s.css}>

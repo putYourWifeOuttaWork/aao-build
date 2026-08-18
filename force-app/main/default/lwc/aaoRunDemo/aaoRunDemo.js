@@ -19,15 +19,21 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 const POLL_MS = 3000;
 // The pass's stages in the order the driver runs them, so a stage can be drawn as WAITING before
 // it has journalled anything. Kept in step with AAO_PassQueueable.ORDER.
+// THE STAGES, WITH THE NAMES THE RECEIPT ACTUALLY WRITES.
+//
+// The first version guessed and got two wrong - `call 1 locate` and `resolution`, neither of which
+// the receipt journals - so those rows sat WAITING forever no matter what the run did. Read off a
+// real receipt rather than assumed, which is this project's own instrument-reach rule turned on
+// its own surface. `label` is what a seller reads; `stage` is what the pass writes.
 const PIPELINE = [
-    'call 0 resolve',
-    'call 1 locate',
-    'resolution',
-    'resolution model leg',
-    'call 3 verify',
-    'join',
-    'projection',
-    'cards'
+    { stage: 'call 0 resolve', label: 'Scope' },
+    { stage: 'call 1 locate read 1', label: 'Read 1' },
+    { stage: 'call 1 locate read 2', label: 'Read 2' },
+    { stage: 'resolution model leg', label: 'Identify' },
+    { stage: 'call 3 verify', label: 'Verify' },
+    { stage: 'join', label: 'Claims' },
+    { stage: 'projection', label: 'Map' },
+    { stage: 'cards', label: 'Cards' }
 ];
 
 export default class AaoRunDemo extends LightningElement {
@@ -187,41 +193,65 @@ export default class AaoRunDemo extends LightningElement {
      * because the receipt merges legs per stage, which is the receipt's own shape and not a
      * simplification made here.
      */
+    /**
+     * THE PROCESS BAR, every state derived from journalled legs.
+     *
+     * DONE     the receipt carries this leg.
+     * FAILED   the leg carries an error.
+     * RUNNING  the first stage after the last journalled one, while the run is unfinished. This
+     *          is an inference and a truthful one: the driver runs stages in order, one per
+     *          transaction, so the stage after the last journalled leg is the one executing.
+     *          Derived from real state, never from a timer - the bar advances when a leg lands.
+     * SKIPPED  unjournalled, but a LATER stage journalled, so it did not fire. The model leg
+     *          legitimately skips when the deterministic pass leaves no remainder, and drawing
+     *          that as stuck would misreport the run.
+     * WAITING  not reached yet.
+     */
     get stageRows() {
         const legs = (this.view && this.view.stages) || [];
         const byStage = new Map();
         legs.forEach((l) => byStage.set(l.stage, l));
-        let reachedEnd = false;
-        return PIPELINE.map((name) => {
-            const leg = byStage.get(name);
+
+        let lastDone = -1;
+        PIPELINE.forEach((p, i) => {
+            if (byStage.has(p.stage)) lastDone = i;
+        });
+        const finished = !!(this.view && this.view.finished);
+
+        return PIPELINE.map((p, i) => {
+            const leg = byStage.get(p.stage);
+            const row = { key: p.stage, label: p.label, num: i + 1 };
             if (leg && leg.error) {
-                reachedEnd = true;
-                return {
-                    name,
-                    state: 'FAILED',
-                    detail: leg.error,
-                    css: 'stage stage-failed',
-                    key: name
-                };
+                row.state = 'failed';
+                row.detail = leg.error;
+                row.css = 'step step-failed';
+                return row;
             }
             if (leg) {
                 const bits = [];
                 if (leg.wallMs) bits.push(`${(leg.wallMs / 1000).toFixed(1)}s`);
-                if (leg.callouts) bits.push(`${leg.callouts} callout${leg.callouts > 1 ? 's' : ''}`);
-                if (leg.produced !== undefined && leg.produced !== null) {
-                    bits.push(`${leg.produced} produced`);
-                }
-                if (leg.cache) bits.push(leg.cache);
-                return {
-                    name,
-                    state: 'DONE',
-                    detail: bits.join(' · '),
-                    css: 'stage stage-done',
-                    key: name
-                };
+                if (leg.produced !== null && leg.produced !== undefined) bits.push(`${leg.produced}`);
+                row.state = 'done';
+                row.detail = bits.join(' · ');
+                row.css = 'step step-done';
+                return row;
             }
-            const waiting = reachedEnd ? 'SKIPPED' : 'WAITING';
-            return { name, state: waiting, detail: '', css: 'stage stage-waiting', key: name };
+            if (i < lastDone) {
+                row.state = 'skipped';
+                row.detail = 'not needed';
+                row.css = 'step step-skipped';
+                return row;
+            }
+            if (i === lastDone + 1 && this.runKey && !finished) {
+                row.state = 'running';
+                row.detail = 'working';
+                row.css = 'step step-running';
+                return row;
+            }
+            row.state = 'waiting';
+            row.detail = '';
+            row.css = 'step step-waiting';
+            return row;
         });
     }
 

@@ -1838,3 +1838,84 @@ untouched, since the prefix ladder recognises `AAO_PB_GOAL` no better than the i
 the single failure the standing non-AAO `ConvertToOpportunityTest`.** Both numbers kept rather than
 one overwritten: 558 was true of the snapshot the validator took, 559 is true of what shipped, and
 the difference between them is the fixture the mute guard caught.
+
+---
+
+## Session 109 · Process step (c): the red-flag family, first populated
+
+129th item 9. Tree `/Users/thefinalmachine/Downloads/claude` (`main`), org `00DWD00000DV7iT2AT`.
+The 127th/128th/129th are on disk now; design closed the carry gap.
+
+### The two field questions, answered from the org BEFORE anything was populated
+
+**`AAO_Gating__c`: both fields drive it and they drive different halves - and my `false` was
+wrong.** The family is not new: `AAO_Flags` has raised a Methodological red per gating contract
+since session 2, stamped at DEAL CREATION, cleared on TRUE, worsened to `Established_False` on a
+negative, and it is wired through `AAO_Commit`. It already carries the 120th's exact cause
+vocabulary. What it lacked is the CLOCK, which is the by-stage marker. So: gating says THIS
+QUESTION IS A DEAL-KILLER TEST AT ALL; the marker says WHEN AN UNANSWERED ONE READS RED. My (a)
+comment reasoned about the VENDOR's Mandatory and set ours false to avoid copying theirs - but
+`AAO_Gating__c` is not their field wearing our name, and false meant fifteen deal-killer
+questions raised no deal-killer flags. Inversion law: an assessment question IS a deal-killer
+test. All fifteen.
+
+**`AAO_Speaker_Requirement__c`: NOTHING refuses a seller-voiced Process claim, and design's item 7
+named a gate that cannot reach one of the fifteen.** The 128th said the A2 refusal on Sam Ruiz
+came from the join's internal-domain gate. Read from the org, that pair carries a call-3 refusal
+ON THE WORDS. And `dimensionOf('AAO_BANT_A2')` returns null while `PERSON_SUBJECT_DIMENSIONS`
+holds only Support/Political/Buyer Role, so the gate reaches NONE of the fifteen. Not "does it
+reach all fifteen" but "it reaches none", and the refusal that looked like proof of reach was
+luck. A seller saying "we have budget" would have established B1 on the seller.
+Thirteen now carry `Buyer_Side` because their own element text names the customer's mouth; N2
+keeps `Any_Participant` (the 123rd's deliberate exception) and T2 is REPORTED OPEN because its
+text names no mouth at all. The requirement is CONFIGURATION on the same mdt, org-overridable,
+because Altify carries none and a discovered question cannot state one.
+
+Named, not fixed: the composed stamp fingerprints the contract KEY, which covers the question's
+TEXT. Gating and speaker requirement change what establishes and the stamp does not move.
+
+### THE DEFECT (c) FOUND: a voiced no would have CLEARED the deal-killer it proves
+
+`AAO_Flags.reconcile` read the VERDICT alone, and a DENIED answer stands at verdict TRUE. So the
+moment gating went true, a customer saying "there is no budget allocated for this" would have
+cleared the budget deal-killer, on a TRUE, and the one condition the flag exists to surface would
+have vanished at the moment it was proven. Latent only because gating was false - the second
+wrong value covering the first. Two more from the same read: `reconcile` took `LIMIT 1` with no
+ordering, which was lawful until Process made answers per-person; and the tiebreak was already
+ruled - DENIED outranks AFFIRMED, one person's yes does not undo another's no.
+
+### Built: redness is a READ
+
+The row exists from day one (age means how long the DEAL stood unanswered) and a stage can move
+BACKWARDS, so creating rows on the way past would mean deleting them on the way back and this
+system does not delete. `AAO_Flags.redsOn` answers at the moment asked. The stage ordinal is the
+deal's position among the org's ACTIVE OPEN stages by SortOrder - our marker is a number and a
+customer org carries names and an order.
+
+**Measured, proof deal at Stage 2: 8 standing, 3 RED.** B1 RED on the voiced no (DENIED driving a
+hard red end to end), A3 RED and HELD OUT per the 129th's item 4, T1 RED as "unknown past stage
+2" - both halves of the ruling in one read. Seven cleared on evidence, five quiet. **Rehearsal
+deal: 12 standing, 0 RED, because it sits on an INACTIVE stage (`Qualify`) so there is no
+ordinal.** Honest fallback, and a demo finding: no by-stage flag can fire there until the deal
+moves onto an active stage.
+
+### The twelve, retired in place, condition met
+
+Contracts retired; claims 9 and answers 7 untouched; STAGE B pair still standing, counted before
+and after. Needed a `Retired` state and `AAO_Retired_Because__c`, because the object carried only
+Superseded and the 129th ruled explicitly against claiming a succession that never happened. And
+it needed `AAO_ContractState.DEAD` as the ONE place deciding what live means: nine readers each
+spelled it `!= 'Superseded'`, and a missed tenth would read a retired contract as live - the
+silent-drop defect this retirement exists to end, reintroduced by its own fix. A flag whose
+contract is no longer live stays on the row and stops being READ.
+
+### Item 8(iii) closed by measurement
+
+`AAO_DC_F` reaches the criterion row and works: Formal appears 4 times on Wells Fargo and once on
+Project Farma. The rehearsal deal's 32-all-Informal is a fact about what the Brightwell calls
+said, not a broken path.
+
+**Suite 568, 567 passing**, the one failure the standing non-AAO `ConvertToOpportunityTest`.
+`AAO_FlagsTest` 17 of 17, ten new, including the two that pin the human override and the fact
+that acknowledgement clears nothing - the second asserted as structure, so a future session
+adding a dismiss has to break a test to do it.

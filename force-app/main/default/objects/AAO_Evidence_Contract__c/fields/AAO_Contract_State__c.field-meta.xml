@@ -26,6 +26,11 @@
                 <label>Ratified</label>
             </value>
             <value>
+                <fullName>Retired</fullName>
+                <default>false</default>
+                <label>Retired</label>
+            </value>
+            <value>
                 <fullName>Superseded</fullName>
                 <default>false</default>
                 <label>Superseded</label>

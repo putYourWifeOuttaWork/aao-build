@@ -490,7 +490,7 @@ public with sharing class AAO_Project {
         for (AAO_Evidence_Contract__c ec : [
             SELECT AAO_Elements__c, AAO_Element_Count__c FROM AAO_Evidence_Contract__c
             WHERE AAO_Proposition_Code__c = :AAO_P8Codes.CRITERION_NAMING
-                AND AAO_Contract_State__c != 'Superseded'
+                AND AAO_Contract_State__c NOT IN :AAO_ContractState.DEAD
             LIMIT 1
         ]) {
             namingElements = AAO_ExtractCharter.elementIds(ec);

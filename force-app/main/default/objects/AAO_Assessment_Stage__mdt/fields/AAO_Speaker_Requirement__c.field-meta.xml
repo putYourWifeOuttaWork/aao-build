@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Speaker_Requirement__c</fullName>
+    <description>WHOSE MOUTH THIS QUESTION REQUIRES, blank to leave the contract at its discovery default. Configuration rather than code for the same reason the by-stage marker and the computed predicate are: the requirement is a property of a question we DISCOVER, so it cannot be known in Apex, and an org that words its questions differently must be able to state whose words answer them. Our seed sets Buyer_Side wherever the question&apos;s own element text names the customer&apos;s mouth, which is thirteen of the fifteen. Values match AAO_Evidence_Contract__c.AAO_Speaker_Requirement__c.</description>
+    <externalId>false</externalId>
+    <label>Speaker Requirement</label>
+    <length>40</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,16 @@
+AAO_Proposition_Code__c,AAO_Gating__c,AAO_Speaker_Requirement__c,AAO_Contract_State__c
+AAO_BANT_A1,true,Buyer_Side,Derived
+AAO_BANT_A2,true,Buyer_Side,Derived
+AAO_BANT_A3,true,Buyer_Side,Derived
+AAO_BANT_A4,true,Buyer_Side,Derived
+AAO_BANT_B1,true,Buyer_Side,Derived
+AAO_BANT_B2,true,Buyer_Side,Derived
+AAO_BANT_B3,true,Buyer_Side,Derived
+AAO_BANT_B4,true,Buyer_Side,Derived
+AAO_BANT_N1,true,Buyer_Side,Derived
+AAO_BANT_N2,true,Any_Participant,Derived
+AAO_BANT_N3,true,Buyer_Side,Derived
+AAO_BANT_N4,true,Buyer_Side,Derived
+AAO_BANT_T1,true,Buyer_Side,Derived
+AAO_BANT_T2,true,Any_Participant,Derived
+AAO_BANT_T4,true,Buyer_Side,Derived

@@ -7,6 +7,10 @@
         <value xsi:type="xsd:string">DECISION_MAKER_IDENTIFIED</value>
     </values>
     <values>
+        <field>AAO_Speaker_Requirement__c</field>
+        <value xsi:type="xsd:string">Buyer_Side</value>
+    </values>
+    <values>
         <field>AAO_By_Stage__c</field>
         <value xsi:type="xsd:double">2.0</value>
     </values>

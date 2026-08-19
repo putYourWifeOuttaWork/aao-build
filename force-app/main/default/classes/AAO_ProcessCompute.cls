@@ -657,7 +657,7 @@ public class AAO_ProcessCompute {
             SELECT Id, AAO_Proposition_Code__c, AAO_Elements__c, AAO_Element_Count__c
             FROM AAO_Evidence_Contract__c
             WHERE AAO_Proposition_Code__c IN :codes
-              AND AAO_Contract_State__c != 'Superseded'
+              AND AAO_Contract_State__c NOT IN :AAO_ContractState.DEAD
         ]) {
             out.put(ec.AAO_Proposition_Code__c, ec);
         }

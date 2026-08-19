@@ -317,7 +317,7 @@ public class AAO_Discovery {
             WHERE AAO_Rubric_Version__c = :RUBRIC_VERSION
         ]) {
             existingByKey.put(ec.AAO_Contract_Key__c, ec);
-            if (ec.AAO_Contract_State__c != 'Superseded') {
+            if (AAO_ContractState.isLive(ec.AAO_Contract_State__c)) {
                 if (!liveByQuestion.containsKey(ec.AAO_Question_Record_Id__c)) {
                     liveByQuestion.put(
                         ec.AAO_Question_Record_Id__c,

@@ -529,7 +529,7 @@ public with sharing class AAO_RecallGate {
                 AAO_Family__c
             FROM AAO_Evidence_Contract__c
             WHERE AAO_Rubric_Version__c = :AAO_PassContracts.RUBRIC_VERSION
-                AND AAO_Contract_State__c != 'Superseded'
+                AND AAO_Contract_State__c NOT IN :AAO_ContractState.DEAD
         ];
         if (rows.isEmpty()) {
             throw new GateException(

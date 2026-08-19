@@ -508,7 +508,7 @@ public with sharing class AAO_PassContracts {
         List<AAO_Evidence_Contract__c> old = [
             SELECT Id, AAO_Contract_Key__c
             FROM AAO_Evidence_Contract__c
-            WHERE AAO_Contract_State__c != 'Superseded'
+            WHERE AAO_Contract_State__c NOT IN :AAO_ContractState.DEAD
                 AND (AAO_Rubric_Version__c = :SUPERSEDES_RUBRIC
                     OR (AAO_Rubric_Version__c = :RUBRIC_VERSION
                         AND AAO_Contract_Key__c NOT IN :minted))

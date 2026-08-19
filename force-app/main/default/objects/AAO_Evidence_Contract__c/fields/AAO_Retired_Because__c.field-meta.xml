@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Retired_Because__c</fullName>
+    <description>WHY THIS CONTRACT IS NO LONGER LIVE, in words, where no successor exists. Superseded says a newer generation took over and points at it; Retired says this one stops without one, and a state that stops without a reason is a third state nobody can read later. Written once at retirement and never blank on a Retired row.</description>
+    <label>Retired Because</label>
+    <length>4000</length>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>4</visibleLines>
+</CustomField>

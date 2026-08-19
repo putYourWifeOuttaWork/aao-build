@@ -134,7 +134,7 @@ public with sharing class AAO_ApplicableSet {
             FROM AAO_Evidence_Contract__c
             WHERE
                 AAO_Charter_Designation__c = :PEOPLE
-                AND AAO_Contract_State__c != 'Superseded'
+                AND AAO_Contract_State__c NOT IN :AAO_ContractState.DEAD
                 AND AAO_Synthetic__c = :isSynthetic(src)
         ]) {
             Id subject = AAO_PeopleContracts.contactOf(ec.AAO_Proposition_Code__c);
@@ -213,7 +213,7 @@ public with sharing class AAO_ApplicableSet {
                 AAO_Synthetic__c
             FROM AAO_Evidence_Contract__c
             WHERE
-                AAO_Contract_State__c != 'Superseded'
+                AAO_Contract_State__c NOT IN :AAO_ContractState.DEAD
                 AND AAO_Synthetic__c = :isSynthetic(src)
                 AND (AAO_Charter_Designation__c = :PROCESS
                     OR AAO_Charter_Designation__c = NULL)

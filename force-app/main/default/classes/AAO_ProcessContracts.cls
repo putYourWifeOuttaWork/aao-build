@@ -83,7 +83,36 @@ public class AAO_ProcessContracts {
         ];
     }
 
+    /**
+     * Whose mouth this question requires, from configuration, defaulting to `Any_Participant`
+     * where an org states nothing. Never guessed from the question's words at runtime: reading
+     * a proposition to decide who may answer it would be inference standing in for a ruling.
+     */
+    @TestVisible
+    private static Map<String, String> speakerRequirements() {
+        Map<String, String> out = new Map<String, String>();
+        for (AAO_Assessment_Stage__mdt m : [
+            SELECT AAO_Question_Code__c, AAO_Speaker_Requirement__c
+            FROM AAO_Assessment_Stage__mdt
+            WHERE AAO_Question_Code__c != null AND AAO_Speaker_Requirement__c != null
+        ]) {
+            out.put(m.AAO_Question_Code__c, m.AAO_Speaker_Requirement__c);
+        }
+        return out;
+    }
+
+    private static Map<String, String> requirementCache;
+
+    private static String speakerRequirementFor(String code) {
+        if (requirementCache == null) {
+            requirementCache = speakerRequirements();
+        }
+        String r = requirementCache.get(code);
+        return String.isBlank(r) ? 'Any_Participant' : r;
+    }
+
     public static Result mint() {
+        requirementCache = null;
         Result r = new Result();
         List<ALTF__Assessment_Question__c> qs = discoverQuestions();
         r.read = qs.size();
@@ -108,7 +137,7 @@ public class AAO_ProcessContracts {
             FROM AAO_Evidence_Contract__c
             WHERE AAO_Proposition_Code__c IN :codes
               AND AAO_Rubric_Version__c = :AAO_PassContracts.RUBRIC_VERSION
-              AND AAO_Contract_State__c != 'Superseded'
+              AND AAO_Contract_State__c NOT IN :AAO_ContractState.DEAD
         ]) {
             standing.put(ec.AAO_Proposition_Code__c, ec);
         }
@@ -153,12 +182,33 @@ public class AAO_ProcessContracts {
                 AAO_Element_Count__c = el.elements.size(),
                 AAO_Elements_Basis__c = el.basis,
                 AAO_Route__c = 'E',
-                // Ours and undiscoverable: Altify carries no speaker requirement anywhere.
-                AAO_Speaker_Requirement__c = 'Any_Participant',
+                // OURS AND UNDISCOVERABLE, so it is CONFIGURATION: Altify carries no speaker
+                // requirement anywhere, and a discovered question cannot say whose mouth answers
+                // it. Seeded on `AAO_Assessment_Stage__mdt` beside the by-stage marker and the
+                // computed predicate, org-overridable, falling back to `Any_Participant` where
+                // an org states nothing. Thirteen of the fifteen carry `Buyer_Side` because
+                // their OWN element text names the customer's mouth.
+                AAO_Speaker_Requirement__c = speakerRequirementFor(code),
                 AAO_Decay_Class__c = 'Standing',
-                // NOT the vendor's Mandatory. That gates STAGE MOVEMENT and is the vendor's job;
-                // ours is the by-stage red-flag marker. Two gates, two jobs (122nd, item 2).
-                AAO_Gating__c = false,
+                // ===== TRUE, AND IT WAS FALSE HERE UNTIL (c) MEASURED WHY.
+                //
+                // **The false was mine and it answered the wrong question.** The comment that
+                // stood here reasoned about the VENDOR's `Mandatory`, which gates stage movement
+                // and is the vendor's job, and concluded ours should be false to avoid copying
+                // theirs. But `AAO_Gating__c` is not the vendor's field wearing our name: it is
+                // the field that drives OUR methodological red-flag family, `AAO_Flags`, which
+                // is built and wired and has been since session 2. Setting it false meant the
+                // fifteen deal-killer questions raised no deal-killer flags at all.
+                //
+                // The inversion law settles it in one line (120th): **an assessment question IS
+                // a deal-killer test.** All fifteen, by construction.
+                //
+                // The two fields are still two jobs, and that is the answer to the 128th's item
+                // 7 rather than a contradiction of the 122nd: `AAO_Gating__c` says THIS QUESTION
+                // IS A DEAL-KILLER TEST AT ALL, which is what raises the standing flag at deal
+                // creation; the BY-STAGE marker says WHEN AN UNANSWERED ONE READS RED. One fact
+                // about the question, one fact about the clock, neither doing the other's work.
+                AAO_Gating__c = true,
                 AAO_Solicit__c = false,
                 AAO_Family__c = AAO_ApplicableSet.PROCESS,
                 AAO_Charter_Designation__c = AAO_ApplicableSet.PROCESS,

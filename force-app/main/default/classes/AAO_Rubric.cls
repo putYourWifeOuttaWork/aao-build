@@ -65,7 +65,7 @@ public class AAO_Rubric {
                 AAO_Synthetic__c
             FROM AAO_Evidence_Contract__c
             WHERE
-                AAO_Contract_State__c != 'Superseded'
+                AAO_Contract_State__c NOT IN :AAO_ContractState.DEAD
                 AND AAO_Synthetic__c = :wantSynthetic
             ORDER BY AAO_Proposition_Code__c
         ];

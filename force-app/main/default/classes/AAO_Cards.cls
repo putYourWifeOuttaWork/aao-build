@@ -633,8 +633,12 @@ public with sharing class AAO_Cards {
         return section;
     }
 
-    @TestVisible
-    private static String sectionTitle(AAO_Source__c src, String callType) {
+    /**
+     * Public so the PURGE can ask the writer what it would have titled a section, rather than
+     * re-deriving the rule and drifting from it. One implementation, two readers - the same
+     * reason `sectionFor` matches on this instead of on a string it composes itself.
+     */
+    public static String sectionTitle(AAO_Source__c src, String callType) {
         Datetime occurred = src == null ? null : src.AAO_Evidence_Occurred__c;
         String d = occurred == null ? 'Undated call' : occurred.format('d MMMM yyyy');
         // THE MEETING TITLE, carried by intake from the source system and never inferred

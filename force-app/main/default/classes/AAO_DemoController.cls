@@ -278,9 +278,53 @@ public with sharing class AAO_DemoController {
                 delete cards;
             }
 
+            // ===== THE BOARD'S COLUMNS GO WITH THE CARDS, and only the ones we can PROVE we
+            // wrote.
+            //
+            // Cards live inside sections, and deleting the cards left the columns standing empty
+            // - three dated headers on a board with nothing under them, which reads as a purge
+            // that half-worked.
+            //
+            // A section is a VENDOR object and carries no watermark of ours, so ours-ness cannot
+            // be read off the row. What CAN be proved is the title: the writer composes it from
+            // the Source's occurred date and meeting title, so the purge asks the writer what it
+            // would have written and removes exactly those. **Matched on the EXACT title, never
+            // on the date prefix** - `sectionFor` matches on the prefix so a human's better title
+            // survives the next run, and by the same law a human's better title must survive the
+            // PURGE. A retitled column is left standing, empty, rather than a person's words
+            // deleted to tidy a board.
+            //
+            // The fifty-second stamp's incident is honoured by order: cards were deleted above,
+            // so their placements have already cascaded and nothing here orphans a junction.
+            Set<String> ourTitles = new Set<String>();
+            for (AAO_Source__c src : [
+                SELECT AAO_Evidence_Occurred__c, AAO_Meeting_Title__c
+                FROM AAO_Source__c
+                WHERE AAO_Opportunity__c = :opportunityId
+            ]) {
+                ourTitles.add(AAO_Cards.sectionTitle(src, null));
+            }
+            Integer sectionCount = 0;
+            if (!ourTitles.isEmpty()) {
+                List<ALTF__Insight_Section__c> ours = new List<ALTF__Insight_Section__c>();
+                for (ALTF__Insight_Section__c sec : [
+                    SELECT Id, ALTF__Short_Description__c
+                    FROM ALTF__Insight_Section__c
+                    WHERE ALTF__Opportunity__c = :opportunityId
+                ]) {
+                    if (ourTitles.contains(sec.ALTF__Short_Description__c)) {
+                        ours.add(sec);
+                    }
+                }
+                if (!ours.isEmpty()) {
+                    delete ours;
+                    sectionCount = ours.size();
+                }
+            }
+
             if (keys.isEmpty()) {
-                return 'Nothing to purge beyond ' + cardCount + ' card(s): this deal carries no ' +
-                    'run keys.';
+                return 'Nothing to purge beyond ' + cardCount + ' card(s) and ' + sectionCount +
+                    ' board column(s): this deal carries no run keys.';
             }
             AAO_Purge.Outcome o = AAO_Purge.run(keys, opportunityId);
 
@@ -302,7 +346,8 @@ public with sharing class AAO_DemoController {
             // **THE ANSWER IS A SECOND DEAL, NOT A DELETION**: rehearse on one opportunity and
             // present on another, so the room's deal meets each transcript for the first time.
 
-            return 'Purged ' + cardCount + ' cards, ' + o.claims + ' claims, ' + o.answers +
+            return 'Purged ' + cardCount + ' cards, ' + sectionCount + ' board columns, ' +
+                o.claims + ' claims, ' + o.answers +
                 ' answers, ' + o.pairs + ' pairs, ' + o.mapRows + ' map rows, ' + o.receipts +
                 ' receipts across ' + keys.size() + ' run(s). The pasted artifacts stay (they ' +
                 'are not deletable), so this deal will refuse those same transcripts again.';

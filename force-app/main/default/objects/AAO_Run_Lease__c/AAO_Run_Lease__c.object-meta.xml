@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>THE RUN LEASE. One pass at a time per opportunity, ordered by when the conversation happened. R5, accepted with design's correction at the hundred-tenth stamp and ordered by the hundred-nineteenth as a PROCESS PREREQUISITE rather than hygiene: Process reads written state, so a Process pass racing a People pass reads a half-written map. TWO ROW KINDS, BOTH KEYED. A Holder row keyed HOLD|opportunity is unique, so exactly one pass holds a deal and the INDEX guarantees it rather than a read that could race. A Waiting row keyed WAIT|opportunity|source enrolls a pass that arrived while the deal was held. THE DRAIN TAKES THE EARLIEST EVIDENCE-OCCURRED SOURCE, never the earliest arrival: a lease serializes, the law orders, and a late-delivered older call read after a newer one would read history backwards. IT IS A LOCK AND NEVER EVIDENCE, which is why a released row is deleted; the run receipt carries the history.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableLicensing>false</enableLicensing>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <externalSharingModel>Private</externalSharingModel>
+    <label>AAO Run Lease</label>
+    <nameField>
+        <displayFormat>LEASE-{00000000}</displayFormat>
+        <label>AAO Run Lease Name</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>AAO Run Leases</pluralLabel>
+    <searchLayouts></searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

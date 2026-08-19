@@ -53,11 +53,21 @@ public class AAO_PassQueueable implements Queueable, Database.AllowsCallouts {
     private final String stage;
     /** How many times this stage has re-enqueued itself, so a loop cannot run away. */
     private final Integer pass;
+    /**
+     * TRUE WHERE THIS TRANSACTION IS THE CHAIN ENTERING, false where it is the chain continuing.
+     *
+     * The deal's lease is taken ONCE per chain and held across every stage, so only an entry asks
+     * for it. A continuation asking again would cost a query and a write on every stage - and the
+     * join is the stage that cannot spare a query, since SOQL is the binding governor there at
+     * `2.33 * C + 9`. A resume is an entry: it re-enters mid-chain after a stage died, and the
+     * lease it once held was given back by that death's own finalizer.
+     */
+    private final Boolean isEntry;
 
     private static final Integer MAX_PASSES_PER_STAGE = 12;
 
     public AAO_PassQueueable(Id sourceId, String runKey) {
-        this(sourceId, runKey, S_RESOLVE, 0);
+        this(sourceId, runKey, S_RESOLVE, 0, true);
     }
 
     /**
@@ -73,7 +83,7 @@ public class AAO_PassQueueable implements Queueable, Database.AllowsCallouts {
      * the remaining work in a continuation, never redo.
      */
     public static void resumeAt(Id sourceId, String runKey, String stage) {
-        System.enqueueJob(new AAO_PassQueueable(sourceId, runKey, stage, 0));
+        System.enqueueJob(new AAO_PassQueueable(sourceId, runKey, stage, 0, true));
     }
 
     /**
@@ -118,17 +128,52 @@ public class AAO_PassQueueable implements Queueable, Database.AllowsCallouts {
         return stage;
     }
 
-    private AAO_PassQueueable(Id sourceId, String runKey, String stage, Integer pass) {
+    private AAO_PassQueueable(
+        Id sourceId,
+        String runKey,
+        String stage,
+        Integer pass,
+        Boolean isEntry
+    ) {
         this.sourceId = sourceId;
         this.runKey = runKey;
         this.stage = stage;
         this.pass = pass;
+        this.isEntry = isEntry;
     }
 
     public void execute(QueueableContext ctx) {
         if (stage == S_DONE) {
+            // Unreachable on the chain, which returns before it can enqueue this - but the drain
+            // wakes a run at whatever stage its waiting row recorded, and a stale one landing
+            // here would hold the deal's lease forever with nothing running. A wedge is the one
+            // failure the lease exists to prevent, so it does not get a back door.
+            AAO_RunLease.releaseAndDrain(opportunityIdOrNull(), runKey);
             return;
         }
+        Id oppId = opportunityIdOrNull();
+
+        // ===== THE FINALIZER GOES ON FIRST, before any line that could be the last one.
+        //
+        // R3. `AAO_PassQueueable` already catches `Exception` and journals a failure leg, and
+        // that reaches everything a catch can reach. **It cannot reach a governor
+        // `LimitException`** - the platform kills the transaction and the catch below never
+        // runs - so a stage that hits the SOQL ceiling leaves no leg at all, which is
+        // byte-for-byte the shape that let `Too many SOQL queries: 101` read as quiet on
+        // 16 August while 39 upheld pairs produced no claims. The finalizer runs in its own
+        // transaction afterwards either way, and writes the leg the dead transaction could not.
+        System.attachFinalizer(new AAO_RunFinalizer(runKey, sourceId, receiptNameOf(stage), oppId));
+
+        // ===== THE DEAL IS TAKEN, OR THIS RUN QUEUES BEHIND WHOEVER HAS IT.
+        //
+        // R5. Returning here is not a failure and journals nothing: the run is enrolled, and the
+        // holder's release will wake it in evidence-occurred order. Marking a failure leg for a
+        // lawful wait would put a red stage on the process bar for a run that is doing exactly
+        // what it should, so the surface asks the lease instead of reading the receipt.
+        if (isEntry == true && !AAO_RunLease.acquire(oppId, sourceId, runKey, stage)) {
+            return;
+        }
+
         Boolean again = false;
         try {
             again = runStage();
@@ -143,6 +188,10 @@ public class AAO_PassQueueable implements Queueable, Database.AllowsCallouts {
                 runKey, sourceId, receiptNameOf(stage),
                 e.getTypeName() + ': ' + e.getMessage()
             );
+            // The chain stops here, so the deal goes back. A stage that STOPS holds no more
+            // claim on the opportunity than one that died; the difference is only that this one
+            // survived to say so itself.
+            AAO_RunLease.releaseAndDrain(oppId, runKey);
             return;
         }
 
@@ -153,12 +202,16 @@ public class AAO_PassQueueable implements Queueable, Database.AllowsCallouts {
                 'Stopping rather than looping: a stage that never converges is a defect, and a ' +
                 'runaway chain would burn callouts reporting nothing.'
             );
+            AAO_RunLease.releaseAndDrain(oppId, runKey);
             return;
         }
 
         String next = again ? stage : ORDER[ORDER.indexOf(stage) + 1];
         Integer nextPass = again ? pass + 1 : 0;
         if (next == S_DONE) {
+            // The pass finished. This is the ordinary release, and it is what makes the queue
+            // behind this deal move.
+            AAO_RunLease.releaseAndDrain(oppId, runKey);
             return;
         }
         // A queueable may enqueue one child. Where the org refuses (depth or limits), the chain
@@ -168,9 +221,10 @@ public class AAO_PassQueueable implements Queueable, Database.AllowsCallouts {
                 runKey, sourceId, stage,
                 'No queueable slot left to continue the chain at stage "' + next + '".'
             );
+            AAO_RunLease.releaseAndDrain(oppId, runKey);
             return;
         }
-        System.enqueueJob(new AAO_PassQueueable(sourceId, runKey, next, nextPass));
+        System.enqueueJob(new AAO_PassQueueable(sourceId, runKey, next, nextPass, false));
     }
 
     /** Runs one stage. Returns true where the SAME stage must run again in a new transaction. */
@@ -291,5 +345,20 @@ public class AAO_PassQueueable implements Queueable, Database.AllowsCallouts {
         return [
             SELECT AAO_Opportunity__c FROM AAO_Source__c WHERE Id = :sourceId LIMIT 1
         ].AAO_Opportunity__c;
+    }
+
+    /**
+     * The same lookup, refusing to throw. The lease and the finalizer are both infrastructure
+     * around the pass rather than part of it, and neither may be the thing that kills a run: a
+     * Source that cannot be read is a real failure, and it should be reported by the stage that
+     * needs it rather than by the bookkeeping that wrapped it.
+     */
+    private Id opportunityIdOrNull() {
+        for (AAO_Source__c s : [
+            SELECT AAO_Opportunity__c FROM AAO_Source__c WHERE Id = :sourceId LIMIT 1
+        ]) {
+            return s.AAO_Opportunity__c;
+        }
+        return null;
     }
 }

@@ -813,12 +813,38 @@ public with sharing class AAO_PairCommit {
         //
         // The superseded row keeps its own claims and therefore its own replay: reading it alone
         // still reproduces what it said. Supersession routes around history; it never rewrites it.
+        // ===== AND THE CHAIN IS WALKED UPWARD TOO, because RETIREMENT ENTERS FROM THE OTHER END.
+        //
+        // The hundred-eighteenth stamp asked whether `AAO_Retire` reads through the supersession
+        // chain. It calls THIS method, so it reads whatever this method reads - one
+        // implementation, two callers - and the answer was therefore only half yes.
+        //
+        // The join hands in CANONICAL rows, because read-before-write makes them the rows it
+        // wrote. **Retirement hands in whatever answer the retired claim points at, and a
+        // superseded row's claims are exactly the claims a reconciliation left behind.** Walking
+        // only downward, such an id resolved nothing (nothing points AT a superseded row) and was
+        // then dropped by the `AAO_Superseded_By__c = null` filter below - so the canonical row,
+        // whose merged replay includes that claim, kept a verdict built on a receipt that had
+        // been withdrawn. Silent, and precisely the divergence retirement exists to close.
+        //
+        // One extra query, not a loop: a pointer can only ever target a canonical row, because
+        // `AAO_Project` selects its canonical `WHERE AAO_Superseded_By__c = null`. Chains are one
+        // hop by construction, so one hop is the whole walk.
+        Set<Id> targets = new Set<Id>(answerIds);
+        for (AAO_Answer__c given : [
+            SELECT Id, AAO_Superseded_By__c
+            FROM AAO_Answer__c
+            WHERE Id IN :answerIds AND AAO_Superseded_By__c != null
+        ]) {
+            targets.add(given.AAO_Superseded_By__c);
+        }
+
         Map<Id, Id> canonicalOf = new Map<Id, Id>();
-        Set<Id> chainIds = new Set<Id>(answerIds);
+        Set<Id> chainIds = new Set<Id>(targets);
         for (AAO_Answer__c sup : [
             SELECT Id, AAO_Superseded_By__c
             FROM AAO_Answer__c
-            WHERE AAO_Superseded_By__c IN :answerIds
+            WHERE AAO_Superseded_By__c IN :targets
         ]) {
             canonicalOf.put(sup.Id, sup.AAO_Superseded_By__c);
             chainIds.add(sup.Id);
@@ -851,7 +877,7 @@ public with sharing class AAO_PairCommit {
         for (AAO_Answer__c a : [
             SELECT Id, AAO_Verdict__c, AAO_Established_By__c
             FROM AAO_Answer__c
-            WHERE Id IN :answerIds AND AAO_Superseded_By__c = null
+            WHERE Id IN :targets AND AAO_Superseded_By__c = null
         ]) {
             // A human-established answer is theirs. The replay reads machine claims and must
             // never reach across that line.

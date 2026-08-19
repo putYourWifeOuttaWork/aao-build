@@ -1495,3 +1495,55 @@ which is the async driver doing exactly what it was built for.
 **Standing lesson, sharpened: rendering a component once proves it renders. It does not prove the
 states it passes through.** The render check saw the empty state; the null gap only exists after a
 run starts.
+
+---
+
+## 19 August · the stability phase, R3 + R4 + R5 + R1 (119th stamp item 1)
+
+**R3 · finalizers, PROVED FROM THE RUNTIME.** `AAO_RunFinalizer` attached first thing in both
+queueables. Probe: a queueable burned the SOQL governor; the catch inside `AAO_PassQueueable`
+cannot reach that class and never ran; `RCPT-00000035` carried the leg anyway, written afterwards
+in the finalizer's own transaction, quoting `System.LimitException: Too many SOQL queries: 201`.
+That is the 16 August class made visible. Probe class and probe receipt both removed.
+
+**Caveat found by probing rather than assuming:** the governor numbers on a finalizer leg are the
+FINALIZER'S transaction, not the dead stage's, so they read near zero on a leg whose stage died of
+a governor. The leg now says so on the row.
+
+**R4 · ingest failures route to `AAO_Receipt` under `ingest|<sourceId>`.** Written after the loop,
+not inside the catch: `AAO_Pipeline` documents callout-before-DML as load bearing, and a leg is
+DML. **Defect found by R4's own test:** `recordFailure` silently wrote nothing when the Source
+lookup could not resolve, so the one case where a receipt matters most left no trace. Lookup now
+dropped; the key carries the id as text. Second time the telemetry swallow has hidden a defect.
+
+**R5 · the run lease.** `AAO_Run_Lease__c`, one object, two keyed row kinds; the unique index is
+the lock. Measured on STAGE A: acquire true, same-run re-acquire true, two contenders refused and
+enrolled, triple enrolment = one waiting row, foreign release moved nothing. **Drain handed the
+deal to `r5-third-earlier` over `r5-second-later` — the earlier CONVERSATION over the earlier
+ARRIVAL.** Queue drained itself to zero rows, no wedge. Release is on DEATH only in the finalizer;
+a per-stage release would hand the deal away mid-pass.
+
+**R1 · the cap derived against the measured wall.** 17 verify callouts mined from the receipts.
+Largest success 82,213 ms (68 claims, wf-s5); observed death ~88,000 ms; budget 66,000 at 75%.
+Least squares `ms = 1303*C + 2629` is near worthless — residuals +21,258/-9,039, and three
+12-claim calls took 15,287 / 25,462 / 39,526 ms. Cap therefore from the WORST rate, 3,294
+ms/claim, giving 20. **Grammar still binds at 15; a full call reaches 56% of the measured wall.**
+`MAX_UNITS_PER_KEYED_CALL` is now `min(GRAMMAR_CAP_UNITS, TIME_CAP_UNITS)`. Every callout past the
+budget marks its leg with `wallWarning` — marks, never fails.
+
+**Open and NOT changed: `AAO_Timeout_Ms__c` is 120,000 against an ~88,000 wall.** Lowering it is
+org configuration under the BYO-LLM law, and the largest success is 82,213 ms, so the room is thin
+at old call sizes. Named for design.
+
+**Owed line from the 118th, and it was a defect not a confirmation:** `AAO_Retire` calls
+`AAO_PairCommit.rebuildVerdicts`, which walked the supersession chain DOWNWARD only. Retirement
+enters from the other end, so retiring a claim on a superseded row rebuilt nothing and left the
+canonical verdict standing on a withdrawn receipt. Fixed inside `rebuildVerdicts` — one extra
+query, one hop, because a pointer can only target a canonical row.
+
+**The org taught two things:** a universally required field's FLS is unrestrictable so it cannot
+be GRANTED either (the 90th's finding from the other side); a custom object's description caps at
+1,000 characters.
+
+**Suite 539, 538 passing**, the only failure the standing non-AAO `ConvertToOpportunityTest`.
+Proved on STAGE A only. Demo deal and Wells Fargo untouched. No graded run, so no row export owed.

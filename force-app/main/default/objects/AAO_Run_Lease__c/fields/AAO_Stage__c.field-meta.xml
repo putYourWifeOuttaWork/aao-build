@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Stage__c</fullName>
+    <description>The stage a waiting pass resumes at, so an enrolment that happened mid-pass resumes where it stopped rather than restarting and re-locating pairs.</description>
+    <label>Stage</label>
+    <length>80</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+</CustomField>

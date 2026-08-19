@@ -756,7 +756,68 @@ public with sharing class AAO_Pass {
      * `keyedShardCount`, and a 400 that fires despite the cap stops the run loudly (the
      * AAO_Extract 400 throw propagates), a ceiling like any governor.
      */
-    public static final Integer MAX_UNITS_PER_KEYED_CALL = 15;
+    public static final Integer GRAMMAR_CAP_UNITS = 15;
+
+    /**
+     * ===== R1 · THE SECOND CEILING, AND IT IS TIME RATHER THAN GRAMMAR.
+     *
+     * The hundred-thirteenth stamp's finding: **the 120-second cumulative-callout ceiling this
+     * project has measured against since the sixteenth stamp is not the wall that actually
+     * fails.** A callout with `AAO_Timeout_Ms__c = 120000` set DIED AT ~88,000 ms - 73% of a
+     * ceiling it never reached - because the model gateway's own response wall is lower,
+     * variable, and was unmeasured. Every timing table this project published reported worst
+     * callout as a percentage of 120,000 ms, and that percentage was safe against the wrong
+     * number. So R1's cap is derived against the MEASURED wall, which is what this is.
+     *
+     * **THE MEASUREMENT, from every verify callout the org has on record** (17 of them across
+     * `wf-s3`, `wf-s4`, `wf-s5`, `pf0813-uphold`, `em0813-stack-c1`, `em0813-stack-c2`):
+     *
+     *   largest callout that SUCCEEDED   82,213 ms   (68 claims, wf-s5)
+     *   observed death                  ~88,000 ms   (hundred-thirteenth stamp)
+     *
+     * so the wall sits inside a 5,787 ms band and 88,000 is the number we have actually hit.
+     */
+    public static final Integer MEASURED_GATEWAY_WALL_MS = 88000;
+
+    /** 75% headroom, the same fraction as the 90-second split trigger and the 112-DML trigger. */
+    public static final Integer CALLOUT_BUDGET_MS = 66000;
+
+    /**
+     * **THE WORST OBSERVED RATE, NOT THE AVERAGE ONE, and that choice is the whole finding.**
+     *
+     * Across the 17 measured callouts a least-squares fit gives `ms = 1303*claims + 2629` and it
+     * is nearly worthless as a predictor: the residual spans +21,258 to -9,039 ms, and **three
+     * calls of IDENTICAL size, 12 claims each, took 15,287, 25,462 and 39,526 ms** - a 2.6x
+     * spread at fixed input. Per-claim time barely predicts anything; variance dominates.
+     *
+     * A cap must hold on a SLOW call, not on an average one, so it derives from the worst rate
+     * measured (3,294 ms per claim, the 12-claim call that took 39,526 ms). The median rate of
+     * 1,322 would have yielded a cap of 49 - which is larger than the 47- and 68-claim calls
+     * that produced this whole line of work.
+     */
+    public static final Integer WORST_MS_PER_UNIT = 3294;
+
+    /** floor(budget / worst rate). 66,000 / 3,294 = 20 units. Derived, never authored. */
+    public static final Integer TIME_CAP_UNITS = 20;
+
+    /**
+     * ===== THE BINDING CEILING WINS, AND WHICH ONE BINDS IS A FACT RATHER THAN A BELIEF.
+     *
+     * Two independent ceilings on one call, measured separately and neither implied by the
+     * other: the compiled-grammar 400 at ~22-24 units, and the gateway's response wall in time.
+     * **Today grammar binds at 15 against time's 20**, so R1 changes no number and that is the
+     * honest result of the derivation rather than a reason not to have made it - a cap asserted
+     * to be safe and a cap measured to be safe are different facts, and only one of them
+     * survives the corpus growing.
+     *
+     * At the binding cap, a call reaches `15 * 3,294 = 49,407 ms`, **56% of the measured wall**,
+     * which is the first time this project has been able to say that sentence about the wall
+     * that actually fails. Written as a minimum so that if either ceiling moves - the grammar
+     * budget raised, or the measured rate worsening as Process adds claims to verify - the
+     * tighter one takes over without anybody remembering to.
+     */
+    public static final Integer MAX_UNITS_PER_KEYED_CALL =
+        GRAMMAR_CAP_UNITS < TIME_CAP_UNITS ? GRAMMAR_CAP_UNITS : TIME_CAP_UNITS;
 
     /** ceil(units / cap), at least one. The derivation the grammar budget makes mandatory. */
     public static Integer keyedShardCount(Integer unitCount) {

@@ -63,6 +63,23 @@ public with sharing class AAO_Receipt {
          * is a new key in a JSON blob, nothing to deploy and nothing to grant.
          */
         public String error;
+
+        /**
+         * **THE WALL, MEASURED RATHER THAN INFERRED.** Null on every callout inside its budget.
+         *
+         * R1's second half and the hundred-thirteenth stamp's standing hazard in its own words:
+         * *"a callout can fail well under the printed ceiling; the binding wall is the gateway's
+         * time-to-first-byte, and it must be measured directly, not inferred from the 120 s
+         * limit."* A cap derived once from seventeen receipts is a cap that was right about
+         * yesterday's corpus; this is what keeps it honest as Process adds claims to verify and
+         * grows the exposed stage.
+         *
+         * It marks and never fails: a slow call that RETURNED is a success and a leg that
+         * called it an error would be a lie on the process bar. What it produces is a queryable
+         * count of how often we approached the wall, which is the number the next derivation
+         * needs and the one nobody has ever had.
+         */
+        public String wallWarning;
     }
 
     /**
@@ -74,6 +91,15 @@ public with sharing class AAO_Receipt {
     public static Boolean ENABLED = true;
 
     /** Stage names, fixed here so the receipt and a run report use one vocabulary. */
+    /**
+     * INGEST, and it is the one stage name that is not a stage of the pass.
+     *
+     * R4. A Source whose adjudication threw used to leave a debug line and nothing else, so a
+     * failed ingest and an ingest that found nothing were the same fact from outside. This is
+     * the name that tells them apart, and the receipt key `ingest|<source>` puts every attempt
+     * on one row so a re-run merges into its own history rather than minting a second.
+     */
+    public static final String STAGE_INGEST = 'ingest';
     public static final String STAGE_RESOLVE = 'call 0 resolve';
     public static final String STAGE_LOCATE = 'call 1 locate';
     public static final String STAGE_IDENTIFY = 'resolution';
@@ -301,6 +327,16 @@ public with sharing class AAO_Receipt {
                 if (c.elapsedMs > leg.worstCalloutMs) {
                     leg.worstCalloutMs = c.elapsedMs;
                 }
+                if (c.elapsedMs > AAO_Pass.CALLOUT_BUDGET_MS) {
+                    // Marked, never failed. The call returned; what it did was come close to a
+                    // wall we only learned about by hitting it.
+                    leg.wallWarning =
+                        'A callout took ' + c.elapsedMs + ' ms, past the ' +
+                        AAO_Pass.CALLOUT_BUDGET_MS + ' ms budget (75% of the ' +
+                        AAO_Pass.MEASURED_GATEWAY_WALL_MS + ' ms measured gateway wall). The ' +
+                        'per-unit cap is derived from that wall, so this is the derivation ' +
+                        'asking to be re-run against fresh receipts.';
+                }
             }
             if (c.usage != null && c.usage.cacheReadTokens != null && c.usage.cacheReadTokens > 0) {
                 warm = true;
@@ -389,10 +425,18 @@ public with sharing class AAO_Receipt {
         ]) {
             src = s;
         }
+        // ===== THE LOOKUP IS DROPPED WHERE THE SOURCE CANNOT BE READ, and the key keeps the id.
+        //
+        // Found by R4's own test and it is the swallow hiding a defect for the second time. A
+        // lookup to a row that is not there is refused outright (`INVALID_CROSS_REFERENCE_KEY`),
+        // this class's standing swallow ate the refusal, and the leg vanished - so the ONE case
+        // where a receipt matters most, a Source that could not even be read, was the one case
+        // that left no trace. **The id is not lost: `AAO_Receipt_Key__c` is `runKey|sourceId`
+        // and carries it as text**, so the row is still findable by the thing that failed.
         return new AAO_Run_Receipt__c(
             AAO_Receipt_Key__c = key,
             AAO_Run_Key__c = runKey,
-            AAO_Source__c = sourceId,
+            AAO_Source__c = src == null ? null : sourceId,
             AAO_Opportunity__c = src == null ? null : src.AAO_Opportunity__c,
             AAO_Normalizer_Version__c = src == null ? null : src.AAO_Normalizer_Version__c,
             AAO_Synthetic__c = AAO_Synthetic.MARK

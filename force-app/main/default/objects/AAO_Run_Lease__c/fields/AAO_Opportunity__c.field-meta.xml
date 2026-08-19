@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Opportunity__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>The deal the lease serializes. The grain is the OPPORTUNITY because that is the grain of the state a racing pass would corrupt: the map, the board, the answers.</description>
+    <label>Opportunity</label>
+    <referenceTo>Opportunity</referenceTo>
+    <relationshipLabel>AAO Run Leases</relationshipLabel>
+    <relationshipName>AAO_Run_Leases</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

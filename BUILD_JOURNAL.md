@@ -1825,3 +1825,11 @@ shows the bands - projection writes the value to ONE of a person's rows - and it
 finding about the projector for an hour. And the identifying answer was fetched INSIDE the loop
 over decision makers: a query in a loop, unbounded, the 96th stamp's own lesson about a cost that
 hides one frame down. Hoisted into the query already running; the read is 8 SOQL flat.
+
+**Suite 560, 558 passing.** Run through the deploy validator because the org's async test lane
+wedged for about an hour and would not start a run. Two failures, both accounted: the standing
+non-AAO `ConvertToOpportunityTest`, and `AAO_LocateCharterTest` where the MUTE GUARD refused a
+standing fixture that invented the code `AAO_PRB_1` in family Problems - a contract the pass could
+never have read, harmless while nothing checked meanings and a refusal the moment something did.
+The guard found it within minutes of existing. Fixture moved to a real code; the test's point is
+untouched, since the prefix ladder recognises `AAO_PB_GOAL` no better than the invented one.

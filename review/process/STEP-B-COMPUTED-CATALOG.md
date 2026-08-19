@@ -137,6 +137,26 @@ Committee coverage, criteria coverage and insight completeness compute and have 
 - **(b) A computed-state row of our own.** One thin object, one row per deal per predicate. **Cost:** the twenty-ninth stamp's object-budget law, and it is the weakest option: the counts are derivable from rows we already hold, so storing them stores a cache of arithmetic and invites it to go stale.
 - **(c) Compute on demand at the reader.** (c)'s red-flag family and (f)'s panel call `AAO_ProcessCompute.read()` when they need the numbers; nothing is stored. **Cost:** zero rows, zero staleness, and no history - nobody can ask what the committee gap looked like last month. **Recorded lean, not acted on:** (c) is right for now and (a) is right eventually, because a qualifier is a thing the customer authored and a count is a thing we derive, and only the first deserves a contract.
 
+## 9b · The suite, and what the mute guard caught on its first pass over it
+
+`RunLocalTests` through the deploy validator, because the org's async test lane wedged for about
+an hour tonight and would not start a run: **560 tests, 2 failures, and both are accounted for.**
+
+- `ConvertToOpportunityTest.testgetOppCreationDetails` - the standing non-AAO failure, org-resident
+  and unrelated, on the record since the eighty-sixth stamp.
+- `AAO_LocateCharterTest.aContractInANewFamilyRoutesOnWhatItDeclares` - **the mute guard refusing a
+  standing fixture, and it is the guard working rather than a regression.** That test invented the
+  code `AAO_PRB_1` in family Problems, which was harmless while nothing checked meanings and became
+  a refusal the moment something did: a contract in a family with no meaning vocabulary has every
+  pair against it parsed away as silence. **The fixture asserted a contract the pass could never
+  have read.** Fixed by moving it to `AAO_PB_GOAL`, which the prefix ladder recognises no better
+  than the invented code did, so the test's point - that a contract routes on the family it
+  declares - is untouched. The guard found this within minutes of existing, which is the same shape
+  as R4's test finding the telemetry swallow.
+
+The validation snapshot predates that fix. Re-verified synchronously afterwards: `AAO_LocateCharterTest`
+16 of 16, and 167 tests across the sixteen classes these changes touch, all passing.
+
 ## 10 · Standing obligations
 
 Rows in `review/process/step-b/`: `proof-pairs.csv` (82), `proof-claims.csv` (18), `proof-answers.csv` (13), `proof-cited-rows.csv` (4), `proof-receipt.csv`, `discovered-twelve.csv`.

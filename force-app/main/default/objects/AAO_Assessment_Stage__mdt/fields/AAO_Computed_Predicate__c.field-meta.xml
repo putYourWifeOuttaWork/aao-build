@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Computed_Predicate__c</fullName>
+    <description>WHICH LEDGER PREDICATE ANSWERS THIS QUESTION, blank where none does. This is the binding the computed plane needs and cannot get any other way: a predicate is ours and a question code is the customer&apos;s, so a computed catalog that named question codes in Apex would compute nothing in any org but this one - LAW #1 failing on the same path the meaning map failed on. Seeded by us against our own BANT codes, ORG-OVERRIDABLE, the shape the proposal already ruled for computed qualifier predicates. Blank is the honest majority: thirteen of the fifteen require the customer&apos;s mouth by their own element text and no record can stand in for it.</description>
+    <externalId>false</externalId>
+    <label>Computed Predicate</label>
+    <length>40</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

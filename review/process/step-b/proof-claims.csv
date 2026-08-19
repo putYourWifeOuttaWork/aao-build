@@ -1,0 +1,19 @@
+AAO_Evidence_Contract__r.AAO_Proposition_Code__c,AAO_Evidence_Contract__r.AAO_Family__c,AAO_Basis__c,AAO_Outcome__c,AAO_Verdict_Before__c,AAO_Verdict_After__c,AAO_Retired__c,AAO_Retired_Because__c,AAO_Charter__c,AAO_Charter_Version__c,AAO_Participant__r.AAO_Display_Name__c
+AAO_BANT_A1,Process,Transcript,Established,,TRUE,false,,People,resolution-1.0.0,Gwen Arkwright
+AAO_BANT_A1,Process,State,Reinforced,TRUE,TRUE,true,Retired to re-observe under the corroboration rule; the fact is unchanged.,AAO_ProcessCompute,compute-1.0.0,Gwen Arkwright
+AAO_BANT_A1,Process,State,Corroborated,TRUE,TRUE,false,,AAO_ProcessCompute,compute-1.0.0,Gwen Arkwright
+AAO_BANT_A2,Process,Transcript,Established,,TRUE,false,,People,resolution-1.0.0,Gwen Arkwright
+AAO_BANT_A2,Process,State,Reinforced,TRUE,TRUE,true,Retired to re-observe under the corroboration rule; the fact is unchanged.,AAO_ProcessCompute,compute-1.0.0,Gwen Arkwright
+AAO_BANT_A2,Process,State,Corroborated,TRUE,TRUE,false,,AAO_ProcessCompute,compute-1.0.0,Gwen Arkwright
+AAO_BANT_A3,Process,Transcript,Established,,TRUE,false,,People,resolution-1.0.0,Gwen Arkwright
+AAO_BANT_A4,Process,Transcript,Established,,TRUE,false,,People,resolution-1.0.0,Gwen Arkwright
+AAO_BANT_B1,Process,Transcript,Established,,TRUE,false,,People,resolution-1.0.0,Gwen Arkwright
+AAO_BANT_B3,Process,Transcript,Established,,TRUE,false,,People,resolution-1.0.0,Gwen Arkwright
+AAO_BANT_B4,Process,Transcript,Established,,TRUE,false,,People,resolution-1.0.0,Gwen Arkwright
+AAO_BANT_N1,Process,Transcript,Established,,TRUE,false,,People,resolution-1.0.0,Gwen Arkwright
+AAO_BANT_N2,Process,Transcript,Established,,TRUE,false,,People,resolution-1.0.0,Ivan Petrov
+AAO_BR_APP,,Transcript,Established,,TRUE,false,,People,resolution-1.0.0,Gwen Arkwright
+AAO_BR_SIG,,Transcript,Established,,TRUE,false,,People,resolution-1.0.0,Gwen Arkwright
+AAO_PB_OBST,Problems,Transcript,Established,,TRUE,false,,People,resolution-1.0.0,Ivan Petrov
+AAO_PB_OBST,Problems,Transcript,Reinforced,TRUE,TRUE,false,,People,resolution-1.0.0,Ivan Petrov
+AAO_POL_IC2,,Transcript,Established,,TRUE,false,,People,resolution-1.0.0,Gwen Arkwright

@@ -50,6 +50,11 @@
                 <default>false</default>
                 <label>Shadow_Person</label>
             </value>
+            <value>
+                <fullName>Participant</fullName>
+                <default>false</default>
+                <label>Participant</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

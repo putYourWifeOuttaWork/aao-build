@@ -322,8 +322,19 @@ private class AAO_LocateCharterTest {
         // recognise. `families()` runs it across the whole declared set, so the first contract
         // minted in a new family would not have degraded that family: it would have failed
         // call 1 outright, for every family at once, before a single read happened.
+        //
+        // **THE CODE MOVED FROM `AAO_PRB_1` TO A REAL ONE, and the mute guard is why.** The
+        // fixture used to invent a code, which was harmless while nothing checked meanings and
+        // became a refusal the moment one did: a contract whose family has no meaning vocabulary
+        // has every pair against it parsed away as silence, and the guard now says so at
+        // declaration rather than after a run harvests nothing. **The guard found this on its
+        // first pass over the standing suite**, which is the shape it exists for - the fixture
+        // asserted a contract the pass could never have read.
+        //
+        // The test's point is untouched: `AAO_PB_GOAL` is no more recognisable to the prefix
+        // ladder than `AAO_PRB_1` was, so the declared family is still the only thing routing it.
         AAO_Evidence_Contract__c problem = contract(
-            'AAO_PRB_1', 'The buyer named a problem this deal has to solve.', 1
+            'AAO_PB_GOAL', 'The buyer named a problem this deal has to solve.', 1
         );
         problem.AAO_Family__c = 'Problems';
 

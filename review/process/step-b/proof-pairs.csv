@@ -1,0 +1,83 @@
+ ›   Warning: @salesforce/cli update available from 2.135.7 to 2.147.7.
+Querying Data... done
+AAO_Pair_Ref__c,AAO_Stage__c,AAO_Disposition__c,AAO_Evidence_Contract__r.AAO_Proposition_Code__c,AAO_Meaning__c,AAO_Coverage__c,AAO_Answer_Text__c,AAO_Start_Offset__c,AAO_End_Offset__c,AAO_Speaker_Key__c,AAO_Verification__c,AAO_Verification_Note__c
+r1q1,Located,,AAO_BANT_A1,AFFIRMED,Full,"That is me. I sign off on operations spend at this level and there is nobody above me on it. It is my decision, full stop.",293,415,gwen,,
+r1q1,Identified,Identified,AAO_BANT_A1,,,,,,,Upheld,"The words identify the person who makes the final call on operations spend and confirm they have no one above them, directly answering the question."
+r1q10,Located,,AAO_BR_DM,DECISION_MAKER,Full,"That is me. I sign off on operations spend at this level and there is nobody above me on it. It is my decision, full stop.",293,415,gwen,,
+r1q10,Identified,Identified,AAO_BR_DM,,,,,,,Refused,The words describe decision authority over operations spend but do not assert a commitment to a vendor or strategic direction.
+r1q11,Identified,Identified,AAO_BR_SIG,,,,,,,Upheld,"The words explicitly state 'I sign off on operations spend,' directly identifying this person as the one who signs."
+r1q11,Located,,AAO_BR_SIG,SIGNATURE_APPROVER,Full,I sign off on operations spend at this level,305,349,gwen,,
+r1q12,Identified,Identified,AAO_BR_APP,,,,,,,Upheld,"The words state the speaker signs off on operations spend with no one above them, establishing their right to review, approve and control the funds."
+r1q12,Located,,AAO_BR_APP,APPROVER,Full,I sign off on operations spend at this level and there is nobody above me on it.,305,385,gwen,,
+r1q13,Located,,AAO_POL_IC2,INNER_CIRCLE,Partial,I sign off on operations spend at this level and there is nobody above me on it.,305,385,gwen,,
+r1q13,Identified,Identified,AAO_POL_IC2,,,,,,,Upheld,"The words describe signing off on spend and decision authority, which constitutes approving and sponsoring initiatives."
+r1q14,Identified,Identified,AAO_POL_IC3,,,,,,,Refused,"The words assert decision-making authority but do not address control of outcomes, which is a different matter than making the decision."
+r1q14,Located,,AAO_POL_IC3,INNER_CIRCLE,Partial,"It is my decision, full stop.",386,415,gwen,,
+r1q15,Identified,Identified,AAO_DC_N,,,,,,,Refused,"The words describe a problem (wasted hours chasing status) but do not tie it to evaluating, choosing or proceeding with a solution."
+r1q15,Located,,AAO_DC_N,CRITERION,Partial,That the handoff failures cost us real hours.,755,800,gwen,,
+r1q16,Identified,Identified,AAO_DC_F,,,,,,,Refused,"The words express an informal observation about cost to the team, not an attribution to any organizational evaluation standard, document, process, scorecard, committee or mandate."
+r1q16,Located,,AAO_DC_F,INFORMAL,Partial,That the handoff failures cost us real hours.,755,800,gwen,,
+r1q17,Located,,AAO_PB_INIT,INITIATIVE,Full,We spent most of last quarter mapping where the handoffs break.,168,231,ivan,,
+r1q17,Identified,Identified,AAO_PB_INIT,,,,,,,Refused,"The words describe a past effort (mapping handoffs) but do not describe an effort, project or program underway or decided to change something going forward."
+r1q18,Located,,AAO_PB_OBST,OBSTACLE,Full,"Roughly nine hours a week across the team, chasing status that should be automatic.",828,911,ivan,,
+r1q18,Identified,Identified,AAO_PB_OBST,,,,,,,Upheld,"The words describe a task the team is performing (chasing status) that is wasteful and should be automatic, which is a process standing in the way of their work."
+r1q19,Located,,AAO_PB_OBST,OBSTACLE,Partial,We would be building the case from zero on the money side.,641,699,ivan,,
+r1q19,Identified,Identified,AAO_PB_OBST,,,,,,,Upheld,"The words identify the person who makes the final call on operations spend and confirm they have no one above them, directly answering the question."
+r1q2,Located,,AAO_BANT_A2,AFFIRMED,Full,"That is me. I sign off on operations spend at this level and there is nobody above me on it. It is my decision, full stop.",293,415,gwen,,
+r1q2,Identified,Identified,AAO_BANT_A2,,,,,,,Upheld,"The words are the decision maker speaking directly, confirming they have participated in conversation with us."
+r1q20,Identified,Identified,AAO_POL_OPS1,,,,,,,Refused,"The words describe a problem the speaker's team faces, not a role or function of collecting and providing information to people of power and influence."
+r1q20,Located,,AAO_POL_OPS1,OUTSIDE_POLITICAL_STRUCTURE,Full,"Roughly nine hours a week across the team, chasing status that should be automatic.",828,911,ivan,,
+r1q21,Identified,Identified,AAO_POL_PS2,,,,,,,Refused,The words explain why the speaker was pulled in (because it touches operations end to end) but do not assert they are called on to make it happen.
+r1q21,Located,,AAO_POL_PS2,POLITICAL_STRUCTURE,Partial,Ivan pulled me in because this touches operations end to end.,94,155,gwen,,
+r1q3,Identified,Identified,AAO_BANT_A3,,,,,,,Upheld,"The words state there is nobody above the speaker on this decision, directly answering who else must approve."
+r1q3,Located,,AAO_BANT_A3,DENIED,Partial,"there is nobody above me on it. It is my decision, full stop.",354,415,gwen,,
+r1q4,Located,,AAO_BANT_A4,AFFIRMED,Partial,That is me. I sign off on operations spend at this level and there is nobody above me on it.,293,385,gwen,,
+r1q4,Identified,Identified,AAO_BANT_A4,,,,,,,Upheld,"The words indicate the speaker is the final decision maker with no one above them, meaning the decision maker can be reached without a blocker."
+r1q5,Identified,Identified,AAO_BANT_B1,,,,,,,Upheld,"The words explicitly state that no budget is allocated for this purchase in the current fiscal year, directly answering whether funds are available."
+r1q5,Located,,AAO_BANT_B1,DENIED,Full,"No. There is no budget allocated for this, not in this fiscal year. Nothing has been set aside and I want to be straight with you about that.",494,635,gwen,,
+r1q6,Located,,AAO_BANT_B3,AFFIRMED,Full,I sign off on operations spend at this level and there is nobody above me on it.,305,385,gwen,,
+r1q6,Identified,Merged,AAO_BANT_B3,,,,,,,,
+r1q7,Located,,AAO_BANT_B4,AFFIRMED,Partial,"I sign off on operations spend at this level and there is nobody above me on it. It is my decision, full stop.",305,415,gwen,,
+r1q7,Identified,Identified,AAO_BANT_B4,,,,,,,Upheld,"The words describe the approval process for operations spend (the speaker signs off with no one above them), answering how spending gets approved."
+r1q8,Located,,AAO_BANT_N1,AFFIRMED,Full,That the handoff failures cost us real hours.,755,800,gwen,,
+r1q8,Identified,Identified,AAO_BANT_N1,,,,,,,Upheld,The words state a problem in the customer's own voice: the team spends time chasing status that should be automatic.
+r1q9,Located,,AAO_BANT_N2,AFFIRMED,Full,"Roughly nine hours a week across the team, chasing status that should be automatic.",828,911,ivan,,
+r1q9,Identified,Identified,AAO_BANT_N2,,,,,,,Upheld,The words quantify the problem with a specific estimate: roughly nine hours a week across the team.
+r2q1,Identified,Merged,AAO_BANT_A1,,,,,,,,
+r2q1,Located,,AAO_BANT_A1,AFFIRMED,Full,"That is me. I sign off on operations spend at this level and there is nobody above me on it. It is my decision, full stop.",293,415,gwen,,
+r2q10,Identified,Merged,AAO_BR_DM,,,,,,,,
+r2q10,Located,,AAO_BR_DM,DECISION_MAKER,Full,"That is me. I sign off on operations spend at this level and there is nobody above me on it. It is my decision, full stop.",293,415,gwen,,
+r2q11,Identified,Merged,AAO_BR_SIG,,,,,,,,
+r2q11,Located,,AAO_BR_SIG,SIGNATURE_APPROVER,Full,I sign off on operations spend at this level,305,349,gwen,,
+r2q12,Identified,Merged,AAO_BR_APP,,,,,,,,
+r2q12,Located,,AAO_BR_APP,APPROVER,Full,I sign off on operations spend at this level and there is nobody above me on it.,305,385,gwen,,
+r2q13,Identified,Merged,AAO_PB_INIT,,,,,,,,
+r2q13,Located,,AAO_PB_INIT,INITIATIVE,Full,We spent most of last quarter mapping where the handoffs break.,168,231,ivan,,
+r2q14,Located,,AAO_PB_OBST,OBSTACLE,Full,"Roughly nine hours a week across the team, chasing status that should be automatic.",828,911,ivan,,
+r2q14,Identified,Merged,AAO_PB_OBST,,,,,,,,
+r2q15,Identified,Merged,AAO_PB_OBST,,,,,,,,
+r2q15,Located,,AAO_PB_OBST,OBSTACLE,Full,We would be building the case from zero on the money side.,641,699,ivan,,
+r2q16,Identified,Merged,AAO_POL_PS2,,,,,,,,
+r2q16,Located,,AAO_POL_PS2,POLITICAL_STRUCTURE,Full,Ivan pulled me in because this touches operations end to end.,94,155,gwen,,
+r2q17,Located,,AAO_POL_IC2,INNER_CIRCLE,Full,I sign off on operations spend at this level and there is nobody above me on it.,305,385,gwen,,
+r2q17,Identified,Merged,AAO_POL_IC2,,,,,,,,
+r2q18,Located,,AAO_POL_OPS1,OUTSIDE_POLITICAL_STRUCTURE,Full,"Roughly nine hours a week across the team, chasing status that should be automatic.",828,911,ivan,,
+r2q18,Identified,Merged,AAO_POL_OPS1,,,,,,,,
+r2q19,Located,,AAO_DC_N,CRITERION,Partial,That the handoff failures cost us real hours. Ivan has the numbers.,755,822,gwen,,
+r2q19,Identified,Merged,AAO_DC_N,,,,,,,,
+r2q2,Located,,AAO_BANT_A2,AFFIRMED,Full,"That is me. I sign off on operations spend at this level and there is nobody above me on it. It is my decision, full stop.",293,415,gwen,,
+r2q2,Identified,Merged,AAO_BANT_A2,,,,,,,,
+r2q3,Located,,AAO_BANT_A3,DENIED,Full,"That is me. I sign off on operations spend at this level and there is nobody above me on it. It is my decision, full stop.",293,415,gwen,,
+r2q3,Identified,Merged,AAO_BANT_A3,,,,,,,,
+r2q4,Located,,AAO_BANT_A4,AFFIRMED,Partial,"there is nobody above me on it. It is my decision, full stop.",354,415,gwen,,
+r2q4,Identified,Merged,AAO_BANT_A4,,,,,,,,
+r2q5,Located,,AAO_BANT_B1,DENIED,Full,"No. There is no budget allocated for this, not in this fiscal year. Nothing has been set aside and I want to be straight with you about that.",494,635,gwen,,
+r2q5,Identified,Merged,AAO_BANT_B1,,,,,,,,
+r2q6,Identified,Identified,AAO_BANT_B3,,,,,,,Upheld,"The words indicate the speaker signs off on operations spend at a certain level, which implies ownership or control of those funds."
+r2q6,Located,,AAO_BANT_B3,AFFIRMED,Partial,I sign off on operations spend at this level,305,349,gwen,,
+r2q7,Identified,Merged,AAO_BANT_B4,,,,,,,,
+r2q7,Located,,AAO_BANT_B4,AFFIRMED,Partial,I sign off on operations spend at this level and there is nobody above me on it.,305,385,gwen,,
+r2q8,Identified,Merged,AAO_BANT_N1,,,,,,,,
+r2q8,Located,,AAO_BANT_N1,AFFIRMED,Full,That the handoff failures cost us real hours.,755,800,gwen,,
+r2q9,Located,,AAO_BANT_N2,AFFIRMED,Full,"Roughly nine hours a week across the team, chasing status that should be automatic.",828,911,ivan,,
+r2q9,Identified,Merged,AAO_BANT_N2,,,,,,,,

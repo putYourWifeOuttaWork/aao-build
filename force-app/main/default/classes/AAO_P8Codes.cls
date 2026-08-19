@@ -221,6 +221,33 @@ public with sharing class AAO_P8Codes {
     }
 
     /**
+     * Every code that establishes a Buyer Role. These seventeen are OURS, so naming them in
+     * Apex is lawful here in a way it never is for a discovered rubric: the computed catalog
+     * reads the People ledger through them and reaches the Process questions through
+     * configuration instead. Ours by code, theirs by config, and the line between is the same
+     * line LAW #1 draws everywhere else.
+     */
+    public static Set<String> buyerRoleCodes() {
+        return BUYER_ROLE.keySet().clone();
+    }
+
+    /** The code that establishes a given Buyer Role value, or null. */
+    public static String codeForBuyerRole(String value) {
+        if (String.isBlank(value)) {
+            return null;
+        }
+        for (String code : BUYER_ROLE.keySet()) {
+            if (BUYER_ROLE.get(code) == value) {
+                return code;
+            }
+        }
+        return null;
+    }
+
+    /** The stored Buyer Role value our own decision-maker code names. */
+    public static final String BUYER_ROLE_DECISION_MAKER_CODE = 'AAO_BR_DM';
+
+    /**
      * The highest placement in a set of established Political values, or null for an empty
      * set. **Nobody is placed by absence**: an empty set returns null and the field is left
      * alone rather than written `Unknown`.

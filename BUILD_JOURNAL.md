@@ -1723,3 +1723,105 @@ set - they live on a different object with no element blocks, a second discovery
 it before (a) reported would have made this distribution unreadable.
 
 **Suite 550, 549 passing.**
+
+---
+
+## Session 108 · Process step (b): the computed catalog's first arithmetic
+
+Authorized by the 126th's item 3(b) and the 128th's item 10. Tree `/Users/thefinalmachine/Downloads/claude`
+(`main`), org `00DWD00000DV7iT2AT` (`aossb2`).
+
+**Channel note, recorded because the receipt rule depends on it:** the 127th and 128th stamps
+reached this session through Matthew's paste and are NOT on disk - `CODE-INBOX.md` still tops out
+at the 126th at 633,944 bytes. Design writes the ledger and CODE never does (39th stamp's lanes),
+so the authorizing bytes are quoted in the reports rather than written into the file.
+
+### `AAO_ProcessCompute` - the computed plane, its own stage between the join and projection
+
+Zero callouts, and it says so by never touching `AAO_Extract`. Measured: 1,136 ms, 27 SOQL, 12 DML.
+
+**It writes CANDIDATES, not claims.** The plane is a second PROPOSER; `AAO_Commit` remains the one
+writer, and it already carried the `State` branch of the speaker gate, ratified at the 48th stamp
+and never once exercised. So this run produced three things declared for months and never made:
+a claim at basis **State**, a populated **`AAO_Claim_Basis__c`** with frozen snapshots, and an
+answer at basis **Both**. The 47th stamp's own header names this build's first computation as its
+motivating case: *"One decision maker is named on the relationship map rests on a record, not on
+bytes."*
+
+**THE FINDING: two of fifteen are computable, and it is a property of the QUESTIONS.** Thirteen
+name the customer's mouth as a conjunct - *"the customer states"*, *"per the customer's words"* -
+and no record stands in for a mouth. The two that do not are A1 (identified: the ledger fact plus
+a CITATION of the answer whose own basis is Transcript, which is what cited type `Answer` is for)
+and A2 (engaged: the participant row, whole). **A2 is the specimen** - step (a) reported it REFUSED
+at the evidence plane on our own seller, correctly, while the answer sat in a participant row.
+One fact, two planes, never two facts (120th).
+
+**Measured org-wide: zero facts, everywhere.** Not one live TRUE `AAO_BR_DM` in the sandbox; the
+single `AAO_BR_SIG` is the Fatima twin at UNVERIFIED. Unlike (a)'s Budget/Timeline zero this one
+SEPARATES, because the predicate is deterministic - a targeted fixture proved it.
+
+**The binding is CONFIGURATION.** Nothing names `AAO_BANT_A1`. `AAO_Assessment_Stage__mdt.AAO_Computed_Predicate__c`
+binds predicate to question code, seeded and org-overridable. The 128th's ratified MEANINGS
+finding one layer up, avoidable only because that one was made first.
+
+**A RECORD IS NOT AN UTTERANCE** - a defect this build found in the shared writer. The first
+computed claim landed `Reinforced`, because `AAO_Commit`'s branch tests byte intersection and a
+state claim has no bytes, so it fell to the default. Reinforcement counts DISTINCT UTTERANCES
+(80th); `CORROBORATED` was already the right word and already in the vocabulary. Fixed in the one
+branch; both outcomes already return false from `movesTheAnswer`, so no reader changes.
+
+### The three owed one-liners
+
+**The mute guard THROWS now, not counts** (127th item 4 as the 128th re-keyed it). Inside
+`registerFamilies` so a fourth call site cannot forget it; keyed on FAMILY; refuses by name before
+a callout is spent. Tested in both directions, because a guard that refuses everything passes a
+one-sided test.
+
+**The failure leg's callout counter: it HARD-CODED ZERO**, and that is the answer to the 127th's
+"say which it was". `summarise` counts the StageResults a stage hands back and a throwing stage
+hands back nothing, so the zero-fill filled it with a lie while every numeric beside it read from
+`Limits`. One line: `leg.callouts = Limits.getCallouts()`.
+
+**`AAO_ProcessContracts` keyed the contract on the CODE, not the record id** - and this corrects my
+own prior finding. There is no "18-character proposition-code ceiling"; 18 is a record id's length,
+and `AAO_Discovery` has always passed `q.Id`. This path passed the code, which worked only because
+our BANT codes are short and would have thrown at compose in any org whose identifiers run longer.
+Same shape as the meaning map, one layer along. The fifteen standing keep their keys; the corrected
+shape rides the next real content change (128th item 2's law).
+
+### The targeted proof - two proofs, one run, four callouts
+
+`AAO PROOF - denied and computed`. AUTHORED, MECHANISM ONLY, COUNTS TOWARD NOTHING.
+
+**DENIED fires end to end** (128th item 6): B1 and A3 both DENIED, both upheld blind with reasons
+naming the negative, both landing at **verdict TRUE with interpretation DENIED** - the stamp's own
+clause in the rows, true-or-nothing unbreached. Six AFFIRMED beside them, so the family
+discriminates within one call.
+
+**The computed plane fires**: Gwen Arkwright read Signature Approver from her own words; both
+predicates computed; A1 cites the Answer, A2 cites the Participant; both answers now read `Both`.
+Idempotent on re-run (0 written, 2 already standing).
+
+**One error leg, mine**: the first candidate was refused for `REQUIRED_FIELD_MISSING: [Account,
+Outcome]`. Fixed, resumed to completion. Under the gate law that run is a FAILED run and I am not
+calling it otherwise. It is also the first leg written under the fixed counter, reading `callouts=0`
+- correct, that transaction made none.
+
+### Reported, not answered
+
+The counts (committee coverage, criteria coverage, insight completeness) compute exactly as the
+stamp asks and answer NO declared proposition, so there is no answer for them to accrue onto and
+no claim they could lawfully be. Minting contracts for them is authoring. **Parked with three
+options and their costs.** Two things fell out of the counts as findings: coverage reads `(none)`
+on all eleven participants of the rehearsal deal, and all 32 of its criteria read informal.
+
+Item 8's twelve `AAO_Discovery` rows reported: six propositions, two generations of one 31 July
+experiment, blank `AAO_Family__c` on every one, 9 claims and 7 answers resting on them including
+two live on STAGE B.
+
+**Two defects I made and found before shipping, both worth the line:** the coverage fold kept
+whichever participant row came last and read `(none)` for every person on a deal whose map plainly
+shows the bands - projection writes the value to ONE of a person's rows - and it looked like a
+finding about the projector for an hour. And the identifying answer was fetched INSIDE the loop
+over decision makers: a query in a loop, unbounded, the 96th stamp's own lesson about a cost that
+hides one frame down. Hoisted into the query already running; the read is 8 SOQL flat.

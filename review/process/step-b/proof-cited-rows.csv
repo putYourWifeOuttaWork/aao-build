@@ -1,0 +1,5 @@
+AAO_Claim__r.AAO_Evidence_Contract__r.AAO_Proposition_Code__c,AAO_Claim__r.AAO_Retired__c,AAO_Cited_Type__c,AAO_Cited_Answer__c,AAO_Cited_Participant__c,AAO_Snapshot_Taken__c,AAO_Snapshot__c
+AAO_BANT_A1,true,Answer,a1SWD000005uQpm2AE,,2026-08-19T22:36:17.000+0000,"{""evidence_occurred"":""2026-08-19 15:33:37"",""person"":""Gwen Arkwright"",""basis"":""Transcript"",""verdict"":""TRUE"",""buyer_role"":""Signature Approver"",""proposition_code"":""AAO_BR_SIG""}"
+AAO_BANT_A1,false,Answer,a1SWD000005uQpm2AE,,2026-08-19T22:38:24.000+0000,"{""evidence_occurred"":""2026-08-19 15:33:37"",""person"":""Gwen Arkwright"",""basis"":""Transcript"",""verdict"":""TRUE"",""buyer_role"":""Signature Approver"",""proposition_code"":""AAO_BR_SIG""}"
+AAO_BANT_A2,true,Participant,,a1ZWD000002bxOA2AY,2026-08-19T22:36:17.000+0000,"{""buyer_role"":""Signature Approver"",""source"":""a1XWD0000084POD2A2"",""internal"":false,""display_name"":""Gwen Arkwright""}"
+AAO_BANT_A2,false,Participant,,a1ZWD000002bxOA2AY,2026-08-19T22:38:24.000+0000,"{""buyer_role"":""Signature Approver"",""source"":""a1XWD0000084POD2A2"",""internal"":false,""display_name"":""Gwen Arkwright""}"

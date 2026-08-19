@@ -38,6 +38,17 @@ public class AAO_PassQueueable implements Queueable, Database.AllowsCallouts {
     public static final String S_MODEL_LEG = 'call 2b model leg';
     public static final String S_VERIFY = 'call 3 verify';
     public static final String S_JOIN = 'join';
+    /**
+     * THE COMPUTED PLANE, and it is its own stage rather than a tail on the join.
+     *
+     * Two reasons, both measured rather than tidy. The join is the SOQL-bound stage - the
+     * hundred-fifth stamp fitted it at `2.33*C + 9` against a ceiling of 100, which is where the
+     * s5 join died - and hanging a second reader off it would spend the one budget the pass has
+     * least of. And a stage that leaves no receipt leg cannot be measured, so a computed plane
+     * folded into the join would be arithmetic nobody can price. It makes ZERO callouts, so its
+     * own transaction costs a queueable hop and nothing else.
+     */
+    public static final String S_COMPUTE = 'computed catalog';
     public static final String S_PROJECT = 'projection';
     public static final String S_PROMOTION = 'promotion';
     public static final String S_CARDS = 'cards';
@@ -45,7 +56,7 @@ public class AAO_PassQueueable implements Queueable, Database.AllowsCallouts {
 
     private static final List<String> ORDER = new List<String>{
         S_RESOLVE, S_READ1, S_READ2, S_DETERMINISTIC, S_MODEL_LEG,
-        S_VERIFY, S_JOIN, S_PROJECT, S_PROMOTION, S_CARDS, S_DONE
+        S_VERIFY, S_JOIN, S_COMPUTE, S_PROJECT, S_PROMOTION, S_CARDS, S_DONE
     };
 
     private final Id sourceId;
@@ -343,6 +354,16 @@ public class AAO_PassQueueable implements Queueable, Database.AllowsCallouts {
                 runKey, AAO_IngestQueueable.internalDomains()
             );
             return o.pairsRemaining > 0;
+        }
+        if (stage == S_COMPUTE) {
+            // AFTER the join, BEFORE projection, and both halves of that are load bearing. The
+            // join is what writes this run's answers, and the computed plane reads them; running
+            // first would compute against the deal as it stood before the call. Projection is
+            // what carries the result to the map, and a computed establishment that arrived
+            // after it would sit in our ledger unprojected until the next run.
+            AAO_ProcessCompute.Outcome co = AAO_ProcessCompute.run(opportunityId(), runKey);
+            System.debug(LoggingLevel.INFO, 'computed catalog: ' + co);
+            return false;
         }
         if (stage == S_PROJECT) {
             AAO_Project.run(opportunityId(), runKey);

@@ -1,0 +1,14 @@
+AAO_Evidence_Contract__r.AAO_Proposition_Code__c,AAO_Verdict__c,AAO_Interpretation__c,AAO_Basis__c,AAO_Publication_State__c,AAO_Participant__r.AAO_Display_Name__c
+AAO_BANT_A1,TRUE,AFFIRMED,Both,Live,Gwen Arkwright
+AAO_BANT_A2,TRUE,AFFIRMED,Both,Live,Gwen Arkwright
+AAO_BANT_A3,TRUE,DENIED,Transcript,Live,Gwen Arkwright
+AAO_BANT_A4,TRUE,AFFIRMED,Transcript,Live,Gwen Arkwright
+AAO_BANT_B1,TRUE,DENIED,Transcript,Live,Gwen Arkwright
+AAO_BANT_B3,TRUE,AFFIRMED,Transcript,Live,Gwen Arkwright
+AAO_BANT_B4,TRUE,AFFIRMED,Transcript,Live,Gwen Arkwright
+AAO_BANT_N1,TRUE,AFFIRMED,Transcript,Live,Gwen Arkwright
+AAO_BANT_N2,TRUE,AFFIRMED,Transcript,Live,Ivan Petrov
+AAO_BR_APP,TRUE,APPROVER,Transcript,Live,Gwen Arkwright
+AAO_BR_SIG,TRUE,SIGNATURE_APPROVER,Transcript,Live,Gwen Arkwright
+AAO_PB_OBST,TRUE,OBSTACLE,Transcript,Live,Ivan Petrov
+AAO_POL_IC2,TRUE,INNER_CIRCLE,Transcript,Live,Gwen Arkwright

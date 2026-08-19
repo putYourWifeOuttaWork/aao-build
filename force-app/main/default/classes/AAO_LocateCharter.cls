@@ -299,6 +299,58 @@ public with sharing class AAO_LocateCharter {
         for (AAO_Evidence_Contract__c ec : declared) {
             FAMILY_BY_CODE.put(ec.AAO_Proposition_Code__c, familyOf(ec));
         }
+        requireMeanings(declared);
+    }
+
+    /**
+     * ===== THE MUTE GUARD. It THROWS. It does not count.
+     *
+     * The 127th stamp ruled a loud refusal at declaration and the 128th corrected its key: the
+     * check is on FAMILY, never on code, because a discovered rubric carries the customer's
+     * codes and a code-keyed check would refuse every honest contract in every real org.
+     *
+     * Step (a) reported `mute = 0` from a probe, and the 128th asked the right question of that
+     * number: **a reported count with no enforcement half is the rule-with-a-reporting-half
+     * shape.** So the count moves into the code and becomes a refusal. It is the same measure;
+     * what changes is that nothing can now run past it.
+     *
+     * **Why a throw and not a skip.** A contract with no meanings has every pair against it
+     * parsed away as silence - the 47th stamp's finding, which cost an entire empty Problems
+     * harvest to learn, and which the 128th ratified as bigger than that: it is LAW #1 failing
+     * quietly on the one path the product's org-agnostic claim rests on. An invisible harvest of
+     * silence is indistinguishable at every downstream surface from an honest nothing-was-said.
+     * Refusing here costs zero callouts and names the contract; the alternative costs a run and
+     * names nothing.
+     *
+     * Placed inside `registerFamilies` rather than beside its callers, per the failed-twice law:
+     * the guard cannot be forgotten by a fourth call site because there is no way to register a
+     * declared set without passing through it.
+     */
+    private static void requireMeanings(List<AAO_Evidence_Contract__c> declared) {
+        List<String> mute = new List<String>();
+        for (AAO_Evidence_Contract__c ec : declared) {
+            if (meaningsFor(ec.AAO_Proposition_Code__c).isEmpty()) {
+                mute.add(
+                    ec.AAO_Proposition_Code__c +
+                    ' (family ' +
+                    familyOf(ec) +
+                    ')'
+                );
+            }
+        }
+        if (mute.isEmpty()) {
+            return;
+        }
+        mute.sort();
+        throw new CharterException(
+            'Declared contracts carry no meanings and would be MUTE: ' +
+            String.join(mute, ', ') +
+            '. A contract with no meaning has every pair against it parsed away as silence, ' +
+            'which reads downstream exactly like an honest nothing-was-said. Meanings are ' +
+            'declared per family, so a family this build does not know needs its meaning ' +
+            'vocabulary before its contracts can be declared. Nothing was read and no callout ' +
+            'was spent.'
+        );
     }
 
     public static List<String> meaningsFor(String code) {

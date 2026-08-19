@@ -530,6 +530,28 @@ public class AAO_Commit {
             // same words seen again), then REINFORCEMENT (new words for a standing point).
             if (advancesCompleteness(existing, accumulated)) {
                 // Established, untouched. A completing utterance is not a repetition.
+            } else if (!AAO_EvidenceFamily.needsSource(cand.AAO_Basis__c)) {
+                // **A RECORD IS NOT AN UTTERANCE, so a state claim can never be reinforcement.**
+                //
+                // The eightieth stamp ruled that reinforcement counts DISTINCT UTTERANCES and
+                // the test is byte intersection. A claim at basis State has no bytes at all, so
+                // it falls through every intersection test there is and would land as
+                // Reinforced by default - reading, on a number guidance orders by, as the buyer
+                // pressing a point they never pressed. The computed catalog observing the same
+                // fact on every pass would inflate it once per run, forever.
+                //
+                // Corroboration is the exact word and it is already in the vocabulary: a second
+                // instrument finding the same fact, which is what a ledger read of something the
+                // words established IS. It is the same reasoning the speaker gate already
+                // applies one branch up - *"Nobody said this; the record says it"* - carried to
+                // the one other place that asks how many times somebody spoke.
+                claimOutcome = AAO_Accumulate.CORROBORATED;
+                if (r.candidateOutcome == null) {
+                    r.candidateOutcome = AAO_Accumulate.CORROBORATED;
+                }
+                r.note = 'Corroborated: this rests on records rather than words, so it confirms ' +
+                    'what stands without being a second time anybody said it. The claim stands ' +
+                    'and cites its rows; the reinforcement count does not move.';
             } else if (AAO_Accumulate.intersectsStanding(existing.AAO_Spans__c, cand.AAO_Spans__c)) {
                 claimOutcome = AAO_Accumulate.CORROBORATED;
                 if (r.candidateOutcome == null) {

@@ -168,7 +168,31 @@ public class AAO_ProcessContracts {
                 AAO_Requires_Ratification__c = el.basis == 'Inferred_Pending',
                 AAO_Rubric_Version__c = AAO_PassContracts.RUBRIC_VERSION,
                 AAO_Content_Hash__c = hash,
-                AAO_Contract_Key__c = AAO_ContractKey.compose(code, hash),
+                // **THE KEY IS NOT SET HERE AT ALL, and it never should have been.**
+                //
+                // `AAO_EvidenceContractTrigger` composes it unconditionally in before-insert
+                // from `AAO_Question_Record_Id__c`, which is set two lines up, so this line was
+                // overwritten the moment the row hit the org. `AAO_Discovery` has always relied
+                // on the trigger and set nothing; this path set it too, which is the same rule
+                // implemented twice - and the twenty-eighth stamp's answer to that is one
+                // implementation, always.
+                //
+                // The second implementation was not merely redundant, it was the one that could
+                // break: it passed the CODE where `AAO_ContractKey.compose` names its parameter
+                // `questionRecordId` and refuses anything over 18 characters. That worked only
+                // because our fifteen BANT codes are short. `ALTF__AltifyId__c` on a DISCOVERED
+                // question is whatever the customer's rubric carries, and a nineteen-character
+                // one would have thrown here, in the caller, before the trigger it duplicates
+                // could compose the correct key from the record id sitting right beside it.
+                //
+                // LAW #1's shape one more time, and I reported the symptom as an "18-character
+                // proposition-code ceiling" before reading the mechanism. There is no such
+                // ceiling on a discovered contract. There was a caller doing the trigger's job
+                // badly.
+                //
+                // Nothing migrates: the trigger already wrote every standing key from the record
+                // id, so removing this line changes no row and corrects no data. It removes a
+                // throw that would have fired in someone else's org.
                 AAO_Synthetic__c = AAO_Synthetic.MARK
             ));
         }

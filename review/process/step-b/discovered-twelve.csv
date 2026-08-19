@@ -1,0 +1,13 @@
+AAO_Proposition_Code__c,AAO_Rubric_Version__c,AAO_Contract_State__c,AAO_Family__c,AAO_Route__c,AAO_Element_Count__c,AAO_Elements_Basis__c,AAO_Requires_Ratification__c,AAO_Proposition_Short__c,AAO_Question_Record_Id__c,CreatedDate
+AAO_T1,discovered-v1,Derived,,E,3,Authored,false,Budget Confirmed,a0aWD00000QamjuYAB,2026-07-31T20:57:01.000+0000
+AAO_T2,discovered-v1,Derived,,P,1,Authored,false,Decision Team Identified,a0aWD00000QamjvYAB,2026-07-31T20:57:01.000+0000
+AAO_T3,discovered-v1,Derived,,C,2,Authored,false,Competitive Position Understood,a0aWD00000QamjwYAB,2026-07-31T20:57:01.000+0000
+AAO_T4,discovered-v1,Derived,,P,2,Authored,false,Success Criteria Captured Per Decision Maker,a0aWD00000QamjxYAB,2026-07-31T20:57:01.000+0000
+AAO_T5,discovered-v1,Awaiting_Ratification,,P,1,Inferred_Pending,true,Implementation Timeline Agreed,a0aWD00000QamjyYAB,2026-07-31T20:57:01.000+0000
+AAO_T6,discovered-v1,Derived,,C,2,Authored,false,Reference Customer Discussed,a0aWD00000QamjzYAB,2026-07-31T20:57:01.000+0000
+AAO_T1,mini-0.1.0,Ratified,,E,3,Authored,false,Budget Confirmed,AAO_T1,2026-07-31T13:46:29.000+0000
+AAO_T2,mini-0.1.0,Ratified,,P,1,Authored,false,Decision Team Identified,AAO_T2,2026-07-31T13:46:29.000+0000
+AAO_T3,mini-0.1.0,Ratified,,C,2,Authored,false,Competitive Position Understood,AAO_T3,2026-07-31T13:46:29.000+0000
+AAO_T4,mini-0.1.0,Ratified,,C,2,Authored,false,Success Criteria Captured Per Decision Maker,AAO_T4,2026-07-31T13:46:29.000+0000
+AAO_T5,mini-0.1.0,Awaiting_Ratification,,E,2,Inferred_Pending,true,Implementation Timeline Agreed,AAO_T5,2026-07-31T13:46:29.000+0000
+AAO_T6,mini-0.1.0,Ratified,,E,2,Authored,false,Reference Customer Discussed,AAO_T6,2026-07-31T13:46:29.000+0000

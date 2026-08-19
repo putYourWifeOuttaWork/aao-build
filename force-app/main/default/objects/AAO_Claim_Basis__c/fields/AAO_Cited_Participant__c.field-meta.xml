@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Cited_Participant__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Written by: the computed catalog. Read by: the live record, for the current-state half of the then-and-now subquery. The participant row IS the record of a person having been in a conversation, so a computed claim about participation cites it rather than citing the Source, which would say the conversation happened without saying who was in it.</description>
+    <label>Cited Participant</label>
+    <referenceTo>AAO_Participant__c</referenceTo>
+    <relationshipLabel>AAO Claim Bases</relationshipLabel>
+    <relationshipName>AAO_Claim_Bases</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

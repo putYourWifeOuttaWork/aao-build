@@ -118,6 +118,8 @@ public with sharing class AAO_Receipt {
     public static final String STAGE_IDENTIFY_MODEL = 'resolution model leg';
     public static final String STAGE_VERIFY = 'call 3 verify';
     public static final String STAGE_JOIN = 'join';
+    /** The computed plane. Zero callouts by construction, so its leg reads `n/a` for cache. */
+    public static final String STAGE_COMPUTE = 'computed catalog';
     public static final String STAGE_PROJECT = 'projection';
     public static final String STAGE_CARDS = 'cards';
 
@@ -151,7 +153,22 @@ public with sharing class AAO_Receipt {
             leg.stage = stage;
             leg.at = System.now();
             leg.wallMs = 0;
-            leg.callouts = 0;
+            // **NOT ZERO. THE PLATFORM'S OWN COUNTER.** The 127th stamp found RCPT-00000051
+            // reporting `callouts: 0` on a stage whose own error text described two call-0
+            // attempts, and asked which it was: a counter that fails to increment, or
+            // something else. It was something else, and the something else is this line.
+            // `summarise` counts the StageResults a stage HANDS BACK, and a stage that throws
+            // hands back nothing - its results die in its own frame. So the failure leg had no
+            // count to report and the zero-fill above filled it with a lie, while every
+            // numeric beside it was read from `Limits` and told the truth. A callout that is
+            // not counted is a callout that cannot be measured, and R1's whole self-measuring
+            // premise is that every leg prices its own wall.
+            //
+            // Transaction-scoped, which is right in both directions: in `AAO_PassQueueable`'s
+            // catch this is the dead stage's own transaction and reads what it truly spent; in
+            // the R3 finalizer it is the finalizer's transaction and reads zero, which is the
+            // truth there and matches the leg's own annotation about whose numbers these are.
+            leg.callouts = Limits.getCallouts();
             leg.worstCalloutMs = 0;
             leg.splits = 0;
             leg.produced = 0;

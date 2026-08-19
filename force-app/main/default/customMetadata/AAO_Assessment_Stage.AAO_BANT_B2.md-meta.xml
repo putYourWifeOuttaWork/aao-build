@@ -3,6 +3,10 @@
     <label>The budget amount or range is known</label>
     <protected>false</protected>
     <values>
+        <field>AAO_Computed_Predicate__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
         <field>AAO_By_Stage__c</field>
         <value xsi:type="xsd:double">3.0</value>
     </values>

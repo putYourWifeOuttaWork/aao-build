@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Org_Override__c</fullName>
+    <description>THE ORG&apos;S OWN ANSWER, and it wins whenever it is set. Blank means the shipped default stands. A separate field rather than an edit to the default, so that what WE shipped and what the CUSTOMER decided stay legible as two different facts - the same reason AAO_Setting__mdt and AAO_People_Question__mdt keep theirs apart, and the reason an org that upgrades does not silently lose its own decision.</description>
+    <externalId>false</externalId>
+    <fieldManageability>SubscriberControlled</fieldManageability>
+    <label>Org Override</label>
+    <precision>3</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

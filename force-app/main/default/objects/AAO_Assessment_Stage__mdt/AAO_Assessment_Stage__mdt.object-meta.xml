@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>THE BY-STAGE MARKER - when an unanswered deal-killer becomes a red flag. Ruled at the hundred-twentieth: a VOICED NO is an establishment cited to the customer&apos;s words and reds immediately at any stage; NEVER ESTABLISHED is absence, and absence is not evidence, so it reds only once process state says it should have been known by now. Unknown budget at stage 1 is quiet and lawful; unknown budget at stage 4 is a deal-killer reading &quot;unknown past stage&quot;. One row per question code, seeded by us and ORG-OVERRIDABLE - the same shape the seventy-seventh ruled for the buyer-role ranks. IT IS NOT THE VENDOR&apos;S STAGE GATE: ALTF__Qualification__c gates STAGE MOVEMENT on qualifier completion, which is the vendor&apos;s job; this gates RED-FLAG TIMING on assessment questions. Two gates, two jobs (122nd, item 2).</description>
+    <label>AAO Assessment Stage</label>
+    <pluralLabel>AAO Assessment Stages</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

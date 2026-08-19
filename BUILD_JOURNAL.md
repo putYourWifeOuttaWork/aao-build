@@ -1547,3 +1547,46 @@ be GRANTED either (the 90th's finding from the other side); a custom object's de
 
 **Suite 539, 538 passing**, the only failure the standing non-AAO `ConvertToOpportunityTest`.
 Proved on STAGE A only. Demo deal and Wells Fargo untouched. No graded run, so no row export owed.
+
+---
+
+## 19 August · the Process seeds (123rd stamp item 2)
+
+**Fifteen, not sixteen.** N2 opened to the human-established path, N4 reworded to alignment
+confirmed by the customer, T3 dropped by the inversion law's own bar and seeded instead as ONE
+global qualifier on TWO late stages (`Mutual close planning on Propose + Commit`, read back from
+the org). Every question carries elements, because `AAO_PassContracts` refuses a zero-element
+contract at mint and a question seeded without them would be written in and then lawfully refused.
+
+**In the org, read back rather than reported:** 15 questions, 15 by-stage markers, 1 process,
+5 stages, 5 process stages, 14 global qualifiers, 15 junctions, plan-type code string 179 of 255.
+Untouched: the 10 plan types already configured, `AAO_Discovery`'s 6 questions, WF at 90 claims.
+Idempotent across three runs by READ-BEFORE-WRITE, not by catching a duplicate.
+
+**THE INSTRUCTION I COULD NOT CARRY OUT.** The 122nd ruled the eight forecasting fields "COPY
+VERBATIM FROM THE PROD CAPTURE" because "the capture already carries working values". **It does
+not** - it carries definitions, help text, five process names with versions, and exactly one
+sample row (the junction). The stage structure is absent too. So every number is the vendor's own
+captured help text quoted at the line that uses it (`Final_Stage_Probability` 100 "usually 100%",
+`Closure_Duration` 0 "can be zero", Pebble 25,000 "one quarter", Rock 400,000 "four times"), or
+marked NO GUIDANCE (Pebble/Rock percent, Threshold, stage Amber/Green).
+
+**The org corrected the first reading:** `Only 0-100% is valid: [ALTF__Rock_Percentage__c]` - so
+those are genuine percentages, not multipliers, and the value fields' guidance does not carry
+across. Both now sit at the process threshold: deal size introduces no differentiation, which is
+the one stance a seed can defend.
+
+**Two gates built as two things:** `ALTF__Qualification__c` (20/40/60/75/90) gates STAGE MOVEMENT,
+the vendor's job; `AAO_Assessment_Stage__mdt.AAO_By_Stage__c` gates RED-FLAG TIMING, ours -
+B1/A1/N1/T1 at stage 2, deeper items at 3, T4 at 4. `ALTF__Mandatory__c` left false on all
+fifteen. A missing marker is null and NEVER stage zero.
+
+**Lesson re-learned in one run:** `LIKE` over our own keys failed three tests at once - the
+underscore is a SOQL wildcard, which `AAO_Discovery` already wrote down. Every query now asks by
+exact key set; `questionCodes()` and `seedKeys()` exist so nothing pattern-matches.
+
+**Not built, deliberately:** no vendor answer row, no manufactured wrapper, and the qualifier ->
+computable-predicate mapping is the Process build's, not the seed's. A tip is prose for a human
+and is not a predicate.
+
+**Suite 547, 546 passing**, the standing non-AAO failure only.

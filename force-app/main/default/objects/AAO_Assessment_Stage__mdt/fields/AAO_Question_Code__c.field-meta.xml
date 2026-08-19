@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Question_Code__c</fullName>
+    <description>The assessment question this marker belongs to, joined on ALTF__Assessment_Question__c.ALTF__AltifyId__c - the field the org itself treats as the question&apos;s identity and the one AAO_Discovery already upserts on. Keyed to the CODE and never to the question text, because the text is the org&apos;s to rewrite and a marker keyed to a sentence would come loose the first time somebody edited it.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Question Code</label>
+    <length>40</length>
+    <required>true</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

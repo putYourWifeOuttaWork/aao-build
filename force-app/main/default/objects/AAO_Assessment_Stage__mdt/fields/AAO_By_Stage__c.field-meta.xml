@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_By_Stage__c</fullName>
+    <description>OUR SHIPPED DEFAULT: the stage sort order by which this question should have been answered. An unestablished question at or past this stage raises the red flag with the reason &quot;unknown past stage&quot;; before it, blank is lawful and quiet and nothing fires. Sort order rather than a stage name, because a stage NAME is the org&apos;s to write and would be the seventy-sixth stamp&apos;s label hazard on a third object.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>By Stage</label>
+    <precision>3</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

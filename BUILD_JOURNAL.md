@@ -1628,3 +1628,49 @@ never wrote. Values move both directions, which is what never-overwrite-with-a-b
 
 **The supersession mechanism fired on a live accruing deal for the first time** — 2 answers per
 run, participant-keyed rows pointing at their Contact-keyed canonical.
+
+---
+
+## 19 August · the acquisition door closes (125th item 3, 126th item 2)
+
+**My first fix failed its own proof, and the failure is the useful part.** I implemented the rule
+minus one word - the winner read the enrolled-waiting set and yielded to any earlier conversation -
+and the targeted run produced `yield-c3 -> yield-c1 -> yield-c2`: **call 3 still went first.** Three
+calls arriving together enter in CONCURRENT transactions, so the winner's acquire commits before
+the losers' WAIT rows do and it reads an empty set. Design's wording was "**re-enqueue, not
+proceed**", and the re-enqueue was the load-bearing half. That run's order is the whole diagnosis
+in one line: unordered acquisition, then a correctly ordered drain behind it.
+
+**The settle:** at the chain's start the winner spends one transaction doing nothing at all - no
+callout, no tokens, no DML - so concurrent arrivals have somewhere to land, and asks afterwards.
+
+**PROOF PASSED**, three sources enqueued newest-first at an idle deal:
+
+```
+enqueued  yield2-c3 (19:32), yield2-c2 (19:09), yield2-c1 (18:24)
+first holder  yield2-c1, no receipt yet — the yield happened before any callout
+ran       yield2-c1 -> yield2-c2 -> yield2-c3
+residue   0 lease rows after drain
+```
+
+**The proof run carried ONE error leg and it is not this fix:** `yield2-c3` met the known call-0
+cold-flake - "answered yes to OPPORTUNITY content and quoted nothing", twice - and the 34th
+stamp's retry policy stopped the run rather than routing on an unchecked scope. Reported rather
+than filed, because a proof run with a leg has to say so.
+
+**And it proved what two clean runs could not:** a genuine mid-run stop exercised the release path
+for the first time - failure journalled AND lease handed back, zero residue. R3 and R5 on a real
+failure rather than a probe.
+
+**It is ordering, not a lock.** Arrivals more than a transaction apart are ordered; simultaneous
+ones are narrowed, not eliminated. Sealing needs `FOR UPDATE`, refused at the 124th. With no
+queueable slot to settle with, the run proceeds unordered - a deal that stops adjudicating is
+worse than imperfect write order, and replay is order-independent regardless.
+
+**Design note:** `yieldToEarlier` hands the deal over, and handing over WAKES the next run, which a
+test transaction may not do. So the decision has its own name, `earlierIsWaiting`, asserted by the
+suite while the full path is proved at the runtime. Same split as `nextWaiter`.
+
+**Operational fact:** a queueable class cannot be redeployed while its own jobs are in flight.
+
+**Suite 550, 549 passing**, the standing non-AAO failure only.

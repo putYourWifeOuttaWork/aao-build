@@ -63,11 +63,21 @@ public class AAO_PassQueueable implements Queueable, Database.AllowsCallouts {
      * lease it once held was given back by that death's own finalizer.
      */
     private final Boolean isEntry;
+    /**
+     * TRUE once this chain has spent a transaction letting concurrent arrivals enrol.
+     *
+     * The hundred-twenty-fifth's wording is "**re-enqueue, not proceed**", and the re-enqueue is
+     * the load-bearing half. The first cut read the waiting set straight after acquiring and
+     * yielded to nobody, because the losers had not committed their WAIT rows yet - proved on the
+     * first targeted run, where call 3 still went first. A settle costs one transaction and no
+     * callout, and it is what turns a read of the waiting set into a read of a set that exists.
+     */
+    private final Boolean settled;
 
     private static final Integer MAX_PASSES_PER_STAGE = 12;
 
     public AAO_PassQueueable(Id sourceId, String runKey) {
-        this(sourceId, runKey, S_RESOLVE, 0, true);
+        this(sourceId, runKey, S_RESOLVE, 0, true, false);
     }
 
     /**
@@ -83,7 +93,7 @@ public class AAO_PassQueueable implements Queueable, Database.AllowsCallouts {
      * the remaining work in a continuation, never redo.
      */
     public static void resumeAt(Id sourceId, String runKey, String stage) {
-        System.enqueueJob(new AAO_PassQueueable(sourceId, runKey, stage, 0, true));
+        System.enqueueJob(new AAO_PassQueueable(sourceId, runKey, stage, 0, true, false));
     }
 
     /**
@@ -133,13 +143,15 @@ public class AAO_PassQueueable implements Queueable, Database.AllowsCallouts {
         String runKey,
         String stage,
         Integer pass,
-        Boolean isEntry
+        Boolean isEntry,
+        Boolean settled
     ) {
         this.sourceId = sourceId;
         this.runKey = runKey;
         this.stage = stage;
         this.pass = pass;
         this.isEntry = isEntry;
+        this.settled = settled;
     }
 
     public void execute(QueueableContext ctx) {
@@ -195,8 +207,40 @@ public class AAO_PassQueueable implements Queueable, Database.AllowsCallouts {
                 AAO_RunLease.releaseAndDrain(oppId, runKey);
                 return;
             }
-            System.enqueueJob(new AAO_PassQueueable(sourceId, runKey, stage, pass, false));
+            System.enqueueJob(
+                new AAO_PassQueueable(sourceId, runKey, stage, pass, false, settled)
+            );
             return;
+        }
+
+        // ===== BEFORE ANY WORK IS DONE, SETTLE, THEN GIVE WAY TO AN EARLIER CONVERSATION.
+        //
+        // The hundred-twenty-fifth's item 3, in its own words: "at acquisition on an idle deal,
+        // the winner reads the enrolled-waiting set and YIELDS to any earlier-occurred
+        // conversation - **re-enqueue, not proceed**".
+        //
+        // **THE RE-ENQUEUE COMES FIRST AND IT IS NOT CEREMONY.** Three calls arriving together
+        // enter in three concurrent transactions; the winner's acquire commits before the losers'
+        // WAIT rows do, so a winner that reads the waiting set immediately reads an empty one and
+        // yields to nobody. That is not a hypothesis - it is what the first targeted run did, with
+        // call 3 going first exactly as before the fix. So the winner spends one transaction
+        // doing nothing at all, which costs no callout and no model tokens, and asks afterwards.
+        //
+        // Only at the chain's very start: nothing has been spent yet, so yielding is free, and a
+        // resume entering mid-chain is continuing banked work that must never be handed away.
+        if (stage == S_RESOLVE && pass == 0) {
+            if (settled != true) {
+                if (Limits.getLimitQueueableJobs() - Limits.getQueueableJobs() >= 1) {
+                    System.enqueueJob(
+                        new AAO_PassQueueable(sourceId, runKey, stage, pass, false, true)
+                    );
+                    return;
+                }
+                // No slot to settle with. Proceeding unordered beats not running at all, and the
+                // ledger's replay is order-independent even when the board's write order is not.
+            } else if (AAO_RunLease.yieldToEarlier(oppId, sourceId, runKey, stage)) {
+                return;
+            }
         }
 
         Boolean again = false;
@@ -249,7 +293,9 @@ public class AAO_PassQueueable implements Queueable, Database.AllowsCallouts {
             AAO_RunLease.releaseAndDrain(oppId, runKey);
             return;
         }
-        System.enqueueJob(new AAO_PassQueueable(sourceId, runKey, next, nextPass, false));
+        System.enqueueJob(
+            new AAO_PassQueueable(sourceId, runKey, next, nextPass, false, true)
+        );
     }
 
     /** Runs one stage. Returns true where the SAME stage must run again in a new transaction. */

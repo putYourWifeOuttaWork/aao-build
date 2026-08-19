@@ -239,6 +239,79 @@ private class AAO_RunLeaseTest {
     }
 
     @IsTest
+    static void THEWINNERYIELDSTOANEARLIERCONVERSATION() {
+        deal();
+        Id later = src('a'.repeat(64), Datetime.newInstanceGmt(2026, 9, 30, 15, 0, 0));
+        Id earlier = src('b'.repeat(64), Datetime.newInstanceGmt(2026, 8, 1, 15, 0, 0));
+
+        // The LATER conversation won the race for an idle deal, which is arbitrary and lawful.
+        AAO_RunLease.acquire(opp.Id, later, 'run-later', AAO_PassQueueable.S_RESOLVE);
+        // The earlier one arrives and enrols behind it.
+        AAO_RunLease.acquire(opp.Id, earlier, 'run-earlier', AAO_PassQueueable.S_DONE);
+
+        // Asserted on the DECISION rather than the act: yielding hands the deal over, and
+        // handing over wakes the next run, which a test transaction may not do. The full path
+        // was proved at the runtime instead - three calls enqueued newest-first on the rehearsal
+        // deal ran c1, c2, c3.
+        Boolean yields = AAO_RunLease.earlierIsWaiting(opp.Id, later);
+
+        System.assertEquals(
+            true,
+            yields,
+            'The winner of an arbitrary race gives way before it spends anything. The hundred-' +
+            'twenty-fourth made the STANDING card the match target, so write order decides which ' +
+            'establishment is the ORIGINAL - and a later call writing first misorders provenance ' +
+            'in a way no arithmetic repairs.'
+        );
+        System.assertEquals(
+            'run-earlier',
+            AAO_RunLease.nextWaiter(opp.Id).AAO_Run_Key__c,
+            'And the run it would hand the deal to is the earlier conversation, not merely ' +
+            'somebody else.'
+        );
+    }
+
+    @IsTest
+    static void THEWINNERDOESNOTYIELDTOALATERONE() {
+        deal();
+        Id earlier = src('a'.repeat(64), Datetime.newInstanceGmt(2026, 8, 1, 15, 0, 0));
+        Id later = src('b'.repeat(64), Datetime.newInstanceGmt(2026, 9, 30, 15, 0, 0));
+
+        AAO_RunLease.acquire(opp.Id, earlier, 'run-earlier', AAO_PassQueueable.S_RESOLVE);
+        AAO_RunLease.acquire(opp.Id, later, 'run-later', AAO_PassQueueable.S_DONE);
+
+        Test.startTest();
+        Boolean yields = AAO_RunLease.earlierIsWaiting(opp.Id, earlier);
+        Test.stopTest();
+
+        System.assertEquals(
+            false,
+            yields,
+            'The other half, and the one that keeps the first honest: a rule that always yielded ' +
+            'would hand the deal back and forth forever and no call would ever run.'
+        );
+        System.assertEquals('run-earlier', AAO_RunLease.holderOf(opp.Id).AAO_Run_Key__c);
+    }
+
+    @IsTest
+    static void AYIELDNEVERFIRESWHENNOBODYISWAITING() {
+        deal();
+        Id only = src('a'.repeat(64), Datetime.newInstanceGmt(2026, 8, 1, 15, 0, 0));
+        AAO_RunLease.acquire(opp.Id, only, 'run-only', AAO_PassQueueable.S_RESOLVE);
+
+        Test.startTest();
+        Boolean yields = AAO_RunLease.earlierIsWaiting(opp.Id, only);
+        Test.stopTest();
+
+        System.assertEquals(
+            false,
+            yields,
+            'The ordinary case - one call on a quiet deal - must cost nothing and change nothing.'
+        );
+        System.assertEquals('run-only', AAO_RunLease.holderOf(opp.Id).AAO_Run_Key__c);
+    }
+
+    @IsTest
     static void ADEALWITHNOOPPORTUNITYISNEVERSERIALISED() {
         // A Source with no deal has no state a concurrent pass could corrupt, and blocking on
         // a null key would serialise every such artifact in the org against every other.

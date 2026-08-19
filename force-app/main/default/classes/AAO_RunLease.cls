@@ -196,6 +196,92 @@ public class AAO_RunLease {
     }
 
     /**
+     * THE FIRST ACQUISITION OBEYS THE SAME LAW AS THE DRAIN · ruled at the hundred-twenty-fifth.
+     *
+     * **The gap the gate exposed.** The occurred-order guarantee covered the QUEUE and not the
+     * first acquisition: three calls arriving at an idle deal race for the lease and the winner is
+     * arbitrary. Gate run A is the specimen - enqueued newest-first, call 3 won and ran first;
+     * run B, same code and same bytes, happened to fall to call 1. Two runs of one spine
+     * disagreeing about order is exactly what an unguarded race looks like.
+     *
+     * **Why it stopped being cosmetic at the hundred-twenty-fourth.** Answers were always safe
+     * (replay orders claims by evidence-occurred, so the standing state is order-independent) and
+     * the confirmation counts stay right (arithmetic over the trail). But that stamp made the
+     * STANDING CARD the match target, so **write order now decides which establishment is the
+     * ORIGINAL and which is the reinforcement** - and a later call writing first misorders
+     * provenance in a way no arithmetic repairs.
+     *
+     * **So the winner yields.** It reads the enrolled-waiting set, and if any waiter carries an
+     * earlier conversation it enrols itself, hands the deal on, and stops. Returns true where
+     * this run yielded and must not proceed.
+     *
+     * **CHECKED AT THE FIRST STAGE, NOT AT THE ACQUIRE**, and the window is the whole reason. The
+     * acquire now runs in a transaction of its own (the callout-after-DML fix), and the losers
+     * enrol during it - so by the time the chain's first stage begins, the waiting set is
+     * populated. Checking inside the acquire would read a set the losers had not written yet and
+     * yield to nobody. **It is ordering, not a lock**: two runs entering the exact same instant
+     * can still land arbitrarily, and this narrows that window rather than sealing it. Sealing it
+     * needs `FOR UPDATE`, which the hundred-twenty-fourth refused - "row lock errors are serious
+     * problems" - so best-effort ordering with no lock is the ruled shape, not a shortfall.
+     */
+    public static Boolean yieldToEarlier(
+        Id opportunityId, Id sourceId, String runKey, String stage
+    ) {
+        if (!ENABLED || opportunityId == null || sourceId == null) {
+            return false;
+        }
+        if (!earlierIsWaiting(opportunityId, sourceId)) {
+            return false;
+        }
+
+        // Enrol FIRST, then hand the deal on - in that order, so a failure between the two leaves
+        // this run queued rather than dropped. The drain then picks the earliest waiter, which is
+        // by construction not us.
+        upsert new AAO_Run_Lease__c(
+            AAO_Lease_Key__c = waitKey(opportunityId, sourceId),
+            AAO_Kind__c = WAITING,
+            AAO_Opportunity__c = opportunityId,
+            AAO_Source__c = sourceId,
+            AAO_Run_Key__c = runKey,
+            AAO_Stage__c = stage,
+            AAO_Acquired_At__c = System.now(),
+            AAO_Synthetic__c = AAO_Synthetic.MARK
+        ) AAO_Lease_Key__c;
+        releaseAndDrain(opportunityId, runKey);
+        return true;
+    }
+
+    /**
+     * THE DECISION HALF OF THE YIELD, ON ITS OWN, so it can be asserted without being acted on.
+     *
+     * `yieldToEarlier` enrols and hands the deal over, and handing over WAKES the next run - which
+     * a test transaction may not do, because a queueable run by `stopTest` cannot enqueue another.
+     * Splitting the question from the act is what lets the suite hold the ORDERING LAW to account
+     * while the end-to-end path is proved where it belongs, at the runtime. The same shape as
+     * `nextWaiter`, and for the same reason.
+     */
+    public static Boolean earlierIsWaiting(Id opportunityId, Id sourceId) {
+        AAO_Run_Lease__c next = nextWaiter(opportunityId);
+        if (next == null || next.AAO_Source__c == null || sourceId == null) {
+            return false;
+        }
+        Map<Id, Datetime> occurred = new Map<Id, Datetime>();
+        for (AAO_Source__c src : [
+            SELECT Id, AAO_Evidence_Occurred__c FROM AAO_Source__c
+            WHERE Id IN :(new Set<Id>{ sourceId, next.AAO_Source__c })
+        ]) {
+            occurred.put(src.Id, src.AAO_Evidence_Occurred__c);
+        }
+        Datetime mine = occurred.get(sourceId);
+        Datetime theirs = occurred.get(next.AAO_Source__c);
+        // NULLS FIRST, the same reading the drain uses: an artifact whose occurred time we do not
+        // know is the one we can say least about, so it is adjudicated before later calls accrue
+        // on top of it. A run with no time of its own never claims to be earlier than anyone.
+        return (theirs == null && mine != null) ||
+               (theirs != null && mine != null && theirs < mine);
+    }
+
+    /**
      * WHICH RUN GOES NEXT · THE CONVERSATION'S CLOCK, NOT THE QUEUE'S.
      *
      * Its own method because it is the ORDERING LAW and deserves to be nameable, assertable, and

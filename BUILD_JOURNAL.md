@@ -1833,3 +1833,8 @@ standing fixture that invented the code `AAO_PRB_1` in family Problems - a contr
 never have read, harmless while nothing checked meanings and a refusal the moment something did.
 The guard found it within minutes of existing. Fixture moved to a real code; the test's point is
 untouched, since the prefix ladder recognises `AAO_PB_GOAL` no better than the invented one.
+
+**Then the async lane unwedged and ran it again against the shipped code: suite 560, 559 passing,
+the single failure the standing non-AAO `ConvertToOpportunityTest`.** Both numbers kept rather than
+one overwritten: 558 was true of the snapshot the validator took, 559 is true of what shipped, and
+the difference between them is the fixture the mute guard caught.

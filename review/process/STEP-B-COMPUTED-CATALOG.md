@@ -154,8 +154,11 @@ an hour tonight and would not start a run: **560 tests, 2 failures, and both are
   declares - is untouched. The guard found this within minutes of existing, which is the same shape
   as R4's test finding the telemetry swallow.
 
-The validation snapshot predates that fix. Re-verified synchronously afterwards: `AAO_LocateCharterTest`
-16 of 16, and 167 tests across the sixteen classes these changes touch, all passing.
+The validation snapshot predates that fix. **The async lane then unwedged and ran the full suite
+against the shipped code: 560 tests, 559 passing, and the single failure is the standing non-AAO
+`ConvertToOpportunityTest`.** Both numbers are kept because they are true of different snapshots,
+and the pair is the more useful record: the validator caught the fixture, the fix landed, the
+re-run is clean.
 
 ## 10 · Standing obligations
 

@@ -1,0 +1,24 @@
+#T gateB-c1 stages=7 totalWallMs=105425 worstCalloutMs=26729 callouts=4 cache=WARM
+#L gateB-c1|call 0 resolve|wallMs=11589|worstCalloutMs=11589|callouts=1|soql=6/200|dml=0/150|cpu=76/60000|produced=null|cache=WARM|error=|wallWarning=
+#L gateB-c1|call 1 locate read 1|wallMs=26089|worstCalloutMs=26089|callouts=1|soql=3/200|dml=1/150|cpu=83/60000|produced=18|cache=COLD|error=|wallWarning=
+#L gateB-c1|call 1 locate read 2|wallMs=19931|worstCalloutMs=19931|callouts=1|soql=3/200|dml=1/150|cpu=73/60000|produced=18|cache=WARM|error=|wallWarning=
+#L gateB-c1|call 3 verify|wallMs=26729|worstCalloutMs=26729|callouts=1|soql=4/200|dml=1/150|cpu=142/60000|produced=22|cache=COLD|error=|wallWarning=
+#L gateB-c1|join|wallMs=1705|worstCalloutMs=0|callouts=0|soql=50/200|dml=24/150|cpu=597/60000|produced=16|cache=n/a|error=|wallWarning=
+#L gateB-c1|projection|wallMs=1336|worstCalloutMs=0|callouts=0|soql=23/200|dml=8/150|cpu=681/60000|produced=13|cache=n/a|error=|wallWarning=
+#L gateB-c1|cards|wallMs=18046|worstCalloutMs=0|callouts=0|soql=13/200|dml=10/150|cpu=1059/60000|produced=7|cache=n/a|error=|wallWarning=
+#T gateB-c2 stages=7 totalWallMs=112666 worstCalloutMs=33506 callouts=4 cache=WARM
+#L gateB-c2|call 0 resolve|wallMs=5710|worstCalloutMs=5710|callouts=1|soql=6/200|dml=0/150|cpu=56/60000|produced=null|cache=WARM|error=|wallWarning=
+#L gateB-c2|call 1 locate read 1|wallMs=25716|worstCalloutMs=25716|callouts=1|soql=3/200|dml=1/150|cpu=92/60000|produced=24|cache=COLD|error=|wallWarning=
+#L gateB-c2|call 1 locate read 2|wallMs=16576|worstCalloutMs=16576|callouts=1|soql=3/200|dml=0/150|cpu=40/60000|produced=0|cache=WARM|error=|wallWarning=
+#L gateB-c2|call 3 verify|wallMs=33506|worstCalloutMs=33506|callouts=1|soql=4/200|dml=1/150|cpu=147/60000|produced=24|cache=COLD|error=|wallWarning=
+#L gateB-c2|join|wallMs=1711|worstCalloutMs=0|callouts=0|soql=51/200|dml=23/150|cpu=608/60000|produced=16|cache=n/a|error=|wallWarning=
+#L gateB-c2|projection|wallMs=2147|worstCalloutMs=0|callouts=0|soql=47/200|dml=22/150|cpu=895/60000|produced=19|cache=n/a|error=|wallWarning=
+#L gateB-c2|cards|wallMs=27300|worstCalloutMs=0|callouts=0|soql=13/200|dml=10/150|cpu=1035/60000|produced=12|cache=n/a|error=|wallWarning=
+#T gateB-c3 stages=7 totalWallMs=116867 worstCalloutMs=33048 callouts=4 cache=WARM
+#L gateB-c3|call 0 resolve|wallMs=4952|worstCalloutMs=4952|callouts=1|soql=6/200|dml=0/150|cpu=48/60000|produced=null|cache=WARM|error=|wallWarning=
+#L gateB-c3|call 1 locate read 1|wallMs=21354|worstCalloutMs=21354|callouts=1|soql=3/200|dml=1/150|cpu=74/60000|produced=20|cache=COLD|error=|wallWarning=
+#L gateB-c3|call 1 locate read 2|wallMs=20211|worstCalloutMs=20211|callouts=1|soql=3/200|dml=1/150|cpu=86/60000|produced=18|cache=WARM|error=|wallWarning=
+#L gateB-c3|call 3 verify|wallMs=33048|worstCalloutMs=33048|callouts=1|soql=4/200|dml=1/150|cpu=142/60000|produced=23|cache=COLD|error=|wallWarning=
+#L gateB-c3|join|wallMs=2227|worstCalloutMs=0|callouts=0|soql=53/200|dml=25/150|cpu=560/60000|produced=18|cache=n/a|error=|wallWarning=
+#L gateB-c3|projection|wallMs=1586|worstCalloutMs=0|callouts=0|soql=41/200|dml=18/150|cpu=609/60000|produced=26|cache=n/a|error=|wallWarning=
+#L gateB-c3|cards|wallMs=33489|worstCalloutMs=0|callouts=0|soql=13/200|dml=10/150|cpu=914/60000|produced=14|cache=n/a|error=|wallWarning=

@@ -1,0 +1,53 @@
+Name,AAO_Source__r.AAO_Meeting_Title__c,AAO_Evidence_Contract__r.AAO_Proposition_Code__c,AAO_Subject_Type__c,AAO_Participant__r.AAO_Display_Name__c,AAO_Verdict_Before__c,AAO_Verdict_After__c,AAO_Outcome__c,AAO_Basis__c,AAO_Evidence_Occurred__c,AAO_Retired__c
+CLM-00001142,"Brightwell — discovery, call 1",AAO_PB_OBST,Participant,Dana Okafor,,TRUE,Established,Transcript,2026-08-18T18:24:58.000+0000,false
+CLM-00001143,"Brightwell — discovery, call 1",AAO_BR_EVAL,Participant,Raj Patel,,TRUE,Established,Transcript,2026-08-18T18:24:58.000+0000,false
+CLM-00001144,"Brightwell — discovery, call 1",AAO_PB_GOAL,Participant,Raj Patel,,TRUE,Established,Transcript,2026-08-18T18:24:58.000+0000,false
+CLM-00001145,"Brightwell — discovery, call 1",AAO_POL_PS1,Participant,Raj Patel,,TRUE,Established,Transcript,2026-08-18T18:24:58.000+0000,false
+CLM-00001146,"Brightwell — discovery, call 1",AAO_PS_1,Participant,Marcus Reyes,TRUE,TRUE,Reinforced,Transcript,2026-08-18T18:24:58.000+0000,false
+CLM-00001147,"Brightwell — discovery, call 1",AAO_PB_OBST,Participant,Marcus Reyes,,TRUE,Established,Transcript,2026-08-18T18:24:58.000+0000,false
+CLM-00001148,"Brightwell — discovery, call 1",AAO_PB_GOAL,Participant,Dana Okafor,TRUE,TRUE,Reinforced,Transcript,2026-08-18T18:24:58.000+0000,false
+CLM-00001149,"Brightwell — discovery, call 1",AAO_PB_PRESS,Participant,Dana Okafor,,TRUE,Established,Transcript,2026-08-18T18:24:58.000+0000,false
+CLM-00001150,"Brightwell — discovery, call 1",AAO_PB_INIT,Participant,Raj Patel,,TRUE,Established,Transcript,2026-08-18T18:24:58.000+0000,false
+CLM-00001151,"Brightwell — discovery, call 1",AAO_PB_OBST,Participant,Raj Patel,,TRUE,Established,Transcript,2026-08-18T18:24:58.000+0000,false
+CLM-00001152,"Brightwell — discovery, call 1",AAO_DC_N,Decision_Criterion,Raj Patel,,TRUE,Established,Transcript,2026-08-18T18:24:58.000+0000,false
+CLM-00001153,"Brightwell — discovery, call 1",AAO_DC_R,Decision_Criterion,Raj Patel,,TRUE,Established,Transcript,2026-08-18T18:24:58.000+0000,false
+CLM-00001154,"Brightwell — discovery, call 1",AAO_BR_EVAL,Participant,Marcus Reyes,,TRUE,Established,Transcript,2026-08-18T18:24:58.000+0000,false
+CLM-00001155,"Brightwell — discovery, call 1",AAO_PB_GOAL,Participant,Marcus Reyes,,TRUE,Established,Transcript,2026-08-18T18:24:58.000+0000,false
+CLM-00001156,"Brightwell — discovery, call 1",AAO_DC_N,Decision_Criterion,Marcus Reyes,,TRUE,Established,Transcript,2026-08-18T18:24:58.000+0000,false
+CLM-00001157,"Brightwell — discovery, call 1",AAO_PS_1,Participant,Dana Okafor,TRUE,TRUE,Reinforced,Transcript,2026-08-18T18:24:58.000+0000,false
+CLM-00001158,"Brightwell — technical eval, call 2",AAO_BR_SIG,Participant,Karen Lindqvist,,TRUE,Established,Transcript,2026-08-18T19:09:44.000+0000,false
+CLM-00001159,"Brightwell — technical eval, call 2",AAO_PS_1,Participant,Raj Patel,,TRUE,Established,Transcript,2026-08-18T19:09:44.000+0000,false
+CLM-00001160,"Brightwell — technical eval, call 2",AAO_DC_N,Decision_Criterion,Raj Patel,,TRUE,Established,Transcript,2026-08-18T19:09:44.000+0000,false
+CLM-00001161,"Brightwell — technical eval, call 2",AAO_DC_R,Decision_Criterion,Raj Patel,,TRUE,Established,Transcript,2026-08-18T19:09:44.000+0000,false
+CLM-00001162,"Brightwell — technical eval, call 2",AAO_PB_OBST,Participant,Raj Patel,TRUE,TRUE,Reinforced,Transcript,2026-08-18T19:09:44.000+0000,false
+CLM-00001163,"Brightwell — technical eval, call 2",AAO_PB_OBST,Participant,Priya Nair,,TRUE,Established,Transcript,2026-08-18T19:09:44.000+0000,false
+CLM-00001164,"Brightwell — technical eval, call 2",AAO_PB_OBST,Participant,Priya Nair,TRUE,TRUE,Reinforced,Transcript,2026-08-18T19:09:44.000+0000,false
+CLM-00001165,"Brightwell — technical eval, call 2",AAO_DC_N,Decision_Criterion,Priya Nair,,TRUE,Established,Transcript,2026-08-18T19:09:44.000+0000,false
+CLM-00001166,"Brightwell — technical eval, call 2",AAO_BR_EVAL,Participant,Priya Nair,,TRUE,Established,Transcript,2026-08-18T19:09:44.000+0000,false
+CLM-00001167,"Brightwell — technical eval, call 2",AAO_BR_APP,Participant,Karen Lindqvist,,TRUE,Established,Transcript,2026-08-18T19:09:44.000+0000,false
+CLM-00001168,"Brightwell — technical eval, call 2",AAO_PS_1,Participant,Priya Nair,,TRUE,Established,Transcript,2026-08-18T19:09:44.000+0000,false
+CLM-00001169,"Brightwell — technical eval, call 2",AAO_BR_EVAL,Participant,Priya Nair,TRUE,TRUE,Reinforced,Transcript,2026-08-18T19:09:44.000+0000,false
+CLM-00001170,"Brightwell — technical eval, call 2",AAO_PS_1,Participant,Marcus,TRUE,UNVERIFIED,Downgraded,Transcript,2026-08-18T19:09:44.000+0000,false
+CLM-00001171,"Brightwell — technical eval, call 2",AAO_BR_EVAL,Participant,Karen Lindqvist,,TRUE,Established,Transcript,2026-08-18T19:09:44.000+0000,false
+CLM-00001172,"Brightwell — technical eval, call 2",AAO_DC_N,Decision_Criterion,Karen Lindqvist,,TRUE,Established,Transcript,2026-08-18T19:09:44.000+0000,false
+CLM-00001173,"Brightwell — technical eval, call 2",AAO_PB_OBST,Participant,Karen Lindqvist,,TRUE,Established,Transcript,2026-08-18T19:09:44.000+0000,false
+CLM-00001174,"Brightwell — technical eval, call 2",AAO_PS_1,Participant,Dana Okafor,TRUE,TRUE,Reinforced,Transcript,2026-08-18T19:09:44.000+0000,false
+CLM-00001175,"Brightwell — technical eval, call 2",AAO_PS_1,Participant,Priya Nair,TRUE,TRUE,Corroborated,Transcript,2026-08-18T19:09:44.000+0000,false
+CLM-00001176,"Brightwell — technical eval, call 2",AAO_DC_N,Decision_Criterion,Karen Lindqvist,,TRUE,Established,Transcript,2026-08-18T19:09:44.000+0000,false
+CLM-00001177,"Brightwell — technical eval, call 2",AAO_PB_PRESS,Participant,Karen Lindqvist,,TRUE,Established,Transcript,2026-08-18T19:09:44.000+0000,false
+CLM-00001126,"Brightwell — decision, call 3",AAO_DC_N,Decision_Criterion,Tomas Reyes,,TRUE,Established,Transcript,2026-08-18T19:32:41.000+0000,false
+CLM-00001127,"Brightwell — decision, call 3",AAO_DC_N,Decision_Criterion,Karen Lindqvist,,TRUE,Established,Transcript,2026-08-18T19:32:41.000+0000,false
+CLM-00001128,"Brightwell — decision, call 3",AAO_POL_IC2,Participant,Karen Lindqvist,,TRUE,Established,Transcript,2026-08-18T19:32:41.000+0000,false
+CLM-00001129,"Brightwell — decision, call 3",AAO_PS_1,Participant,Marcus Reyes,,TRUE,Established,Transcript,2026-08-18T19:32:41.000+0000,false
+CLM-00001130,"Brightwell — decision, call 3",AAO_DC_N,Decision_Criterion,Marcus Reyes,,TRUE,Established,Transcript,2026-08-18T19:32:41.000+0000,false
+CLM-00001131,"Brightwell — decision, call 3",AAO_PB_INIT,Participant,Dana Okafor,,TRUE,Established,Transcript,2026-08-18T19:32:41.000+0000,false
+CLM-00001132,"Brightwell — decision, call 3",AAO_BR_EVAL,Participant,Tomas Reyes,,TRUE,Established,Transcript,2026-08-18T19:32:41.000+0000,false
+CLM-00001133,"Brightwell — decision, call 3",AAO_BR_APP,Participant,Tomas Reyes,,TRUE,Established,Transcript,2026-08-18T19:32:41.000+0000,false
+CLM-00001134,"Brightwell — decision, call 3",AAO_PS_1,Participant,Tomas Reyes,,TRUE,Established,Transcript,2026-08-18T19:32:41.000+0000,false
+CLM-00001135,"Brightwell — decision, call 3",AAO_PB_GOAL,Participant,Dana Okafor,,TRUE,Established,Transcript,2026-08-18T19:32:41.000+0000,false
+CLM-00001136,"Brightwell — decision, call 3",AAO_BR_EVAL,Participant,Karen Lindqvist,,TRUE,Established,Transcript,2026-08-18T19:32:41.000+0000,false
+CLM-00001137,"Brightwell — decision, call 3",AAO_PS_1,Participant,Karen Lindqvist,,TRUE,Established,Transcript,2026-08-18T19:32:41.000+0000,false
+CLM-00001138,"Brightwell — decision, call 3",AAO_BR_APP,Participant,Karen Lindqvist,,TRUE,Established,Transcript,2026-08-18T19:32:41.000+0000,false
+CLM-00001139,"Brightwell — decision, call 3",AAO_BR_DM,Participant,Karen Lindqvist,,TRUE,Established,Transcript,2026-08-18T19:32:41.000+0000,false
+CLM-00001140,"Brightwell — decision, call 3",AAO_PB_INIT,Participant,Karen Lindqvist,,TRUE,Established,Transcript,2026-08-18T19:32:41.000+0000,false
+CLM-00001141,"Brightwell — decision, call 3",AAO_PS_1,Participant,Dana Okafor,,TRUE,Established,Transcript,2026-08-18T19:32:41.000+0000,false

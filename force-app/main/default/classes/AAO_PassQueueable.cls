@@ -166,11 +166,36 @@ public class AAO_PassQueueable implements Queueable, Database.AllowsCallouts {
 
         // ===== THE DEAL IS TAKEN, OR THIS RUN QUEUES BEHIND WHOEVER HAS IT.
         //
-        // R5. Returning here is not a failure and journals nothing: the run is enrolled, and the
-        // holder's release will wake it in evidence-occurred order. Marking a failure leg for a
-        // lawful wait would put a red stage on the process bar for a run that is doing exactly
-        // what it should, so the surface asks the lease instead of reading the receipt.
-        if (isEntry == true && !AAO_RunLease.acquire(oppId, sourceId, runKey, stage)) {
+        // R5. Returning on contention is not a failure and journals nothing: the run is enrolled,
+        // and the holder's release will wake it in evidence-occurred order. Marking a failure leg
+        // for a lawful wait would put a red stage on the process bar for a run doing exactly what
+        // it should, so the surface asks the lease instead of reading the receipt.
+        //
+        // **THE ACQUIRE GETS A TRANSACTION OF ITS OWN, AND THAT IS NOT TIDINESS.** Taking the
+        // lease is DML, and every stage behind it makes a callout - and Apex forbids a callout
+        // after DML in the same transaction. The first gate run found this on its first attempt,
+        // on all three calls at once:
+        //
+        //     System.CalloutException: You have uncommitted work pending.
+        //     Please commit or rollback before calling out
+        //
+        // R5 was built, tested and ratified without ever standing in front of a callout, because
+        // a unit test does not make one. So the entry transaction takes the lease and does
+        // nothing else; the stage itself runs in the next one, clean. That is the same
+        // one-thing-per-transaction shape the whole chain already has, extended by one link.
+        if (isEntry == true) {
+            if (!AAO_RunLease.acquire(oppId, sourceId, runKey, stage)) {
+                return;
+            }
+            if (Limits.getLimitQueueableJobs() - Limits.getQueueableJobs() < 1) {
+                AAO_Receipt.recordFailure(
+                    runKey, sourceId, receiptNameOf(stage),
+                    'The deal lease was taken but no queueable slot was left to start the stage.'
+                );
+                AAO_RunLease.releaseAndDrain(oppId, runKey);
+                return;
+            }
+            System.enqueueJob(new AAO_PassQueueable(sourceId, runKey, stage, pass, false));
             return;
         }
 

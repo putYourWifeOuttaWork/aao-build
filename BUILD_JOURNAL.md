@@ -1590,3 +1590,41 @@ computable-predicate mapping is the Process build's, not the seed's. A tip is pr
 and is not a predicate.
 
 **Suite 547, 546 passing**, the standing non-AAO failure only.
+
+---
+
+## 19 August · THE TWO-CLEAN-RUNS GATE CLOSES (124th item 1, 125th item 2)
+
+**Timeout set to 95,000** from 120,000, per the 124th's nod — above every observed success
+(largest 82,213), below the fiction.
+
+**The failed first attempt, which is the gate paying for itself.** All three calls died at once:
+`System.CalloutException: You have uncommitted work pending`. **R5's lease does DML and every
+stage behind it calls out**; R5 was built, tested and ratified without ever standing in front of a
+callout, because a unit test makes none. Fixed by giving the acquire its own transaction. Failed
+attempt purged, not counted — the 124th's prescribed shape.
+
+**RUN A** (enqueued newest-first on purpose): c3 8 stages/113,644ms/worst 36,650 · c1 8
+stages/118,904ms/worst 34,036 · c2 7 stages/143,421ms/worst 36,035. 121 pairs, 74 verified, 53
+upheld, 52 claims, 1 upheld-no-claim (Sam Ruiz, `sam.ruiz@altify.com`, internal — the seller gate
+refusing lawfully), unverified = 45 Merged + 2 Held. 43 answers, 2 superseded, all TRUE. 16 cards,
+6 map rows. **The drain handed the deal to c1 over c2 — the earliest CONVERSATION over the earlier
+ENROLLEE.**
+
+**RUN B**: c1 7/105,425/26,729 · c2 7/112,666/33,506 · c3 7/116,867/33,048. 98 pairs, 69 verified,
+50 upheld, 50 claims, none refused at the join, 29 Merged and no Held. 42 answers, 2 superseded.
+14 cards, 6 map rows. Drained in perfect occurred order.
+
+**Both runs: 0 error legs, 0 lease residue, 0 ingest failure receipts, 0 self-marked callouts past
+budget, one-for-one HELD on all six passes.** Worst callout across both: 36,650ms = 31% of the
+120,000 ceiling and **42% of the measured ~88,000 gateway wall**. Governor peaks: SOQL 60/200, DML
+28/150, CPU 1,177/60,000 — nothing near 80%.
+
+**Replay byte-equality NOT asserted**: R6 sits behind Process, named absent rather than dropped.
+
+**The run-to-run flicker is real and is the accepted one** (57th stamp): Karen read Decision Maker
+in A and Signature Approver in B; Marcus Supporter then Neutral; Dana gained a role in B that A
+never wrote. Values move both directions, which is what never-overwrite-with-a-blank protects.
+
+**The supersession mechanism fired on a live accruing deal for the first time** — 2 answers per
+run, participant-keyed rows pointing at their Contact-keyed canonical.

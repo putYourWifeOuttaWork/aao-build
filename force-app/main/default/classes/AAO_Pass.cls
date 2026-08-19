@@ -28,6 +28,10 @@ public with sharing class AAO_Pass {
     public static LocateRun locate(Id sourceId, String runKey) {
         AAO_Source__c src = source(sourceId);
         List<AAO_Evidence_Contract__c> declared = AAO_RecallGate.declaredSet();
+        // A discovered contract's family is what tells the charter what it may voice, and the
+        // declared set is the only place that fact lives. Registered here, beside the read that
+        // needs it, rather than queried inside a per-pair loop.
+        AAO_LocateCharter.registerFamilies(declared);
         List<String> codes = new List<String>();
         Map<String, Id> idByCode = new Map<String, Id>();
         for (AAO_Evidence_Contract__c ec : declared) {
@@ -455,6 +459,10 @@ public with sharing class AAO_Pass {
         }
         AAO_Source__c src = source(sourceId);
         List<AAO_Evidence_Contract__c> declared = AAO_RecallGate.declaredSet();
+        // A discovered contract's family is what tells the charter what it may voice, and the
+        // declared set is the only place that fact lives. Registered here, beside the read that
+        // needs it, rather than queried inside a per-pair loop.
+        AAO_LocateCharter.registerFamilies(declared);
         Map<String, Id> idByCode = new Map<String, Id>();
         List<String> codes = new List<String>();
         for (AAO_Evidence_Contract__c ec : declared) {
@@ -542,6 +550,10 @@ public with sharing class AAO_Pass {
     private static SweepRun sweep(Id sourceId, String runKey, List<String> only) {
         AAO_Source__c src = source(sourceId);
         List<AAO_Evidence_Contract__c> declared = AAO_RecallGate.declaredSet();
+        // A discovered contract's family is what tells the charter what it may voice, and the
+        // declared set is the only place that fact lives. Registered here, beside the read that
+        // needs it, rather than queried inside a per-pair loop.
+        AAO_LocateCharter.registerFamilies(declared);
         Map<String, Id> idByCode = new Map<String, Id>();
         for (AAO_Evidence_Contract__c ec : declared) {
             idByCode.put(ec.AAO_Proposition_Code__c, ec.Id);

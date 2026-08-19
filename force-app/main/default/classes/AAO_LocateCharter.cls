@@ -160,6 +160,7 @@ public with sharing class AAO_LocateCharter {
     ) {
         Map<String, List<AAO_Evidence_Contract__c>> out =
             new Map<String, List<AAO_Evidence_Contract__c>>();
+        registerFamilies(declared);
         List<AAO_Evidence_Contract__c> sorted = new List<AAO_Evidence_Contract__c>(declared);
         sorted.sort(new ByCode());
         for (AAO_Evidence_Contract__c ec : sorted) {
@@ -260,9 +261,54 @@ public with sharing class AAO_LocateCharter {
      */
     private static final Set<String> NO_COVERAGE = new Set<String>{ 'AAO_PS_1' };
 
+    /**
+     * ===== THE MEANING VOCABULARY FOR A FAMILY WHOSE CODES WE CANNOT KNOW.
+     *
+     * `MEANINGS` above is keyed by CODE, and that works because those seventeen codes are ours -
+     * we authored them, so we can name what each may voice. **It cannot work for a rubric we
+     * DISCOVER.** A customer's assessment questions carry the customer's own codes, and a
+     * contract with no entry in that map has every pair parsed away and read as silence - the
+     * forty-seventh stamp's finding, which cost a whole empty Problems harvest to learn. Keyed
+     * by code, discovery can mint contracts in any org and none of them can ever say anything.
+     *
+     * **PROCESS DOES NOT NEED PER-CODE MEANINGS, and that is a property of the family rather
+     * than a workaround.** An assessment question is an INVERSION LAW (hundred-twentieth): the
+     * affirmative is what the deal needs, so the contract IS the question and the only thing left
+     * to say is WHICH WAY THE WORDS WENT. Two meanings, uniform across every question in the
+     * family, in any org, whatever the customer called it:
+     *
+     *   AFFIRMED - the words establish the condition the deal needs.
+     *   DENIED   - the words establish its negative. **A VOICED NO IS AN ESTABLISHMENT IN ITS
+     *              OWN RIGHT**, cited to the customer's words, and reds immediately at any stage.
+     *              Never-established is the third state and it is SILENCE: no pair, no row, and
+     *              the by-stage marker decides when that silence becomes a flag.
+     */
+    private static final Map<String, List<String>> FAMILY_MEANINGS =
+        new Map<String, List<String>>{
+            AAO_ApplicableSet.PROCESS => new List<String>{ 'AFFIRMED', 'DENIED' }
+        };
+
+    /**
+     * Code to family for the declared set of THIS transaction, so `meaningsFor` can fall back
+     * without a query in a per-pair loop. Populated by `families`, which is already the one
+     * place that decides a contract's family, so the two can never disagree.
+     */
+    private static final Map<String, String> FAMILY_BY_CODE = new Map<String, String>();
+
+    public static void registerFamilies(List<AAO_Evidence_Contract__c> declared) {
+        for (AAO_Evidence_Contract__c ec : declared) {
+            FAMILY_BY_CODE.put(ec.AAO_Proposition_Code__c, familyOf(ec));
+        }
+    }
+
     public static List<String> meaningsFor(String code) {
         List<String> m = MEANINGS.get(code);
-        return m == null ? new List<String>() : m;
+        if (m != null) {
+            return m;
+        }
+        // A code we did not author. Ask its family what its questions can voice.
+        List<String> byFamily = FAMILY_MEANINGS.get(FAMILY_BY_CODE.get(code));
+        return byFamily == null ? new List<String>() : byFamily;
     }
 
     /**

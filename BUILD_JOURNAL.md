@@ -1674,3 +1674,52 @@ suite while the full path is proved at the runtime. Same split as `nextWaiter`.
 **Operational fact:** a queueable class cannot be redeployed while its own jobs are in flight.
 
 **Suite 550, 549 passing**, the standing non-AAO failure only.
+
+---
+
+## 19 August · Process step (a) · the evidence plane joins the reads (126th item 3a)
+
+**The named risk did not materialise.** `stepA-c1`, Brightwell call 1: 7 stages, worst callout
+31,044ms, **0 error legs**, declared set 21 -> 36 contracts, no 400.
+
+**Harvest by family** (upheld / refused / unverified): Process 3/4/4 · Problems 5/4/4 ·
+People 6/6/9. Three Process claims written.
+
+Upheld: A3 (approval chain, Dana: "Our enablement lead, Priya. If she doesn't buy it..."),
+N1 (problem in their words, "forecast is off by around twenty percent"), N2 (quantified, "one
+point two million in slipped deals"). **N2 landed through the EVIDENCE path**, so the 123rd's
+human-entry amendment widens what can establish it rather than replacing what already could.
+
+Refused, all four discriminating: A2 on Sam Ruiz (our own seller); N2 on Marcus (a number about a
+PREVIOUS tool, not the problem quantified); N3 on the same 1.2m quote that upheld N2 (what a
+problem COSTS is not what happens if nothing changes); N4 on "I think adoption stands a chance"
+(a hope, not alignment confirmed by the customer).
+
+**Budget and Timeline harvested NOTHING** - zero pairs on B1-B4 and T1/T2/T4 - which measures the
+126th's item 4 rather than assuming it. Call 4 is the answer already in flight.
+
+**The DENIED path is built and UNEXERCISED**: every meaning came back AFFIRMED, because nobody on
+a discovery call voiced a negative. The hard red flag rests on it, so it is named untested.
+
+### The two structural things (a) had to solve
+
+**1 · MEANINGS was keyed by CODE and that breaks LAW #1.** A contract absent from the map has
+every pair parsed away as silence (47th stamp). That works only because the seventeen codes are
+ours - a DISCOVERED rubric carries the customer's codes, so every contract discovery mints in a
+real org would have been mute, permanently, in every install, and it would look exactly like a
+model finding nothing. Fixed family-level: an assessment question is an inversion law, so the
+contract IS the question and the only thing left is which way the words went - AFFIRMED / DENIED,
+uniform in any org. Verified: 36 declared, **0 mute**.
+
+**2 · The rubric version did NOT need to move.** `effectiveVersion` composes the charter version
+with a fingerprint of the declared set's contract keys, so fifteen new contracts move every
+stamped row's provenance automatically; bumping RUBRIC_VERSION would supersede 21 live People
+contracts to record what is already recorded. What remains is a misleading NAME - the string reads
+`people-p8-v1` and now covers Process. Also found: `AAO_Discovery`'s six contracts sit at
+`discovered-v1` and have therefore **never ridden the §P8 pass at all**.
+
+**Owed, named rather than half-built:** the qualifiers' evidence halves are not in the declared
+set - they live on a different object with no element blocks, a second discovery path, and adding
+it before (a) reported would have made this distribution unreadable.
+
+**Suite 550, 549 passing.**

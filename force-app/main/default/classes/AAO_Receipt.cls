@@ -92,6 +92,13 @@ public with sharing class AAO_Receipt {
          * is a new key in a JSON blob, nothing to deploy and nothing to grant.
          */
         public String error;
+        /**
+         * WHAT THE STAGE FAILED ON, bounded. The 141st's rider: a stage that can fail on the
+         * CONTENT of a response should keep the response it failed on. Truncation is marked in
+         * the text rather than silent, because a truncated response that reads as a short one
+         * is the same silent-wrong-answer shape this receipt exists to refuse.
+         */
+        public String failedResponse;
 
         /**
          * **THE WALL, MEASURED RATHER THAN INFERRED.** Null on every callout inside its budget.
@@ -166,6 +173,9 @@ public with sharing class AAO_Receipt {
      * its own failure for the standing reason telemetry always does - a driver that dies trying
      * to report a death is worse than one that dies quietly.
      */
+    @TestVisible
+    private static Integer RESPONSE_KEPT_CHARS = 4000;
+
     public static void recordFailure(String runKey, Id sourceId, String stage, String message) {
         if (!ENABLED) {
             return;
@@ -224,8 +234,21 @@ public with sharing class AAO_Receipt {
             leg.cacheReadTokens = nzi(spent.cacheReadTokens);
             leg.cacheWriteTokens = nzi(spent.cacheCreationTokens);
             leg.error = message == null ? 'unknown' : message.abbreviate(500);
+            // BOUNDED AT 4,000, and the bound is the stage array's rather than taste. Legs
+            // serialise into a 32,768-character field whose overflow guard DROPS EARLIER LEGS
+            // to make room, so an unbounded response would buy one diagnosis by destroying the
+            // history around it. Call 0's whole response is 1,024 characters and fits entire;
+            // a family read's does not, and its first 4,000 carry the keys and the shape, which
+            // is where the defect has been both times.
+            String kept = AAO_Extract.lastResponse;
+            if (String.isNotBlank(kept)) {
+                leg.failedResponse = kept.length() > RESPONSE_KEPT_CHARS
+                    ? kept.substring(0, RESPONSE_KEPT_CHARS) +
+                      '... [truncated at ' + RESPONSE_KEPT_CHARS + ' of ' + kept.length() + ']'
+                    : kept;
+            }
             mergeLeg(runKey, sourceId, leg);
-            AAO_Extract.clearLegUsage();
+            AAO_Extract.clearLegObservations();
         } catch (Exception e) {
             System.debug(LoggingLevel.WARN, 'Failure leg not journalled: ' + e.getMessage());
         }
@@ -268,7 +291,7 @@ public with sharing class AAO_Receipt {
             // anything banked before now is on the receipt already. What accrues after this
             // line belongs to whatever comes next, and if that throws, the failure leg gets
             // exactly it and nothing of this stage's.
-            AAO_Extract.clearLegUsage();
+            AAO_Extract.clearLegObservations();
             return row;
         } catch (Exception e) {
             // A LOST TIMING IS A SMALL LOSS; A LOST RUN IS NOT. Loud in the log, silent to the

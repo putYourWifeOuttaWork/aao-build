@@ -196,7 +196,7 @@ private class AAO_ReceiptTest {
         // success path prices a stage from what it hands back; a stage that throws hands back
         // nothing, so the failure leg reads what AAO_Extract banked as each response arrived.
         Fixture f = fixture();
-        AAO_Extract.clearLegUsage();
+        AAO_Extract.clearLegObservations();
         AAO_Extract.sinceLastLeg.inputTokens = 944;
         AAO_Extract.sinceLastLeg.outputTokens = 24;
         AAO_Extract.sinceLastLeg.cacheReadTokens = 2330;
@@ -225,7 +225,7 @@ private class AAO_ReceiptTest {
     @IsTest
     static void aSuccessfulLegClearsTheBankSoTheErrorPathCannotDoubleBill() {
         Fixture f = fixture();
-        AAO_Extract.clearLegUsage();
+        AAO_Extract.clearLegObservations();
         AAO_Extract.sinceLastLeg.inputTokens = 100;
 
         Test.startTest();
@@ -268,6 +268,57 @@ private class AAO_ReceiptTest {
         );
         System.assert(second.stoppedBecause.contains('attempt 2'), second.stoppedBecause);
         System.assertNotEquals(null, second.stoppedAt, 'A repeat failure carries its clock.');
+    }
+
+    @IsTest
+    static void aFailedLegKeepsTheResponseItFailedOn() {
+        // The 141st cost a reproduction harness because the record kept nothing. A short
+        // response is kept whole, which is the call-0 case that started this.
+        Fixture f = fixture();
+        AAO_Extract.clearLegObservations();
+        AAO_Extract.lastResponse = '{"opportunity_content_quote":"","carries":true}';
+
+        Test.startTest();
+        AAO_Receipt.recordFailure(f.runKey, f.sourceId, 'call 0 resolve', 'quoted nothing');
+        Test.stopTest();
+
+        List<AAO_Receipt.Leg> legs = AAO_Receipt.legsOf(
+            [SELECT AAO_Stages__c FROM AAO_Run_Receipt__c WHERE AAO_Run_Key__c = :f.runKey LIMIT 1]
+        );
+        System.assertEquals(1, legs.size());
+        System.assertEquals(
+            '{"opportunity_content_quote":"","carries":true}',
+            legs[0].failedResponse,
+            'A response that fits is kept entire, or the next diagnosis reads a fragment.'
+        );
+        System.assertEquals(null, AAO_Extract.lastResponse,
+            'The leg carried it away, so a later failure cannot be handed this one.');
+    }
+
+    @IsTest
+    static void aKeptResponseIsBoundedAndSaysSoRatherThanLookingShort() {
+        // The stage array's overflow guard DROPS EARLIER LEGS to make room, so an unbounded
+        // response would buy one diagnosis by destroying the history around it. And a
+        // truncated response that reads as a short one is the silent-wrong-answer shape.
+        Fixture f = fixture();
+        AAO_Extract.clearLegObservations();
+        AAO_Receipt.RESPONSE_KEPT_CHARS = 50;
+        AAO_Extract.lastResponse = 'x'.repeat(400);
+
+        Test.startTest();
+        AAO_Receipt.recordFailure(f.runKey, f.sourceId, 'call 1 locate read 1', 'it broke');
+        Test.stopTest();
+
+        List<AAO_Receipt.Leg> legs = AAO_Receipt.legsOf(
+            [SELECT AAO_Stages__c FROM AAO_Run_Receipt__c WHERE AAO_Run_Key__c = :f.runKey LIMIT 1]
+        );
+        String kept = legs[0].failedResponse;
+        System.assert(kept.startsWith('x'.repeat(50)), kept);
+        System.assert(
+            kept.contains('truncated at 50 of 400'),
+            'The cut must be visible in the text. A reader who cannot tell a truncated ' +
+            'response from a short one will diagnose the wrong thing. Got: ' + kept
+        );
     }
 
     // ------------------------------------------------------------------------ helpers

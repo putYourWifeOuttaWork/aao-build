@@ -915,6 +915,14 @@ public class AAO_Extract {
             c.elapsedMs = System.currentTimeMillis() - started;
         }
 
+        // KEPT BEFORE ANYTHING CAN THROW, INCLUDING THE DESERIALIZE. The 141st's diagnosis
+        // cost a reproduction harness because the record kept nothing: the raw response died
+        // in the frame of the stage that threw on it, and the only way to see what call 0
+        // actually said was to make the call again and hope it misbehaved twice. The next one
+        // should cost a read. Banked from the BODY rather than the parsed text so a malformed
+        // or truncated response - the two shapes most worth seeing - are kept too.
+        lastResponse = res.getBody();
+
         if (res.getStatusCode() != 200) {
             throw new ExtractException(
                 'The model endpoint returned ' +
@@ -982,6 +990,15 @@ public class AAO_Extract {
      */
     public static Usage sinceLastLeg = new Usage();
 
+    /**
+     * THE LAST RESPONSE THIS TRANSACTION RECEIVED, kept for the failure path alone.
+     *
+     * Read by `AAO_Receipt.recordFailure` and by nothing else. Cleared the moment a leg carries
+     * the observations away, exactly as the usage is, so a later failure cannot be handed an
+     * earlier stage's response and have it read as its own.
+     */
+    public static String lastResponse;
+
     private static void bank(Usage u) {
         if (u == null) {
             return;
@@ -993,9 +1010,15 @@ public class AAO_Extract {
         sinceLastLeg.thinkingTokens += nz(u.thinkingTokens);
     }
 
-    /** Called by the receipt once a leg has carried these numbers onto the run. */
-    public static void clearLegUsage() {
+    /**
+     * Called by the receipt once a leg has carried these observations onto the run.
+     *
+     * ONE RESET POINT ON PURPOSE. Usage and the kept response are the two things banked between
+     * legs, and two clears would be two things to forget separately.
+     */
+    public static void clearLegObservations() {
         sinceLastLeg = new Usage();
+        lastResponse = null;
     }
 
     private static Integer nz(Integer i) {

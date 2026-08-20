@@ -103,3 +103,42 @@ So RCPT-00000055 was removed by the purge, which is Matthew's opening move under
 system working as designed. **The finding is not the missing receipt; it is that I declared a
 mystery from a partial read of one class when a test name held the answer** - the same
 wrong-address shape the 142nd made law, committed while writing about it.
+
+---
+
+# The third rider: keep the response the stage failed on
+
+The 148th's item 4(i), taking my own sentence as the spec.
+
+**Mechanism shape: the raw body is banked before anything can throw, and the failure leg carries
+it bounded.** Symmetric with the usage accumulator built beside it, and cleared at the same
+single point, because two clears would be two things to forget separately.
+
+Banked from `res.getBody()` **before the status check and before the deserialize**, not from the
+parsed text. That placement is the whole value: a malformed or truncated response is the shape
+most worth seeing, and both die in the parse if you wait for it.
+
+**Bounded at 4,000 characters, and the bound is the stage array's rather than taste.** Legs
+serialise into a 32,768-character field whose overflow guard **drops earlier legs** to make
+room, so an unbounded response would buy one diagnosis by destroying the history around it. Call
+0's whole response is 1,024 characters and fits entire, which is the case that started this; a
+family read's does not, and its first 4,000 carry the keys and the shape, which is where the
+defect has been both times. **The cut is marked in the stored text** - `... [truncated at N of
+M]` - because a truncated response that reads as a short one is the same silent-wrong-answer
+shape the receipt exists to refuse, and a test asserts the marker rather than the length.
+
+Proven on a real paid callout forced to truncate, on the proof deal rather than the rehearsal's,
+since the rehearsal is live and I will not add rows to it mid-run:
+
+```
+LEG call 0 resolve callouts=1 in=346 out=24
+KEPT RESPONSE (571 chars): {"model":"claude-opus-5", ... "content":[{"type":"text",
+"text":"{\"opportunity_because\":\"Discovery on decision authority and funding for the"}],
+"stop_reason":"max_tokens", ... "usage":{"input_tokens":346,"cache_creation_input_tokens":2330,
+... "output_tokens":24,"output_tokens_details":{"thinking_tokens":0} ...}}
+ACCUMULATOR AFTER = null
+```
+
+The stop reason, the exact point the JSON was cut, and the usage block, all on the leg. **The
+141st's diagnosis cost a reproduction harness and fourteen live callouts because the record kept
+nothing. The next one costs a read.**

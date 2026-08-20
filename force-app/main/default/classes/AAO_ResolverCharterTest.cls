@@ -74,8 +74,17 @@ private class AAO_ResolverCharterTest {
             'Retiring the wording while leaving the field would be the third wording fix.'
         );
         System.assertEquals(false, props.containsKey('scope_because'));
-        System.assert(props.containsKey('carries_opportunity_content'));
-        System.assert(props.containsKey('carries_account_content'));
+        // THE BOOLEANS ARE GONE ON PURPOSE, hundred-forty-first stamp. A boolean beside a
+        // string is how a yes without words gets said: an empty string satisfies
+        // `type: string`, so `true` beside `""` was fully schema-valid, and the endpoint
+        // refuses the conditional that would have forbidden it. The quote IS the answer.
+        System.assertEquals(
+            false,
+            props.containsKey('carries_opportunity_content'),
+            'A boolean beside the quote is a second way to say yes, and the second way is ' +
+            'the one that can say it without words.'
+        );
+        System.assertEquals(false, props.containsKey('carries_account_content'));
 
         List<Object> required = (List<Object>) sch.get('required');
         Set<String> req = new Set<String>();
@@ -83,10 +92,17 @@ private class AAO_ResolverCharterTest {
             req.add(String.valueOf(o));
         }
         System.assert(
-            req.contains('carries_opportunity_content') &&
-                req.contains('carries_account_content'),
+            req.contains('opportunity_content_quote') &&
+                req.contains('account_content_quote'),
             'BOTH sides are required. An optional side is a side that can go unanswered, ' +
             'and an unanswered account question is the exact failure being repaired.'
+        );
+        System.assertEquals(
+            false,
+            req.contains('carries_opportunity_content') ||
+                req.contains('carries_account_content'),
+            'A retired field must leave the required list with the property, or the wire ' +
+            'schema and this class disagree about what call 0 was asked.'
         );
     }
 
@@ -109,12 +125,10 @@ private class AAO_ResolverCharterTest {
     ) {
         return JSON.serialize(
             new Map<String, Object>{
-                'carries_opportunity_content' => oppYes,
                 'opportunity_content_quote' => oppQuote,
                 'opportunity_content_because' => oppYes
                     ? 'Discounting tiers and MSA review are the mechanics of a purchase.'
                     : '',
-                'carries_account_content' => acctYes,
                 'account_content_quote' => acctQuote,
                 'account_content_because' => acctYes
                     ? 'Ownership of a standing enterprise strategy is account-grain work.'
@@ -163,12 +177,38 @@ private class AAO_ResolverCharterTest {
     }
 
     @IsTest
-    static void aYesWithNoQuoteIsRefused() {
-        try {
+    static void aYesWithNoWordsIsNotRefusedBecauseItCannotBeSaid() {
+        // THE REPAIR OF THE HUNDRED-FORTY-FIRST. This used to throw 'quoted nothing', which
+        // meant the violation was expressible and caught afterwards, on a run that had
+        // already stopped. There is no boolean to say yes with any more, so an empty quote
+        // is simply a no. The law is not enforced here; it is unexpressible upstream.
+        AAO_ResolverCharter.Result r =
             AAO_ResolverCharter.parse(payload(true, '', false, ''), handles());
-            System.assert(false, 'A yes carrying no words must not parse.');
+        System.assertEquals(
+            false,
+            r.opportunitySide.carries,
+            'Words are the yes. No words is a no, and there is no third thing to be.'
+        );
+        System.assertEquals(true, r.carriesNothing());
+    }
+
+    @IsTest
+    static void aBooleanComingBackMeansTheWireSchemaIsNotThisClass() {
+        // The stray guard. If a model answers a question this charter stopped asking, the
+        // schema on the wire is not the schema in this class, and that is our bug rather
+        // than the model's - exactly the direction the parse law points.
+        Map<String, Object> body = (Map<String, Object>) JSON.deserializeUntyped(
+            payload(true, OPP_WORDS, false, '')
+        );
+        body.put('carries_opportunity_content', true);
+        try {
+            AAO_ResolverCharter.parse(JSON.serialize(body), handles());
+            System.assert(false, 'A retired field coming back must not pass silently.');
         } catch (AAO_ResolverCharter.CharterException e) {
-            System.assert(e.getMessage().contains('quoted nothing'), e.getMessage());
+            System.assert(
+                e.getMessage().contains('no longer asks for'),
+                e.getMessage()
+            );
         }
     }
 
@@ -192,7 +232,7 @@ private class AAO_ResolverCharterTest {
         Map<String, Object> body = (Map<String, Object>) JSON.deserializeUntyped(
             payload(true, OPP_WORDS, false, '')
         );
-        body.remove('carries_account_content');
+        body.remove('account_content_quote');
         try {
             AAO_ResolverCharter.parse(JSON.serialize(body), handles());
             System.assert(false, 'A missing side must throw rather than default.');

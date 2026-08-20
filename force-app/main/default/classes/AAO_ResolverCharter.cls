@@ -25,7 +25,7 @@ public with sharing class AAO_ResolverCharter {
 
     /** 1.1.0: the mention emission cut, twenty-eighth stamp. Call 0 slims to the ladder,
      *  the two scope halves, and the which-opportunity pick. */
-    public static final String VERSION = 'resolve-1.1.0';
+    public static final String VERSION = 'resolve-1.2.0';
 
     public static final String OPPORTUNITY = 'OPPORTUNITY';
     public static final String ACCOUNT = 'ACCOUNT';
@@ -175,35 +175,36 @@ public with sharing class AAO_ResolverCharter {
                 // `scope` field for the model to fill any more: the verdict is DERIVED from
                 // these two answers in Apex, so a majority cannot eat a minority scope
                 // because NO QUESTION ASKS FOR A MAJORITY.
-                'carries_opportunity_content' => new Map<String, Object>{
-                    'type' => 'boolean',
-                    'description' => 'Does this call carry opportunity content AT ALL? Not ' +
-                        'mostly, not primarily - at all. Answer this without reference to ' +
-                        'how much account content there is.'
-                },
+                // THE QUOTE IS THE ANSWER. There is no boolean beside it any more, because
+                // a boolean beside a string is how a yes without words gets said: an empty
+                // string satisfies `type: string`, so `true` beside `""` was a fully
+                // schema-valid way to violate the quote law, and the endpoint refuses the
+                // conditional (`property 'then' is not supported`) that would have forbidden
+                // it. Words here mean yes. Empty means no. `carries` is DERIVED in Apex.
                 'opportunity_content_quote' => new Map<String, Object>{
                     'type' => 'string',
                     'description' => 'VERBATIM words from the transcript, character for ' +
-                        'character, that carry opportunity content. Empty string where the ' +
-                        'answer above is false. This is checked against the stored artifact.'
+                        'character, that carry opportunity content - answered WITHOUT ' +
+                        'reference to how much account content there is. THESE WORDS ARE ' +
+                        'THE ANSWER: words here mean this call carries opportunity content, ' +
+                        'and an empty string means it does not. There is no other way to ' +
+                        'say yes. This is checked against the stored artifact.'
                 },
                 'opportunity_content_because' => new Map<String, Object>{
                     'type' => 'string',
                     'description' => 'One sentence: what makes those words opportunity ' +
                         'content. Empty string where the answer above is false.'
                 },
-                'carries_account_content' => new Map<String, Object>{
-                    'type' => 'boolean',
-                    'description' => 'Does this call carry account content AT ALL? Not ' +
-                        'mostly, not primarily - at all. **Answer this on its own merits. ' +
-                        'The previous answer is not evidence about this one, and a call ' +
-                        'that is mostly about a purchase can still carry account content.**'
-                },
                 'account_content_quote' => new Map<String, Object>{
                     'type' => 'string',
                     'description' => 'VERBATIM words from the transcript, character for ' +
-                        'character, that carry account content. Empty string where the ' +
-                        'answer above is false. This is checked against the stored artifact.'
+                        'character, that carry account content. **Answered on its own ' +
+                        'merits: the opportunity answer is not evidence about this one, and ' +
+                        'a call that is mostly about a purchase can still carry account ' +
+                        'content.** THESE WORDS ARE THE ANSWER: words here mean this call ' +
+                        'carries account content, and an empty string means it does not. ' +
+                        'There is no other way to say yes. This is checked against the ' +
+                        'stored artifact.'
                 },
                 'account_content_because' => new Map<String, Object>{
                     'type' => 'string',
@@ -224,10 +225,8 @@ public with sharing class AAO_ResolverCharter {
                 }
             },
             'required' => new List<String>{
-                'carries_opportunity_content',
                 'opportunity_content_quote',
                 'opportunity_content_because',
-                'carries_account_content',
                 'account_content_quote',
                 'account_content_because',
                 'opportunity', 'opportunity_because'
@@ -268,11 +267,13 @@ public with sharing class AAO_ResolverCharter {
                 'mechanics and carries one real stretch of account content is a yes on both, ' +
                 'and saying so is correct rather than a hedge.',
                 '',
-                'A YES MUST BRING WORDS. Where you answer yes, quote the transcript verbatim, ' +
-                'character for character. **The quote is checked against the stored ' +
-                'transcript and a yes whose words cannot be found there is thrown out.** ' +
-                'Where you answer no, leave the quote empty; a no needs no evidence, because ' +
-                'it asserts nothing.',
+                'THE QUOTE IS THE ANSWER, AND THERE IS NO OTHER WAY TO SAY YES. You are ' +
+                'not asked whether a side carries content and then asked to evidence it: ' +
+                'the words ARE the yes. Quote the transcript verbatim, character for ' +
+                'character, for each side that carries content, and leave a side EMPTY to ' +
+                'say it carries none. **The quote is checked against the stored transcript ' +
+                'and a yes whose words cannot be found there is thrown out.** A no needs no ' +
+                'evidence, because it asserts nothing.',
                 '',
                 'THE SMALLER SIDE IS THE ONE THAT GETS LOST. Whichever side is the minority ' +
                 'of the call is the side that has to survive your reading of it, so read for ' +
@@ -351,27 +352,40 @@ public with sharing class AAO_ResolverCharter {
     private static Side side(Map<String, Object> root, String prefix, String label) {
         Side s = new Side();
         s.name = label;
-        Object raw = root.get('carries_' + prefix + '_content');
-        if (!(raw instanceof Boolean)) {
+        // THE YES IS DERIVED FROM THE WORDS, never read beside them. The hundred-forty-first
+        // stamp's failure was `carries: true` beside `quote: ""`, four times across two
+        // scopes, and it was a SCHEMA-VALID response: an empty string satisfies
+        // `type: string`, so the boolean and the quote could disagree and the law could only
+        // be enforced afterwards, as an exception, on a run that had already stopped. There
+        // is no boolean now. A side that brought words carries content; a side that brought
+        // none does not; the two cannot contradict each other because there is only one of
+        // them. The unquoted yes is not caught here any more - it is UNEXPRESSIBLE, which is
+        // what the thirty-fourth stamp meant and what the schema did not do.
+        Object stray = root.get('carries_' + prefix + '_content');
+        if (stray != null) {
             throw new CharterException(
-                'Call 0 did not answer carries_' + prefix + '_content with a boolean. The ' +
-                'two sides are independent answers and a missing one is not a no: it is a ' +
-                'question that never got asked. Our bug, per the parse law.'
+                'Call 0 returned carries_' + prefix + '_content, which this charter no ' +
+                'longer asks for. A model answering a question we stopped asking means the ' +
+                'schema on the wire is not the schema in this class. Our bug, per the parse ' +
+                'law.'
             );
         }
-        s.carries = (Boolean) raw;
+        // A MISSING QUESTION IS STILL NOT A NO. The boolean is gone but the protection it
+        // carried is not: an ABSENT key means the side was never answered, which is our bug,
+        // and it must not read as an empty string and therefore as a no. Present-and-empty is
+        // a no. Absent is a defect. The two are different and the parse says so.
+        if (!root.containsKey(prefix + '_content_quote')) {
+            throw new CharterException(
+                'Call 0 returned no ' + prefix + '_content_quote key at all. The two sides ' +
+                'are independent answers and a missing one is not a no: it is a question ' +
+                'that never got asked. Our bug, per the parse law.'
+            );
+        }
         s.quote = trimmed(root.get(prefix + '_content_quote'));
         s.because = trimmed(root.get(prefix + '_content_because'));
+        s.carries = String.isNotBlank(s.quote);
         if (!s.carries) {
             return s;
-        }
-        if (String.isBlank(s.quote)) {
-            throw new CharterException(
-                'Call 0 answered yes to ' + label + ' content and quoted nothing. A yes ' +
-                'without words is the shape this split exists to kill: an unquoted side ' +
-                'cannot be checked, and an unchecked side is how a scope read gets graded ' +
-                'right for the wrong reason.'
-            );
         }
         requireReason(prefix + '_content_because', s.because);
         return s;

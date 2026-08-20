@@ -37,6 +37,12 @@ public class AAO_PassQueueable implements Queueable, Database.AllowsCallouts {
     public static final String S_DETERMINISTIC = 'call 2a deterministic';
     public static final String S_MODEL_LEG = 'call 2b model leg';
     public static final String S_VERIFY = 'call 3 verify';
+    /**
+     * MATCH BEFORE MINT. Its own stage because the answer is a model judgment and the join, which
+     * mints, cannot call out after DML. One callout on runs that name criteria, none on runs that
+     * do not, and none on a deal with no standing criteria to match against.
+     */
+    public static final String S_CRITERION_MATCH = 'criterion match';
     public static final String S_JOIN = 'join';
     /**
      * THE COMPUTED PLANE, and it is its own stage rather than a tail on the join.
@@ -56,7 +62,8 @@ public class AAO_PassQueueable implements Queueable, Database.AllowsCallouts {
 
     private static final List<String> ORDER = new List<String>{
         S_RESOLVE, S_READ1, S_READ2, S_DETERMINISTIC, S_MODEL_LEG,
-        S_VERIFY, S_JOIN, S_COMPUTE, S_PROJECT, S_PROMOTION, S_CARDS, S_DONE
+        S_VERIFY, S_CRITERION_MATCH, S_JOIN, S_COMPUTE, S_PROJECT, S_PROMOTION, S_CARDS,
+        S_DONE
     };
 
     private final Id sourceId;
@@ -348,6 +355,11 @@ public class AAO_PassQueueable implements Queueable, Database.AllowsCallouts {
             }
             AAO_Pass.verify(runKey);
             return unverifiedCount() > 0;
+        }
+        if (stage == S_CRITERION_MATCH) {
+            AAO_CriterionMatch.Outcome cm = AAO_CriterionMatch.run(runKey);
+            System.debug(LoggingLevel.INFO, 'criterion match: ' + cm);
+            return false;
         }
         if (stage == S_JOIN) {
             AAO_PairCommit.Outcome o = AAO_PairCommit.run(

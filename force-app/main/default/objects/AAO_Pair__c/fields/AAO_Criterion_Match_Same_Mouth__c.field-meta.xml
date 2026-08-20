@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <defaultValue>false</defaultValue>
+    <fullName>AAO_Criterion_Match_Same_Mouth__c</fullName>
+    <description>TRUE where this naming pair matched a standing criterion THE SAME PERSON already voiced. The hundred-twenty-fourth: a criterion voiced by a DIFFERENT mouth is the same criterion REINFORCED, and the SAME mouth restating it is IGNORED - no row, no counter theatre. Two different dispositions of one match, so the match alone cannot decide and the mouth travels with it.</description>
+    <label>Criterion Match Same Mouth</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

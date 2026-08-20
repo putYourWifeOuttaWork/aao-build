@@ -206,6 +206,16 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>AAO_Pair__c.AAO_Criterion_Match__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>AAO_Pair__c.AAO_Criterion_Match_Same_Mouth__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>AAO_Claim_Basis__c.AAO_Cited_Line_Item__c</field>
         <readable>true</readable>
     </fieldPermissions>

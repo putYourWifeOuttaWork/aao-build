@@ -63,6 +63,8 @@ public with sharing class AAO_PairCommit {
         public Integer answersWritten = 0;
         public Integer countersRebuilt = 0;
         public Integer criteriaMinted = 0;
+        /** Matched to a standing criterion voiced by a DIFFERENT mouth: reused, never twinned. */
+        public Integer criteriaReinforced = 0;
         /** Typing or gating pairs whose span overlaps no naming, so they type nothing. */
         public Integer criteriaUnattached = 0;
         /** Answers whose verdict the replay disagreed with, and corrected. */
@@ -93,6 +95,7 @@ public with sharing class AAO_PairCommit {
                     'answers written          ' + answersWritten + ' (unit: answers)',
                     'support counters rebuilt ' + countersRebuilt + ' (unit: people)',
                     'criteria minted          ' + criteriaMinted + ' (unit: criteria)',
+                    'criteria reinforced      ' + criteriaReinforced + ' (unit: pairs)',
                     '  typing unattached      ' + criteriaUnattached + ' (unit: pairs)',
                     'verdicts rebuilt         ' + verdictsRebuilt + ' (unit: answers)'
                 },
@@ -223,6 +226,9 @@ public with sharing class AAO_PairCommit {
                 AAO_Claim__c,
                 AAO_Verification_Note__c,
                 AAO_Person__c,
+                // The criterion-match stage's answer, read here rather than recomputed.
+                AAO_Criterion_Match__c,
+                AAO_Criterion_Match_Same_Mouth__c,
                 AAO_Person__r.AAO_Contact__c,
                 AAO_Person__r.AAO_Display_Name__c,
                 AAO_Person__r.AAO_Email__c,
@@ -580,20 +586,49 @@ public with sharing class AAO_PairCommit {
                 );
                 continue;
             }
-            AAO_Criterion__c c = AAO_Criteria.mint(
-                loc.AAO_Criterion_Name__c,
-                loc.AAO_Source__r.AAO_Opportunity__c,
-                loc.AAO_Source__r.AAO_Account__c,
-                p.AAO_Person__c,
-                loc.AAO_Source__c,
-                loc.AAO_Source__r.AAO_Evidence_Occurred__c
-            );
+            // ===== MATCH, NEVER MINT (124th's identity ruling; the criterion half of (e)).
+            //
+            // The criterion-match stage has already asked, in its own transaction, whether this
+            // name is a criterion the deal already carries - and it had to be its own stage
+            // because the answer is a MEANING judgment and the join cannot call out after DML.
+            // What arrives here is its answer on the row.
+            //
+            // **SAME MOUTH IS IGNORED: no row, no counter theatre.** A person restating their own
+            // criterion has not added a condition, and counting it would inflate a number a
+            // seller reads. Measured on the graded deal, three of its four duplicate criteria are
+            // exactly this shape.
+            if (p.AAO_Criterion_Match__c != null && p.AAO_Criterion_Match_Same_Mouth__c == true) {
+                o.criteriaUnattached++;
+                o.refusals.add(
+                    p.AAO_Pair_Ref__c + ' (' + AAO_P8Codes.CRITERION_NAMING + '): the same ' +
+                    'person already voiced this criterion, so it is the same condition said ' +
+                    'again rather than a second one. Nothing written.'
+                );
+                continue;
+            }
+            // A DIFFERENT MOUTH REINFORCES: the standing row is reused, its claim accrues onto
+            // the same criterion, and no twin is minted. This is F3's cure - "Pilot evidence
+            // measures" and "Pilot evidence on three measures", two mouths, one criterion.
+            AAO_Criterion__c c;
+            if (p.AAO_Criterion_Match__c != null) {
+                c = new AAO_Criterion__c(Id = p.AAO_Criterion_Match__c);
+                o.criteriaReinforced++;
+            } else {
+                c = AAO_Criteria.mint(
+                    loc.AAO_Criterion_Name__c,
+                    loc.AAO_Source__r.AAO_Opportunity__c,
+                    loc.AAO_Source__r.AAO_Account__c,
+                    p.AAO_Person__c,
+                    loc.AAO_Source__c,
+                    loc.AAO_Source__r.AAO_Evidence_Occurred__c
+                );
+                o.criteriaMinted++;
+            }
             out.put(p.Id, c);
             namedSpans.add(new AAO_Criteria.Span(
                 loc.AAO_Source__c, loc.AAO_Start_Offset__c, loc.AAO_End_Offset__c
             ));
             mintedNamings.add(p);
-            o.criteriaMinted++;
         }
 
         // ONE UPSERT FOR EVERY CRITERION THIS RUN MINTS, replacing one per naming pair.

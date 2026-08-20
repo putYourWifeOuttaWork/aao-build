@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deleteConstraint>SetNull</deleteConstraint>
+    <fullName>AAO_Criterion_Match__c</fullName>
+    <description>THE STANDING CRITERION THIS NAMING PAIR ALREADY IS, blank for a new one. Written by the criterion-match stage and read by the join, which is the only way the match can be a MODEL judgment at all: the join makes no callouts and cannot start, because a callout after DML is fatal on this platform. So the judgment happens in its own transaction before the join and leaves its answer on the row. Prevention rather than repair, per the hundred-sixteenth: the duplicate criterion stops being minted rather than being merged afterwards on a surface the customer already read.</description>
+    <label>Criterion Match</label>
+    <referenceTo>AAO_Criterion__c</referenceTo>
+    <relationshipLabel>AAO Pairs Matched</relationshipLabel>
+    <relationshipName>AAO_Pairs_Matched</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

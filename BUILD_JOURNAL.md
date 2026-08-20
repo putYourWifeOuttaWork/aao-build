@@ -1975,3 +1975,57 @@ exposed it.
 **Suite 582, 581 passing** (validator route again; the async lane wedged at 70 queued a second
 time and was cleared). The one failure is the standing org-resident `ConvertToOpportunityTest`,
 non-AAO, on the record since the 86th. This is the number the 131st marked owed.
+
+---
+
+## Session 111 · Process step (e): the identity ruling in the writers
+
+131st item 7, building the 124th's §2. Tree `/Users/thefinalmachine/Downloads/claude` (`main`).
+
+**CARDS: layer 2 becomes a judgment against a CLOSED LIST.** The face call already fires at
+card-write, so it now also receives the standing board and returns match-or-NONE - no second
+callout. Candidates scoped to the unit's own TYPE: an Obstacle is never a Goal (and Matthew's
+cross-type Emerson pair is the specimen of why those stay two rows), and it keeps the enum narrow
+against the 34th's grammar ceiling. The string key stays underneath as the deterministic fallback.
+Prompt leans to NONE: two cards a person can merge by eye cost less than one that swallowed
+something invisibly. `cardface-1.2.0`, because prompt and schema both moved.
+
+**THE LIFECYCLE'S TWO CONDITIONS COLLAPSE TO ONE.** Two distinct people each saying it once is
+already two mentions, so "more than one person AND more than once" reduces to more than one
+distinct voice; the second clause guards one-person-twice, which fails the first anyway.
+
+**And the trail it computes from did not exist.** Reinforcement patched a note and wrote NO LINK,
+so a second mouth left the fact only in prose - the thin Politics slice was dropping every voice
+after the first, and the ruling was not computable. Reinforcement now writes the reiterating
+person's Informer link: correct on its own terms, computable as a side effect, in that order.
+
+**COMPLETED has no home and this build does not choose one.** The card is a VENDOR object so we
+cannot add a field. The vendor's own `ALTF__Confirmed__c` looks like the home and is not: a
+BOOLEAN cannot hold three states, and `ConfirmedBy` is a USER - it is a seller's act, and writing
+our count into it would overwrite a person's judgment. Parked with options; the half worth design's
+eye is the HUMAN OVERRIDE, which a computed state structurally cannot have.
+
+**CRITERIA: measured 4 of 15 duplicates on the graded deal, and THREE ARE SAME-MOUTH** - the half
+that must write nothing, so it is the common case not the edge. The match is a meaning judgment and
+cannot ride the join (callout after DML is fatal) or call 3 (blind by law). So `AAO_CriterionMatch`
+is its own stage between verify and join, one callout on runs that name criteria and none
+otherwise. Same mouth: nothing written, refusal recorded. Different mouth: the standing row is
+reused and the claim accrues - F3's cure, with a `criteria reinforced` line so reuse is visible.
+Failure mode is honest: an unmatched naming MINTS, which is what it did before the stage existed.
+
+**THE THIRD ENDPOINT, taught by the org.** "This contact is not on the Relationship Map. Add the
+contact to the Relationship Map before linking them to an Insight Card." The both-endpoints law
+had two endpoints; there are three. A live exposure, not only a fixture problem: `writeLinks`
+inserted blindly and would have thrown on anyone off the map, taking the cards stage down. Also
+made idempotent - it was only ever safe because its one caller passed fresh cards - and
+`linksWritten` accumulates instead of assigning.
+
+**Third time for the same fixture lesson:** a hand-built map row makes the vendor's own
+BeforeInsert trigger throw. Map rows are made by projection or not at all.
+
+`AAO_IdentityRulingTest` 8 of 8. **The honest limit: what the model decides when handed a closed
+list is UNMEASURED** - unit tests make no callouts - and that is the whole substance of the ruling.
+It needs a stacked run where a second mouth restates an insight, which is the clean-stacking test
+the 113th left owed.
+
+**Suite 590, 589 passing**, the one failure the standing non-AAO `ConvertToOpportunityTest`.

@@ -130,20 +130,39 @@ public with sharing class AAO_Cards {
         // THE FACE IS INFERRED, forty-ninth stamp item 3(a). One batched call over the whole
         // harvest, so the model writes the headlines and the writer never puts a raw verbatim on
         // the face again. The words themselves are untouched and go to `Long_Description`.
-        Map<String, AAO_CardFace.Face> headline = AAO_CardFace.infer(established);
-
         // ---- read before write: the deal's standing cards, ours and theirs ------------------
         //
         // DEDUP-AWARE WRITING IS THE STANDING DISCIPLINE (forty-second stamp), so the compare
         // happens against everything already on the deal rather than only against what this run
         // wrote. Human-authored cards are in this set and are never edited: they can only be
         // reinforced beside, per the annotation law.
+        //
+        // **IT IS READ BEFORE THE FACE CALL NOW, because the call needs it.** The hundred-
+        // twenty-fourth's identity ruling makes the match a judgment made WITH THE STANDING FACES
+        // IN HAND, which is read-before-write wearing its card coat: the same one query, moved
+        // above the callout it feeds rather than duplicated beside it.
         List<ALTF__Insight_Card__c> standing = [
             SELECT Id, ALTF__Type__c, ALTF__Short_Description__c, ALTF__Long_Description__c,
-                ALTF__Note__c, ALTF__Generated_By_Max__c
+                ALTF__Note__c, ALTF__Generated_By_Max__c, ALTF__Opportunity__c
             FROM ALTF__Insight_Card__c
             WHERE ALTF__Opportunity__c = :opportunityId
         ];
+        Map<Id, ALTF__Insight_Card__c> standingById =
+            new Map<Id, ALTF__Insight_Card__c>(standing);
+
+        // THE STANDING BOARD GOES TO THE FACE CALL AS A CLOSED CANDIDATE LIST (124th's identity
+        // ruling, the 108th's option (d)). The call already fires here, so match-or-NONE costs no
+        // second callout, and the candidates are exactly the deal's own standing cards - never an
+        // open question about what an insight might be.
+        List<AAO_CardFace.Candidate> candidates = new List<AAO_CardFace.Candidate>();
+        for (ALTF__Insight_Card__c c : standing) {
+            if (String.isNotBlank(c.ALTF__Short_Description__c)) {
+                candidates.add(new AAO_CardFace.Candidate(
+                    c.Id, c.ALTF__Type__c, c.ALTF__Short_Description__c
+                ));
+            }
+        }
+        Map<String, AAO_CardFace.Face> headline = AAO_CardFace.infer(established, candidates);
         // TWO LAYERS, AND BOTH ARE REQUIRED (sixty-first stamp item 2).
         //
         // LAYER 1, IDENTITY, byte-stable: a card is identified by the EVIDENCE it was drawn
@@ -223,6 +242,10 @@ public with sharing class AAO_Cards {
         }
 
         List<ALTF__Insight_Card__c> fresh = new List<ALTF__Insight_Card__c>();
+        // Parallel, like fresh and freshSource: the standing card reinforced, and the pair whose
+        // person reiterated it.
+        List<ALTF__Insight_Card__c> reinforcedCards = new List<ALTF__Insight_Card__c>();
+        List<AAO_Pair__c> reinforcedSource = new List<AAO_Pair__c>();
         List<AAO_Pair__c> freshSource = new List<AAO_Pair__c>();
         Map<Id, ALTF__Insight_Card__c> patchById = new Map<Id, ALTF__Insight_Card__c>();
         Map<String, Integer> seenThisRun = new Map<String, Integer>();
@@ -273,7 +296,26 @@ public with sharing class AAO_Cards {
                     'card. No card written.');
                 continue;
             }
+            // ===== LAYER 2 IS NOW A JUDGMENT AGAINST A CLOSED LIST, and the string key is its
+            // deterministic fallback rather than its rule.
+            //
+            // The hundred-twenty-fourth ruled it and the hundred-eighth measured why: the two
+            // duplicate faces on the harness deal - *"6 hrs/week chasing prior approvals"* and
+            // *"Sign-off chase: ~1 day/week, no change"* - are one insight and share almost no
+            // tokens, so **no string rule can catch them and a threshold loose enough to try is
+            // loose enough to merge strangers**. Normalised equality stays underneath for the
+            // case the call failed: a blunt dedup beats none, exactly as a blunt face beats none.
             String key = meaningKey(type, face);
+            ALTF__Insight_Card__c matched = inferred == null || inferred.matchesStanding == null
+                ? null
+                : standingById.get(inferred.matchesStanding);
+            if (matched != null && matched.ALTF__Type__c == type) {
+                // The model's match wins, and it is re-keyed onto the meaning map so a second
+                // establishment matching the same standing card this run reinforces once rather
+                // than twice.
+                key = meaningKey(type, matched.ALTF__Short_Description__c);
+                byMeaning.put(key, matched);
+            }
 
             if (byMeaning.containsKey(key)) {
                 // SAME TYPE, SAME MEANING IS REINFORCEMENT. The parent card is kept and its
@@ -293,6 +335,20 @@ public with sharing class AAO_Cards {
                 parent.ALTF__Note__c =
                     ('Said ' + n + ' times. ' + note + ' ' + reiteration).trim().abbreviate(255);
                 patchById.put(parent.Id, parent);
+                // ===== THE REITERATING PERSON GETS AN INFORMER LINK, and until now nobody did.
+                //
+                // Reinforcement patched a note and wrote no link, so a second mouth voicing an
+                // insight left the fact **only in prose**. Two things were lost by that. The thin
+                // Politics slice is who-said-what, and it was silently dropping every voice after
+                // the first. And the hundred-twenty-fourth's lifecycle computes from *"the card's
+                // own reinforcement trail"* - a trail that was not queryable, so the ruling was
+                // not computable. Writing the link is correct on its own terms and makes the
+                // ruling computable as a side effect, which is the right order for those two.
+                //
+                // `writeLinks` is idempotent on the person-card pair, so a third mention by the
+                // same mouth adds nothing and the count of DISTINCT voices stays honest.
+                reinforcedCards.add(parent);
+                reinforcedSource.add(a);
                 o.reinforced++;
                 continue;
             }
@@ -341,8 +397,85 @@ public with sharing class AAO_Cards {
         }
 
         writeLinks(fresh, freshSource, o);
+        // The reiterating voices, on the cards they reiterated. Same writer, same both-endpoints
+        // law, same idempotence: one link per person per card however many times they say it.
+        writeLinks(reinforcedCards, reinforcedSource, o);
         writeOwnerLinks(opportunityId, o);
         return o;
+    }
+
+    // ============================================================ the lifecycle · (e)
+
+    /**
+     * ===== WHERE A CARD IS IN ITS LIFE, COMPUTED FROM ITS OWN TRAIL.
+     *
+     * The hundred-twenty-fourth: *"Every insight carries a lifecycle state: UNCONFIRMED ->
+     * CONFIRMED -> COMPLETED. Born UNCONFIRMED at first establishment. CONFIRMED when it has come
+     * from MORE THAN ONE PERSON and been mentioned MORE THAN ONCE - both conditions, computed
+     * from the card's own reinforcement trail, never model-judged."*
+     *
+     * **THE TWO CONDITIONS COLLAPSE TO ONE, and reading them so is arithmetic rather than a
+     * change to the ruling.** If two distinct people have each voiced it, it has necessarily been
+     * mentioned more than once; the second condition is entailed by the first whenever the first
+     * holds. What the second condition actually does is guard the case the first would otherwise
+     * let through in the other direction - one person saying a thing twice - and that case fails
+     * the first condition anyway. So the computable form is: **more than one distinct voice.**
+     *
+     * The trail is the card's own Informer links, which is why reinforcement now writes one.
+     *
+     * **COMPUTED, NOT STORED, AND COMPLETED IS THE REASON THAT IS A REPORT AND NOT A DECISION.**
+     * The ruling says the field exists from birth so the ledger never migrates - written when
+     * adding a field looked possible. It is not: `ALTF__Insight_Card__c` is a VENDOR object and
+     * the standing rail is data rows yes, metadata never. The vendor's own `ALTF__Confirmed__c`
+     * is not the home either, and the reason is worth keeping: it is a BOOLEAN, so it cannot hold
+     * three states, and its companion `ALTF__ConfirmedBy__c` is a USER - it is a seller's own act
+     * of confirming, not our arithmetic over voices. Writing ours into it would put two meanings
+     * in one field and overwrite a person's judgment with a count.
+     *
+     * So UNCONFIRMED and CONFIRMED compute here, and **COMPLETED - the resolution state, which no
+     * trail can derive because it is a fact about the world rather than about the evidence -
+     * needs a home this build does not choose.** Reported with its options rather than answered.
+     */
+    public static String lifecycleOf(Integer distinctVoices) {
+        return distinctVoices != null && distinctVoices > 1 ? 'CONFIRMED' : 'UNCONFIRMED';
+    }
+
+    /** Every machine-written card on the deal with the state its own trail puts it in. */
+    public static Map<Id, String> lifecycleOn(Id opportunityId) {
+        Map<Id, String> out = new Map<Id, String>();
+        if (opportunityId == null) {
+            return out;
+        }
+        Map<Id, Set<Id>> voicesByCard = new Map<Id, Set<Id>>();
+        for (ALTF__Insight_Card_Contact__c l : [
+            SELECT ALTF__Insight_Card__c, ALTF__Contact__c
+            FROM ALTF__Insight_Card_Contact__c
+            WHERE ALTF__Insight_Card__r.ALTF__Opportunity__c = :opportunityId
+              AND ALTF__Type__c = 'Informer'
+              AND ALTF__Contact__c != null
+        ]) {
+            if (!voicesByCard.containsKey(l.ALTF__Insight_Card__c)) {
+                voicesByCard.put(l.ALTF__Insight_Card__c, new Set<Id>());
+            }
+            voicesByCard.get(l.ALTF__Insight_Card__c).add(l.ALTF__Contact__c);
+        }
+        for (ALTF__Insight_Card__c c : [
+            SELECT Id FROM ALTF__Insight_Card__c WHERE ALTF__Opportunity__c = :opportunityId
+        ]) {
+            Set<Id> voices = voicesByCard.get(c.Id);
+            out.put(c.Id, lifecycleOf(voices == null ? 0 : voices.size()));
+        }
+        return out;
+    }
+
+    /** The deal these cards sit on, taken from the cards themselves rather than passed twice. */
+    private static Id opportunityIdOf(List<ALTF__Insight_Card__c> cards) {
+        for (ALTF__Insight_Card__c c : cards) {
+            if (c.ALTF__Opportunity__c != null) {
+                return c.ALTF__Opportunity__c;
+            }
+        }
+        return null;
     }
 
     /**
@@ -361,16 +494,83 @@ public with sharing class AAO_Cards {
         List<AAO_Pair__c> sources,
         Outcome o
     ) {
+        if (cards == null || cards.isEmpty()) {
+            return;
+        }
+        // ===== READ BEFORE WRITE, because this writer is now called twice.
+        //
+        // It only ever ran on FRESH cards, which by construction had no links, so a blind insert
+        // was safe and the idempotence was an accident of the caller rather than a property of
+        // the writer. Reinforcement now calls it on STANDING cards, where the link may well
+        // exist - the same mouth saying a thing a third time must add nothing, or the count of
+        // distinct voices stops meaning distinct voices. The hundred-sixteenth's law, and it
+        // arrives here the moment a second caller does.
+        Set<Id> cardIds = new Set<Id>();
+        for (ALTF__Insight_Card__c c : cards) {
+            if (c.Id != null) {
+                cardIds.add(c.Id);
+            }
+        }
+        Set<String> already = new Set<String>();
+        for (ALTF__Insight_Card_Contact__c l : [
+            SELECT ALTF__Insight_Card__c, ALTF__Contact__c
+            FROM ALTF__Insight_Card_Contact__c
+            WHERE ALTF__Insight_Card__c IN :cardIds AND ALTF__Type__c = 'Informer'
+        ]) {
+            already.add(l.ALTF__Insight_Card__c + '|' + l.ALTF__Contact__c);
+        }
+
+        // ===== THE THIRD ENDPOINT, and the ORG taught it rather than a document.
+        //
+        // *"This contact is not on the Relationship Map. Add the contact to the Relationship Map
+        // before linking them to an Insight Card."* A vendor validation, found by writing a
+        // fixture the product had never produced - which is the ninety-third stamp's own pattern,
+        // the org teaching us a law of our own schema by refusing something.
+        //
+        // The both-endpoints law was written for two endpoints, the person and the card. There
+        // are three, and the third is the vendor's: a person must stand on the MAP before they
+        // can stand on a card. So the hold widens rather than the law bending, and the reason
+        // says which endpoint was missing - a run that lost a link to an unmapped person should
+        // not read the same as one that lost it to an unresolved one.
+        Set<Id> mapped = new Set<Id>();
+        for (ALTF__Contact_Map_Details__c m : [
+            SELECT ALTF__Contact__c
+            FROM ALTF__Contact_Map_Details__c
+            WHERE ALTF__Opportunity__c = :opportunityIdOf(cards)
+        ]) {
+            mapped.add(m.ALTF__Contact__c);
+        }
+
         List<ALTF__Insight_Card_Contact__c> links = new List<ALTF__Insight_Card_Contact__c>();
         for (Integer i = 0; i < cards.size(); i++) {
             AAO_Pair__c a = sources[i];
             Id contactId = a.AAO_Person__r == null ? null : a.AAO_Person__r.AAO_Contact__c;
+            if (contactId != null && cards[i].Id != null &&
+                already.contains(cards[i].Id + '|' + contactId)) {
+                // This voice is already on this card. Nothing to write and nothing to count.
+                continue;
+            }
+            if (contactId != null && cards[i].Id != null) {
+                // Guard against a duplicate WITHIN this batch too, since one run can carry two
+                // establishments from one mouth onto one card.
+                already.add(cards[i].Id + '|' + contactId);
+            }
             if (contactId == null || cards[i].Id == null) {
                 o.linksHeld++;
                 o.notes.add(
                     'Link held: ' +
                     (a.AAO_Person__r == null ? 'a speaker' : a.AAO_Person__r.AAO_Display_Name__c) +
                     ' reaches no Contact, so the card stands with its evidence and the link waits.'
+                );
+                continue;
+            }
+            if (!mapped.contains(contactId)) {
+                o.linksHeld++;
+                o.notes.add(
+                    'Link held: ' +
+                    (a.AAO_Person__r == null ? 'a speaker' : a.AAO_Person__r.AAO_Display_Name__c) +
+                    ' has a Contact but no row on the relationship map, and the vendor refuses a ' +
+                    'card link to anyone who is not on it. The card stands with its evidence.'
                 );
                 continue;
             }
@@ -384,7 +584,9 @@ public with sharing class AAO_Cards {
             return;
         }
         insert links;
-        o.linksWritten = links.size();
+        // ACCUMULATES. It used to assign, which was correct for one caller and would have made
+        // the second caller's links vanish from the report.
+        o.linksWritten += links.size();
         List<ALTF__Insight_Card_Contact__c> named = new List<ALTF__Insight_Card_Contact__c>();
         for (ALTF__Insight_Card_Contact__c l : links) {
             named.add(new ALTF__Insight_Card_Contact__c(

@@ -29,11 +29,42 @@ public with sharing class AAO_CardFace {
     private static final Integer MAX_CHARS = 60;
     /** The inferred summary that opens the details. Room for a thought, not a paragraph. */
     private static final Integer SUMMARY_CHARS = 240;
+    /** The honest no-match, named rather than left as an empty string. */
+    public static final String NONE = 'NONE';
 
     /** What the model wrote for one card: the clause on the face, the meaning below it. */
     public class Face {
         public String face;
         public String summary;
+        /**
+         * THE STANDING CARD THIS INSIGHT ALREADY IS, or null for a new one.
+         *
+         * The hundred-twenty-fourth's identity ruling, and the hundred-eighth's option (d) which
+         * design leaned to and Matthew ruled: *"identity is minted ONCE and matched thereafter"*.
+         * The face call already fires at card-write, so it additionally receives the standing
+         * board as a CLOSED CANDIDATE LIST and returns match-or-NONE - the same identification
+         * discipline people already get, and no second callout.
+         *
+         * Why it had to become a judgment: layer 2 was normalised string equality on the face,
+         * and the hundred-eighth's measured specimen defeats any string rule at all. *"6 hrs/week
+         * chasing prior approvals"* and *"Sign-off chase: ~1 day/week, no change"* are one
+         * insight and share almost no tokens, so a threshold loose enough to catch them is loose
+         * enough to merge strangers.
+         */
+        public Id matchesStanding;
+    }
+
+    /** A standing card offered to the model as a candidate. Closed list, never open. */
+    public class Candidate {
+        public Id cardId;
+        public String type;
+        public String face;
+
+        public Candidate(Id cardId, String type, String face) {
+            this.cardId = cardId;
+            this.type = type;
+            this.face = face;
+        }
     }
 
     @TestVisible
@@ -68,6 +99,10 @@ public with sharing class AAO_CardFace {
      * one call was too big for the gateway.
      */
     public static Map<String, Face> infer(List<AAO_Pair__c> pairs) {
+        return infer(pairs, new List<Candidate>());
+    }
+
+    public static Map<String, Face> infer(List<AAO_Pair__c> pairs, List<Candidate> standing) {
         Map<String, Face> out = new Map<String, Face>();
         if (stubbed != null) {
             return stubbed;
@@ -84,7 +119,7 @@ public with sharing class AAO_CardFace {
                 shard.add(pairs[j]);
             }
             if (!shard.isEmpty()) {
-                out.putAll(inferShard(shard, i + 1, shards));
+                out.putAll(inferShard(shard, i + 1, shards, standing));
             }
         }
         return out;
@@ -93,7 +128,8 @@ public with sharing class AAO_CardFace {
     private static Map<String, Face> inferShard(
         List<AAO_Pair__c> pairs,
         Integer shardNo,
-        Integer shardCount
+        Integer shardCount,
+        List<Candidate> standing
     ) {
         Map<String, Face> out = new Map<String, Face>();
 
@@ -131,21 +167,58 @@ public with sharing class AAO_CardFace {
             // calls stack up. Nothing else about the shape changes.
             String key = p.Id;
             block.add(key + ' [' + type + ']: "' + words + '"');
+
+            // ===== THE CLOSED CANDIDATE LIST, SCOPED TO THIS UNIT'S OWN TYPE.
+            //
+            // Two reasons and both are load bearing. **An Obstacle is never a Goal**, so offering
+            // cross-type candidates would invite a merge the type system already forbids - and
+            // Matthew's own cross-type pair on Emerson (identical faces, one Goal one Obstacle)
+            // is the specimen of why those must stay two rows and go to him as a grade rather
+            // than be collapsed by a matcher. And the enum is the compiled grammar's width:
+            // `keyedShardCount` bounds unit COUNT, nothing bounds candidate count, so scoping by
+            // type keeps the thirty-fourth stamp's ceiling out of reach on a deal with a large
+            // standing board.
+            List<String> choices = new List<String>{ NONE };
+            List<String> menu = new List<String>();
+            for (Candidate c : standing) {
+                if (c.type != type || c.cardId == null) {
+                    continue;
+                }
+                choices.add(String.valueOf(c.cardId));
+                menu.add(String.valueOf(c.cardId) + ' = "' + c.face + '"');
+            }
+            Map<String, Object> unitProps = new Map<String, Object>{
+                'face' => new Map<String, Object>{
+                    'type' => 'string',
+                    'description' => 'A shortened CLAUSE, at most ' + MAX_CHARS +
+                        ' characters, not a full sentence.'
+                },
+                'summary' => new Map<String, Object>{
+                    'type' => 'string',
+                    'description' => 'One or two sentences saying what the clause means, ' +
+                        'at most ' + SUMMARY_CHARS + ' characters.'
+                }
+            };
+            List<String> unitRequired = new List<String>{ 'face', 'summary' };
+            if (menu.size() > 0) {
+                block.add(
+                    '    standing ' + type + ' cards this could already be: ' +
+                    String.join(menu, ' | ')
+                );
+                unitProps.put('matches', new Map<String, Object>{
+                    'type' => 'string',
+                    'enum' => choices,
+                    'description' => 'The id of the standing card this insight ALREADY IS, or ' +
+                        NONE + '. Same insight in other words, or from another mouth, is the ' +
+                        'SAME card. Genuinely new substance is ' + NONE + ' even when it is ' +
+                        'about the same subject. Choose only from the ids listed for this item.'
+                });
+                unitRequired.add('matches');
+            }
             props.put(key, new Map<String, Object>{
                 'type' => 'object',
-                'properties' => new Map<String, Object>{
-                    'face' => new Map<String, Object>{
-                        'type' => 'string',
-                        'description' => 'A shortened CLAUSE, at most ' + MAX_CHARS +
-                            ' characters, not a full sentence.'
-                    },
-                    'summary' => new Map<String, Object>{
-                        'type' => 'string',
-                        'description' => 'One or two sentences saying what the clause means, ' +
-                            'at most ' + SUMMARY_CHARS + ' characters.'
-                    }
-                },
-                'required' => new List<String>{ 'face', 'summary' },
+                'properties' => unitProps,
+                'required' => unitRequired,
                 'additionalProperties' => false
             });
             required.add(key);
@@ -190,6 +263,18 @@ public with sharing class AAO_CardFace {
                 f.summary = got.get('summary') == null
                     ? null
                     : trim(String.valueOf(got.get('summary')), SUMMARY_CHARS);
+                // The match is read only where a candidate list was offered, and only where the
+                // answer is one of the ids offered FOR THIS UNIT. The enum makes anything else
+                // inexpressible; this is the parse refusing to trust that, which is the same
+                // posture the one-for-one guard keeps toward the gateway's own promise.
+                Object m = got.get('matches');
+                if (m != null && String.valueOf(m) != NONE) {
+                    try {
+                        f.matchesStanding = Id.valueOf(String.valueOf(m));
+                    } catch (Exception ignored) {
+                        // A value that is not an id is not a match. Nothing is guessed.
+                    }
+                }
                 out.put(ref, f);
             }
         } catch (Exception e) {
@@ -219,7 +304,13 @@ public with sharing class AAO_CardFace {
      * written under 1.0.0 must be distinguishable from one written under 1.1.0. Sharding is a
      * transport change and would not have moved it on its own.
      */
-    public static final String VERSION = 'cardface-1.1.1';
+    /**
+     * **1.2.0** - the call gains the closed-list match (124th's identity ruling). The version
+     * moves because the prompt and the schema both changed, and the two-halves law says a version
+     * string covers every input that can change the output it stamps. A face written under 1.1.1
+     * was written by a call that was never asked whether the insight already existed.
+     */
+    public static final String VERSION = 'cardface-1.2.0';
 
     /**
      * Bound the face WITHOUT an ellipsis, cutting at a word boundary.
@@ -244,15 +335,30 @@ public with sharing class AAO_CardFace {
     @TestVisible
     private static String systemPrompt() {
         return 'You write the one-line face of an insight card for a seller reading a deal ' +
-            'board.\n\n' +
+            'board, and you say whether each insight is one the board ALREADY CARRIES.\n\n' +
             'You are given established insights, each with a REF, a TYPE already decided, and ' +
-            'the buyer\'s VERBATIM WORDS. For each ref return TWO things:\n' +
+            'the buyer\'s VERBATIM WORDS. Some items also list the STANDING CARDS of that same ' +
+            'type already on this deal. For each ref return TWO things, or THREE where standing ' +
+            'cards are listed for it:\n' +
             '  face    - a SHORTENED CLAUSE, at most ' + MAX_CHARS + ' characters, that a ' +
             'seller can read at a glance. NOT the whole sentence. Shape it like ' +
             '"Ideal state: 2-3 large key accounts per person" or "Silos across manufacturing ' +
             'networks": a label for the thing, not a retelling of it.\n' +
             '  summary - one or two sentences saying what that clause MEANS, at most ' +
-            SUMMARY_CHARS + ' characters, in their terms.\n\n' +
+            SUMMARY_CHARS + ' characters, in their terms.\n' +
+            '  matches - ONLY where standing cards are listed for that ref: the id of the one ' +
+            'this insight ALREADY IS, or ' + NONE + '.\n\n' +
+            'ON MATCHING, which decides whether a seller reads one insight or two:\n' +
+            'M1. THE SAME INSIGHT IN OTHER WORDS IS THE SAME CARD, whoever said it. A second ' +
+            'person restating a problem the board already carries is that card again, not a new ' +
+            'one. Two lines can share almost no words and still be one insight.\n' +
+            'M2. GENUINELY NEW SUBSTANCE IS ' + NONE + ', even about the same subject. A ' +
+            'restatement that carries a fact the standing card does not - a number, a named ' +
+            'system, a new consequence, a concrete instance - is a NEW insight.\n' +
+            'M3. WHEN IN DOUBT, ' + NONE + '. Two cards a person can merge by eye cost far less ' +
+            'than one card that silently swallowed something nobody can now see.\n' +
+            'M4. Choose only from the ids listed for THAT ref. Never invent one, never borrow ' +
+            'an id listed under a different ref.\n\n' +
             'RULES, each of which matters more than fluency:\n' +
             '1. SUMMARISE, NEVER JUDGE. The type is already settled and is not yours to ' +
             'revisit, soften, strengthen or re-label.\n' +

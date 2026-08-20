@@ -78,3 +78,70 @@ For completeness, three `ALTF__` deletes exist elsewhere and are outside the pur
 `AAO_Cards.cls:247` and `AAO_DemoController.cls:300` on `ALTF__Insight_Card__c`, and
 `AAO_DemoController.cls:342` on `ALTF__Insight_Section__c` - all projection targets removing
 what projection wrote, which is the retraction path the law already names.
+
+---
+
+# The 146th's extension: the picklist at seed time, and the 12:52 plan-row rewrite
+
+## The picklist could not have been ours, and the hypothesis conflates two objects
+
+The 146th's likelier story is that `AAO BANT (Sandbox)` was **born inactive at seed time**. If
+"seed time" means our seed, that is impossible, and the reason is worth more than the answer.
+
+`Opportunity.Type` is a **standard field**:
+
+```
+FIELD Type custom=false
+PV "AAO BANT (Sandbox)" active=true default=false
+```
+
+Its picklist values are metadata on a standard object. Our tree has no `Opportunity/` directory
+and never had anything under one but a single custom field, since removed. And **no Apex of ours
+uses the Metadata API** - zero hits across every class for `Metadata.Operations`,
+`Metadata.DeployContainer`, or `MetadataService`. Apex DML cannot create, activate, or
+deactivate a picklist value. **There is no mechanism anywhere in our code that can touch a
+picklist at all.**
+
+**The conflation, named because it will otherwise keep costing hours.** `AAO_ProcessSeed` writes
+a DATA row whose Name is `AAO BANT (Sandbox)` into `ALTF__Opportunity_Plan_Type_List__c`. The
+picklist VALUE `AAO BANT (Sandbox)` is METADATA on `Opportunity.Type`. Same string, two
+different objects, two different creation mechanisms, and only one of them is ours. Our seed
+creating the plan-type row neither creates nor could create the picklist value. Whatever made
+that value, and whatever left it inactive, was a hand in Setup or a deploy from a tree that is
+not this one.
+
+## The 12:52 rewrite IS ours, and a deploy did not cause it
+
+`AAO_ProcessSeed` writes vendor rows directly: `ALTF__Assessment_Question__c` at 263-304 and
+`ALTF__Opportunity_Plan_Type_List__c` at 323 and 331. So the plan-type row is our seed's to
+write, and the 146th's attribution of the write is correct.
+
+**But the deploy did not run it.** `AAO_ProcessSeed.run()` is a plain `public static` method:
+no `@InvocableMethod`, no `@future`, no `@AuraEnabled`, no `global`, no interface, no trigger.
+Nothing about deploying a class executes it. Its only callers in the whole codebase are
+`AAO_ProcessSeedTest`, and test DML rolls back.
+
+So 12:52:47Z was a deliberate anonymous-Apex invocation. The `DeployRequest` table puts my
+deploy at **12:52:23Z** and the row's `LastModifiedDate` at **12:52:47Z**, twenty-four seconds
+later. Everything in this org runs as the shared user, so the audit cannot separate my hand from
+a human's - but a seed deployed and then run twenty-four seconds later is the signature of the
+builder running what he just deployed, and **I would rather name that than shelter behind a
+shared user the 140th already ruled on.** Treat the write as mine unless something contradicts
+it.
+
+One number corrected from the same instrument that produced both halves: the trail reads "forty
+seconds after `AAO_ProcessSeed` deployed"; deploy at 12:52:23 and write at 12:52:47 is
+twenty-four.
+
+## A standing fact the law does not carve out, raised because nobody asked
+
+The purge-scope thread has been arguing about whether our code touches vendor rows. It does, and
+not only in the purge: **the seed writes two vendor objects outside projection**,
+`ALTF__Assessment_Question__c` and `ALTF__Opportunity_Plan_Type_List__c`.
+
+The law as written says *"nothing of ours writes vendor objects outside projection, wrapper
+creation included until Matthew rules otherwise."* The seed is a third case, and it predates
+that sentence. Either it is authorized and the law needs the carve-out written where a reader
+will find it, or it is not and design should rule. **What it should not be is unwritten**, since
+the last two days have twice shown people reasoning from the law's text about what our code can
+possibly have done.

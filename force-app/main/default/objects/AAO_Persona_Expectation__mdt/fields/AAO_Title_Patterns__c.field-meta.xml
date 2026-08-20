@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Title_Patterns__c</fullName>
+    <description>Comma-delimited lowercase substrings that recognise this persona in a Contact title. A DETERMINISTIC synonym list and never a model, per the twenty-fourth stamp&apos;s ruling on title normalisation. Facts about words rather than a methodology statement, which is why our seed can carry these while it correctly carries no expectation content. A title matching more than one persona matches NONE and is reported: exactly one match links, more than one is ambiguous and holds, which is the identity ladder&apos;s own discipline.</description>
+    <externalId>false</externalId>
+    <label>Title Patterns</label>
+    <length>255</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

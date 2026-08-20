@@ -1919,3 +1919,55 @@ said, not a broken path.
 `AAO_FlagsTest` 17 of 17, ten new, including the two that pin the human override and the fact
 that acknowledgement clears nothing - the second asserted as structure, so a future session
 adding a dismiss has to break a test to do it.
+
+---
+
+## Session 110 · Process step (d): persona ghosts
+
+130th item 8. Tree `/Users/thefinalmachine/Downloads/claude` (`main`), org `00DWD00000DV7iT2AT`.
+
+**A ghost is COMPUTED, and every acceptance condition falls out rather than being built.** Expected
+minus matched, both sides ledger facts, so the 129th's ruling on the counts applies unchanged:
+storing them caches arithmetic and invites staleness. Injected = the stage moves and it is there
+on the next read. Eliminated = somebody fills it and it is gone, with no row to retire and no
+argument with never-delete about what eliminating means. **The strongest form of purgeable is
+nothing to purge.** Cost carried: no history, which belongs to D360 like the counts do.
+
+**The map writer needs NO change.** The map row requires a Contact (third measurement), so a ghost
+can never be a map row; with ghosts computed and off-map there is nothing to inject. The 119th
+asked the writer to read Process state so it could inject as it wrote - the measured constraint
+removes the need rather than leaving the phrase unhonoured, and saying so beats making a change to
+satisfy a sentence.
+
+**THE FINDING: the vendor's twelve personas are JOB-SHAPED** - CEO, CRO, Executive Sponsor, Sales
+Leader, RevOps Leader, Enablement Leader, IT Leader, Procurement Lead, Altify Program Owner,
+Consultant, Legal, Partner. Not one is a methodology role, and the proposal's own example
+("Economic Buyer") is not in the vocabulary. So proposal §3's match rule - role establishment
+first, never title alone - is right about a DIFFERENT AXIS. "Is this person the RevOps Leader" is
+a question about who they are, and a title resolving identity is the standing law's permitted use
+of a title. Establishing a buyer ROLE from a title stays forbidden and nothing here does it.
+
+**THE DEFECT RUNNING FOUND: `cto` is a substring of `dire`cto`r`.** The first real title off a real
+deal, "Director, Revenue Operations", came back AMBIGUOUS between RevOps Leader and IT Leader -
+and under the ladder's discipline ambiguous matches NOTHING, so the persona would have been
+unfillable, casting a ghost nobody could ever eliminate. A permanent false gap on a surface whose
+job is to say what is missing. Fixed to word-boundary matching; pinned in both directions.
+
+**Content is NO GUIDANCE, deliberately.** Every one of the twelve ships blank, and blank means
+never expected. Which personas a stage expects is a methodology statement and nothing states one -
+measured three times. The 122nd's stance on the forecasting numbers, applied to the same kind of
+gap. `review/process/step-d/persona-config.csv` is the one-column grading sheet.
+
+**Both halves proved at the runtime, on Wells Fargo, writing nothing.** Two expectations deployed
+through the real configuration path, read, reverted. Tom Brzezinski's "Head of Banker Enablement"
+FILLED Enablement Leader (eliminated); Executive Sponsor stood as a GHOST with its reason
+(injected). `dml=0 callouts=0`. Wells Fargo verified untouched afterwards at 90 claims and 51
+answers. It was the vehicle because the read is pure and it is the only deal carrying both an
+orderable stage and a real title that fills a persona.
+
+**Across the corpus: 4 of 20 people fill a persona, 16 do not, ZERO ambiguous.** The sixteen are
+honest - no persona covers "VP, AI Model Risk Governance" or "Chief Operating Officer" - and the
+zero is the word-boundary fix holding on the whole corpus rather than only on the title that
+exposed it.
+
+`AAO_PersonasTest` 12 of 12.

@@ -1,0 +1,23 @@
+THE (d) RUNTIME PROOF, both halves, on a real deal, read-only.
+
+Two expectations deployed through the real configuration path (Enablement Leader and Executive
+Sponsor, both from stage 2), read, then reverted to the seeded blank state. Wells Fargo verified
+untouched afterwards at its recorded 90 claims and 51 answers.
+
+== Wells Fargo CIB - Aviator Content Intelligence - Pilot to Enterprise
+S stage=Stage 3 ordinal=3 | ghosts=1 matched=1
+FILLS Tom Brzezinski "Head of Banker Enablement" -> Enablement Leader
+GHOST Executive Sponsor :: This deal is at stage 3 and the persona Executive Sponsor is expected
+                           from stage 2. Nobody identified on this deal fills it.
+none  Katherine Villanueva "Managing Director, Investment Banking Technology"
+none  Rohan Deshpande "Director, Banker Platforms and Digital Workflow"
+none  Meredith Cho "VP, AI Model Risk Governance"
+none  Alison Reyes "Vendor Management Office"
+none  Priya Natarajan "null"
+none  Jared Kim "Associate, IB Technology"
+W wrote nothing: dml=0 callouts=0 soql=4
+
+ELIMINATED  Enablement Leader was expected and Tom's title fills it, so no ghost stands.
+INJECTED    Executive Sponsor was expected, nobody fills it, and the ghost stands with its reason.
+
+Both on one read, both on titles the org actually holds, and the reading wrote nothing at all.

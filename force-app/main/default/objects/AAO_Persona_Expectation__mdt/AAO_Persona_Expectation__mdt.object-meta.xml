@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>WHICH PERSONAS A STAGE EXPECTS ON THE MAP, and how a person is recognised as one. Ours entirely, and it has to be: the vendor carries ALTF__Relationship_Map_Persona__c with its own persona vocabulary, and NOTHING anywhere links a persona to a stage, to a process, or to a person - measured three times now (119th discovery, and again at (d)). So the vocabulary is theirs and the grammar is ours, per the hundred-twenty-first. One row per persona STORED VALUE, never a label: one value in this org is literally &quot;Altify Program Owner&quot;, which is the seventy-sixth stamp&apos;s label hazard sitting in the vocabulary. Org-overridable, and a blank expected-from-stage means NEVER EXPECTED, which is the same null semantics the by-stage marker carries.</description>
+    <label>AAO Persona Expectation</label>
+    <pluralLabel>AAO Persona Expectations</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

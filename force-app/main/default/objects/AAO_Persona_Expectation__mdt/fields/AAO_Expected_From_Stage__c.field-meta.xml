@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Expected_From_Stage__c</fullName>
+    <description>THE STAGE ORDINAL FROM WHICH THIS PERSONA IS EXPECTED, blank for never. Blank is the honest default and not an omission: WHICH personas a stage expects is a methodology statement, and nothing in the captured vendor surface or in any ruling states one, so our seed ships the mechanism with NO GUIDANCE on the content rather than inventing a methodology nobody graded. Same null semantics as the by-stage marker: blank never flags, and blank is never read as stage zero.</description>
+    <externalId>false</externalId>
+    <label>Expected From Stage</label>
+    <precision>3</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

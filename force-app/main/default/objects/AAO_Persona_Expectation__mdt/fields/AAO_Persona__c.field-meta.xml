@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Persona__c</fullName>
+    <description>The STORED value on ALTF__Relationship_Map_Persona__c.ALTF__Persona__c, never its label. An org relabels a slot and the ranking must not silently start meaning something else - the seventy-sixth stamp, and this vocabulary carries a live specimen of the hazard.</description>
+    <externalId>false</externalId>
+    <label>Persona</label>
+    <length>100</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

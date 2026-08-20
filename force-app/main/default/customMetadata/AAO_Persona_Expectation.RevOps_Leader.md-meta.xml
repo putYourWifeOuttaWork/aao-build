@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>RevOps Leader</label>
+    <protected>false</protected>
+    <values>
+        <field>AAO_Persona__c</field>
+        <value xsi:type="xsd:string">RevOps Leader</value>
+    </values>
+    <values>
+        <field>AAO_Expected_From_Stage__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>AAO_Title_Patterns__c</field>
+        <value xsi:type="xsd:string">revenue operations,revops,rev ops,sales operations</value>
+    </values>
+    <values>
+        <field>AAO_Note__c</field>
+        <value xsi:type="xsd:string">NO GUIDANCE on the stage.</value>
+    </values>
+</CustomMetadata>

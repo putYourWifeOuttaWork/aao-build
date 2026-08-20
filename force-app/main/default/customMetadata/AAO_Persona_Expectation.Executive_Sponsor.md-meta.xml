@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Executive Sponsor</label>
+    <protected>false</protected>
+    <values>
+        <field>AAO_Persona__c</field>
+        <value xsi:type="xsd:string">Executive Sponsor</value>
+    </values>
+    <values>
+        <field>AAO_Expected_From_Stage__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>AAO_Title_Patterns__c</field>
+        <value xsi:type="xsd:string">executive sponsor</value>
+    </values>
+    <values>
+        <field>AAO_Note__c</field>
+        <value xsi:type="xsd:string">Stored value is &quot;Executive Sponsor&quot;; see the persona field.</value>
+    </values>
+</CustomMetadata>

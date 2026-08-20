@@ -1971,3 +1971,7 @@ zero is the word-boundary fix holding on the whole corpus rather than only on th
 exposed it.
 
 `AAO_PersonasTest` 12 of 12.
+
+**Suite 582, 581 passing** (validator route again; the async lane wedged at 70 queued a second
+time and was cleared). The one failure is the standing org-resident `ConvertToOpportunityTest`,
+non-AAO, on the record since the 86th. This is the number the 131st marked owed.

@@ -90,3 +90,65 @@ cases, same migration question.
 
 The purge's fix one already tolerates the damaged state, so nothing is blocked while this is
 ruled.
+
+---
+
+# Addendum: what version-forward actually costs, measured
+
+The 155th ruled the fix shape (opportunity in the key, all subjects) and put the HISTORY to
+Matthew, leaning version-forward. Two measurements bear on that ruling, and the second is not in
+the stamp.
+
+## The stated cost of version-forward is smaller than feared
+
+Design's named cost for (a) is a live deal losing continuity of reinforcement counts. Measured
+across the whole org:
+
+```
+keyed answers in the whole org                = 129
+of those, answers carrying reinforcement (>1) =   2
+  Project Farma - Enterprise - 46 Seats | count=2 | subject=Participant
+  Emerson/Aspen Tech Insights 500 Full Insight | count=2 | subject=Participant
+```
+
+**Two rows, each a count of two**, and both sit on frozen specimens rather than deals anybody is
+selling. On that measure alone (a) is nearly free.
+
+## The unstated cost is larger, and it is the one worth ruling on
+
+**Supersession is keyed.** `AAO_Commit` reads what it might update or supersede with:
+
+```apex
+WHERE AAO_Answer_Key__c IN :answerKeys AND AAO_Superseded_By__c = null
+```
+
+So a version-forward key does not merely fail to UPDATE the old row - it fails to FIND it, which
+means the old row is not superseded either. **It stays Live beside the new one**, and two Live
+answers for one question on one deal is a state the readers were never built for:
+`AAO_ProcessPanel.readingsFor` and `AAO_Flags` both read Live rows, and under the
+DENIED-outranks-AFFIRMED tiebreak a stale pre-change denial would outrank a fresh affirmation
+forever.
+
+Design's lean already contains the protection without naming it as a condition: re-run deals get
+fresh keys "for free on purge" - true, because the purge deletes the old rows before the new
+ones are written. **The gap is a deal carried across the change WITHOUT a purge.** Measured:
+
+```
+keyed answers marked synthetic (purge-and-rerun) =   7
+keyed answers on deals the purge will not clear  = 122
+```
+
+Those 122 are safe only while nothing re-establishes on them, which is exactly true of the
+frozen measurement deals and exactly untrue of any deal someone later decides to run again.
+
+## What this does to the ruling, offered rather than assumed
+
+It does not overturn (a). It bounds it: **version-forward is correct with a rule attached - a
+deal carried across the change is purged before its next run, or it is never run again.** Stated
+that way (a) keeps its advantages and the duplicate-live-answer state becomes unreachable rather
+than merely unlikely.
+
+If design would rather not carry a standing rule of that kind, (b) migrate-in-place buys its
+removal, and the measured price of the backfill is 129 rows touched once.
+
+**Nothing is built.** This is the read the 155th's item 5 turns on, and the ruling is Matthew's.

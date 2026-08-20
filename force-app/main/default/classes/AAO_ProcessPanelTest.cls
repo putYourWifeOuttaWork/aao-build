@@ -170,6 +170,7 @@ private class AAO_ProcessPanelTest {
         Id acctId;
         Id contactA;
         Id contactB;
+        Id sourceId;
         Map<String, Id> contracts = new Map<String, Id>();
     }
 
@@ -194,6 +195,25 @@ private class AAO_ProcessPanelTest {
         f.acctId = a.Id;
         f.contactA = cs[0].Id;
         f.contactB = cs[1].Id;
+
+        // A REAL SOURCE. The hundred-fifty-sixth made the citation require a source reference
+        // and a locator, so an answer whose span names no call now yields NO citation at all -
+        // correctly, because that was the quotation the stamp refused. This fixture used to
+        // assert a citation on spans with no sourceId, which is a shape the product no longer
+        // produces; the fixture moves rather than the law.
+        AAO_Source__c src = new AAO_Source__c(
+            AAO_Opportunity__c = o.Id, AAO_Account__c = a.Id, AAO_Origin__c = 'ingest',
+            AAO_Artifact_SHA256__c =
+                '00000000000000000000000000000000000000000000000000000000000000ef',
+            AAO_Part_Index__c = 1, AAO_Part_Count__c = 1,
+            AAO_Diarization__c = 'Attributed',
+            AAO_Meeting_Title__c = 'Panel fixture, call 1',
+            AAO_Normalized_Text__c = 'ivan\tRoughly nine hours a week across the team.',
+            AAO_Evidence_Occurred__c = Datetime.newInstanceGmt(2026, 8, 20, 15, 0, 0),
+            AAO_Synthetic__c = true
+        );
+        insert src;
+        f.sourceId = src.Id;
 
         List<AAO_Evidence_Contract__c> ecs = new List<AAO_Evidence_Contract__c>();
         Integer n = 1;
@@ -251,6 +271,9 @@ private class AAO_ProcessPanelTest {
                 'v' => 1,
                 'spans' => new List<Object>{
                     new Map<String, Object>{
+                        'sourceId' => f.sourceId,
+                        'startOffset' => 5,
+                        'endOffset' => 46,
                         'quote' => 'Roughly nine hours a week across the team.',
                         'element' => 'e1'
                     }

@@ -218,7 +218,16 @@ public with sharing class AAO_ProcessPanel {
     public class Reading {
         public String code;
         public String interpretation;
+        /** The full citation: who, which call, when it happened, where in it, then the words. */
         public String citation;
+        /**
+         * THE SAME CITATION FOR A NOTE THAT CANNOT AFFORD THE FULL ONE. The map row's
+         * `ALTF__Note__c` is 1,024 characters FOR THE WHOLE ROW, shared across four dimensions,
+         * so roughly 256 each, and a ninety-character header eats a third of one dimension's
+         * allowance. This drops the call title and the timestamp ONLY: the source short name
+         * walks back to both, so nothing becomes unfindable, it just takes one hop.
+         */
+        public String compactCitation;
     }
 
     /**
@@ -233,7 +242,7 @@ public with sharing class AAO_ProcessPanel {
         if (opportunityId == null) {
             return out;
         }
-        for (AAO_Answer__c a : [
+        List<AAO_Answer__c> answers = [
             SELECT AAO_Interpretation__c, AAO_Verdict__c, AAO_Spans__c,
                    AAO_Subject_Contact__r.Name, AAO_Participant__r.AAO_Display_Name__c,
                    AAO_Evidence_Contract__r.AAO_Proposition_Code__c
@@ -244,7 +253,11 @@ public with sharing class AAO_ProcessPanel {
               AND AAO_Verdict__c = 'TRUE'
               AND AAO_Evidence_Contract__r.AAO_Family__c = :AAO_ApplicableSet.PROCESS
             ORDER BY AAO_Evidence_Occurred__c ASC NULLS FIRST
-        ]) {
+        ];
+        // ONE SOURCE QUERY FOR THE WHOLE RENDER, never one per row. Fifteen questions must not
+        // become fifteen queries against a governor budget the join already spends most of.
+        Map<Id, AAO_Source__c> sources = sourcesFor(answers);
+        for (AAO_Answer__c a : answers) {
             String code = a.AAO_Evidence_Contract__r.AAO_Proposition_Code__c;
             if (out.containsKey(code) && out.get(code).interpretation == 'DENIED') {
                 continue;
@@ -252,47 +265,157 @@ public with sharing class AAO_ProcessPanel {
             Reading r = new Reading();
             r.code = code;
             r.interpretation = a.AAO_Interpretation__c;
-            r.citation = citationOf(a);
+            r.citation = citationOf(a, sources);
+            r.compactCitation = compactCitationOf(a, sources);
             out.put(code, r);
         }
         return out;
     }
 
-    private static String citationOf(AAO_Answer__c a) {
+    /** Every source any of these answers quotes, in one query. */
+    private static Map<Id, AAO_Source__c> sourcesFor(List<AAO_Answer__c> answers) {
+        Set<Id> ids = new Set<Id>();
+        for (AAO_Answer__c a : answers) {
+            for (AAO_Model.Span sp : spansOf(a.AAO_Spans__c)) {
+                if (String.isNotBlank(sp.sourceId)) {
+                    try {
+                        ids.add(Id.valueOf(sp.sourceId));
+                    } catch (Exception e) {
+                        // A span naming something that is not an Id names no call. It is not a
+                        // citation we can complete, and a fabricated one is worse than none.
+                    }
+                }
+            }
+        }
+        if (ids.isEmpty()) {
+            return new Map<Id, AAO_Source__c>();
+        }
+        return new Map<Id, AAO_Source__c>([
+            SELECT Id, Name, AAO_Meeting_Title__c, AAO_Evidence_Occurred__c
+            FROM AAO_Source__c WHERE Id IN :ids
+        ]);
+    }
+
+    private static List<AAO_Model.Span> spansOf(String spansJson) {
+        if (String.isBlank(spansJson)) {
+            return new List<AAO_Model.Span>();
+        }
+        try {
+            AAO_Model.SpanSet set0 = AAO_Model.parseSpans(spansJson);
+            return set0 == null || set0.spans == null
+                ? new List<AAO_Model.Span>()
+                : set0.spans;
+        } catch (Exception e) {
+            return new List<AAO_Model.Span>();
+        }
+    }
+
+    /**
+     * ===== A CITATION, NOT A QUOTATION.
+     *
+     * The Glossary: "Citation - Span plus source reference plus locator. Every
+     * evidence-established verdict has one. There is no other basis." This used to emit
+     * `Who: "quote"` - a span and an attribution, with the source reference and the locator
+     * both ABSENT - so a reader could not answer WHICH CALL, WHEN, or WHERE IN IT. A quote with
+     * a name attached is a quotation; a citation is a quotation you can walk back to its bytes.
+     *
+     * The canonical form, ruled at the hundred-fifty-sixth:
+     *
+     *   Dana Okafor . Brightwell, call 1 . 18 Aug 2026, 6:24 PM PDT . SRC-00000057 @1797-1881
+     *   "my honest problem is our forecast is off by around twenty percent every quarter."
+     */
+    private static String citationOf(AAO_Answer__c a, Map<Id, AAO_Source__c> sources) {
+        return renderCitation(a, sources, false);
+    }
+
+    private static String compactCitationOf(AAO_Answer__c a, Map<Id, AAO_Source__c> sources) {
+        return renderCitation(a, sources, true);
+    }
+
+    private static String renderCitation(
+        AAO_Answer__c a, Map<Id, AAO_Source__c> sources, Boolean compact
+    ) {
         String who = a.AAO_Participant__r != null &&
                 String.isNotBlank(a.AAO_Participant__r.AAO_Display_Name__c)
             ? a.AAO_Participant__r.AAO_Display_Name__c
             : (a.AAO_Subject_Contact__r == null ? null : a.AAO_Subject_Contact__r.Name);
-        String quote = firstQuote(a.AAO_Spans__c);
-        if (String.isBlank(who) && String.isBlank(quote)) {
+
+        List<AAO_Model.Span> spans = spansOf(a.AAO_Spans__c);
+        if (spans.isEmpty()) {
+            // No span is no citation. An attribution alone WAS the defect, not a fallback.
             return null;
         }
-        if (String.isBlank(quote)) {
-            return who;
+        AAO_Model.Span sp = spans[0];
+        AAO_Source__c src;
+        if (String.isNotBlank(sp.sourceId)) {
+            try {
+                src = sources.get(Id.valueOf(sp.sourceId));
+            } catch (Exception e) {
+                src = null;
+            }
         }
-        return (String.isBlank(who) ? '' : who + ': ') + '"' + quote + '"';
+
+        // NO SOURCE IS NO CITATION, and this is the 156th's own definition enforced at the
+        // only place that can enforce it. "Span plus source reference plus locator" - a span
+        // with a name attached and no call behind it is the QUOTATION the stamp refused, and
+        // emitting one here would reintroduce the defect one layer down while looking fixed.
+        if (src == null) {
+            return null;
+        }
+        List<String> head = new List<String>();
+        if (String.isNotBlank(who)) {
+            head.add(who);
+        }
+        // WHICH CALL, and never a fabricated one: an unnamed call is honestly unnamed, and the
+        // source short name below still finds it.
+        if (!compact && src != null && String.isNotBlank(src.AAO_Meeting_Title__c)) {
+            head.add(src.AAO_Meeting_Title__c);
+        }
+        // WHEN THE CALL HAPPENED, never when the machine wrote the row: CreatedDate would date
+        // a decade-old conversation to last Tuesday. Rendered in the ORG's timezone with the
+        // zone named, because a floating local time makes two readers disagree about one row.
+        if (!compact && src != null && src.AAO_Evidence_Occurred__c != null) {
+            head.add(src.AAO_Evidence_Occurred__c.format('d MMM yyyy, h:mm a zzz', orgZone()));
+        }
+        // WHERE IN IT. The short name is the Source's own `Name`; no second identity is minted,
+        // one stamp after a key that omitted the opportunity.
+        if (src != null) {
+            head.add(
+                sp.startOffset == null
+                    ? src.Name
+                    : src.Name + ' @' + sp.startOffset +
+                      (sp.endOffset == null ? '' : '-' + sp.endOffset)
+            );
+        }
+        if (head.isEmpty()) {
+            return null;
+        }
+
+        String out = String.join(head, ' \u00b7 ');
+        if (String.isNotBlank(sp.quote)) {
+            out += '\n"' + sp.quote + '"';
+        }
+        // MORE THAN ONE SPAN: the canonical citation and a plain count of the rest. The ledger
+        // holds every span regardless; the note is a MIRROR and our own row is the record.
+        if (spans.size() > 1) {
+            out += ' (+' + (spans.size() - 1) + ' more on the ledger)';
+        }
+        return out;
     }
 
     /**
-     * The words themselves, from the stored span. **The citation is the point of the row** - the
-     * ninety-ninth stamp's grade was that a card face with no evidence behind it is unusable, and
-     * an assessment row saying Yes with nothing quoted is the same failure wearing a tick.
+     * The org's default timezone, read once per transaction. Not the running user's: a citation
+     * is a durable artifact read by many people, and two readers must not see two times.
      */
-    private static String firstQuote(String spansJson) {
-        if (String.isBlank(spansJson)) {
-            return null;
+    private static String orgZoneCache;
+
+    private static String orgZone() {
+        if (orgZoneCache == null) {
+            orgZoneCache = [SELECT TimeZoneSidKey FROM Organization LIMIT 1].TimeZoneSidKey;
         }
-        try {
-            AAO_Model.SpanSet spans = AAO_Model.parseSpans(spansJson);
-            if (spans == null || spans.spans == null || spans.spans.isEmpty()) {
-                return null;
-            }
-            return spans.spans[0].quote;
-        } catch (Exception e) {
-            // A citation we cannot read is a citation we do not show. Never a fabricated one.
-            return null;
-        }
+        return orgZoneCache;
     }
+
 
     private static void ghosts(Id opportunityId, ProcessView v) {
         AAO_Personas.Reading r = AAO_Personas.ghostsOn(opportunityId);

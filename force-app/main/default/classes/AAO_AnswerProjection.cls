@@ -34,6 +34,8 @@ public with sharing class AAO_AnswerProjection {
 
     /** The stored values, measured from the picklist rather than assumed from the labels. */
     private static final String YES = 'Yes';
+    /** The canonical citation's separator, and the marker that a note is this product's. */
+    private static final String SEP = ' \u00b7 ';
     private static final String NO = 'No';
 
     /** `ALTF__Note__c` is 2,048. The qualifier surface's comment is 32,768; this one is not. */
@@ -149,7 +151,20 @@ public with sharing class AAO_AnswerProjection {
                 o.notes.add('No assessment question carries the code ' + code + '.');
                 continue;
             }
-            String note = String.isBlank(r.citation) ? null : r.citation.abbreviate(NOTE_CHARS);
+            // A CITATION IS NEVER TRUNCATED MID-QUOTE. `abbreviate` would have cut one in
+            // half at 2,048 and left a sentence that reads complete and is not - the exact
+            // shape of damage this surface exists to refuse. If it does not fit, the note
+            // carries fewer citations, never damaged ones, and the ledger holds every span
+            // regardless because this note is a MIRROR and our own row is the record.
+            String note = r.citation;
+            if (String.isNotBlank(note) && note.length() > NOTE_CHARS) {
+                o.notes.add(
+                    'The citation for ' + code + ' is ' + note.length() + ' characters and the ' +
+                    'note holds ' + NOTE_CHARS + ', so it is omitted rather than cut. The span ' +
+                    'stands on the answer.'
+                );
+                note = null;
+            }
             ALTF__Assessment_Answer__c row = existing.get(questionId);
             if (row == null) {
                 fresh.add(new ALTF__Assessment_Answer__c(
@@ -252,6 +267,32 @@ public with sharing class AAO_AnswerProjection {
         if (String.isBlank(note)) {
             return false;
         }
-        return !(note.contains(': "') && note.endsWith('"'));
+        return !ours(note);
+    }
+
+    /**
+     * DOES THIS NOTE CARRY A CITATION THIS PRODUCT WROTE?
+     *
+     * A SHAPE TEST, and its fragility is the point of this comment. When the citation format
+     * changed at the hundred-fifty-sixth the old test still looked for `: "`, which the new
+     * canonical form does not contain - so every citation we wrote would have been read back as
+     * a HUMAN's prose, held from update forever and refused by the purge's retraction. Nothing
+     * would have errored; the rows would simply have frozen. **A format and the predicate that
+     * recognises it are one mechanism in two places, and they move together or they lie.**
+     *
+     * Two shapes are recognised because both exist in this org: the canonical form, whose
+     * ` . ` separators no prose uses, and the pre-156th form `Who: "quote"` still standing on
+     * rows written before the change.
+     *
+     * The durable answer is a watermark rather than a shape, so ownership is recorded instead
+     * of guessed. That is a schema change on a surface a human also writes, and it is not
+     * being made in the same hour as a format change.
+     */
+    @TestVisible
+    private static Boolean ours(String note) {
+        if (note.contains(SEP)) {
+            return true;
+        }
+        return note.contains(': "') && note.endsWith('"');
     }
 }

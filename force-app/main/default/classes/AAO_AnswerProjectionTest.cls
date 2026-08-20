@@ -146,6 +146,36 @@ private class AAO_AnswerProjectionTest {
         ], 'A machine-created row we cannot enumerate is a row we can never disown.');
     }
 
+    @IsTest
+    static void theOWNERSHIPTESTRECOGNISESTHECITATIONWEACTUALLYWRITE() {
+        // The coupling that nearly shipped at the 156th: the citation format changed and the
+        // predicate that recognises our own notes did not. Nothing would have errored - every
+        // row we wrote would simply have been read back as a human's and frozen forever.
+        ALTF__Assessment_Answer__c canonical = new ALTF__Assessment_Answer__c(
+            ALTF__Note__c = 'Dana Okafor \u00b7 Brightwell, call 1 \u00b7 20 Aug 2026, ' +
+                '12:39 PM PDT \u00b7 SRC-00000065 @230-380\n"we run QBRs off spreadsheets."'
+        );
+        System.assertEquals(false, AAO_AnswerProjection.heldByHuman(canonical),
+            'A citation this product wrote must be recognised as ours, or it is held from ' +
+            'update forever and the purge refuses to retract it.');
+
+        ALTF__Assessment_Answer__c legacy = new ALTF__Assessment_Answer__c(
+            ALTF__Note__c = 'Marcus Reyes: "nine hours a week on admin."'
+        );
+        System.assertEquals(false, AAO_AnswerProjection.heldByHuman(legacy),
+            'Rows written before the format changed are still ours.');
+
+        ALTF__Assessment_Answer__c human = new ALTF__Assessment_Answer__c(
+            ALTF__Note__c = 'Spoke to Dana on Friday, she walked this back.'
+        );
+        System.assertEquals(true, AAO_AnswerProjection.heldByHuman(human),
+            'A human sentence is theirs, and stays.');
+
+        System.assertEquals(false,
+            AAO_AnswerProjection.heldByHuman(new ALTF__Assessment_Answer__c()),
+            'A blank note is nobody\'s and is ours to fill.');
+    }
+
     // ------------------------------------------------------------------------ helpers
 
     private class Fixture {
@@ -153,6 +183,7 @@ private class AAO_AnswerProjectionTest {
         Id acctId;
         Id contactA;
         Id wrapperId;
+        Id sourceId;
         Map<String, Id> contracts = new Map<String, Id>();
     }
 
@@ -169,10 +200,28 @@ private class AAO_AnswerProjectionTest {
         Contact c = new Contact(FirstName = 'Marcus', LastName = 'Reyes', AccountId = a.Id);
         insert c;
 
+
         Fixture f = new Fixture();
         f.oppId = o.Id;
         f.acctId = a.Id;
         f.contactA = c.Id;
+        // A REAL SOURCE, because a citation without one is not a citation and the writer now
+        // refuses to emit a quotation in its place. A fixture with no source would have been
+        // testing a shape the product does not produce.
+        AAO_Source__c src = new AAO_Source__c(
+            AAO_Opportunity__c = o.Id, AAO_Account__c = a.Id, AAO_Origin__c = 'ingest',
+            AAO_Artifact_SHA256__c =
+                '00000000000000000000000000000000000000000000000000000000000000cd',
+            AAO_Part_Index__c = 1, AAO_Part_Count__c = 1,
+            // The org's own law again: a source must say how it was diarized.
+            AAO_Diarization__c = 'Attributed',
+            AAO_Meeting_Title__c = 'Brightwell, call 1',
+            AAO_Normalized_Text__c = 'marcus\tRoughly nine hours a week across the team.',
+            AAO_Evidence_Occurred__c = Datetime.newInstanceGmt(2026, 8, 20, 15, 0, 0),
+            AAO_Synthetic__c = true
+        );
+        insert src;
+        f.sourceId = src.Id;
 
         AAO_Evidence_Contract__c ec = new AAO_Evidence_Contract__c(
             AAO_Question_Record_Id__c = 'a0aPROJTEST0000001',
@@ -233,6 +282,9 @@ private class AAO_AnswerProjectionTest {
                 'v' => 1,
                 'spans' => new List<Object>{
                     new Map<String, Object>{
+                        'sourceId' => f.sourceId,
+                        'startOffset' => 7,
+                        'endOffset' => 48,
                         'quote' => 'Roughly nine hours a week across the team.',
                         'element' => 'e1'
                     }

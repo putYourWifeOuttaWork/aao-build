@@ -461,6 +461,28 @@ public with sharing class AAO_DemoController {
      * it idempotent, so the honest recovery is to re-enter at the failed stage rather than
      * re-run from the top and duplicate the reads.
      */
+    /**
+     * THE PROCESS PANEL, step (f). Cacheable and read-only: it reads rows and computes nothing
+     * of its own, so it can be called on every render without costing the deal anything.
+     *
+     * Deliberately NOT folded into `RunView`. The panel is about the DEAL and the run view is
+     * about a RUN - the map and the board carry no run key by design (the hundred-fourteenth's
+     * own thesis), and Process state is the same shape. Folding them would make the panel look
+     * like this run's output when it is the deal's standing state.
+     */
+    @AuraEnabled(cacheable=true)
+    public static AAO_ProcessPanel.ProcessView processFor(Id opportunityId) {
+        try {
+            return AAO_ProcessPanel.read(opportunityId);
+        } catch (Exception e) {
+            // A panel that cannot read must not take the run page down with it. The run is the
+            // thing the room is watching; the panel is beside it.
+            throw new AuraHandledException(
+                'The Process panel could not be read: ' + e.getMessage()
+            );
+        }
+    }
+
     @AuraEnabled
     public static String resumeRun(Id opportunityId, String runKey) {
         if (opportunityId == null || String.isBlank(runKey)) {

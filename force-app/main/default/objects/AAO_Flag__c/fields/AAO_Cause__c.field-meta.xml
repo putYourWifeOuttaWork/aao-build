@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>AAO_Cause__c</fullName>
+    <!-- THE LABEL ON `Established_False` READS "Voiced no", AND THE API NAME IS UNTOUCHED.
+         The value predates true-or-nothing and says FALSE in a system that has no FALSE. What it
+         MEANS is the hundred-twentieth's voiced no: an establishment in the customer's own words,
+         about the negative, standing at verdict TRUE. Changing the LABEL makes every native
+         surface honest - reports, list views, Setup - and moves no row, no code and no history,
+         because the stored value is the API name. Renaming the API value was REFUSED: it would
+         rewrite what every standing flag row stores to correct a word, which is the
+         cosmetic-change-that-rewrites-provenance shape the hundred-twenty-eighth ruled out. -->
     <description>Written by: Raise. Read by: Why it fired.</description>
     <label>Cause</label>
     <required>true</required>
@@ -28,7 +36,7 @@
             <value>
                 <fullName>Established_False</fullName>
                 <default>false</default>
-                <label>Established_False</label>
+                <label>Voiced no</label>
             </value>
             <value>
                 <fullName>History_Contradicts</fullName>

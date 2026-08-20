@@ -2029,3 +2029,55 @@ It needs a stacked run where a second mouth restates an insight, which is the cl
 the 113th left owed.
 
 **Suite 590, 589 passing**, the one failure the standing non-AAO `ConvertToOpportunityTest`.
+
+---
+
+## Session 112 · Process step (f): the Process panel, and the module facade
+
+132nd item 8, with the 134th's item 4 rail alongside. Tree `/Users/thefinalmachine/Downloads/claude`
+(`main`), org `00DWD00000DV7iT2AT`.
+
+**THE PANEL** renders all fifteen assessment rows in the three ruled states: AFFIRMED with its
+citation, RED with its word and reason, BLANK with why it is quiet. Measured across two deals: 10
+AFFIRMED, 3 RED, 17 BLANK. Read-only, asserted by grepping its own body for every DML verb. Every
+number comes from the class that owns it - `AAO_ProcessCompute.read()`, `AAO_Flags.redsOn()`,
+`AAO_Personas.ghostsOn()` - because a surface that recomputes is a second implementation.
+
+**THE CAUSE VOCABULARY, priced.** (a) A display mapping in the panel: `Established_False` reads
+"Voiced no", `Gating_Unmet` reads "Not established". (b) The picklist LABEL changed with the API
+NAME UNTOUCHED - no row moves, no code changes, no history is rewritten, and every native surface
+becomes honest too. Both built; they are not alternatives. (c) Renaming the API value REFUSED: it
+would rewrite what every standing flag row stores to correct a word, the same shape the 128th ruled
+out for `people-p8-v1`. A test walks a full reading and fails if FALSE appears anywhere.
+
+**THE MODULE FACADE.** `AAO_Modules`, one place answering "is this module present for this deal",
+hardcoded TRUE because detection is unbuildable here - and the whole value is that the hardcoding
+is in ONE place. Takes the opportunity from birth because Matthew ruled the reference is the people
+on the deal. Assessment and Sales Process are two constants, never one, because they are separately
+licensed. Unknown module throws rather than resolving to a silent true.
+
+**THE 134th's QUESTION, ANSWERED: STATE 1 WOULD THROW.** Zero occurrences of `QueryException`,
+`NoAccessException`, `isAccessible()` or `isQueryable()` in any non-test class. AAO_Cards has 157
+`ALTF__` references and no try-block; AAO_Project 90 and none; ProcessContracts 28 and none.
+Graceful refusal is written law and unimplemented code - the sixth law-versus-path divergence, and
+the first found before it cost a run. **And the harder half the question did not ask: every one of
+those classes references `ALTF__` types STATICALLY, so rung 0 is not a runtime behaviour to catch -
+it is a deployment that would not compile.** Inspected, not tried; nothing here can uninstall the
+package. Not fixed, because the stamp asked for the answer and no sandbox state can verify a fix.
+
+**COMPLETED priced against design's lean: the lean is right and costs less than the alternatives.**
+One field on an object we own, plus wiring `Insight_Card` as a subject type - and `AAO_AnswerKey`'s
+own reason for leaving it unwired ("API names have not been read from altify--aossb2") IS NOW
+SPENT, because this build read the card object from the runtime. A wiring, not a discovery. Cost
+worth naming: an answer row per card, bounded by cards-per-deal.
+
+**THE HONEST LIMIT: controller-proven is not rendered-proven.** The panel has never been opened in
+a browser. One render-class defect was found by reading and fixed: notes were keyed on their own
+text, and two planes can honestly say the same sentence, so a repeat would have been a duplicate
+`for:each` key - the 64th stamp's class, in the same component family.
+
+Also added to the drawn pipeline: `criterion match` and `computed catalog`, which the pass runs and
+the stage list omitted, so they drew nothing.
+
+`AAO_ProcessPanelTest` 7 of 7, `AAO_ModulesTest` 5 of 5. **Suite 602, 601 passing**, the one
+failure the standing non-AAO `ConvertToOpportunityTest`.

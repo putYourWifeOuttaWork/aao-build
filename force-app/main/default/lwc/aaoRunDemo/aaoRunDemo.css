@@ -72,3 +72,39 @@
 .past-ord { flex: 0 0 4.5rem; font-weight: 600; }
 .past-when { flex: 0 0 10rem; color: #514f4d; font-size: 0.8125rem; }
 .past-status { flex: 1 1 auto; font-size: 0.75rem; color: #706e6b; letter-spacing: 0.04em; }
+
+/* ===== THE PROCESS PANEL · step (f).
+   Rows read at a glance: the question, then the state, then the words behind it. Colour carries
+   the state and is never the only carrier of it - every row says in words what its colour says,
+   because a seller reading on a projector or with any colour blindness reads the words. */
+.proc-head { display: flex; align-items: baseline; gap: 0.5rem; }
+.proc-title { font-weight: 700; font-size: 0.95rem; }
+.proc-stage { color: #5c6670; font-size: 0.8rem; }
+.proc-reds {
+    margin-left: auto; background: #ba0517; color: #fff;
+    border-radius: 0.75rem; padding: 0.05rem 0.5rem; font-size: 0.75rem; font-weight: 700;
+}
+.proc-sub {
+    font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em;
+    color: #5c6670; margin-bottom: 0.15rem;
+}
+.aaorow {
+    border-left: 3px solid #c9c7c5; padding: 0.2rem 0 0.2rem 0.5rem; margin-bottom: 0.2rem;
+}
+.aaoq { font-size: 0.85rem; }
+.aaostate { font-size: 0.8rem; font-weight: 700; }
+.aaocite { font-size: 0.75rem; color: #3e3e3c; font-style: italic; }
+.aaowhy { font-size: 0.75rem; color: #5c6670; }
+.aaoyes { border-left-color: #2e844a; }
+.aaoyes .aaostate { color: #2e844a; }
+.aaored { border-left-color: #ba0517; background: #fdf0ee; }
+.aaored .aaostate { color: #ba0517; }
+.aaono { border-left-color: #dd7a01; }
+.aaono .aaostate { color: #a05000; }
+.aaoblank { border-left-color: #e5e5e5; }
+.aaoghost { border-left-color: #9050d0; }
+.aaoqual { border-left-color: #c9c7c5; }
+.proc-counts { display: flex; flex-wrap: wrap; gap: 0.15rem 0.9rem; font-size: 0.78rem; }
+.proc-count { color: #3e3e3c; }
+.proc-notes { font-size: 0.72rem; color: #5c6670; }
+.proc-note { margin-top: 0.1rem; }

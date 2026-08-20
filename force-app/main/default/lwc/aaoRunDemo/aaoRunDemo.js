@@ -4,6 +4,7 @@ import progress from '@salesforce/apex/AAO_DemoController.progress';
 import purgeDeal from '@salesforce/apex/AAO_DemoController.purgeDeal';
 import resumeRun from '@salesforce/apex/AAO_DemoController.resumeRun';
 import recentRuns from '@salesforce/apex/AAO_DemoController.recentRuns';
+import processFor from '@salesforce/apex/AAO_DemoController.processFor';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 /**
@@ -33,7 +34,12 @@ const PIPELINE = [
     { stage: 'call 1 locate read 2', label: 'Read 2' },
     { stage: 'resolution model leg', label: 'Identify' },
     { stage: 'call 3 verify', label: 'Verify' },
+    // Added with (e) and (f). A stage the pass runs and this list omits draws nothing, and a
+    // stage this list names and the pass never journals sits WAITING forever - the defect the
+    // comment above records. Both halves read off a real receipt.
+    { stage: 'criterion match', label: 'Criteria' },
     { stage: 'join', label: 'Claims' },
+    { stage: 'computed catalog', label: 'Computed' },
     { stage: 'projection', label: 'Map' },
     { stage: 'cards', label: 'Cards' }
 ];
@@ -64,15 +70,64 @@ export default class AaoRunDemo extends LightningElement {
     resumePolls = 0;
     @track past = [];
     @track showingPast = false;
+    @track process;
 
     pollId;
 
+    get hasReds() {
+        return !!(this.process && this.process.redCount > 0);
+    }
+
+    get hasGhosts() {
+        return !!(this.process && this.process.ghosts && this.process.ghosts.length);
+    }
+
+    get hasQualifiers() {
+        return !!(this.process && this.process.qualifiers && this.process.qualifiers.length);
+    }
+
+    get hasProcessNotes() {
+        return !!(this.process && this.process.notes && this.process.notes.length);
+    }
+
     connectedCallback() {
         this.loadPast();
+        this.loadProcess();
     }
 
     disconnectedCallback() {
         this.stopPolling();
+    }
+
+    /**
+     * THE PROCESS PANEL, step (f). Loaded on open and again when a run finishes, because a run
+     * is exactly the thing that changes what it says.
+     *
+     * A failure here is SWALLOWED to a note rather than raised: the run is what the room is
+     * watching and a panel beside it must not take the page down. The same reasoning the receipt
+     * uses for telemetry, and the opposite of what the sixty-fourth stamp's defect did.
+     */
+    loadProcess() {
+        if (!this.recordId) {
+            return;
+        }
+        processFor({ opportunityId: this.recordId })
+            .then((v) => {
+                // NOTES ARE KEYED BY INDEX, NOT BY THEIR TEXT. Two planes can say the same
+                // sentence honestly - "no gap stands" reads the same for personas and for
+                // qualifiers - and a repeated string as a `for:each` key is a duplicate key,
+                // which is a render defect rather than a cosmetic one. The sixty-fourth stamp's
+                // class, caught by reading the template rather than by the panel freezing.
+                this.process = v
+                    ? {
+                          ...v,
+                          notes: (v.notes || []).map((n, i) => ({ key: `n${i}`, text: n }))
+                      }
+                    : undefined;
+            })
+            .catch(() => {
+                this.process = undefined;
+            });
     }
 
     /**
@@ -263,6 +318,10 @@ export default class AaoRunDemo extends LightningElement {
             this.error = undefined;
             this.text = '';
             this.label = '';
+            // The panel showed the deal's Process state and the purge removed most of it.
+            // Re-read rather than kept: a surface asserting rows the org no longer holds is the
+            // same defect as leaving the stages on screen.
+            this.loadProcess();
             this.dispatchEvent(
                 new ShowToastEvent({ title: 'Deal purged', message: summary, variant: 'success' })
             );
@@ -323,6 +382,10 @@ export default class AaoRunDemo extends LightningElement {
             // person. Both end the poll, and only one of them is done.
             if (v && v.finished) {
                 this.stopPolling();
+                // A finished run is exactly what changes what the Process panel says, so it is
+                // re-read once here rather than polled alongside the run. The panel is about the
+                // DEAL and only a completed pass moves it.
+                this.loadProcess();
             }
         } catch (e) {
             this.error = (e && e.body && e.body.message) || 'Lost contact with the run.';

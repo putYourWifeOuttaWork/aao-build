@@ -144,6 +144,80 @@
                     </template>
                 </div>
             </template>
+            <!-- ================================================= THE PROCESS PANEL · (f)
+                 Below the run, not inside it. The run view is about a RUN; this is about the
+                 DEAL, the same distinction the map and the board already carry by having no run
+                 key at all. Guarded on `process` rather than on anything that looks ready, per
+                 the sixty-fourth stamp's defect in this very component. -->
+            <template if:true={process}>
+                <div class="slds-border_top slds-m-top_medium slds-p-top_small">
+                    <div class="proc-head">
+                        <span class="proc-title">Process</span>
+                        <span class="proc-stage">{process.stageLine}</span>
+                        <template if:true={hasReds}>
+                            <span class="proc-reds">{process.redCount} red</span>
+                        </template>
+                    </div>
+
+                    <div class="slds-m-top_x-small">
+                        <template for:each={process.assessment} for:item="a">
+                            <div key={a.code} class={a.css}>
+                                <div class="aaoq">{a.question}</div>
+                                <div class="aaostate">
+                                    <template if:true={a.display}>{a.display}</template>
+                                </div>
+                                <template if:true={a.citation}>
+                                    <div class="aaocite">{a.citation}</div>
+                                </template>
+                                <template if:true={a.because}>
+                                    <div class="aaowhy">{a.because}</div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+
+                    <template if:true={hasGhosts}>
+                        <div class="slds-m-top_small">
+                            <div class="proc-sub">Personas this stage expects and nobody fills</div>
+                            <template for:each={process.ghosts} for:item="g">
+                                <div key={g.persona} class="aaorow aaoghost">
+                                    <div class="aaoq">{g.persona}</div>
+                                    <div class="aaowhy">{g.because}</div>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+
+                    <template if:true={hasQualifiers}>
+                        <div class="slds-m-top_small">
+                            <div class="proc-sub">Qualifiers</div>
+                            <template for:each={process.qualifiers} for:item="q">
+                                <div key={q.name} class="aaorow aaoqual">
+                                    <div class="aaoq">{q.question}</div>
+                                    <div class="aaowhy">{q.plane} &middot; {q.state}</div>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+
+                    <div class="slds-m-top_small proc-counts">
+                        <template for:each={process.counts} for:item="c">
+                            <span key={c.label} class="proc-count">
+                                <strong>{c.value}</strong> {c.label}
+                            </span>
+                        </template>
+                    </div>
+
+                    <template if:true={hasProcessNotes}>
+                        <div class="slds-m-top_x-small proc-notes">
+                            <template for:each={process.notes} for:item="n">
+                                <div key={n.key} class="proc-note">{n.text}</div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
             <!-- PURGE, at the bottom and behind a confirm, so a demo resets in one place
                  without anyone opening Execute Anonymous in the room. -->
             <div class="slds-border_top slds-m-top_medium slds-p-top_small">

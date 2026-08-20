@@ -150,30 +150,16 @@ public with sharing class AAO_ProcessPanel {
             return;
         }
 
-        // What the words established, per question. Several people can answer one question, so
-        // the strongest reading wins the row: a voiced no outranks an affirmed, which is the
-        // hundred-twentieth's own tiebreak and the same one the flag path applies.
+        // What the words established, per question. EXTRACTED to `readingsFor` so the native
+        // Assessment surface writes the SAME reading and the SAME citation this panel shows.
+        // Two surfaces disagreeing about one question is the worst defect available here,
+        // because both of them look authoritative and neither says which to believe.
+        Map<String, Reading> readings = readingsFor(opportunityId);
         Map<String, String> voiced = new Map<String, String>();
         Map<String, String> citations = new Map<String, String>();
-        for (AAO_Answer__c a : [
-            SELECT AAO_Interpretation__c, AAO_Verdict__c, AAO_Spans__c,
-                   AAO_Subject_Contact__r.Name, AAO_Participant__r.AAO_Display_Name__c,
-                   AAO_Evidence_Contract__r.AAO_Proposition_Code__c
-            FROM AAO_Answer__c
-            WHERE AAO_Opportunity__c = :opportunityId
-              AND AAO_Publication_State__c = 'Live'
-              AND AAO_Superseded_By__c = null
-              AND AAO_Verdict__c = 'TRUE'
-              AND AAO_Evidence_Contract__r.AAO_Family__c = :AAO_ApplicableSet.PROCESS
-            ORDER BY AAO_Evidence_Occurred__c ASC NULLS FIRST
-        ]) {
-            String code = a.AAO_Evidence_Contract__r.AAO_Proposition_Code__c;
-            String reading = a.AAO_Interpretation__c;
-            if (voiced.get(code) == 'DENIED') {
-                continue;
-            }
-            voiced.put(code, reading);
-            citations.put(code, citationOf(a));
+        for (String code : readings.keySet()) {
+            voiced.put(code, readings.get(code).interpretation);
+            citations.put(code, readings.get(code).citation);
         }
 
         Map<String, AAO_Flags.Red> redByCode = new Map<String, AAO_Flags.Red>();
@@ -220,6 +206,56 @@ public with sharing class AAO_ProcessPanel {
             v.assessment.add(row);
         }
         v.redCount = AAO_Flags.redCount(opportunityId);
+    }
+
+    /**
+     * ONE QUESTION'S READING AND THE WORDS BEHIND IT.
+     *
+     * Public because the native Assessment writer consumes exactly this: the panel and the
+     * Altify screen must not be able to disagree about what a call established or about which
+     * words prove it.
+     */
+    public class Reading {
+        public String code;
+        public String interpretation;
+        public String citation;
+    }
+
+    /**
+     * The strongest reading per question, with its citation.
+     *
+     * Several people can answer one question, so the strongest reading wins: a voiced no
+     * outranks an affirmed, which is the hundred-twentieth's own tiebreak and the same one the
+     * flag path applies.
+     */
+    public static Map<String, Reading> readingsFor(Id opportunityId) {
+        Map<String, Reading> out = new Map<String, Reading>();
+        if (opportunityId == null) {
+            return out;
+        }
+        for (AAO_Answer__c a : [
+            SELECT AAO_Interpretation__c, AAO_Verdict__c, AAO_Spans__c,
+                   AAO_Subject_Contact__r.Name, AAO_Participant__r.AAO_Display_Name__c,
+                   AAO_Evidence_Contract__r.AAO_Proposition_Code__c
+            FROM AAO_Answer__c
+            WHERE AAO_Opportunity__c = :opportunityId
+              AND AAO_Publication_State__c = 'Live'
+              AND AAO_Superseded_By__c = null
+              AND AAO_Verdict__c = 'TRUE'
+              AND AAO_Evidence_Contract__r.AAO_Family__c = :AAO_ApplicableSet.PROCESS
+            ORDER BY AAO_Evidence_Occurred__c ASC NULLS FIRST
+        ]) {
+            String code = a.AAO_Evidence_Contract__r.AAO_Proposition_Code__c;
+            if (out.containsKey(code) && out.get(code).interpretation == 'DENIED') {
+                continue;
+            }
+            Reading r = new Reading();
+            r.code = code;
+            r.interpretation = a.AAO_Interpretation__c;
+            r.citation = citationOf(a);
+            out.put(code, r);
+        }
+        return out;
     }
 
     private static String citationOf(AAO_Answer__c a) {

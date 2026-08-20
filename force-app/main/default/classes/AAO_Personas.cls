@@ -34,9 +34,17 @@
  * hundred-nineteenth asked for *"the map writer reads PROCESS state before writing people"* so
  * that it could INJECT ghosts as it wrote. **With ghosts computed and off-map there is nothing to
  * inject, so the map writer is untouched** - and that is the measured constraint simplifying the
- * design rather than a phrase left unhonoured. We also write nothing to
- * `ALTF__Relationship_Map_Persona__c`: manufacturing vendor rows is refused as default (122nd),
- * and a row on their object would carry their automation and our meaning at once.
+ * design rather than a phrase left unhonoured.
+ *
+ * **THE SENTENCE THAT FOLLOWED THIS IS REVERSED, and is quoted rather than deleted.** It read:
+ * *"We also write nothing to `ALTF__Relationship_Map_Persona__c`: manufacturing vendor rows is
+ * refused as default (122nd), and a row on their object would carry their automation and our
+ * meaning at once."* The hundred-fifty-first retired the frame it stood on: the Altify managed
+ * objects are not somebody else's rows we manufacture, they are OUR projection surface, and the
+ * never-write law is Opportunity and Account. Ghosts are now written by `AAO_GhostProjection`.
+ * The MEASURED half above stands untouched and is exactly why the ghost goes there and not
+ * here: map details demand a Contact, and `ALTF__Relationship_Map_Persona__c` has no Contact
+ * field at all.
  *
  * ===== THE MATCH IS BY TITLE, AND THE PROPOSAL'S RULE IS WRONG FOR THIS VOCABULARY.
  *

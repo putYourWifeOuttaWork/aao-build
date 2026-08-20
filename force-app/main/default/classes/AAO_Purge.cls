@@ -43,9 +43,87 @@ public with sharing class AAO_Purge {
         return ACTIVE && RUN_KEYS.contains(p.AAO_Run_Key__c);
     }
 
-    /** The claim door: fixture-opportunity-keyed. */
+    /**
+     * CLAIMS ADMITTED BY REFERENCE rather than by their own stamp. The 153rd's split-brain:
+     * one establishment wrote its answer on deal 2 and its claim on deal 1, because the claim
+     * writer stamps from the SOURCE's opportunity and the answer writer from the RUN TARGET.
+     * A claim cannot lawfully outlive the answer it points at, so a claim referencing an answer
+     * this purge is deleting goes with it, whatever deal it is stamped on.
+     */
+    @TestVisible
+    private static Set<Id> REFERENCING_CLAIMS = new Set<Id>();
+
+    /**
+     * ASSESSMENT ANSWERS WE WROTE, WITHDRAWN. Ours is not "on this deal" - it is ENUMERATED,
+     * the same watermark test everything else here uses, because a row a human created on that
+     * screen is not ours to remove however much it looks like ours. And a row whose note a
+     * human has since written is held whole, by the SAME predicate the writer refuses to
+     * overwrite with: one rule, one place, so the write side and the unwrite side cannot drift
+     * into disagreeing about whose row it is.
+     */
+    private static void retractAssessment(Id opportunityId, Outcome o) {
+        List<ALTF__Opportunity__c> wrappers = [
+            SELECT Id FROM ALTF__Opportunity__c WHERE ALTF__Opportunity__c = :opportunityId
+        ];
+        if (wrappers.isEmpty()) {
+            return;
+        }
+        Set<Id> wrapperIds = new Map<Id, ALTF__Opportunity__c>(wrappers).keySet();
+        Set<String> enumerated = new Set<String>();
+        for (AAO_Created_Row__c r : [
+            SELECT AAO_Target_Id__c FROM AAO_Created_Row__c
+            WHERE AAO_Target_Object__c = 'ALTF__Assessment_Answer__c' AND AAO_Disowned__c = false
+        ]) {
+            enumerated.add(r.AAO_Target_Id__c);
+        }
+        if (enumerated.isEmpty()) {
+            return;
+        }
+        List<ALTF__Assessment_Answer__c> gone = new List<ALTF__Assessment_Answer__c>();
+        for (ALTF__Assessment_Answer__c a : [
+            SELECT Id, ALTF__Note__c FROM ALTF__Assessment_Answer__c
+            WHERE ALTF__Opportunity__c IN :wrapperIds
+        ]) {
+            if (!enumerated.contains(String.valueOf(a.Id)) &&
+                !enumerated.contains(String.valueOf(a.Id).substring(0, 15))) {
+                continue;
+            }
+            if (AAO_AnswerProjection.heldByHuman(a)) {
+                o.kept.add(
+                    'Assessment answer ' + a.Id + ' carries a note this writer did not write, ' +
+                    'so it stays. Human edits beat the machine forever, on the way out as ' +
+                    'well as on the way in.'
+                );
+                continue;
+            }
+            gone.add(a);
+        }
+        if (!gone.isEmpty()) {
+            delete gone;
+            o.assessmentAnswers = gone.size();
+        }
+    }
+
+    /**
+     * GHOSTS WE WROTE, WITHDRAWN, by our own key. The persona object carries no note for a human
+     * to occupy, so the key is the whole ownership test - which is why the writer puts one there.
+     */
+    private static void retractGhosts(Id opportunityId, Outcome o) {
+        String ourKeys = 'AAO|RMP|' + String.valueOf(opportunityId).substring(0, 15) + '|%';
+        List<ALTF__Relationship_Map_Persona__c> gone = [
+            SELECT Id FROM ALTF__Relationship_Map_Persona__c
+            WHERE ALTF__Opportunity__c = :opportunityId AND ALTF__AltifyId__c LIKE :ourKeys
+        ];
+        if (!gone.isEmpty()) {
+            delete gone;
+            o.ghosts = gone.size();
+        }
+    }
+
+    /** The claim door: fixture-opportunity-keyed, or referencing a doomed answer. */
     public static Boolean allowsClaim(AAO_Claim__c c) {
-        return ACTIVE && OPPORTUNITIES.contains(c.AAO_Opportunity__c);
+        return ACTIVE &&
+            (OPPORTUNITIES.contains(c.AAO_Opportunity__c) || REFERENCING_CLAIMS.contains(c.Id));
     }
 
     public class Outcome {
@@ -57,6 +135,9 @@ public with sharing class AAO_Purge {
         public Integer pairs = 0;
         /** Run receipts. Telemetry for the purged runs, and enumerable by the same keys. */
         public Integer receipts = 0;
+        /** The two projection surfaces writers (a) and (c) added, unwritten by the same law. */
+        public Integer assessmentAnswers = 0;
+        public Integer ghosts = 0;
         public Integer participantsCleared = 0;
         public List<String> kept = new List<String>();
         public List<String> keys = new List<String>();
@@ -164,9 +245,31 @@ public with sharing class AAO_Purge {
         RUN_KEYS = runKeys;
         OPPORTUNITIES = new Set<Id>{ opportunityId };
         try {
-            List<AAO_Claim__c> claims = [
-                SELECT Id FROM AAO_Claim__c WHERE AAO_Opportunity__c = :opportunityId
+            // THE ANSWERS ARE IDENTIFIED FIRST, BEFORE ANY DELETE, because the claim scope
+            // depends on them. Order is the fix: a claim that references one of these answers
+            // must go with it even though it is stamped on another deal, and it must go BEFORE
+            // the answer, or the platform refuses the answer's delete to protect the reference.
+            List<AAO_Answer__c> answers = [
+                SELECT Id FROM AAO_Answer__c WHERE AAO_Opportunity__c = :opportunityId
             ];
+            Set<Id> answerIds = new Map<Id, AAO_Answer__c>(answers).keySet();
+
+            List<AAO_Claim__c> claims = [
+                SELECT Id, AAO_Opportunity__c FROM AAO_Claim__c
+                WHERE AAO_Opportunity__c = :opportunityId OR AAO_Answer__c IN :answerIds
+            ];
+            // The door keys on the claim's own stamp, so a claim admitted BY REFERENCE has to
+            // be named to it explicitly or the delete is refused at the trigger.
+            for (AAO_Claim__c c : claims) {
+                if (c.AAO_Opportunity__c != opportunityId) {
+                    REFERENCING_CLAIMS.add(c.Id);
+                    o.kept.add(
+                        'Claim ' + c.Id + ' is stamped on another deal but references an ' +
+                        'answer on this one, so it goes with that answer. A claim cannot ' +
+                        'lawfully outlive what it establishes.'
+                    );
+                }
+            }
             delete claims;
             o.claims = claims.size();
 
@@ -176,9 +279,6 @@ public with sharing class AAO_Purge {
             delete cands;
             o.candidates = cands.size();
 
-            List<AAO_Answer__c> answers = [
-                SELECT Id FROM AAO_Answer__c WHERE AAO_Opportunity__c = :opportunityId
-            ];
             delete answers;
             o.answers = answers.size();
 
@@ -196,10 +296,21 @@ public with sharing class AAO_Purge {
             ];
             delete receipts;
             o.receipts = receipts.size();
+
+            // ===== EVERY SURFACE WE PROJECT TO, WE MUST BE ABLE TO UNPROJECT.
+            //
+            // The 154th's completeness gap. Writers (a) and (c) put rows on two surfaces the
+            // purge did not touch, so a re-rehearsal would have left yesterday's assessment
+            // answers and yesterday's ghosts standing beside today's run - stale rows on the
+            // two screens whose whole job is to be current. The write/unwrite symmetry the
+            // purge already honors for the map and the cards, extended by the same law.
+            retractAssessment(opportunityId, o);
+            retractGhosts(opportunityId, o);
         } finally {
             ACTIVE = false;
             RUN_KEYS = new Set<String>();
             OPPORTUNITIES = new Set<Id>();
+            REFERENCING_CLAIMS = new Set<Id>();
         }
 
         List<AAO_Participant__c> toClear = new List<AAO_Participant__c>();

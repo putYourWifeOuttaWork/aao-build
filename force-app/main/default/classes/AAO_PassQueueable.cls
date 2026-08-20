@@ -58,12 +58,24 @@ public class AAO_PassQueueable implements Queueable, Database.AllowsCallouts {
     public static final String S_PROJECT = 'projection';
     public static final String S_PROMOTION = 'promotion';
     public static final String S_CARDS = 'cards';
+    /**
+     * THE ASSESSMENT SURFACE, LAST, and last on purpose.
+     *
+     * It reads what the deal ESTABLISHED, so it must run after the join has written this run's
+     * answers and after promotion has had its say about them. Putting it earlier would project
+     * the deal as it stood mid-pass, which is the same mistake the computed catalog's placement
+     * comment already argues against one stage up. It makes ZERO callouts.
+     */
+    public static final String S_ASSESSMENT = 'assessment projection';
+    /** The ghosts, beside the assessment surface and for the same reason: both read what the
+     *  deal has established, so both belong after everything that establishes. */
+    public static final String S_GHOSTS = 'ghost projection';
     public static final String S_DONE = 'done';
 
     private static final List<String> ORDER = new List<String>{
         S_RESOLVE, S_READ1, S_READ2, S_DETERMINISTIC, S_MODEL_LEG,
         S_VERIFY, S_CRITERION_MATCH, S_JOIN, S_COMPUTE, S_PROJECT, S_PROMOTION, S_CARDS,
-        S_DONE
+        S_ASSESSMENT, S_GHOSTS, S_DONE
     };
 
     private final Id sourceId;
@@ -387,6 +399,18 @@ public class AAO_PassQueueable implements Queueable, Database.AllowsCallouts {
         }
         if (stage == S_CARDS) {
             AAO_Cards.run(opportunityId(), runKey);
+            return false;
+        }
+        if (stage == S_ASSESSMENT) {
+            AAO_AnswerProjection.Outcome ao =
+                AAO_AnswerProjection.run(opportunityId(), runKey);
+            System.debug(LoggingLevel.INFO, String.valueOf(ao));
+            return false;
+        }
+        if (stage == S_GHOSTS) {
+            AAO_GhostProjection.Outcome go =
+                AAO_GhostProjection.run(opportunityId(), runKey);
+            System.debug(LoggingLevel.INFO, String.valueOf(go));
             return false;
         }
         return false;

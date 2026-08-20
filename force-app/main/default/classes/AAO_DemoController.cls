@@ -44,6 +44,18 @@ public with sharing class AAO_DemoController {
         /** True once the pass has journalled its last stage, or stopped with a reason. */
         @AuraEnabled public Boolean finished = false;
         @AuraEnabled public String stoppedBecause;
+        /**
+         * WHEN IT STOPPED, AND HOW MANY TIMES, so a resume that fails again cannot be silent.
+         *
+         * The 141st's rider (i). The rehearsal's resume ran at 14:25:18, called the model twice
+         * more, failed on a DIFFERENT scope than the first stop, and updated the receipt - and
+         * Matthew reported it dead, because `stoppedBecause` carried a stage and a message and
+         * nothing that changes between two failures of the same stage. A second failure that
+         * renders identically to the first IS silence, whatever the receipt holds. The count
+         * and the timestamp are what make a repeat legible as a new event.
+         */
+        @AuraEnabled public Datetime stoppedAt;
+        @AuraEnabled public Integer stoppedAttempts = 0;
         // The ledger, live, so the surface shows evidence rather than only timings.
         @AuraEnabled public Integer located = 0;
         @AuraEnabled public Integer identified = 0;
@@ -584,11 +596,21 @@ public with sharing class AAO_DemoController {
             // a stage is what it ended up doing, exactly as it is for a whole run.
             Map<String, AAO_Receipt.Leg> lastByStage = new Map<String, AAO_Receipt.Leg>();
             List<String> order = new List<String>();
+            // EVERY failure counted, not only the surviving one, because the count is the
+            // thing that changes when a resume fails again. `lastByStage` deliberately keeps
+            // the last leg per stage; this keeps how many of them went wrong.
+            Map<String, Integer> failuresByStage = new Map<String, Integer>();
             for (AAO_Receipt.Leg leg : AAO_Receipt.legsOf(row)) {
                 if (!lastByStage.containsKey(leg.stage)) {
                     order.add(leg.stage);
                 }
                 lastByStage.put(leg.stage, leg);
+                if (String.isNotBlank(leg.error)) {
+                    Integer n = failuresByStage.containsKey(leg.stage)
+                        ? failuresByStage.get(leg.stage)
+                        : 0;
+                    failuresByStage.put(leg.stage, n + 1);
+                }
             }
             for (String stageName : order) {
                 AAO_Receipt.Leg leg = lastByStage.get(stageName);
@@ -603,7 +625,19 @@ public with sharing class AAO_DemoController {
                 s.at = leg.at;
                 v.stages.add(s);
                 if (String.isNotBlank(leg.error)) {
-                    v.stoppedBecause = leg.stage + ' — ' + leg.error;
+                    // THE ATTEMPT AND THE CLOCK RIDE WITH THE REASON. Two failures of one
+                    // stage differ here even when the model's message is word for word the
+                    // same, so a human looking at the surface can tell a stale stop from a
+                    // fresh one without reading the receipt.
+                    v.stoppedAttempts = failuresByStage.containsKey(leg.stage)
+                        ? failuresByStage.get(leg.stage)
+                        : 1;
+                    v.stoppedAt = leg.at;
+                    v.stoppedBecause =
+                        leg.stage +
+                        ' (attempt ' + v.stoppedAttempts +
+                        (leg.at == null ? '' : ', ' + leg.at.format('HH:mm:ss')) + ')' +
+                        ' — ' + leg.error;
                     v.finished = true;
                 }
                 if (leg.stage == AAO_Receipt.STAGE_CARDS && String.isBlank(leg.error)) {

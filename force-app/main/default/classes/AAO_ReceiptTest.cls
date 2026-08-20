@@ -187,6 +187,89 @@ private class AAO_ReceiptTest {
         System.assertEquals(0, [SELECT COUNT() FROM AAO_Run_Receipt__c]);
     }
 
+    // ============================================ the 141st's riders
+
+    @IsTest
+    static void aFailedLegPricesTheCalloutsItAlreadyPaidFor() {
+        // RCPT-00000055 carried `callouts: 2` on two stage rows with every token field null:
+        // four paid model calls billed as zero, on the run that most needed pricing. The
+        // success path prices a stage from what it hands back; a stage that throws hands back
+        // nothing, so the failure leg reads what AAO_Extract banked as each response arrived.
+        Fixture f = fixture();
+        AAO_Extract.clearLegUsage();
+        AAO_Extract.sinceLastLeg.inputTokens = 944;
+        AAO_Extract.sinceLastLeg.outputTokens = 24;
+        AAO_Extract.sinceLastLeg.cacheReadTokens = 2330;
+        AAO_Extract.sinceLastLeg.cacheCreationTokens = 17;
+        AAO_Extract.sinceLastLeg.thinkingTokens = 5;
+
+        Test.startTest();
+        AAO_Receipt.recordFailure(f.runKey, f.sourceId, 'call 0 resolve', 'it went wrong');
+        Test.stopTest();
+
+        AAO_Run_Receipt__c row = [
+            SELECT AAO_Input_Tokens__c, AAO_Output_Tokens__c, AAO_Thinking_Tokens__c,
+                   AAO_Cache_Read_Tokens__c, AAO_Cache_Write_Tokens__c
+            FROM AAO_Run_Receipt__c WHERE AAO_Run_Key__c = :f.runKey LIMIT 1
+        ];
+        System.assertEquals(944, row.AAO_Input_Tokens__c,
+            'A failed leg costs real money and the receipt has to say so.');
+        System.assertEquals(24, row.AAO_Output_Tokens__c);
+        System.assertEquals(5, row.AAO_Thinking_Tokens__c);
+        System.assertEquals(2330, row.AAO_Cache_Read_Tokens__c);
+        System.assertEquals(17, row.AAO_Cache_Write_Tokens__c);
+        System.assertEquals(0, AAO_Extract.sinceLastLeg.inputTokens,
+            'The leg carried the numbers away, so a second failure must not bill them twice.');
+    }
+
+    @IsTest
+    static void aSuccessfulLegClearsTheBankSoTheErrorPathCannotDoubleBill() {
+        Fixture f = fixture();
+        AAO_Extract.clearLegUsage();
+        AAO_Extract.sinceLastLeg.inputTokens = 100;
+
+        Test.startTest();
+        AAO_Receipt.record(
+            f.runKey, f.sourceId, 'call 1 locate read 1',
+            new List<AAO_Extract.StageResult>{ call(10, 0) }, 1, 0
+        );
+        Test.stopTest();
+
+        System.assertEquals(0, AAO_Extract.sinceLastLeg.inputTokens,
+            'Anything banked before a successful leg is on the receipt already. What accrues ' +
+            'after it belongs to whatever comes next.');
+    }
+
+    @IsTest
+    static void aResumeThatFailsAgainCannotRenderIdenticallyToTheFirstStop() {
+        // The rider. The resume DID reach the surface - `progress` already took the last leg
+        // per stage. What it could not do was look different, and a second failure that
+        // renders identically to the first is silence whatever the receipt holds.
+        Fixture f = fixture();
+        AAO_Receipt.recordFailure(f.runKey, f.sourceId, 'call 0 resolve', 'yes to ACCOUNT');
+
+        Test.startTest();
+        AAO_DemoController.RunView first =
+            AAO_DemoController.progress(f.opportunityId, f.runKey);
+        AAO_Receipt.recordFailure(f.runKey, f.sourceId, 'call 0 resolve', 'yes to OPPORTUNITY');
+        AAO_DemoController.RunView second =
+            AAO_DemoController.progress(f.opportunityId, f.runKey);
+        Test.stopTest();
+
+        System.assertEquals(1, first.stoppedAttempts);
+        System.assertEquals(2, second.stoppedAttempts,
+            'Every error leg is counted, not only the surviving one, because the count is ' +
+            'the thing that changes when a resume fails again.');
+        System.assertNotEquals(
+            first.stoppedBecause,
+            second.stoppedBecause,
+            'Two failures of one stage must not read the same, or the human\'s only honest ' +
+            'conclusion from an unchanged surface is that the resume did nothing.'
+        );
+        System.assert(second.stoppedBecause.contains('attempt 2'), second.stoppedBecause);
+        System.assertNotEquals(null, second.stoppedAt, 'A repeat failure carries its clock.');
+    }
+
     // ------------------------------------------------------------------------ helpers
 
     private class Fixture {

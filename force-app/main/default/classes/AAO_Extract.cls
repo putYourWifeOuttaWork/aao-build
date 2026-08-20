@@ -930,6 +930,14 @@ public class AAO_Extract {
         c.modelReported = (String) root.get('model');
         c.stopReason = (String) root.get('stop_reason');
         readUsage(c.usage, (Map<String, Object>) root.get('usage'));
+        // BANKED HERE, BEFORE ANY REASON THIS METHOD MIGHT THROW. A refusal, a max_tokens
+        // truncation, a missing text block, and every failure further up the stack all cost
+        // the same money as a success, and `summarise` can only count the StageResults a
+        // stage HANDS BACK - a stage that throws hands back nothing and its usage dies in its
+        // own frame. That is the same hole the 127th stamp found in the callout count and
+        // closed with the platform's own counter; usage has no platform counter, so this is
+        // the counter. Read by the failure leg, branched on by nothing.
+        bank(c.usage);
 
         // Checked before the content is read, not after. A refusal returns HTTP 200 with an
         // empty or partial content array, so code that reaches for content[0] first breaks
@@ -962,6 +970,37 @@ public class AAO_Extract {
     }
 
     // ======================================================================== internals
+
+    /**
+     * USAGE NOT YET CARRIED BY A LEG, transaction-scoped.
+     *
+     * The success path reports what a stage hands back. The error path has nothing handed
+     * back, so it reports this instead, and the two never double-count because `record`
+     * clears this the moment a leg carries the numbers away. Telemetry remains observation:
+     * this is written by `bank`, read by `AAO_Receipt.recordFailure`, and no branch anywhere
+     * reads it.
+     */
+    public static Usage sinceLastLeg = new Usage();
+
+    private static void bank(Usage u) {
+        if (u == null) {
+            return;
+        }
+        sinceLastLeg.inputTokens += nz(u.inputTokens);
+        sinceLastLeg.outputTokens += nz(u.outputTokens);
+        sinceLastLeg.cacheReadTokens += nz(u.cacheReadTokens);
+        sinceLastLeg.cacheCreationTokens += nz(u.cacheCreationTokens);
+        sinceLastLeg.thinkingTokens += nz(u.thinkingTokens);
+    }
+
+    /** Called by the receipt once a leg has carried these numbers onto the run. */
+    public static void clearLegUsage() {
+        sinceLastLeg = new Usage();
+    }
+
+    private static Integer nz(Integer i) {
+        return i == null ? 0 : i;
+    }
 
     private static void readUsage(Usage u, Map<String, Object> raw) {
         if (raw == null) {

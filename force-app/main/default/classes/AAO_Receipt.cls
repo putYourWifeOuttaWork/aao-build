@@ -210,8 +210,22 @@ public with sharing class AAO_Receipt {
             leg.cpuLimit = Limits.getLimitCpuTime();
             leg.heap = Limits.getHeapSize();
             leg.heapLimit = Limits.getLimitHeapSize();
+            // **A FAILED LEG COSTS REAL MONEY AND MUST SAY SO.** RCPT-00000055 carried
+            // `callouts: 2` on each of two stage rows with every token field null: four paid
+            // model calls billed as zero, on the run that most needed pricing. The success
+            // path sums the StageResults a stage hands back; a stage that throws hands back
+            // nothing, so this reads what `AAO_Extract` banked as each response arrived. John's
+            // twenty-a-day arithmetic includes retries, and a receipt that under-bills exactly
+            // when the system is at its most expensive is worse than no receipt.
+            AAO_Extract.Usage spent = AAO_Extract.sinceLastLeg;
+            leg.inputTokens = nzi(spent.inputTokens);
+            leg.outputTokens = nzi(spent.outputTokens);
+            leg.thinkingTokens = nzi(spent.thinkingTokens);
+            leg.cacheReadTokens = nzi(spent.cacheReadTokens);
+            leg.cacheWriteTokens = nzi(spent.cacheCreationTokens);
             leg.error = message == null ? 'unknown' : message.abbreviate(500);
             mergeLeg(runKey, sourceId, leg);
+            AAO_Extract.clearLegUsage();
         } catch (Exception e) {
             System.debug(LoggingLevel.WARN, 'Failure leg not journalled: ' + e.getMessage());
         }
@@ -248,7 +262,14 @@ public with sharing class AAO_Receipt {
             leg.splits = splits == null ? 0 : splits;
             leg.produced = produced;
             summarise(leg, calls);
-            return mergeLeg(runKey, sourceId, leg);
+            AAO_Run_Receipt__c row = mergeLeg(runKey, sourceId, leg);
+            // THE LEG HAS CARRIED THESE NUMBERS AWAY, so the error path must not bill them a
+            // second time. `summarise` priced this stage from the results it was handed;
+            // anything banked before now is on the receipt already. What accrues after this
+            // line belongs to whatever comes next, and if that throws, the failure leg gets
+            // exactly it and nothing of this stage's.
+            AAO_Extract.clearLegUsage();
+            return row;
         } catch (Exception e) {
             // A LOST TIMING IS A SMALL LOSS; A LOST RUN IS NOT. Loud in the log, silent to the
             // caller, and deliberately never rethrown.

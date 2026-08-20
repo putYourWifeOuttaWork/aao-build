@@ -199,6 +199,7 @@ public with sharing class AAO_CriterionMatch {
         spec.charter = 'AAO_CriterionMatch';
         spec.charterVersion = VERSION;
         spec.model = cfg.verifyModel;
+        AAO_Extract.asClass(spec, AAO_Extract.CLASS_MATCH);
         spec.effort = null;
         spec.temperature = cfg.verifyTemperature;
 

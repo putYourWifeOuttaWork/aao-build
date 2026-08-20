@@ -52,6 +52,16 @@ public with sharing class AAO_DemoController {
         @AuraEnabled public Integer claims = 0;
         @AuraEnabled public Integer answers = 0;
         @AuraEnabled public Integer cards = 0;
+
+        /**
+         * WHAT THE RUN COST, beside what it took. The 139th's item 1: a rehearsal that prints its
+         * own token bill answers the cost question with a receipt instead of arithmetic.
+         */
+        @AuraEnabled public Long inputTokens = 0;
+        @AuraEnabled public Long outputTokens = 0;
+        @AuraEnabled public Long thinkingTokens = 0;
+        @AuraEnabled public Long cacheReadTokens = 0;
+        @AuraEnabled public Long cacheWriteTokens = 0;
     }
 
     /**
@@ -528,6 +538,10 @@ public with sharing class AAO_DemoController {
         return 'Resuming at "' + next + '". Work already done is not repeated.';
     }
 
+    private static Long tok(Decimal d) {
+        return d == null ? 0 : d.longValue();
+    }
+
     /**
      * What the run has journalled. Called on a poll; cheap and read-only by construction.
      *
@@ -552,6 +566,11 @@ public with sharing class AAO_DemoController {
                 ? 0
                 : row.AAO_Worst_Callout_Ms__c.longValue();
             v.cacheState = row.AAO_Cache_State__c;
+            v.inputTokens = tok(row.AAO_Input_Tokens__c);
+            v.outputTokens = tok(row.AAO_Output_Tokens__c);
+            v.thinkingTokens = tok(row.AAO_Thinking_Tokens__c);
+            v.cacheReadTokens = tok(row.AAO_Cache_Read_Tokens__c);
+            v.cacheWriteTokens = tok(row.AAO_Cache_Write_Tokens__c);
             // **THE LAST LEG PER STAGE IS THE ONE THAT COUNTS**, and this is the whole reason a
             // resume looked like it did nothing.
             //

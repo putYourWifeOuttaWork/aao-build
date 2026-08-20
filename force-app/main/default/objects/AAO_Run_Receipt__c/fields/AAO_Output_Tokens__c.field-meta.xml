@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Output_Tokens__c</fullName>
+    <description>Generated tokens summed across every model callout. INCLUDES thinking tokens, which is the provider's own accounting and is why the thinking number is carried beside it rather than instead of it. Written by: Receipt, summed from the provider's own usage block. Read by: nobody in the pass - TELEMETRY IS OBSERVATION AND NO BRANCH MAY READ IT, so a number that is wrong can never be a run that is wrong.</description>
+    <label>Output Tokens</label>
+    <precision>12</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

@@ -159,6 +159,10 @@ public with sharing class AAO_Pass {
 
         AAO_Extract.StageSpec spec = AAO_Extract.inventorySpec();
         spec.stage = 'call0_resolve';
+        // CALL 0 IS THE ROUTER CLASS. It builds from the read spec because that is where the
+        // endpoint and credential live, and it is not a read: it routes and resolves and
+        // establishes nothing, which is why the ladder has always had it downsizing SECOND.
+        AAO_Extract.asClass(spec, AAO_Extract.CLASS_ROUTER);
         spec.charter = 'AAO_ResolverCharter';
         spec.charterVersion = AAO_ResolverCharter.effectiveVersion();
 
@@ -1082,6 +1086,10 @@ public with sharing class AAO_Pass {
             spec.charter = 'AAO_VerifyPairsCharter';
             spec.charterVersion = AAO_VerifyPairsCharter.VERSION;
             spec.model = vcfg.verifyModel;
+            // CALL 3 IS THE VERIFY CLASS, said out loud. It builds from the READ spec and then
+            // re-points the model, which is exactly the arrangement that let the reader and the
+            // verifier be the same model on the wire for three weeks while the config named two.
+            AAO_Extract.asClass(spec, AAO_Extract.CLASS_VERIFY);
             // AND CALL 3 BUYS NO THINKING. `verifySpec()` has always omitted effort on purpose,
             // in its own words: the verifier "is answering a low-inference question about two
             // pieces of text, and buying thinking tokens for that is paying for deliberation

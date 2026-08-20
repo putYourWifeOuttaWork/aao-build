@@ -240,6 +240,10 @@ public with sharing class AAO_CardFace {
         spec.charter = 'AAO_CardFace';
         spec.charterVersion = VERSION;
         spec.model = cfg.verifyModel;
+        // NAMED AS THE MATCH CLASS. The face call carries the closed-list match, so it is the
+        // match class rather than the verify class it borrows a model from today - and naming it
+        // is what lets an org point the two somewhere different without touching code.
+        AAO_Extract.asClass(spec, AAO_Extract.CLASS_MATCH);
         // No thinking bought, for the reason call 3 buys none: this is a low-inference rewrite.
         spec.effort = null;
         spec.temperature = cfg.verifyTemperature;

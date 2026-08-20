@@ -181,10 +181,38 @@ public class AAO_Extract {
         s.maxTokens = cfg.inventoryMaxOutputTokens == null
             ? cfg.maxOutputTokens
             : cfg.inventoryMaxOutputTokens;
+        // THE CALL-CLASS RECORD, LAST, so it overrides the per-role fields where an org states
+        // one and changes nothing where none exists. `inventorySpec` is the READ class - it is
+        // also what call 0 and the resolution model leg build from today, so those resolve here
+        // too and each names its own class below rather than inheriting this one silently.
+        CallClassConfig cc = forClass(CLASS_READ, s.model, s.effort, s.maxTokens);
+        s.model = cc.model;
+        s.effort = cc.effort;
+        s.maxTokens = cc.maxOutputTokens;
         s.charter = cfg.inventoryCharter;
         s.charterVersion = cfg.inventoryCharterVersion;
         s.cachePrefix = true;
         return s;
+    }
+
+    /**
+     * The same spec, re-resolved for a DIFFERENT call class.
+     *
+     * Call 0, call 3 and the match call all build from `inventorySpec()` today and then overwrite
+     * the model by hand - which is how call 3 spent three weeks on the READ model while the
+     * config named another, the drift the forty-first stamp closed. This is the one place that
+     * re-points a spec at its own class, so a caller states which call it is making instead of
+     * mutating fields and hoping.
+     */
+    public static StageSpec asClass(StageSpec spec, String callClass) {
+        if (spec == null) {
+            return spec;
+        }
+        CallClassConfig cc = forClass(callClass, spec.model, spec.effort, spec.maxTokens);
+        spec.model = cc.model;
+        spec.effort = cc.effort;
+        spec.maxTokens = cc.maxOutputTokens;
+        return spec;
     }
 
     public static StageSpec bindSpec() {
@@ -330,6 +358,83 @@ public class AAO_Extract {
         }
         r.promptChars = chars;
         return r;
+    }
+
+    // ==================================================== per-call-class config · 139th (ii)
+
+    /** The four classes of call this pass makes. Named so a typo cannot resolve to a silent
+     *  fallback the way an unrecognised module could not resolve to a silent true. */
+    public static final String CLASS_ROUTER = 'router';
+    public static final String CLASS_READ = 'read';
+    public static final String CLASS_VERIFY = 'verify';
+    public static final String CLASS_MATCH = 'match';
+
+    /**
+     * ===== WHAT ONE CLASS OF CALL IS CONFIGURED TO USE.
+     *
+     * The hundred-thirty-ninth's item 2. Today one `Default` record drives everything through
+     * per-ROLE FIELDS - `AAO_Inventory_Model__c`, `AAO_Verify_Model__c`, `AAO_Bind_Model__c` -
+     * and the shape of that is the problem rather than the values in it: **fields were added one
+     * class at a time, so the match call has no field at all and rides verify's.** A field per
+     * class means a schema change per class; a RECORD per class means an admin adds a row.
+     *
+     * **NOTHING CHANGES TODAY AND THAT IS THE ACCEPTANCE TEST.** Only `Default` ships, no record
+     * names a call class, so every class resolves to exactly the values its caller already passed
+     * and every current run behaves identically. Downsizing the referee is a MEASUREMENT-gated
+     * move, not a default, so no record ships populated to make one.
+     *
+     * The fallback is the CALLER'S OWN current values rather than `AAO_Model_Name__c`, which
+     * matters: the reads run on `AAO_Inventory_Model__c` today and falling back to the generic
+     * model field would have quietly re-pointed them.
+     */
+    public class CallClassConfig {
+        public String model;
+        public String effort;
+        public Integer maxOutputTokens;
+    }
+
+    @TestVisible
+    private static Map<String, AAO_Model_Config__mdt> byCallClass;
+
+    public static CallClassConfig forClass(
+        String callClass, String fallbackModel, String fallbackEffort, Integer fallbackMax
+    ) {
+        CallClassConfig out = new CallClassConfig();
+        out.model = fallbackModel;
+        out.effort = fallbackEffort;
+        out.maxOutputTokens = fallbackMax;
+        if (String.isBlank(callClass)) {
+            return out;
+        }
+        if (byCallClass == null) {
+            byCallClass = new Map<String, AAO_Model_Config__mdt>();
+            for (AAO_Model_Config__mdt m : [
+                SELECT AAO_Call_Class__c, AAO_Model_Name__c, AAO_Effort__c,
+                       AAO_Max_Output_Tokens__c, AAO_Active__c
+                FROM AAO_Model_Config__mdt
+                WHERE AAO_Call_Class__c != null
+            ]) {
+                byCallClass.put(m.AAO_Call_Class__c.toLowerCase().trim(), m);
+            }
+        }
+        AAO_Model_Config__mdt m = byCallClass.get(callClass.toLowerCase());
+        if (m == null || m.AAO_Active__c != true) {
+            // No record for this class, or one switched off. The caller's own values stand, which
+            // is what makes an org that configures nothing behave exactly as it does today.
+            return out;
+        }
+        // EACH FIELD OVERRIDES INDEPENDENTLY. A record naming only a model keeps the caller's
+        // effort and ceiling; a blank is "say nothing about this", never "set it to nothing".
+        if (String.isNotBlank(m.AAO_Model_Name__c)) {
+            out.model = m.AAO_Model_Name__c;
+        }
+        if (String.isNotBlank(m.AAO_Effort__c)) {
+            out.effort = m.AAO_Effort__c;
+        }
+        if (m.AAO_Max_Output_Tokens__c != null) {
+            out.maxOutputTokens = m.AAO_Max_Output_Tokens__c.intValue();
+        }
+        return out;
     }
 
     @TestVisible

@@ -45,6 +45,35 @@ public with sharing class AAO_Receipt {
         public Integer heapLimit;
         /** COLD, WARM, or n/a where the stage made no model call at all. */
         public String cache;
+        /**
+         * ===== WHAT THIS STAGE COST, from the provider's own usage block. The 139th's item 1.
+         *
+         * **The numbers were on the wire the whole time.** `AAO_Extract.Usage` has parsed input,
+         * output, thinking, cache-read and cache-creation since it was written, and the receipt
+         * consumed exactly one of them - cache-read, and only to decide whether to print COLD or
+         * WARM. So a run could say how long it took and never what it cost, and three sessions of
+         * timing tables answered "is this fast enough" while "is this affordable" was arithmetic
+         * on a whiteboard.
+         *
+         * **INPUT EXCLUDES CACHE-READ, deliberately.** They bill at roughly a tenth, so summing
+         * them into one number would make the cheap runs look expensive and hide whether the
+         * artifact-first prefix reorder is working. Two numbers, two prices, and the reader can
+         * add them if they want a token count rather than a bill.
+         *
+         * **OUTPUT INCLUDES THINKING and thinking is carried beside it**, because that is the
+         * provider's own accounting and because the two together are what separate a truncated
+         * read's two possible causes - a small answer behind a long deliberation, or a long
+         * answer with none.
+         *
+         * **NO BRANCH MAY READ ANY OF THIS.** Telemetry is observation; the moment a run's
+         * behaviour depends on it, a wrong number becomes a wrong run, and the receipt stops
+         * being a record of what happened and becomes an input to it.
+         */
+        public Integer inputTokens;
+        public Integer outputTokens;
+        public Integer thinkingTokens;
+        public Integer cacheReadTokens;
+        public Integer cacheWriteTokens;
         public Integer splits;
         /** What the stage produced, where it has a number worth carrying. */
         public Integer produced;
@@ -294,7 +323,9 @@ public with sharing class AAO_Receipt {
             SELECT Id, AAO_Run_Key__c, AAO_Stages__c, AAO_Stage_Count__c, AAO_Total_Wall_Ms__c,
                 AAO_Worst_Callout_Ms__c, AAO_Callouts__c, AAO_Cache_State__c,
                 AAO_Split_Events__c, AAO_Charter_Versions__c, AAO_Normalizer_Version__c,
-                AAO_First_Stage_At__c, AAO_Last_Stage_At__c
+                AAO_First_Stage_At__c, AAO_Last_Stage_At__c,
+                AAO_Input_Tokens__c, AAO_Output_Tokens__c, AAO_Thinking_Tokens__c,
+                AAO_Cache_Read_Tokens__c, AAO_Cache_Write_Tokens__c
             FROM AAO_Run_Receipt__c
             WHERE AAO_Opportunity__c = :opportunityId AND AAO_Run_Key__c = :runKey
             ORDER BY AAO_Last_Stage_At__c DESC NULLS LAST
@@ -328,6 +359,11 @@ public with sharing class AAO_Receipt {
         leg.callouts = 0;
         leg.wallMs = 0;
         leg.worstCalloutMs = 0;
+        leg.inputTokens = 0;
+        leg.outputTokens = 0;
+        leg.thinkingTokens = 0;
+        leg.cacheReadTokens = 0;
+        leg.cacheWriteTokens = 0;
         if (calls == null || calls.isEmpty()) {
             leg.cache = 'n/a';
             return;
@@ -355,8 +391,15 @@ public with sharing class AAO_Receipt {
                         'asking to be re-run against fresh receipts.';
                 }
             }
-            if (c.usage != null && c.usage.cacheReadTokens != null && c.usage.cacheReadTokens > 0) {
-                warm = true;
+            if (c.usage != null) {
+                leg.inputTokens += nzi(c.usage.inputTokens);
+                leg.outputTokens += nzi(c.usage.outputTokens);
+                leg.thinkingTokens += nzi(c.usage.thinkingTokens);
+                leg.cacheReadTokens += nzi(c.usage.cacheReadTokens);
+                leg.cacheWriteTokens += nzi(c.usage.cacheCreationTokens);
+                if (c.usage.cacheReadTokens != null && c.usage.cacheReadTokens > 0) {
+                    warm = true;
+                }
             }
             if (String.isNotBlank(c.charter)) {
                 charters.add(c.charter + '@' + c.charterVersion);
@@ -381,7 +424,14 @@ public with sharing class AAO_Receipt {
             SELECT Id, AAO_Receipt_Key__c, AAO_Stages__c, AAO_Stage_Count__c,
                 AAO_Total_Wall_Ms__c, AAO_Worst_Callout_Ms__c, AAO_Callouts__c,
                 AAO_Cache_State__c, AAO_Split_Events__c, AAO_Charter_Versions__c,
-                AAO_First_Stage_At__c
+                AAO_First_Stage_At__c,
+                // THE TOKEN ROLL-UPS ARE SELECTED FOR THE SAME REASON THE KEY IS, and the
+                // comment above is the warning: `mergeLeg` ACCUMULATES onto these, so a row read
+                // without them throws on the first read of an unselected field, and this class's
+                // own swallow-and-log policy would then hide the throw and silently drop every
+                // leg after the first. Read the comment above, then this line.
+                AAO_Input_Tokens__c, AAO_Output_Tokens__c, AAO_Thinking_Tokens__c,
+                AAO_Cache_Read_Tokens__c, AAO_Cache_Write_Tokens__c
             FROM AAO_Run_Receipt__c
             WHERE AAO_Receipt_Key__c = :key
             LIMIT 1
@@ -402,6 +452,16 @@ public with sharing class AAO_Receipt {
         row.AAO_Stage_Count__c = legs.size();
         row.AAO_Total_Wall_Ms__c = nz(row.AAO_Total_Wall_Ms__c) + leg.wallMs;
         row.AAO_Callouts__c = nz(row.AAO_Callouts__c) + leg.callouts;
+        // THE RUN'S BILL, accumulated leg by leg exactly as the callout count already is. A
+        // resumed run keeps adding, which is right: the tokens a stage spent before it died were
+        // still spent, and a bill that forgot them would understate the cost of a failure.
+        row.AAO_Input_Tokens__c = nz(row.AAO_Input_Tokens__c) + nzi(leg.inputTokens);
+        row.AAO_Output_Tokens__c = nz(row.AAO_Output_Tokens__c) + nzi(leg.outputTokens);
+        row.AAO_Thinking_Tokens__c = nz(row.AAO_Thinking_Tokens__c) + nzi(leg.thinkingTokens);
+        row.AAO_Cache_Read_Tokens__c =
+            nz(row.AAO_Cache_Read_Tokens__c) + nzi(leg.cacheReadTokens);
+        row.AAO_Cache_Write_Tokens__c =
+            nz(row.AAO_Cache_Write_Tokens__c) + nzi(leg.cacheWriteTokens);
         row.AAO_Split_Events__c = nz(row.AAO_Split_Events__c) + leg.splits;
         if (leg.worstCalloutMs > nz(row.AAO_Worst_Callout_Ms__c)) {
             row.AAO_Worst_Callout_Ms__c = leg.worstCalloutMs;
@@ -482,6 +542,11 @@ public with sharing class AAO_Receipt {
         } catch (Exception e) {
             System.debug(LoggingLevel.WARN, 'Receipt wall not patched: ' + e.getMessage());
         }
+    }
+
+    /** A null token count is a call that reported none, which is zero rather than unknown. */
+    private static Integer nzi(Integer i) {
+        return i == null ? 0 : i;
     }
 
     private static Long nz(Decimal d) {

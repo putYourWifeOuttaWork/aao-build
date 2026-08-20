@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AAO_Thinking_Tokens__c</fullName>
+    <description>The deliberation half of output, broken out. Output includes it and it counts against max_tokens, so a truncated read is ambiguous without this: a small answer behind a long deliberation and a long answer with none look identical on output alone. Written by: Receipt, summed from the provider's own usage block. Read by: nobody in the pass - TELEMETRY IS OBSERVATION AND NO BRANCH MAY READ IT, so a number that is wrong can never be a run that is wrong.</description>
+    <label>Thinking Tokens</label>
+    <precision>12</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

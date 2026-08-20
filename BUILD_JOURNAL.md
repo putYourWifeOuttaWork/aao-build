@@ -2081,3 +2081,42 @@ the stage list omitted, so they drew nothing.
 
 `AAO_ProcessPanelTest` 7 of 7, `AAO_ModulesTest` 5 of 5. **Suite 602, 601 passing**, the one
 failure the standing non-AAO `ConvertToOpportunityTest`.
+
+---
+
+## Session 113 · The applicable set becomes a per-deal fact
+
+133rd, queued first by the 135th. Tree `/Users/thefinalmachine/Downloads/claude` (`main`).
+
+**THE CHAIN, MEASURED:** the settings row's `ALTF__Opportunity_Plan_Type__c` names the FIELD, and
+in this org it reads `Type`. Eleven plan types exist, nine of them the org's own real ones. The
+pointer names a field, so the field is read BY NAME at runtime and validated against the describe
+before it reaches a query - a name concatenated into SOQL unchecked is an injection surface
+whatever its provenance. Package default semantics mirrored: empty, null and unmapped all resolve
+to EVERY ACTIVE QUESTION, never to none.
+
+**PROVEN BOTH WAYS:** null Type -> 21, `Renewal` -> 0, `AAO BANT (Sandbox)` -> 15. Before the fix
+all three read 15. Renewal resolving to zero is honest: it lists thirteen vendor codes and this org
+holds no active question for any of them.
+
+**A CORRECTION TO THE STAMP, measured.** The 133rd says "every demo deal sits on the seeded plan
+type". **No demo deal does - every AAO deal carries `Type = null`.** They reached the fifteen only
+because the constant took them there. The conclusion still holds; the reason given does not.
+
+**THE COLLISION THE FIX MADE REACHABLE.** 21 active questions here: our fifteen plus the six
+`AAO_T*` whose contracts the 129th RETIRED. Read-before-write asks for LIVE contracts, so a retired
+one is invisible to it, and mint-on-first-encounter would have created six fresh contracts and
+silently undone a deliberate retirement - one ruling undoing another. Guard added: 99 contracts
+before, 99 after, six declined by name. It SKIPS where `AAO_Criteria.mint` THROWS, deliberately: a
+criterion mint is one row in one run, and throwing here would make a whole class of deals
+unrunnable for a reason that is ours rather than the org's.
+
+**THE WRAPPER PROBE (133rd item 4), answered.** All nine wrappers: three carry real mapped plan
+types and hold ZERO shells, so generation does not fire on an API-created wrapper and plan type is
+not what decides it. The single wrapper with shells has type `Proof of Concept`, which is **not in
+the Plan Type List at all** - so its three shells did not come from the chain, leaving first-UI-
+touch the only standing explanation, still UNVERIFIED because nothing here can touch the vendor UI.
+What is now measured rather than argued: the chain walk must be the primary read, since shells are
+absent on eight of nine.
+
+`AAO_ProcessContractsTest` 5 of 5, new. **Suite 607, 606 passing**, the standing non-AAO failure.

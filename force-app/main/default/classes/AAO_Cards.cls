@@ -67,6 +67,15 @@ public with sharing class AAO_Cards {
      * one run's output — and the run key is telemetry here saying which pass paid for the time.
      */
     public static Outcome run(Id opportunityId, String runKey) {
+        // THE PROJECTION TARGET, gated (134th's ladder). Insight Map absent removes exactly
+        // this: the target. The harvest still lands as claims and answers on our own ledger, the
+        // reads cost the same, and nothing about Problems changes except that no card is drawn.
+        // Absence with its reason, never a thrown run - and never a half-written board.
+        if (!AAO_Modules.present(AAO_Modules.INSIGHT_MAP, opportunityId)) {
+            Outcome absent = new Outcome();
+            absent.notes.add(AAO_Modules.absenceNote(AAO_Modules.INSIGHT_MAP));
+            return absent;
+        }
         Long startedAt = System.currentTimeMillis();
         Outcome o = run(opportunityId);
         AAO_Receipt.record(

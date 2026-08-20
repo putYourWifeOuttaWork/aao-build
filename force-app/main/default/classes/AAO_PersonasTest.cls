@@ -19,13 +19,30 @@ private class AAO_PersonasTest {
             byPersona.containsKey('Altify Program Owner'),
             'Keyed to the STORED value, label hazard and all: ' + byPersona.keySet()
         );
+        // **TEN BLANK, TWO SEEDED, and the two are Matthew's own.** This test used to assert all
+        // twelve blank, which was true and became wrong at the hundred-thirty-sixth: he
+        // authorized a DEMO SEED of Executive Sponsor and Procurement Lead so the Brightwell arc
+        // has a ghost to show. The property worth keeping is unchanged and is what is asserted
+        // now: **the seed states no methodology nobody gave it.** Ten rows still say nothing,
+        // and the two that speak were spoken for.
+        Set<String> seeded = new Set<String>{ 'Executive Sponsor', 'Procurement Lead' };
+        Integer blank = 0;
         for (AAO_Personas.Expectation e : byPersona.values()) {
+            if (seeded.contains(e.persona)) {
+                System.assertNotEquals(
+                    null, e.expectedFromStage,
+                    e.persona + ' carries the demo seed Matthew authorized at the 136th.'
+                );
+                continue;
+            }
             System.assertEquals(
                 null, e.expectedFromStage,
-                'Our seed ships NO GUIDANCE on the content: which personas a stage expects is a ' +
-                'methodology statement and nothing states one. ' + e.persona + ' must be blank.'
+                'Which personas a stage expects is a methodology statement and nothing states ' +
+                'one for ' + e.persona + '. It must stay blank.'
             );
+            blank++;
         }
+        System.assertEquals(10, blank, 'Ten rows still say nothing, which is the honest default.');
     }
 
     // ======================================================================= the match
@@ -68,14 +85,27 @@ private class AAO_PersonasTest {
 
     @IsTest
     static void aBLANKEXPECTATIONNEVERGHOSTS() {
-        // The seeded state, unchanged: twelve personas, every expectation blank. **Blank is never
-        // read as stage zero**, the same null semantics the by-stage marker carries.
+        // **BLANK IS NEVER READ AS STAGE ZERO**, the same null semantics the by-stage marker
+        // carries. Asserted against the BLANK rows specifically rather than against the whole
+        // sheet: the sheet used to be entirely blank and is not since the 136th's demo seed, and
+        // a test that depended on that would keep breaking every time a row is graded. The
+        // property is about a blank row, so it is asked of blank rows.
         Fixture f = fixture('Stage 4', 'Director, Revenue Operations', false);
         AAO_Personas.Reading r = AAO_Personas.ghostsOn(f.oppId);
-        System.assertEquals(
-            0, r.ghosts.size(),
-            'Last open stage, nothing expected, no ghost: ' + r.notes
-        );
+
+        Set<String> ghosted = new Set<String>();
+        for (AAO_Personas.Ghost g : r.ghosts) {
+            ghosted.add(g.persona);
+        }
+        for (AAO_Personas.Expectation e : AAO_Personas.expectations().values()) {
+            if (e.expectedFromStage == null) {
+                System.assert(
+                    !ghosted.contains(e.persona),
+                    e.persona + ' states no stage and must never ghost, even at the last open ' +
+                    'one. Got: ' + ghosted
+                );
+            }
+        }
     }
 
     @IsTest

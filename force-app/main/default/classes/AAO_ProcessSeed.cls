@@ -98,9 +98,23 @@ public class AAO_ProcessSeed {
               'Has the decision maker participated directly in a conversation with us?',
               new List<String>{ 'the decision maker participated directly',
                                 'the participation was in a conversation with us' }),
+            // ===== A3, REWORDED BY MATTHEW'S RULING AT THE HUNDRED-THIRTY-SIXTH.
+            //
+            // His words: *"Wrong, who else can also be no-one and that is the best answer we can
+            // get, rare, but best."* The proof run read *"there is nobody above me on it. It is
+            // my decision, full stop"* as a DENIED, and the blind verifier was right to: the
+            // contract asked who ELSE must approve, and the customer said nobody else does. **The
+            // reader applied the words it was given, faithfully.** The tuning lives in the
+            // proposition, which is the a23 class exactly, so the words move and the machinery
+            // does not.
+            //
+            // An empty chain IS a described chain, and the strongest one a deal can hold.
             q('A3', 'The approval chain is understood',
-              'Has the customer described who else must approve?',
-              new List<String>{ 'the customer describes who else must approve' }),
+              'Has the customer described the approval chain for this decision? An answer that ' +
+              'nobody else must approve IS a description of the chain, and the strongest one.',
+              new List<String>{
+                  'the customer describes the approval chain, which may end with them'
+              }),
             q('A4', 'Access to the decision maker exists',
               'Can we reach the decision maker without a blocker, per the customer\'s words?',
               new List<String>{ 'the decision maker is reachable',

@@ -70,9 +70,67 @@ public class AAO_Modules {
                 'neither of which should resolve to a silent true.'
             );
         }
-        // Hardcoded present. See the class header: detection is parked as unbuildable in this
-        // sandbox, and the rail exists so it lands in one place when it is not.
-        return !absent.contains(module);
+        if (absent.contains(module)) {
+            return false;
+        }
+        // **GRACEFUL REFUSAL, THE BUILDABLE HALF** (135th, finding one). §P4's law says a
+        // read-permission failure on an unlicensed module's tables reads as ABSENCE with a
+        // configuration note, and it was written law with no code behind it: zero
+        // `isAccessible`, `isQueryable`, `QueryException` or `NoAccessException` anywhere.
+        // `AAO_Cards` carried 157 `ALTF__` references and no try-block.
+        //
+        // This is what bites the FIRST MIXED-LICENSE CUSTOMER - Relationship Map licensed,
+        // Insights not - which is a real and common commercial shape and one no state of this
+        // sandbox can produce, since it licenses everything.
+        //
+        // **The describe is asked rather than the query attempted**, deliberately: an
+        // `isAccessible` check costs nothing, returns a Boolean, and cannot half-succeed, whereas
+        // catching the exception means every caller wraps every read and one that forgets throws
+        // anyway. The check is the facade's job; the callers just ask whether the module is there.
+        //
+        // **What this does NOT reach is rung 0**, and that is not this method's failure. Every
+        // class referencing `ALTF__` types statically carries a compile dependency on the package,
+        // so an org without it cannot deploy the code at all. That is the packaging decision the
+        // 135th put to Matthew with its two options, and no runtime check can answer it.
+        return readable(module);
+    }
+
+    /**
+     * Whether this module's own surface can actually be read by whoever is running.
+     *
+     * One representative object per module - the one whose absence IS the module's absence: the
+     * map rows, the insight cards, the assessment questions, the qualifiers. Checking every object
+     * a module owns would be more thorough and less useful, because a module whose primary table
+     * is unreadable is unlicensed and the rest follows.
+     */
+    @TestVisible
+    private static Boolean readable(String module) {
+        if (module == RELATIONSHIP_MAP) {
+            return ALTF__Contact_Map_Details__c.SObjectType.getDescribe().isAccessible();
+        }
+        if (module == INSIGHT_MAP) {
+            return ALTF__Insight_Card__c.SObjectType.getDescribe().isAccessible();
+        }
+        if (module == ASSESSMENT) {
+            return ALTF__Assessment_Question__c.SObjectType.getDescribe().isAccessible();
+        }
+        if (module == SALES_PROCESS) {
+            return ALTF__Sales_Process_Qualifier__c.SObjectType.getDescribe().isAccessible();
+        }
+        return false;
+    }
+
+    /**
+     * The configuration note a caller shows where a module is absent. **Absence with a reason,
+     * never an empty screen and never a thrown run** - §P4's own wording, and the difference
+     * between a customer who understands what they are not licensed for and one who thinks the
+     * product is broken.
+     */
+    public static String absenceNote(String module) {
+        return module + ' is not available on this org, so nothing was discovered from it and ' +
+            'nothing was projected to it. Everything AAO establishes still lands on our own ' +
+            'ledger and every other plane is unaffected. If that is wrong, it is a licence or a ' +
+            'permission question rather than a defect.';
     }
 
     /** The rung this deal sits on, 0 through 4, for a receipt or a report to say. */

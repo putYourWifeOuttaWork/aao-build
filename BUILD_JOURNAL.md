@@ -2120,3 +2120,54 @@ What is now measured rather than argued: the chain walk must be the primary read
 absent on eight of nine.
 
 `AAO_ProcessContractsTest` 5 of 5, new. **Suite 607, 606 passing**, the standing non-AAO failure.
+
+---
+
+## Session 114 · The 136th's three: A3's reword, the persona seed, graceful refusal
+
+**A3 REWORDED, and design's instruction assumed a mechanism that did not exist.** The instruction
+said the old contract supersedes "per the standing mechanism `AAO_ProcessContracts` already
+carries" - the class carried a NOTE saying superseded and ZERO occurrences of the state. An edited
+question would have put two live contracts on one rubric row, both riding the reads. Unreachable
+until now because no question had ever been edited; A3 is the first. Design reasoned from a comment
+to a mechanism, the 128th's error class one layer along. Built, then reworded, measured: old
+`Superseded` with its pointer set, new `Derived`. Successor inserted BEFORE predecessor stands
+down, so no window has a question with no live contract. The proof deal's A3 red is wrong by ruling
+and corrects on re-run; nothing hand-edited.
+
+**THE PERSONA SEED, and a TWO-AXIS finding it forced.** "Propose" and "Commit" are not on the axis
+the comparison uses. Two axes exist and nothing links them: `OpportunityStage` lives on the DEAL
+always; `ALTF__Stage__c` lives on the WRAPPER, is null on every wrapper here, and ~80% of installs
+have no wrapper. **So `stageOrdinalOf` reading OpportunityStage is right, and right for a reason.**
+Matthew's names translate onto it: Executive Sponsor at 3, Procurement Lead at 4, translation
+stated on the rows. Live and proven - Wells Fargo at Stage 3 now stands an Executive Sponsor ghost.
+**One line for design: the 130th's run-sheet line names the Altify axis and should name the
+opportunity one - and the rehearsal deal sits on `Qualify`, INACTIVE here, so no by-stage flag and
+no ghost can fire on it at all.** That is the one data condition between the rehearsal and its
+Process plane.
+
+**GRACEFUL REFUSAL, built at the facade.** `present()` now asks the describe - one representative
+object per module, the one whose absence IS the module's absence. The describe is asked rather than
+the query attempted: `isAccessible()` cannot half-succeed, while catching the exception means every
+caller wraps every read and the one that forgets throws anyway. `absenceNote()` says what is absent
+AND what still stands. The two things a module's absence removes are routed through it: Assessment
+absent removes the discovery source, Insight Map absent removes the projection target, and the
+harvest still lands on our ledger either way. **Does not reach rung 0** - static `ALTF__` references
+are a compile dependency and that is the packaging decision, not a runtime check. Verified by
+inspection plus unit-mocked refusal, because no state of this sandbox can produce a mixed-license
+org, and that is the boundary of what is proven.
+
+`AAO_ModulesTest` 7 of 7, two new.
+
+**The suite caught two of my own standing assertions.** `AAO_PersonasTest` asserted every persona
+expectation blank - true when written, wrong the moment the demo seed landed. Corrected rather than
+weakened: ten blank and two seeded BY NAME, because the property is that the seed states no
+methodology nobody gave it; and the never-ghosts test now asks the BLANK rows specifically so it
+stops depending on a sheet Matthew will keep grading. 12 of 12. **Suite 609, 608 passing.**
+
+**REHEARSAL READINESS: the 137th's item 5 named one data condition and there were TWO.** The deal
+also sat on `Qualify`, INACTIVE here, so it had no ordinal and no by-stage flag or ghost could ever
+fire on it. Both set: type null -> `AAO BANT (Sandbox)`, stage `Qualify` -> `Stage 3`. Measured
+before and after: applicable 21-with-six-declined -> 15 exactly; ghosts 0 -> 1 (Executive Sponsor);
+reds 0 -> 11. **The whole Process plane is alive on that deal for the first time**, with eleven
+standing reds waiting for the four calls to clear them, which is the arc.

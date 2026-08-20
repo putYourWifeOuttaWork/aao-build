@@ -8,7 +8,7 @@
     </values>
     <values>
         <field>AAO_Expected_From_Stage__c</field>
-        <value xsi:nil="true"/>
+        <value xsi:type="xsd:double">4.0</value>
     </values>
     <values>
         <field>AAO_Title_Patterns__c</field>
@@ -16,6 +16,6 @@
     </values>
     <values>
         <field>AAO_Note__c</field>
-        <value xsi:type="xsd:string">NO GUIDANCE on the stage.</value>
+        <value xsi:type="xsd:string">DEMO SEED (136th, Matthew): expected from Commit, translated onto the opportunity-stage axis as ordinal 4, the last open stage. See the Executive Sponsor row for why this axis.</value>
     </values>
 </CustomMetadata>

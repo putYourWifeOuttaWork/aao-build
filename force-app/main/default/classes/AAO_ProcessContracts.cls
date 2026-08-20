@@ -42,11 +42,13 @@ public class AAO_ProcessContracts {
         public Integer reused = 0;
         /** Questions whose contract stands RETIRED, declined rather than silently re-minted. */
         public Integer retired = 0;
+        /** Previous generations stood down because the org edited the question's words. */
+        public Integer superseded = 0;
         public List<String> notes = new List<String>();
         public override String toString() {
             return 'PROCESS CONTRACTS\n  questions read ' + read +
                 '\n  contracts minted ' + minted + ', reused ' + reused +
-                ', declined as retired ' + retired +
+                ', declined as retired ' + retired + ', superseded ' + superseded +
                 (notes.isEmpty() ? '' : '\n  ' + String.join(notes, '\n  '));
         }
     }
@@ -88,6 +90,13 @@ public class AAO_ProcessContracts {
      * Apex composes every query from typed fields, applied to a field name as much as to a value.
      */
     public static List<ALTF__Assessment_Question__c> discoverQuestions(Id opportunityId) {
+        // THE DISCOVERY SOURCE, gated (134th's ladder, 135th's finding one). Assessment absent
+        // removes exactly this: the source. Nothing else about Process changes - the charter
+        // reads the same, our ledger lands everything, and the questions simply are not there to
+        // find. Absence, never a thrown run.
+        if (!AAO_Modules.present(AAO_Modules.ASSESSMENT, opportunityId)) {
+            return new List<ALTF__Assessment_Question__c>();
+        }
         String planType = planTypeOf(opportunityId);
 
         Set<String> codes = null;
@@ -212,9 +221,11 @@ public class AAO_ProcessContracts {
         r.read = qs.size();
         if (qs.isEmpty()) {
             r.notes.add(
-                'No assessment questions are reachable for this deal through the org\'s own ' +
-                'plan-type chain, and none are active. Process reads nothing, which is graceful ' +
-                'absence rather than an error.'
+                AAO_Modules.present(AAO_Modules.ASSESSMENT, opportunityId)
+                    ? 'No assessment questions are reachable for this deal through the org\'s ' +
+                      'own plan-type chain, and none are active. Process reads nothing, which ' +
+                      'is graceful absence rather than an error.'
+                    : AAO_Modules.absenceNote(AAO_Modules.ASSESSMENT)
             );
             return r;
         }
@@ -266,6 +277,8 @@ public class AAO_ProcessContracts {
         }
 
         List<AAO_Evidence_Contract__c> toInsert = new List<AAO_Evidence_Contract__c>();
+        // The previous generation of any question whose words changed this run.
+        Set<Id> supersede = new Set<Id>();
         for (ALTF__Assessment_Question__c q : qs) {
             String code = q.ALTF__AltifyId__c;
             if (retired.contains(code) && !standing.containsKey(code)) {
@@ -297,11 +310,22 @@ public class AAO_ProcessContracts {
                 continue;
             }
             if (already != null) {
+                // ===== AND IT IS ACTUALLY SUPERSEDED NOW. The note below has said "superseded"
+                // since this class was written and NOTHING SUPERSEDED - zero occurrences of the
+                // state anywhere in the class. The old contract stayed LIVE beside the new one,
+                // so an edited question would have put TWO live contracts on one rubric row and
+                // both would have ridden the reads.
+                //
+                // A comment asserting a property the code does not hold is the green-suite hazard
+                // in miniature, and the hundred-thirty-second named that exact shape one build
+                // ago on `writeLinks`. It was unreachable until now because no question had ever
+                // been edited; the A3 reword is the first, which is how it surfaced.
+                supersede.add(already.Id);
                 r.notes.add(
                     code + ': the org edited the question, so this is a new generation. The ' +
-                    'previous contract stands and is superseded rather than replaced, because ' +
-                    'claims adjudicated under the old words were adjudicated against something ' +
-                    'the new one does not say.'
+                    'previous contract is SUPERSEDED rather than replaced, because claims ' +
+                    'adjudicated under the old words were adjudicated against something the new ' +
+                    'one does not say, and nothing about that history is rewritten.'
                 );
             }
             toInsert.add(new AAO_Evidence_Contract__c(
@@ -381,6 +405,34 @@ public class AAO_ProcessContracts {
         if (!toInsert.isEmpty()) {
             insert toInsert;
             r.minted = toInsert.size();
+        }
+        // AFTER the insert, deliberately: the successor exists before its predecessor stops being
+        // live, so no window has a question with no live contract at all. Nothing is deleted and
+        // the superseded row stays readable as the record of what the old words said.
+        if (!supersede.isEmpty()) {
+            Map<String, AAO_Evidence_Contract__c> successorByCode =
+                new Map<String, AAO_Evidence_Contract__c>();
+            for (AAO_Evidence_Contract__c ec : toInsert) {
+                successorByCode.put(ec.AAO_Proposition_Code__c, ec);
+            }
+            List<AAO_Evidence_Contract__c> old = [
+                SELECT Id, AAO_Proposition_Code__c
+                FROM AAO_Evidence_Contract__c
+                WHERE Id IN :supersede
+            ];
+            for (AAO_Evidence_Contract__c ec : old) {
+                ec.AAO_Contract_State__c = 'Superseded';
+                AAO_Evidence_Contract__c successor =
+                    successorByCode.get(ec.AAO_Proposition_Code__c);
+                if (successor != null) {
+                    // THE POINTER, not just the state. A superseded row that does not name what
+                    // took over is a dead end for anyone walking the chain later, and this object
+                    // has carried the field for exactly this since before it was ever set.
+                    ec.AAO_Superseded_By__c = successor.Id;
+                }
+            }
+            update old;
+            r.superseded = old.size();
         }
         return r;
     }

@@ -87,4 +87,58 @@ private class AAO_ModulesTest {
         System.assert(said.contains('Sales Process=absent'), said);
         System.assert(said.contains('Assessment=present'), said);
     }
+
+    /**
+     * **GRACEFUL REFUSAL IS ABSENCE WITH A REASON, NEVER A THROWN RUN.** §P4's law, which was
+     * written law with no code behind it until now - zero `isAccessible` checks anywhere, and
+     * `AAO_Cards` carrying 157 `ALTF__` references with no try-block.
+     */
+    @IsTest
+    static void anABSENTMODULEREMOVESITSSOURCEANDITSTARGETANDNOTHINGELSE() {
+        AAO_Ingest.AUTO = false;
+        AAO_Synthetic.MARK = true;
+        Account a = new Account(Name = 'AAO Modules Test');
+        insert a;
+        Opportunity o = new Opportunity(
+            Name = 'AAO Modules Deal', AccountId = a.Id,
+            StageName = 'Stage 2', CloseDate = Date.today().addDays(30)
+        );
+        insert o;
+        AAO_Synthetic.MARK = false;
+
+        // ASSESSMENT ABSENT removes the DISCOVERY SOURCE and nothing else.
+        AAO_Modules.absent = new Set<String>{ AAO_Modules.ASSESSMENT };
+        System.assertEquals(
+            0, AAO_ProcessContracts.discoverQuestions(o.Id).size(),
+            'No source, so nothing is discovered - and it returns rather than throwing.'
+        );
+        AAO_ProcessContracts.Result r = AAO_ProcessContracts.mint(o.Id);
+        System.assertEquals(0, r.minted, 'Nothing minted: ' + r);
+        System.assert(
+            String.join(r.notes, ' ').contains('not available on this org'),
+            'And the run says why in words: ' + r.notes
+        );
+
+        // INSIGHT MAP ABSENT removes the PROJECTION TARGET and nothing else.
+        AAO_Modules.absent = new Set<String>{ AAO_Modules.INSIGHT_MAP };
+        AAO_Cards.Outcome cards = AAO_Cards.run(o.Id, 'modules-test');
+        System.assertEquals(0, cards.created, 'No target, so no card is drawn.');
+        System.assert(
+            String.join(cards.notes, ' ').contains('not available on this org'),
+            'With its reason: ' + cards.notes
+        );
+    }
+
+    /** The note says what is absent and what still works, because a customer who reads
+     *  "unavailable" and nothing else concludes the product is broken. */
+    @IsTest
+    static void theABSENCENOTESAYSWHATSTILLSTANDS() {
+        String note = AAO_Modules.absenceNote(AAO_Modules.INSIGHT_MAP);
+        System.assert(note.contains('Insight Map'), note);
+        System.assert(note.contains('our own ledger'), 'What still lands: ' + note);
+        System.assert(
+            note.contains('licence') || note.contains('permission'),
+            'And where to look if it is wrong: ' + note
+        );
+    }
 }

@@ -21,12 +21,15 @@ private class AAO_ProcessSeedTest {
             SELECT ALTF__AltifyId__c FROM ALTF__Assessment_Question__c
             WHERE ALTF__AltifyId__c IN :AAO_ProcessSeed.questionCodes()
         ];
+        // THE COUNT MOVED AND THE CLAIM DID NOT. This once read fifteen, because sixteen was
+        // the conventional target and T3 was MOVED for failing the deal-killer bar rather than
+        // kept for symmetry. The set is sixteen again now - but NOT because T3 came back. The
+        // sixteenth is C1, minted for CLOSEPLAN, and the assertion below still holds T3 out.
+        // A test that only counted would have gone green on T3's restoration; this one cannot.
         System.assertEquals(
-            15,
+            AAO_ProcessSeed.questionCodes().size(),
             rows.size(),
-            'Sixteen was the conventional target; the graded set is FIFTEEN because T3 failed ' +
-            'the deal-killer bar and was MOVED rather than kept for symmetry - the inversion ' +
-            'law grading its own instrument.'
+            'Every code the seed declares is a standing question, or the rubric is partial.'
         );
         Set<String> codes = new Set<String>();
         for (ALTF__Assessment_Question__c r : rows) {
@@ -69,7 +72,11 @@ private class AAO_ProcessSeedTest {
         AAO_ProcessSeed.Outcome second = AAO_ProcessSeed.run();
         Test.stopTest();
 
-        System.assertEquals(15, first.questionsInserted, 'The first run writes the set.');
+        System.assertEquals(
+            AAO_ProcessSeed.questionCodes().size(),
+            first.questionsInserted,
+            'The first run writes the set.'
+        );
         System.assertEquals(
             0,
             second.questionsInserted,
@@ -78,9 +85,13 @@ private class AAO_ProcessSeedTest {
             'by catching a duplicate, which is the hundred-sixteenth stamp\'s law and not a ' +
             'convenience.'
         );
-        System.assertEquals(15, second.questionsUpdated, 'It re-authors in place instead.');
         System.assertEquals(
-            15,
+            AAO_ProcessSeed.questionCodes().size(),
+            second.questionsUpdated,
+            'It re-authors in place instead.'
+        );
+        System.assertEquals(
+            AAO_ProcessSeed.questionCodes().size(),
             [SELECT COUNT() FROM ALTF__Assessment_Question__c
              WHERE ALTF__AltifyId__c IN :AAO_ProcessSeed.questionCodes()],
             'And the org holds one set, not two.'
@@ -217,10 +228,13 @@ private class AAO_ProcessSeedTest {
             'of ALTIFY CODES, not ids. That is a real ceiling on rubric size in any org and it ' +
             'is why the codes are short. Got ' + pt.ALTF__AssessmentQuestionIds__c.length()
         );
+        // DERIVED FROM THE RUBRIC, not hardcoded. This assertion broke when CLOSEPLAN was
+        // minted, and a count that has to be edited every time the rubric grows is a test that
+        // measures the editor rather than the code. What matters is that ALL of them are on it.
         System.assertEquals(
-            15,
+            AAO_ProcessSeed.questionCodes().size(),
             pt.ALTF__AssessmentQuestionIds__c.split(',').size(),
-            'And all fifteen are on it, or the plan type shows a partial rubric.'
+            'Every question in the rubric is on the plan type, or it shows a partial rubric.'
         );
     }
 }

@@ -76,3 +76,66 @@ grey row the mint was chosen to avoid:
 
 Ingrid's line is CLOSEPLAN's question almost word for word. The premise holds and the mint will
 be answered.
+
+---
+
+# The pass now leads with the cold start, CLOSEPLAN is minted, and I broke my own law
+
+## Wired
+
+`S_COLD_START` is the pass's FIRST stage, ahead of call 0, with its own receipt leg. A transcript
+arriving on a deal that has never been opened in an Altify surface plans it before anything is
+asked of it, because every stage after presumes a rubric exists. On a planned deal the stage
+costs one query and says so.
+
+## CLOSEPLAN, minted through the seed
+
+The fourteenth qualifier is the only one with no BANT equivalent, ruled MINT at the 159th. Now
+`AAO_BANT_C1`:
+
+```
+C1 criterion:    The close plan is described and shared
+C1 proposition:  Have the steps between now and signature been described, and shared with the
+                 customer rather than kept on our side?
+marker for C1 = 4.0        bindings now = 14
+```
+
+**Two elements, because the qualifier's own text is a conjunction** - described AND shared. A
+close plan written down and never sent is precisely the failure the question exists to catch, and
+one element would have let it pass. The by-stage marker is **Propose (4)**, the EARLIER of the two
+stages CLOSEPLAN is resident at, because a qualifier asked at Propose is already being asked when
+the deal reaches Propose whatever else asks it later. Speaker requirement is **Any**, per
+Matthew's ruling that internal-team statements are evidence: the seller saying *"I'll turn that
+into a shared close plan"* is the act the question asks about.
+
+**Fourteen of fourteen are now bound.** `unbound 0`.
+
+## The seventh recognition specimen, and it is mine
+
+Binding the fourteenth surfaced this in the same run:
+
+```
+held for a human 7 | Held for a human on PEOPLE1: the comment is not ours. | ... MAPPED ...
+DMINSIGHT ... CRITERIA ... CHAIN ... SUPPORT ...
+```
+
+**Six rows this writer created, read back as a human's prose and frozen.** The computed plane
+ships a NEW comment shape - plain state citations like *"All 2 named approvers stand on the
+map"* - and I did not teach the ownership predicate to recognise it.
+
+**I wrote the law two turns before I broke it:** *"a format and the predicate that recognises it
+are one mechanism in two places, and they move together or they lie."* Then I shipped a format
+and left the predicate behind. Nothing errored. Six rows simply stopped being ours.
+
+The fix has two halves and the second is the interesting one. Going forward, state citations
+carry the canonical separator and say which plane produced them - `Computed from the ledger ·
+All 2 named approvers stand on the map` - which a reader wants anyway, because "computed from
+rows" and "somebody said this" are different kinds of evidence. But that only fixes what we write
+NEXT, and the six were frozen by what was already stored. **Teaching `ours()` to accept plain
+sentences would have made every human comment look like ours, which is the wrong direction to be
+wrong in.** So the repair is exact instead: a stored comment byte-for-byte identical to the
+sentence this computation produces right now was produced by it. The frozen rows repaired -
+`updated 6` - and the predicate did not loosen by a single character.
+
+Idempotent after: `unchanged 12, held for a human 1, unbound 0` - the one held row being
+Matthew's WHEN1, untouched as it has been throughout.

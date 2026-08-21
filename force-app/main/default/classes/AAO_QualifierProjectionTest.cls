@@ -121,9 +121,13 @@ private class AAO_QualifierProjectionTest {
                 b.AAO_Qualifier_Code__c + ' names a plane its own fields contradict.'
             );
         }
-        System.assertEquals(13, byCode.size(),
-            'Thirteen of the fourteen qualifiers are bound; CLOSEPLAN is the mint still owed ' +
-            'and is honestly absent rather than half-present.');
+        // FOURTEEN NOW. CLOSEPLAN was minted as AAO_BANT_C1 at the 173rd's build, so the
+        // absence this once asserted is closed. Every qualifier the process asks is bound.
+        System.assertEquals(14, byCode.size(),
+            'All fourteen qualifiers are bound: thirteen from the original rubric and ' +
+            'CLOSEPLAN through its minted contract.');
+        System.assertEquals('AAO_BANT_C1', byCode.get('CLOSEPLAN').AAO_Contract_Codes__c,
+            'CLOSEPLAN binds the proposition minted for it, not one borrowed from BANT.');
     }
 
     @IsTest

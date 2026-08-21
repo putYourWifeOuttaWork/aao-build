@@ -41,6 +41,8 @@ public with sharing class AAO_QualifierProjection {
     /** Measured from the picklist, never taken from a label. */
     private static final String YES = 'Yes';
     private static final String NO = 'No';
+    /** Computed answers cite ROWS, and say so, in a shape the ownership predicate knows. */
+    private static final String COMPUTED_PREFIX = 'Computed from the ledger \u00b7 ';
     /** `ALTF__Comment__c` is 32,768, so the citation budget problem does not exist here. */
     @TestVisible
     private static Integer COMMENT_CHARS = 32768;
@@ -197,6 +199,8 @@ public with sharing class AAO_QualifierProjection {
             }
             String status;
             String comment;
+            /** The same sentence without the marker, which is what earlier runs stored. */
+            String bareComment;
 
             if (String.isNotBlank(b.AAO_Predicate__c)) {
                 AAO_QualifierCompute.Verdict v = computed.get(b.AAO_Predicate__c);
@@ -205,7 +209,25 @@ public with sharing class AAO_QualifierProjection {
                     continue;
                 }
                 status = v.status;
-                comment = v.because;
+                // ===== THE STATE CITATION CARRIES THE MARKER TOO, and forgetting it is the
+                // seventh specimen of the recognition pattern - committed by me two turns after
+                // I wrote the law down.
+                //
+                // "A format and the predicate that recognises it are one mechanism in two
+                // places, and they move together or they lie." I then shipped a NEW comment
+                // shape - the computed plane's state citations, plain sentences like "All 2
+                // named approvers stand on the map" - and did not teach `ours()` to recognise
+                // it. The next run read all six of our own rows back as a human's prose and
+                // held them from update forever. Nothing errored; six rows simply froze.
+                //
+                // The marker is the canonical citation's own separator, so one predicate
+                // recognises both planes, and the prefix says which plane produced it - which
+                // a reader wants anyway, because "computed from the ledger" and "somebody said
+                // this" are different kinds of evidence.
+                bareComment = v.because;
+                comment = String.isBlank(v.because)
+                    ? null
+                    : COMPUTED_PREFIX + v.because;
             } else if (String.isNotBlank(b.AAO_Contract_Codes__c)) {
                 // ANY OF THE BOUND CONTRACTS SATISFIES IT. FUNDS reads "the funds OR the
                 // person who owns them", so its binding is a disjunction and the first
@@ -265,7 +287,18 @@ public with sharing class AAO_QualifierProjection {
                 );
                 continue;
             }
-            if (AAO_AnswerProjection.heldByHuman(row.ALTF__Comment__c)) {
+            // A COMMENT IDENTICAL TO WHAT THIS WRITER PRODUCES RIGHT NOW WAS WRITTEN BY IT.
+            //
+            // The six computed rows carry the PRE-MARKER state citations this writer shipped an
+            // hour ago - plain sentences, indistinguishable by shape from a human's. Teaching
+            // `ours()` to accept plain sentences would make every human comment look like ours,
+            // which is the wrong direction to be wrong in. Comparing against our own current
+            // output is exact: if the stored comment is byte-for-byte the sentence this
+            // computation produces, we produced it. That repairs the frozen rows without
+            // loosening the predicate by a single character.
+            Boolean weWroteThisComment = row.ALTF__Comment__c == comment ||
+                (bareComment != null && row.ALTF__Comment__c == bareComment);
+            if (!weWroteThisComment && AAO_AnswerProjection.heldByHuman(row.ALTF__Comment__c)) {
                 o.humanHeld++;
                 o.notes.add('Held for a human on ' + code + ': the comment is not ours.');
                 continue;

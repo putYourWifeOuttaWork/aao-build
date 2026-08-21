@@ -161,6 +161,7 @@ public with sharing class AAO_Receipt {
     public static final String STAGE_ASSESSMENT = 'assessment projection';
     public static final String STAGE_GHOSTS = 'ghost projection';
     public static final String STAGE_QUALIFIERS = 'qualifier projection';
+    public static final String STAGE_COLD_START = 'cold start';
 
     /**
      * Record one stage against this pass's receipt, creating the receipt if this is its first.

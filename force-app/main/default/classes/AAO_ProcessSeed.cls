@@ -147,7 +147,25 @@ public class AAO_ProcessSeed {
             q('T4', 'The timeline is confirmed by the decision maker',
               'Has the decision maker, specifically, endorsed the timeline?',
               new List<String>{ 'the timeline is endorsed',
-                                'the endorsement is the decision maker\'s specifically' })
+                                'the endorsement is the decision maker\'s specifically' }),
+            // ===== MINTED FOR CLOSEPLAN, the fourteenth qualifier and the only one with no
+            // BANT equivalent to bind to. Ruled MINT at the hundred-fifty-ninth: a permanent
+            // grey row in a product about answers is the worse outcome.
+            //
+            // The premise was CHECKED against the transcript before minting rather than taken
+            // on trust, because a proposition nothing can answer is exactly the grey row the
+            // mint exists to avoid. Call 4 carries it almost verbatim - Ingrid: *"here's what
+            // has to happen between now and a signature, and I want it written down and
+            // shared, not living in anyone's head."*
+            //
+            // TWO ELEMENTS, because the qualifier's own text is a CONJUNCTION: described AND
+            // shared. A close plan written down and never sent is the failure this question
+            // exists to catch, so one element would have let it pass.
+            q('C1', 'The close plan is described and shared',
+              'Have the steps between now and signature been described, and shared with the ' +
+              'customer rather than kept on our side?',
+              new List<String>{ 'the steps between now and signature are described',
+                                'they are shared with the customer' })
         };
     }
 

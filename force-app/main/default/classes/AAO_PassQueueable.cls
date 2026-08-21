@@ -74,8 +74,22 @@ public class AAO_PassQueueable implements Queueable, Database.AllowsCallouts {
     public static final String S_QUALIFIERS = 'qualifier projection';
     public static final String S_DONE = 'done';
 
+    /**
+     * THE COLD START RUNS FIRST, and first is load-bearing.
+     *
+     * A transcript arriving on a deal that has never been opened in an Altify surface has no
+     * rubric to be read against: no plan, no assessment questions, no qualifiers, no ordinal.
+     * Every stage after this one presumes those exist. So the plan is given before anything is
+     * asked, which is what makes Matthew's bar reachable - no human step between creating the
+     * deal and reading the result.
+     *
+     * It writes nothing on a deal that already carries a plan, so on every run after the first
+     * this stage costs one query and says so.
+     */
+    public static final String S_COLD_START = 'cold start';
+
     private static final List<String> ORDER = new List<String>{
-        S_RESOLVE, S_READ1, S_READ2, S_DETERMINISTIC, S_MODEL_LEG,
+        S_COLD_START, S_RESOLVE, S_READ1, S_READ2, S_DETERMINISTIC, S_MODEL_LEG,
         S_VERIFY, S_CRITERION_MATCH, S_JOIN, S_COMPUTE, S_PROJECT, S_PROMOTION, S_CARDS,
         S_ASSESSMENT, S_GHOSTS, S_QUALIFIERS, S_DONE
     };
@@ -401,6 +415,17 @@ public class AAO_PassQueueable implements Queueable, Database.AllowsCallouts {
         }
         if (stage == S_CARDS) {
             AAO_Cards.run(opportunityId(), runKey);
+            return false;
+        }
+        if (stage == S_COLD_START) {
+            Long startedAt = System.currentTimeMillis();
+            AAO_ColdStart.Outcome co = AAO_ColdStart.ensurePlan(opportunityId());
+            System.debug(LoggingLevel.INFO, String.valueOf(co));
+            AAO_Receipt.record(
+                runKey, sourceId, AAO_Receipt.STAGE_COLD_START,
+                System.currentTimeMillis() - startedAt,
+                co.planAssigned == true ? 1 : 0
+            );
             return false;
         }
         if (stage == S_ASSESSMENT) {

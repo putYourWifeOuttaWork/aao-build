@@ -89,7 +89,8 @@ private class AAO_QualifierProjectionTest {
         Map<String, AAO_Qualifier_Binding__mdt> byCode =
             new Map<String, AAO_Qualifier_Binding__mdt>();
         for (AAO_Qualifier_Binding__mdt b : [
-            SELECT AAO_Qualifier_Code__c, AAO_Contract_Codes__c, AAO_Plane__c
+            SELECT AAO_Qualifier_Code__c, AAO_Contract_Codes__c, AAO_Predicate__c,
+                   AAO_Plane__c
             FROM AAO_Qualifier_Binding__mdt
         ]) {
             byCode.put(b.AAO_Qualifier_Code__c, b);
@@ -101,11 +102,28 @@ private class AAO_QualifierProjectionTest {
             'FUNDS is a disjunction because its own text is one. Got: ' +
             byCode.get('FUNDS').AAO_Contract_Codes__c
         );
+        // THE NOT-PRETENDING TEST, MOVED WITH THE BUILD. It used to assert every binding was
+        // EVIDENCE, because the computed six did not exist and must not be half-present wearing
+        // configuration's coat. They exist now, so the guard becomes the stronger one: a binding
+        // declares exactly ONE plane and carries exactly the field that plane needs. A row with
+        // both, or with neither, is a binding that cannot be evaluated and must not ship.
         for (AAO_Qualifier_Binding__mdt b : byCode.values()) {
-            System.assertEquals('EVIDENCE', b.AAO_Plane__c,
-                'Only the evidence plane is bound so far; the computed six wire to ' +
-                'AAO_ProcessCompute and are not pretended to exist here.');
+            Boolean evidence = String.isNotBlank(b.AAO_Contract_Codes__c);
+            Boolean computed = String.isNotBlank(b.AAO_Predicate__c);
+            System.assert(
+                evidence != computed,
+                b.AAO_Qualifier_Code__c + ' declares ' + b.AAO_Plane__c + ' but carries ' +
+                'contracts=' + evidence + ' predicate=' + computed + '. Exactly one.'
+            );
+            System.assertEquals(
+                evidence ? 'EVIDENCE' : 'COMPUTED',
+                b.AAO_Plane__c,
+                b.AAO_Qualifier_Code__c + ' names a plane its own fields contradict.'
+            );
         }
+        System.assertEquals(13, byCode.size(),
+            'Thirteen of the fourteen qualifiers are bound; CLOSEPLAN is the mint still owed ' +
+            'and is honestly absent rather than half-present.');
     }
 
     @IsTest

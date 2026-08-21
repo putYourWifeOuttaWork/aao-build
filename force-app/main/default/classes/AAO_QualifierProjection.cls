@@ -121,6 +121,11 @@ public with sharing class AAO_QualifierProjection {
         }
         Map<String, AAO_ProcessPanel.Reading> readings =
             AAO_ProcessPanel.readingsFor(opportunityId);
+        // THE COMPUTED PLANE, evaluated once for the whole deal. Arithmetic over rows we already
+        // wrote: no contract, no model call, and a state citation naming the rows rather than a
+        // quote, because nobody said it.
+        Map<String, AAO_QualifierCompute.Verdict> computed =
+            AAO_QualifierCompute.evaluate(opportunityId);
 
         // The qualifier definitions and the stage each sits at, through the junction.
         Map<Id, Decimal> stageOf = new Map<Id, Decimal>();
@@ -186,37 +191,54 @@ public with sharing class AAO_QualifierProjection {
         for (Id qualifierId : codeOf.keySet()) {
             String code = codeOf.get(qualifierId);
             AAO_Qualifier_Binding__mdt b = bindings.get(code);
-            if (b == null || String.isBlank(b.AAO_Contract_Codes__c)) {
+            if (b == null) {
                 o.unbound++;
                 continue;
             }
-            // ANY OF THE BOUND CONTRACTS SATISFIES IT. FUNDS reads "the funds OR the person who
-            // owns them", so its binding is a disjunction and the first established one answers.
-            AAO_ProcessPanel.Reading hit;
-            for (String c : b.AAO_Contract_Codes__c.split(';')) {
-                AAO_ProcessPanel.Reading r = readings.get(c.trim());
-                if (r == null) {
+            String status;
+            String comment;
+
+            if (String.isNotBlank(b.AAO_Predicate__c)) {
+                AAO_QualifierCompute.Verdict v = computed.get(b.AAO_Predicate__c);
+                if (v == null) {
+                    // The predicate had nothing to measure. Silence is not a No.
                     continue;
                 }
-                if (r.interpretation == 'AFFIRMED') {
-                    hit = r;
-                    break;
+                status = v.status;
+                comment = v.because;
+            } else if (String.isNotBlank(b.AAO_Contract_Codes__c)) {
+                // ANY OF THE BOUND CONTRACTS SATISFIES IT. FUNDS reads "the funds OR the
+                // person who owns them", so its binding is a disjunction and the first
+                // established one answers.
+                AAO_ProcessPanel.Reading hit;
+                for (String c : b.AAO_Contract_Codes__c.split(';')) {
+                    AAO_ProcessPanel.Reading r = readings.get(c.trim());
+                    if (r == null) {
+                        continue;
+                    }
+                    if (r.interpretation == 'AFFIRMED') {
+                        hit = r;
+                        break;
+                    }
+                    if (hit == null) {
+                        hit = r;
+                    }
                 }
                 if (hit == null) {
-                    hit = r;
+                    // Nothing established. Silence is not a No.
+                    continue;
                 }
-            }
-            if (hit == null) {
-                // Nothing established. Silence is not a No.
+                status = hit.interpretation == 'AFFIRMED'
+                    ? YES
+                    : (hit.interpretation == 'DENIED' ? NO : null);
+                if (status == null) {
+                    continue;
+                }
+                comment = String.isBlank(hit.citation) ? null : hit.citation;
+            } else {
+                o.unbound++;
                 continue;
             }
-            String status = hit.interpretation == 'AFFIRMED'
-                ? YES
-                : (hit.interpretation == 'DENIED' ? NO : null);
-            if (status == null) {
-                continue;
-            }
-            String comment = String.isBlank(hit.citation) ? null : hit.citation;
             if (comment != null && comment.length() > COMMENT_CHARS) {
                 // A citation is never truncated mid-quote.
                 comment = null;

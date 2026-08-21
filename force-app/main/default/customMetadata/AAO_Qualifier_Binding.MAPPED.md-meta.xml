@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>MAPPED computes from the map</label>
+    <protected>false</protected>
+    <values>
+        <field>AAO_Qualifier_Code__c</field>
+        <value xsi:type="xsd:string">MAPPED</value>
+    </values>
+    <values>
+        <field>AAO_Contract_Codes__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>AAO_Predicate__c</field>
+        <value xsi:type="xsd:string">SPEAKERS_MAPPED_WITH_ROLE</value>
+    </values>
+    <values>
+        <field>AAO_Plane__c</field>
+        <value xsi:type="xsd:string">COMPUTED</value>
+    </values>
+</CustomMetadata>

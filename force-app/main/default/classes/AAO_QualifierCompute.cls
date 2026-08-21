@@ -107,14 +107,11 @@ public with sharing class AAO_QualifierCompute {
     private static Verdict externalOnMap(
         Map<Id, ALTF__Contact_Map_Details__c> onMap, Map<Id, String> speakers
     ) {
-        Integer n = 0;
-        for (Id c : onMap.keySet()) {
-            if (speakers.containsKey(c) || !speakers.isEmpty()) {
-                // Any map row for a person who is not internal counts. Membership of the map is
-                // the question; having spoken is not required by the qualifier's own text.
-            }
-            n++;
-        }
+        // Membership of the map is the question; having spoken is not required by the
+        // qualifier's own text, which reads "at least one external participant is identified
+        // on the relationship map". Existential, so an empty map is a real No rather than a
+        // vacuous anything.
+        Integer n = onMap.size();
         if (onMap.isEmpty()) {
             return new Verdict('No', 'No external participant stands on the relationship map.');
         }
@@ -193,15 +190,31 @@ public with sharing class AAO_QualifierCompute {
             answered.add(a.AAO_Criterion__c);
         }
         List<String> stillOpen = new List<String>();
+        Integer required = 0;
         for (AAO_Criterion__c c : criteria) {
-            if (c.AAO_Required__c == true && !answered.contains(c.Id)) {
+            if (c.AAO_Required__c != true) {
+                continue;
+            }
+            required++;
+            if (!answered.contains(c.Id)) {
                 stillOpen.add(c.AAO_Subject__c);
             }
         }
         if (stillOpen.isEmpty()) {
+            // THE ONE GENUINELY VACUOUS CASE IN THE SIX, and it is disclosed rather than
+            // smoothed over. The question is a CONJUNCTION - "criteria are recorded AND no
+            // required criterion is still open" - so with criteria recorded the first clause
+            // carries real substance and a Yes is honest. But if NONE was marked required the
+            // second clause is true of an empty set, and a reader deserves to see that shape
+            // rather than a bare Yes. Whether "recorded but none required" should be a Yes at
+            // all is a methodology question and it is design's, not this method's.
             return new Verdict(
                 'Yes',
-                criteria.size() + ' criteria recorded, and every required one is answered.'
+                required == 0
+                    ? criteria.size() + ' criteria recorded, though none is marked required, ' +
+                      'so nothing was outstanding to close.'
+                    : criteria.size() + ' criteria recorded, and all ' + required +
+                      ' required ones are answered.'
             );
         }
         return new Verdict(

@@ -263,7 +263,16 @@ public with sharing class AAO_AnswerProjection {
      * a human's sentence destroyed. Human edits beat the machine forever.
      */
     public static Boolean heldByHuman(ALTF__Assessment_Answer__c row) {
-        String note = row.ALTF__Note__c;
+        return heldByHuman(row.ALTF__Note__c);
+    }
+
+    /**
+     * THE RECOGNITION LAW, ONE PREDICATE IN ONE PLACE. The 159th's audit: every ownership
+     * predicate on every projected surface must recognise the shapes this product writes, or
+     * tonight's rows freeze as someone else's. The qualifier surface calls THIS, not a copy of
+     * it, so the two surfaces cannot come to disagree about whose sentence a note carries.
+     */
+    public static Boolean heldByHuman(String note) {
         if (String.isBlank(note)) {
             return false;
         }

@@ -70,12 +70,14 @@ public class AAO_PassQueueable implements Queueable, Database.AllowsCallouts {
     /** The ghosts, beside the assessment surface and for the same reason: both read what the
      *  deal has established, so both belong after everything that establishes. */
     public static final String S_GHOSTS = 'ghost projection';
+    /** The sales-process qualifiers, beside the other two read-what-was-established stages. */
+    public static final String S_QUALIFIERS = 'qualifier projection';
     public static final String S_DONE = 'done';
 
     private static final List<String> ORDER = new List<String>{
         S_RESOLVE, S_READ1, S_READ2, S_DETERMINISTIC, S_MODEL_LEG,
         S_VERIFY, S_CRITERION_MATCH, S_JOIN, S_COMPUTE, S_PROJECT, S_PROMOTION, S_CARDS,
-        S_ASSESSMENT, S_GHOSTS, S_DONE
+        S_ASSESSMENT, S_GHOSTS, S_QUALIFIERS, S_DONE
     };
 
     private final Id sourceId;
@@ -411,6 +413,12 @@ public class AAO_PassQueueable implements Queueable, Database.AllowsCallouts {
             AAO_GhostProjection.Outcome go =
                 AAO_GhostProjection.run(opportunityId(), runKey);
             System.debug(LoggingLevel.INFO, String.valueOf(go));
+            return false;
+        }
+        if (stage == S_QUALIFIERS) {
+            AAO_QualifierProjection.Outcome qo =
+                AAO_QualifierProjection.run(opportunityId(), runKey);
+            System.debug(LoggingLevel.INFO, String.valueOf(qo));
             return false;
         }
         return false;

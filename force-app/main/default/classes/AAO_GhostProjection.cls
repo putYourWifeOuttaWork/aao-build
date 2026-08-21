@@ -90,66 +90,118 @@ public with sharing class AAO_GhostProjection {
             wanted.add(g.persona);
         }
 
-        String prefix = KEY + String.valueOf(opportunityId).substring(0, 15) + '|';
-        String ourKeys = prefix + '%';
-        Map<String, ALTF__Relationship_Map_Persona__c> standing =
-            new Map<String, ALTF__Relationship_Map_Persona__c>();
-        for (ALTF__Relationship_Map_Persona__c p : [
-            SELECT Id, ALTF__AltifyId__c, ALTF__Persona__c
+        // ===== ONE ROW PER MAP, MULTI-VALUED. The vendor refused the other grain.
+        //
+        // The hundred-fifty-second ratified one row per persona, on the reasoning that ghosts
+        // must graduate INDEPENDENTLY - a contact matching Executive Sponsor must not clear a
+        // standing Procurement Lead. The reasoning is right; the grain was not available.
+        // Measured by being refused:
+        //
+        //   FIRST ROW accepted
+        //   SECOND ROW, different persona, same map: REFUSED
+        //   ONE ROW carrying three personas: ACCEPTED
+        //
+        // `Cannot insert duplicate Relationship Map Personas` is the vendor holding ONE persona
+        // row per map, which is what its multipicklist was always for. **Independence survives
+        // the change**: adding a ghost adds a value, graduating one removes that value, and the
+        // others are untouched either way. It is a field edit rather than a row delete, and the
+        // 154th's withdrawal rule reads the same.
+        List<ALTF__Relationship_Map_Persona__c> rows = [
+            SELECT Id, ALTF__Persona__c, ALTF__AltifyId__c
             FROM ALTF__Relationship_Map_Persona__c
-            WHERE ALTF__Opportunity__c = :opportunityId AND ALTF__AltifyId__c LIKE :ourKeys
+            WHERE ALTF__Opportunity__c = :opportunityId
+            ORDER BY CreatedDate ASC
+        ];
+
+        Set<String> enumerated = new Set<String>();
+        for (AAO_Created_Row__c r : [
+            SELECT AAO_Target_Id__c FROM AAO_Created_Row__c
+            WHERE AAO_Target_Object__c = 'ALTF__Relationship_Map_Persona__c'
+              AND AAO_Disowned__c = false
         ]) {
-            standing.put(p.ALTF__AltifyId__c, p);
+            enumerated.add(r.AAO_Target_Id__c);
         }
 
-        List<ALTF__Relationship_Map_Persona__c> fresh =
-            new List<ALTF__Relationship_Map_Persona__c>();
-        for (String persona : wanted) {
-            String key = prefix + persona;
-            if (standing.containsKey(key)) {
-                o.unchanged++;
-                continue;
+        if (rows.isEmpty()) {
+            if (wanted.isEmpty()) {
+                return o;
             }
-            fresh.add(new ALTF__Relationship_Map_Persona__c(
+            ALTF__Relationship_Map_Persona__c fresh = new ALTF__Relationship_Map_Persona__c(
                 ALTF__Account__c = deal.AccountId,
                 ALTF__Opportunity__c = opportunityId,
-                ALTF__Persona__c = persona,
-                ALTF__AltifyId__c = key
-            ));
-        }
-
-        // A GHOST THAT GRADUATED IS WITHDRAWN, NOT LEFT STANDING. The persona filled, so the
-        // slot is no longer empty and a ghost beside the person who fills it would be a lie the
-        // map tells forever. Only rows carrying OUR key are touched: the key is the enumeration,
-        // and a row somebody else made is not ours to withdraw.
-        List<ALTF__Relationship_Map_Persona__c> gone =
-            new List<ALTF__Relationship_Map_Persona__c>();
-        for (String key : standing.keySet()) {
-            if (!wanted.contains(key.substringAfter(prefix))) {
-                gone.add(standing.get(key));
-            }
-        }
-
-        if (!fresh.isEmpty()) {
-            insert fresh;
-            o.created = fresh.size();
-            List<Id> created = new List<Id>();
-            for (ALTF__Relationship_Map_Persona__c p : fresh) {
-                created.add(p.Id);
-            }
-            AAO_CreatedRows.recordAll(
-                created,
-                WRITER + '@' + WRITER_VERSION,
-                'persona-ghost',
-                'A persona this stage expects that nobody on the deal fills.',
-                runKey == null ? null : AAO_Receipt.sourceForRun(runKey),
-                runKey
+                ALTF__Persona__c = String.join(new List<String>(wanted), ';'),
+                ALTF__AltifyId__c = KEY + String.valueOf(opportunityId).substring(0, 15)
             );
+            insert fresh;
+            o.created = wanted.size();
+            AAO_CreatedRows.record(
+                fresh.Id, WRITER + '@' + WRITER_VERSION, 'persona-ghost',
+                'The cast this deal\'s rubric demands, standing from call one as lead-time ' +
+                'nodes rather than flags.',
+                runKey == null ? null : AAO_Receipt.sourceForRun(runKey), runKey
+            );
+            return o;
         }
-        if (!gone.isEmpty()) {
-            delete gone;
-            o.withdrawn = gone.size();
+
+        ALTF__Relationship_Map_Persona__c row = rows[0];
+        String rowId = String.valueOf(row.Id);
+        Boolean ours = enumerated.contains(rowId) || enumerated.contains(rowId.substring(0, 15));
+        Set<String> standing = new Set<String>();
+        if (String.isNotBlank(row.ALTF__Persona__c)) {
+            for (String v : row.ALTF__Persona__c.split(';')) {
+                standing.add(v.trim());
+            }
         }
+
+        if (!ours) {
+            // SOMEBODY ELSE'S ROW. We may still need a ghost it does not carry, but the row is
+            // theirs and this writer does not edit it - the same discipline the qualifier
+            // surface learned on Matthew's WHEN1 tick, and the vendor allows no second row to
+            // put ours beside it.
+            for (String persona : wanted) {
+                if (!standing.contains(persona)) {
+                    o.notes.add(
+                        'Ghost ' + persona + ' is owed but the map\'s only persona row was ' +
+                        'written by somebody else, and the vendor allows just one. Held whole ' +
+                        'rather than edited, and said out loud.'
+                    );
+                }
+            }
+            o.unchanged = standing.size();
+            return o;
+        }
+
+        Set<String> after = new Set<String>(wanted);
+        Integer added = 0;
+        Integer withdrawn = 0;
+        for (String persona : wanted) {
+            if (!standing.contains(persona)) {
+                added++;
+            }
+        }
+        for (String persona : standing) {
+            if (!wanted.contains(persona)) {
+                // A GHOST THAT GRADUATED IS WITHDRAWN, one value at a time, leaving the rest
+                // standing. A ghost beside the person who fills it is a lie the map tells
+                // forever.
+                withdrawn++;
+            }
+        }
+        if (added == 0 && withdrawn == 0) {
+            o.unchanged = standing.size();
+            return o;
+        }
+        if (after.isEmpty()) {
+            delete row;
+            o.withdrawn = withdrawn;
+            return o;
+        }
+        update new ALTF__Relationship_Map_Persona__c(
+            Id = row.Id, ALTF__Persona__c = String.join(new List<String>(after), ';')
+        );
+        o.created = added;
+        o.withdrawn = withdrawn;
+        o.unchanged = standing.size() - withdrawn;
         return o;
     }
 }

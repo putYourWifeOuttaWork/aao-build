@@ -141,15 +141,27 @@ private class AAO_PersonasTest {
     }
 
     @IsTest
-    static void aGHOSTISQUIETBEFORETHESTAGEEXPECTSIT() {
+    static void aGHOSTSTANDSLONGBEFOREITSDUESTAGEANDCARRIESIT() {
+        // REVERSED BY RULING at the hundred-seventieth, and the reversal is the point rather
+        // than an adjustment. This asserted that a ghost is quiet until its stage expects it -
+        // correct for a FLAG. Matthew's reasoning redefined what a ghost IS: a persona required
+        // at stage 4 is a relationship that must START now, because influence cannot be
+        // manufactured on the due date. The cast is a set of LEAD-TIME NODES and it stands from
+        // call one, carrying no accusation. The by-stage plane still governs flags and only
+        // flags, which is why nothing about red-flagging changed with it.
         AAO_Personas.stubbed = new List<AAO_Persona_Expectation__mdt>{
             expectation('Executive Sponsor', 4, 'executive sponsor')
         };
         Fixture f = fixture('Stage 2', 'Director, Revenue Operations', false);
-        System.assertEquals(
-            0, AAO_Personas.ghostsOn(f.oppId).ghosts.size(),
-            'Stage 2 against an expectation from stage 4. Not yet is not a gap.'
-        );
+
+        AAO_Personas.Reading r = AAO_Personas.ghostsOn(f.oppId);
+
+        System.assertEquals(1, r.ghosts.size(),
+            'A persona due at 4 stands at 2, because threading takes months and the due date ' +
+            'is when it must already be done.');
+        System.assertEquals(4, r.ghosts[0].expectedFromStage.setScale(0),
+            'And it carries WHEN it is due, so the map can order the cast as a path rather ' +
+            'than a pile.');
     }
 
     /**
@@ -181,12 +193,15 @@ private class AAO_PersonasTest {
 
         AAO_Personas.Reading r = AAO_Personas.ghostsOn(f.oppId);
 
+        // The ordinal is still unorderable and still reported as such - that half was always
+        // right and is untouched. What changed is the consequence: a deal that cannot be
+        // ordered is exactly a deal nobody has worked yet, and it needs its cast MORE than a
+        // late-stage one, not less. Nothing here is compared against the ordinal any more,
+        // because a ghost is not a flag.
         System.assertEquals(null, r.stageOrdinal, 'An inactive stage has no place in the order.');
-        System.assertEquals(0, r.ghosts.size(), 'So nothing is compared and nothing is claimed.');
-        System.assert(
-            !r.notes.isEmpty() && r.notes[0].contains('could not be ordered'),
-            'And the reason is ours rather than the deal\'s: ' + r.notes
-        );
+        System.assertEquals(1, r.ghosts.size(),
+            'The cast stands anyway. An unorderable deal is a deal at its beginning, which is ' +
+            'when a lead-time node is worth the most.');
     }
 
     @IsTest

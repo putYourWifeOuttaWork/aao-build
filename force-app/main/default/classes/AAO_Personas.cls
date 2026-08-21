@@ -260,17 +260,19 @@ public class AAO_Personas {
             if (filled.contains(e.persona)) {
                 continue;
             }
-            if (r.stageOrdinal == null) {
-                r.notes.add(
-                    'Persona ' + e.persona + ' is expected from stage ' +
-                    e.expectedFromStage.setScale(0) + ', and this deal\'s stage could not be ' +
-                    'ordered against the org\'s open stages, so nothing can be compared. No ghost.'
-                );
-                continue;
-            }
-            if (r.stageOrdinal < e.expectedFromStage) {
-                continue;
-            }
+            // ===== THE FULL HORIZON. A GHOST IS A LEAD-TIME NODE, NOT AN EARLY FLAG.
+            //
+            // Matthew's ruling at the hundred-seventieth, and his reasoning redefines what a
+            // ghost IS rather than how many stand: sellers lose because they do not know the
+            // right personas and do not thread to them in time. A persona required at Commit is
+            // a relationship that must START at Qualify, because influence cannot be
+            // manufactured on the due date.
+            //
+            // This used to compare the deal's ordinal against the persona's and stay silent
+            // until the due stage arrived - correct for a FLAG, wrong for a node the seller is
+            // meant to act on today. **The by-stage plane still governs flags and only flags.**
+            // The whole cast stands from call one, carrying no accusation, and the due ordinal
+            // rides the row so the map can order the cast as a PATH rather than a pile.
             Ghost g = new Ghost();
             g.persona = e.persona;
             g.expectedFromStage = e.expectedFromStage;

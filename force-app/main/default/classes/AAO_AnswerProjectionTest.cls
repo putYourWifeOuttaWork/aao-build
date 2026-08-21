@@ -176,6 +176,41 @@ private class AAO_AnswerProjectionTest {
             'A blank note is nobody\'s and is ours to fill.');
     }
 
+    @IsTest
+    static void aROWTHISWRITERDIDNOTCREATEISHELDWHOLEEVENBLANK() {
+        // The same hole the qualifier surface paid for with Matthew's WHEN1 row, closed here
+        // before it could cost a second one. `heldByHuman` reads the NOTE and returns false when
+        // the note is blank - "nobody's, ours to fill" - which is true of a blank note on OUR
+        // row and false of a blank note on a row a HUMAN made. The three 6-August rows in this
+        // org are exactly that shape: vendor-created, NoteEntered false, Note null.
+        Fixture f = fixture(true);
+        establish(f, 'AAO_PROJ_ONE', 'AFFIRMED');
+        Id questionId = [
+            SELECT Id FROM ALTF__Assessment_Question__c WHERE ALTF__AltifyId__c = 'AAO_PROJ_ONE'
+        ].Id;
+        ALTF__Assessment_Answer__c theirs = new ALTF__Assessment_Answer__c(
+            ALTF__Opportunity__c = f.wrapperId,
+            ALTF__Assessment_Question__c = questionId,
+            ALTF__Answer__c = 'No'
+        );
+        insert theirs;
+
+        Test.startTest();
+        AAO_AnswerProjection.Outcome o = AAO_AnswerProjection.run(f.oppId);
+        Test.stopTest();
+
+        System.assertEquals(1, o.humanHeld, String.valueOf(o));
+        ALTF__Assessment_Answer__c after = [
+            SELECT ALTF__Answer__c, ALTF__Note__c FROM ALTF__Assessment_Answer__c
+            WHERE Id = :theirs.Id
+        ];
+        System.assertEquals('No', after.ALTF__Answer__c,
+            'Their answer stands even though ours would have said Yes.');
+        System.assertEquals(null, after.ALTF__Note__c,
+            'A blank note on somebody else\'s row is still theirs. The watermark is what tells ' +
+            'us whose row it is, never the shape of what is or is not written in it.');
+    }
+
     // ------------------------------------------------------------------------ helpers
 
     private class Fixture {

@@ -126,6 +126,25 @@ public with sharing class AAO_AnswerProjection {
             questionByCode.put(q.ALTF__AltifyId__c, q.Id);
         }
 
+        // ===== OWNERSHIP IS ENUMERATION HERE TOO, and this closes the same hole the
+        // qualifier surface paid for with Matthew's WHEN1 row.
+        //
+        // `heldByHuman` reads the NOTE, and returns false when the note is blank - "nobody's,
+        // ours to fill". True of a blank note on OUR row. False of a blank note on a row a
+        // HUMAN created, which is exactly what the three 6-August rows are: created by the
+        // vendor's own surface, `NoteEntered = false`, `Note = null`. Left as it was, this
+        // writer would have taken them over the first time it ran on that deal.
+        //
+        // So the watermark decides whose row it is, and the note predicate stays as a second
+        // gate for rows that ARE ours, because a human can still write prose onto one later.
+        Set<String> enumerated = new Set<String>();
+        for (AAO_Created_Row__c r : [
+            SELECT AAO_Target_Id__c FROM AAO_Created_Row__c
+            WHERE AAO_Target_Object__c = 'ALTF__Assessment_Answer__c' AND AAO_Disowned__c = false
+        ]) {
+            enumerated.add(r.AAO_Target_Id__c);
+        }
+
         Map<Id, ALTF__Assessment_Answer__c> existing = new Map<Id, ALTF__Assessment_Answer__c>();
         for (ALTF__Assessment_Answer__c a : [
             SELECT Id, ALTF__Assessment_Question__c, ALTF__Answer__c, ALTF__Note__c,
@@ -174,6 +193,17 @@ public with sharing class AAO_AnswerProjection {
                     ALTF__Note__c = note,
                     ALTF__NoteEntered__c = note != null
                 ));
+                continue;
+            }
+            String rowId = String.valueOf(row.Id);
+            Boolean weMadeIt =
+                enumerated.contains(rowId) || enumerated.contains(rowId.substring(0, 15));
+            if (!weMadeIt) {
+                o.humanHeld++;
+                o.notes.add(
+                    'Held on ' + code + ': this writer did not create that row, so it is ' +
+                    'somebody else\'s whole - answer and note both, blank note included.'
+                );
                 continue;
             }
             if (heldByHuman(row)) {

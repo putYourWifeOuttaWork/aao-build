@@ -90,3 +90,43 @@ the first one that cost a real row rather than being caught by a test.**
 Deal 2 advanced because our projection satisfied the vendor's own gate. Calls landed, evidence
 established, answers projected, and the stage unlocked - the 165th's item 7 not as a plan but as
 something that already happened once, by accident, while the re-point was being built.
+
+---
+
+# The 167th's two reads, and what the second one found
+
+## (i) The enumeration is DURABLE, not within-run
+
+`AAO_QualifierProjection.cls:167`:
+
+```apex
+Set<String> enumerated = new Set<String>();
+for (AAO_Created_Row__c r : [
+    SELECT AAO_Target_Id__c FROM AAO_Created_Row__c
+    WHERE AAO_Target_Object__c = 'ALTF__Qualifier_Answer__c' AND AAO_Disowned__c = false
+]) {
+```
+
+`AAO_Created_Row__c` is a persisted object, queried fresh each run and filtered to this target
+type and not-disowned. **So the next run recognises its own prior rows and the WHEN1 incident
+cannot repeat against them.** The concern the read was written to catch does not exist.
+
+## (ii) The assessment surface CARRIED THE SAME HOLE, and it is now closed
+
+`heldByHuman(String note)` returns **false** when the note is blank - "nobody's, ours to fill".
+That is true of a blank note on OUR row and **false of a blank note on a row a human made**.
+
+**The exposure was live and named:** the three 6-August rows on the Emerson wrapper are exactly
+that shape, vendor-created with `NoteEntered = false` and `Note = null`. The first time writer
+(a) ran on that deal it would have taken them over, answers included. It has not run there - the
+deal has nothing established - so nothing was lost, but that is luck rather than design.
+
+Ownership on the assessment surface is now enumeration as well, matching the qualifier surface
+and matching what the purge's own retraction has always used. The note predicate stays as a
+second gate for rows that ARE ours. A test pins it with a human row carrying a blank note and a
+DIFFERENT answer to the one we would write, asserting both survive.
+
+**The pattern's fifth specimen, and the first caught by a read before it cost anything.** Four
+of the five were the same shape: a rule that recognises our own work by what it LOOKS like
+rather than by a record of having done it. Shape-over-address, the 142nd's law, on the ownership
+plane instead of the query plane.

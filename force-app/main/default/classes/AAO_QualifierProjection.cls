@@ -50,14 +50,13 @@ public with sharing class AAO_QualifierProjection {
         public Integer updated = 0;
         public Integer unchanged = 0;
         public Integer humanHeld = 0;
-        public Integer aheadOfStage = 0;
         public Integer unbound = 0;
         public List<String> notes = new List<String>();
 
         public override String toString() {
             return 'qualifier projection: created ' + created + ', updated ' + updated +
                 ', unchanged ' + unchanged + ', held for a human ' + humanHeld +
-                ', ahead of the open stage ' + aheadOfStage + ', unbound ' + unbound +
+ ', unbound ' + unbound +
                 (notes.isEmpty() ? '' : ' | ' + String.join(notes, ' | '));
         }
     }
@@ -102,16 +101,19 @@ public with sharing class AAO_QualifierProjection {
         }
         Id wrapperId = wrappers[0].Id;
 
-        Integer ordinal = AAO_Flags.stageOrdinalOf(opportunityId);
-        if (ordinal == null) {
-            o.notes.add(
-                'This deal sits outside the org\'s open stages, so it has no ordinal and no ' +
-                'qualifier is at or behind it. Nothing is written, which is the by-stage ' +
-                'plane\'s honest fallback rather than a failure here.'
-            );
-            return o;
-        }
-
+        // ===== AN ESTABLISHMENT WRITE IS RESIDENCE-INDEPENDENT, and this is a CORRECTION.
+        //
+        // This writer used to refuse a qualifier resident ahead of the deal's stage, and to
+        // refuse the whole deal when it had no ordinal. Both were wrong, confirmed against
+        // design's own reading at the hundred-sixty-fifth: **evidence is recorded wherever the
+        // call put it.** FUNDS is resident at Discover, but a customer who names their budget
+        // during the Qualify call has named it, and a surface that discards that until the deal
+        // advances would be forgetting something true because of where the calendar is.
+        //
+        // The ordinal governs FLAGS and EXPECTATIONS - what is overdue, which ghost should
+        // stand - and it is exactly the wrong instrument for what has been said out loud. A
+        // qualifier is also resident at TWO stages in this org (Mutual close planning sits at
+        // Propose and Commit), so single residence was never a safe assumption either.
         Map<String, AAO_Qualifier_Binding__mdt> bindings = bindings();
         if (bindings.isEmpty()) {
             o.notes.add('This org states no qualifier bindings, so nothing can be answered.');
@@ -148,6 +150,28 @@ public with sharing class AAO_QualifierProjection {
             }
         }
 
+        // ===== ON THIS SURFACE OWNERSHIP IS ENUMERATION, NOT SHAPE, and that is a correction
+        // paid for with a real row.
+        //
+        // The comment predicate is right for the assessment note, where a human who writes
+        // anything writes prose. It is WRONG here, and the proof is Matthew's WHEN1 tick: he
+        // created that row by clicking Yes and left the comment blank. A blank comment reads as
+        // "nobody's, ours to fill" - true of a blank comment on OUR row, false of a blank
+        // comment on HIS. This writer wrote a citation onto a row a human made, which is the
+        // one law that does not bend, and it was restored by hand.
+        //
+        // So a row this writer did not create is held whole, whatever its comment says or does
+        // not say. The watermark is the record of what we made; everything else is somebody
+        // else's. The comment predicate stays as a second gate for rows that ARE ours, because
+        // a human can still write prose onto one of them afterwards.
+        Set<String> enumerated = new Set<String>();
+        for (AAO_Created_Row__c r : [
+            SELECT AAO_Target_Id__c FROM AAO_Created_Row__c
+            WHERE AAO_Target_Object__c = 'ALTF__Qualifier_Answer__c' AND AAO_Disowned__c = false
+        ]) {
+            enumerated.add(r.AAO_Target_Id__c);
+        }
+
         Map<Id, ALTF__Qualifier_Answer__c> standing = new Map<Id, ALTF__Qualifier_Answer__c>();
         for (ALTF__Qualifier_Answer__c qa : [
             SELECT Id, ALTF__Sales_Process_Qualifier__c, ALTF__Status__c, ALTF__Comment__c
@@ -164,11 +188,6 @@ public with sharing class AAO_QualifierProjection {
             AAO_Qualifier_Binding__mdt b = bindings.get(code);
             if (b == null || String.isBlank(b.AAO_Contract_Codes__c)) {
                 o.unbound++;
-                continue;
-            }
-            Decimal at = stageOf.get(qualifierId);
-            if (at == null || at > ordinal) {
-                o.aheadOfStage++;
                 continue;
             }
             // ANY OF THE BOUND CONTRACTS SATISFIES IT. FUNDS reads "the funds OR the person who
@@ -211,6 +230,17 @@ public with sharing class AAO_QualifierProjection {
                     ALTF__Status__c = status,
                     ALTF__Comment__c = comment
                 ));
+                continue;
+            }
+            String rowId = String.valueOf(row.Id);
+            Boolean weMadeIt =
+                enumerated.contains(rowId) || enumerated.contains(rowId.substring(0, 15));
+            if (!weMadeIt) {
+                o.humanHeld++;
+                o.notes.add(
+                    'Held on ' + code + ': this writer did not create that row, so it is ' +
+                    'somebody else\'s whole. Status and comment untouched.'
+                );
                 continue;
             }
             if (AAO_AnswerProjection.heldByHuman(row.ALTF__Comment__c)) {

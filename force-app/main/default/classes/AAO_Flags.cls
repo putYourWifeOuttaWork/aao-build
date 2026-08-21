@@ -384,7 +384,73 @@ public class AAO_Flags {
      *
      * Null where the deal's stage is not among them, which the caller reads as *do not flag*.
      */
+    /**
+     * ===== THE AXIS IS THE VENDOR'S, AND IT WAS OURS ALL ALONG.
+     *
+     * The hundred-sixty-fifth, at Matthew's refusal of the picklist plan: *"Salesforce Oppty
+     * stage should not have any bearing here."* He was right. The methodology's stage axis is
+     * five `ALTF__Sales_Process_Stage__c` rows under the process - Qualify 1 through Commit 5,
+     * each carrying its own `ALTF__SortOrder__c` - and every one of them carries OUR seed's
+     * AltifyId. The build spent a week trying to conjure an axis out of the org's picklist that
+     * our own seed had already created and left standing.
+     *
+     * `Opportunity.StageName` is DOWNSTREAM of that axis in an SPM org: the vendor re-asserts
+     * it from its own source of truth when a human works the Sales Process Manager, which is
+     * why both historic "reverts" sat beside a human in that UI while every API write on a
+     * quiet deal held. Nothing was sabotaging our stage writes; we were writing to a projection.
+     *
+     * ===== FEATURE-DETECTED BY THE PREDICATE, NEVER BY A VERSION CHECK.
+     *
+     * Wrapper EXISTENCE is not the predicate - a wrapper materializes for any deal any Altify
+     * surface touched, and eight of this org's ten hold a null stage pointer. The predicate is
+     * the pointer itself. Where it is null, or where there is no wrapper at all, the org's own
+     * open stages remain the axis: that is the LAW #1 fallback for an org without Altify or
+     * without SPM, and it is the path this method has always taken.
+     */
     public static Integer stageOrdinalOf(Id opportunityId) {
+        if (opportunityId == null) {
+            return null;
+        }
+        // ===== THE LOOKUP IS NOT THE DURABLE FIELD. THE NAME IS.
+        //
+        // Measured, minutes after this method first shipped reading the lookup: writer (b)
+        // projected `PROBLEM = Yes` onto deal 2, the vendor recomputed, the deal SATISFIED
+        // Qualify's mandatory gate and ADVANCED to Discover - and on that advance the vendor
+        // NULLED `ALTF__Sales_Process_Stage__c` while leaving
+        // `ALTF__Sales_Process_Stage_Name__c` reading `Discover`. A predicate resting on the
+        // lookup would therefore report NO AXIS on exactly the deals that are moving through
+        // the process, which is the worst possible time to lose it.
+        //
+        // So the name is read first and the lookup second. Both resolve to the same ordinal
+        // through the process's own stage rows; the name simply survives the advance.
+        List<ALTF__Opportunity__c> wrappers = [
+            SELECT ALTF__Sales_Process_Stage__c,
+                   ALTF__Sales_Process_Stage__r.ALTF__SortOrder__c,
+                   ALTF__Sales_Process_Stage_Name__c
+            FROM ALTF__Opportunity__c
+            WHERE ALTF__Opportunity__c = :opportunityId
+            ORDER BY CreatedDate ASC
+        ];
+        Set<String> wanted = new Set<String>();
+        for (ALTF__Opportunity__c w : wrappers) {
+            if (w.ALTF__Sales_Process_Stage__r != null &&
+                    w.ALTF__Sales_Process_Stage__r.ALTF__SortOrder__c != null) {
+                return w.ALTF__Sales_Process_Stage__r.ALTF__SortOrder__c.intValue();
+            }
+            if (String.isNotBlank(w.ALTF__Sales_Process_Stage_Name__c)) {
+                wanted.add(w.ALTF__Sales_Process_Stage_Name__c);
+            }
+        }
+        if (!wanted.isEmpty()) {
+            for (ALTF__Sales_Process_Stage__c st : [
+                SELECT Name, ALTF__SortOrder__c FROM ALTF__Sales_Process_Stage__c
+                WHERE Name IN :wanted AND ALTF__SortOrder__c != null
+                ORDER BY ALTF__SortOrder__c ASC
+            ]) {
+                return st.ALTF__SortOrder__c.intValue();
+            }
+        }
+
         List<Opportunity> opps = [
             SELECT StageName FROM Opportunity WHERE Id = :opportunityId LIMIT 1
         ];

@@ -2,23 +2,67 @@
 private class AAO_QualifierProjectionTest {
 
     @IsTest
-    static void aDEALWITHNOORDINALWRITESNOTHINGANDSAYSWHY() {
-        // The by-stage plane's honest fallback. A deal outside the org's open stages has no
-        // ordinal, so no qualifier is at or behind it - which is the whole four-call rehearsal's
-        // master finding, and it must read as a stated absence rather than a silent zero.
+    static void anESTABLISHMENTWRITEISRESIDENCEINDEPENDENT() {
+        // CORRECTED AT THE 165th. This used to assert that a deal with no ordinal wrote
+        // nothing. That was wrong: evidence is recorded wherever the call put it. FUNDS is
+        // resident at Discover, but a customer who names their budget during the Qualify call
+        // has named it, and discarding that until the deal advances would be forgetting
+        // something true because of where the calendar is. The ordinal governs FLAGS and
+        // EXPECTATIONS, which are what compare against it.
         Id oppId = deal('Qualify');
-        // WITH a wrapper, so the ordinal is the reason reached rather than the wrapper's
-        // absence. The two refusals are ordered, and this test is about the second one.
         insert new ALTF__Opportunity__c(ALTF__Opportunity__c = oppId);
 
         Test.startTest();
         AAO_QualifierProjection.Outcome o = AAO_QualifierProjection.run(oppId);
         Test.stopTest();
 
-        System.assertEquals(0, o.created);
-        System.assert(
-            String.join(o.notes, ' ').contains('no ordinal'),
-            'Absence with its reason, never a silent zero. Got: ' + o.notes
+        System.assertEquals(
+            0,
+            o.humanHeld,
+            'Nothing is established on this fixture, so nothing writes and nothing is held. ' +
+            'The point of this test is that the ORDINAL is not what stopped it: ' +
+            String.valueOf(o)
+        );
+    }
+
+    @IsTest
+    static void aROWTHISWRITERDIDNOTCREATEISHELDWHOLE() {
+        // THE ONE THAT COST A REAL ROW. Matthew ticked WHEN1 = Yes in the vendor UI and left
+        // the comment blank. The hold predicate read the COMMENT, and a blank comment reads as
+        // "nobody's, ours to fill" - true of a blank comment on OUR row, false of a blank
+        // comment on HIS. This writer wrote a citation onto a row a human made. On this surface
+        // ownership is ENUMERATION, not shape: a row we did not create is held whole, whatever
+        // its comment says or does not say.
+        Id oppId = deal('Qualify');
+        ALTF__Opportunity__c w = new ALTF__Opportunity__c(ALTF__Opportunity__c = oppId);
+        insert w;
+        List<ALTF__Sales_Process_Qualifier__c> qs = [
+            SELECT Id FROM ALTF__Sales_Process_Qualifier__c LIMIT 1
+        ];
+        if (qs.isEmpty()) {
+            return;
+        }
+        ALTF__Qualifier_Answer__c his = new ALTF__Qualifier_Answer__c(
+            ALTF__Opportunity__c = w.Id,
+            ALTF__Sales_Process_Qualifier__c = qs[0].Id,
+            ALTF__Status__c = 'Yes'
+        );
+        insert his;
+
+        Test.startTest();
+        AAO_QualifierProjection.run(oppId);
+        Test.stopTest();
+
+        ALTF__Qualifier_Answer__c after = [
+            SELECT ALTF__Status__c, ALTF__Comment__c
+            FROM ALTF__Qualifier_Answer__c WHERE Id = :his.Id
+        ];
+        System.assertEquals('Yes', after.ALTF__Status__c);
+        System.assertEquals(
+            null,
+            after.ALTF__Comment__c,
+            'A blank comment on a human\'s row is still the human\'s. Human edits beat the ' +
+            'machine forever, and a watermark is what tells us whose row it is.'
         );
     }
 

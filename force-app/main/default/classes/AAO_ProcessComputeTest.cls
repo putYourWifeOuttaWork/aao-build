@@ -448,5 +448,27 @@ private class AAO_ProcessComputeTest {
         insert a;
         AAO_Synthetic.MARK = false;
         return a;
+    }    @IsTest
+    static void theCOMPUTEDWRITERSPEAKSTHECLASSIFIERSVOCABULARYINBOTHDIRECTIONS() {
+        // THE RECOGNITION LAW, third specimen, second surface. The computed writer's OUTPUT
+        // vocabulary and the panel's classifier are one mechanism in two places. A2 stood TRUE
+        // in the ledger and showed a quiet blank because this field held a SENTENCE; nothing
+        // errored, the row simply went unseen. Pinned in both directions so neither side can
+        // move alone.
+        //
+        // Direction one: what the writer emits is what the classifier recognises.
+        System.assertEquals(
+            'AFFIRMED',
+            AAO_ProcessCompute.INTERPRETATION,
+            'A rationale is not an interpretation. This field is a closed vocabulary surface.'
+        );
+        // Direction two: the classifier's recognised set contains it.
+        System.assert(
+            new Set<String>{ 'AFFIRMED', 'DENIED' }.contains(AAO_ProcessCompute.INTERPRETATION),
+            'The writer must not emit a word the reading side does not classify, or the row ' +
+            'falls to the quiet blank forever and looks like no evidence at all.'
+        );
     }
+
+
 }

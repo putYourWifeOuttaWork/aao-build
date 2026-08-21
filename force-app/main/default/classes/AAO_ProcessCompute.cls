@@ -395,6 +395,11 @@ public class AAO_ProcessCompute {
                     f.personName + ' stands at ' + topRole + ' on this deal\'s ledger, and ' +
                     'the answer that says so was established from the words of the call.';
                 Cite c = new Cite('Answer', identifying.Id);
+                // THE RATIONALE RIDES THE CITATION, where prose-of-ours belongs on a state
+                // basis. The panel renders A2's Yes with a STATE citation pointing at the
+                // rows that satisfied it, which is what a computed answer's provenance
+                // honestly is - not a quote, because nobody said it.
+                c.snapshot.put('because', f.because);
                 c.snapshot.put('proposition_code', roleCode);
                 c.snapshot.put('buyer_role', topRole);
                 c.snapshot.put('verdict', identifying.AAO_Verdict__c);
@@ -542,6 +547,12 @@ public class AAO_ProcessCompute {
         return o;
     }
 
+    /**
+     * THE ONE WORD THIS WRITER EMITS, named so a test can hold it against the classifier.
+     * The 120th's closed vocabulary: a computed establishment is an AFFIRMED one.
+     */
+    public static final String INTERPRETATION = 'AFFIRMED';
+
     // ====================================================================== internals
 
     private static AAO_Candidate__c candidateFor(Id opportunityId, Fact f) {
@@ -560,7 +571,16 @@ public class AAO_ProcessCompute {
             AAO_Proposed_Verdict__c = 'TRUE',
             AAO_Publication_State__c = 'Live',
             AAO_Stage__c = 'Adjudicated',
-            AAO_Interpretation__c = f.because,
+            // ===== THE VOCABULARY, NOT THE RATIONALE. A2 stood TRUE in the ledger and the
+            // panel showed a quiet blank, because this field carried a SENTENCE and the
+            // panel's classifier reads the 120th's closed vocabulary. The blank was the
+            // correct conservative failure - better a false quiet than a false Yes - doing
+            // its job on a malformed row, and the defect was here: **a rationale is not an
+            // interpretation.** The sentence moves to the state-reference payload below,
+            // which is the surface the Glossary built for it: a state-established
+            // proposition cites state, the rows that satisfied it, each carrying its own
+            // citation.
+            AAO_Interpretation__c = INTERPRETATION,
             AAO_Charter__c = 'AAO_ProcessCompute',
             AAO_Charter_Version__c = VERSION,
             AAO_Synthetic__c = AAO_Synthetic.MARK

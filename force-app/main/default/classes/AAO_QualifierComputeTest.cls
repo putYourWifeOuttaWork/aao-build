@@ -81,6 +81,40 @@ private class AAO_QualifierComputeTest {
         }
     }
 
+    @IsTest
+    static void CRITERIARECORDEDWITHNONEREQUIREDISANABSENCENOTAFINDING() {
+        // RULED FROM THE EXTRACTOR at the 172nd's item 5, not from taste. AAO_PairCommit sets
+        // AAO_Required__c = true ONLY where the AAO_DC_R proposition is upheld on evidence;
+        // nothing ever writes false and nothing sweeps the rest. So zero-required means we have
+        // not yet learned which criteria are hard - a different thing from learning that none
+        // of them is - and the honest verdict is UNANSWERED rather than a satisfied Yes.
+        Id oppId = bareDeal();
+        Account a = [SELECT Id FROM Account WHERE Name = 'AAO Compute Test' LIMIT 1];
+        AAO_Synthetic.MARK = true;
+        insert new AAO_Criterion__c(
+            AAO_Opportunity__c = oppId,
+            AAO_Account__c = a.Id,
+            AAO_Subject__c = 'Reads existing Salesforce data',
+            // The org's own law: a criterion carries its key or it does not exist.
+            AAO_Criterion_Key__c = 'AAO|CRIT|TEST|reads-existing-salesforce-data',
+            AAO_Type__c = 'Informal',
+            AAO_Synthetic__c = true
+        );
+        AAO_Synthetic.MARK = false;
+
+        Test.startTest();
+        Map<String, AAO_QualifierCompute.Verdict> v = AAO_QualifierCompute.evaluate(oppId);
+        Test.stopTest();
+
+        System.assertEquals(
+            false,
+            v.containsKey(AAO_QualifierCompute.REQUIRED_CRITERIA_CLOSED),
+            'A criterion is recorded, so the first conjunct holds - but none has been ' +
+            'established as required, so the second quantifies over an empty set. UNANSWERED, ' +
+            'never a Yes.'
+        );
+    }
+
     private static Id bareDeal() {
         AAO_Ingest.AUTO = false;
         AAO_Synthetic.MARK = true;

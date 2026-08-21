@@ -208,13 +208,23 @@ public with sharing class AAO_QualifierCompute {
             // second clause is true of an empty set, and a reader deserves to see that shape
             // rather than a bare Yes. Whether "recorded but none required" should be a Yes at
             // all is a methodology question and it is design's, not this method's.
+            if (required == 0) {
+                // RULED FROM THE EXTRACTOR, not from taste. The 172nd asked the one question
+                // design could not see and this method can: is requiredness assessed on EVERY
+                // criterion, or set only where the customer's words make it explicit?
+                //
+                // `AAO_PairCommit` sets `AAO_Required__c = true` ONLY where a typing
+                // proposition is upheld on evidence. Nothing ever writes false; nothing sweeps
+                // the un-required ones. **So zero-required is an ABSENCE, not a finding** - we
+                // have not yet learned which criteria are hard, which is a different thing from
+                // learning that none of them is. Design's lean was right and is now grounded
+                // rather than leaned.
+                return null;
+            }
             return new Verdict(
                 'Yes',
-                required == 0
-                    ? criteria.size() + ' criteria recorded, though none is marked required, ' +
-                      'so nothing was outstanding to close.'
-                    : criteria.size() + ' criteria recorded, and all ' + required +
-                      ' required ones are answered.'
+                criteria.size() + ' criteria recorded, and all ' + required +
+                ' required ones are answered.'
             );
         }
         return new Verdict(

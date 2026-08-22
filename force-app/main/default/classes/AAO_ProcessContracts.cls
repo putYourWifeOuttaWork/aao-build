@@ -142,8 +142,13 @@ public class AAO_ProcessContracts {
      * The deal's own plan-type value, read through the org's own pointer. Null wherever the chain
      * cannot be walked, which the caller reads as "every active question" rather than as an error.
      */
+    /**
+     * PUBLIC BECAUSE THE COLD START MUST NOT WALK ITS OWN. The 182nd's ruling makes this chain
+     * the architecture's central promise, and a second implementation of it is a second thing to
+     * drift - which is the shape that has cost this project nine specimens.
+     */
     @TestVisible
-    private static String planTypeOf(Id opportunityId) {
+    public static String planTypeOf(Id opportunityId) {
         if (opportunityId == null) {
             return null;
         }

@@ -158,23 +158,37 @@ public with sharing class AAO_ColdStart {
      * has to share.
      */
     private static Plan resolvePlan(Opportunity deal, Outcome o) {
-        if (String.isBlank(deal.Type)) {
+        // ===== THE POINTER, NOT `Type`. This shortcut was mine and the 182nd's confirm found it.
+        //
+        // This read `deal.Type` directly. The ruled chain begins one step earlier: the OM
+        // Settings row names WHICH Opportunity field drives plan-type resolution, and a customer
+        // org may point elsewhere. A hardcoded `Type` is remembered configuration - exactly what
+        // the rubric-is-live-data law forbids - and in such an org this module would have read
+        // the wrong field and planted the wrong plan, silently, on every cold start.
+        //
+        // It now walks the same pointer `AAO_ProcessContracts` walks, through the SAME method
+        // rather than a copy of it: a second implementation of the architecture's central chain
+        // is a second thing to drift, which is the shape that has cost this project nine
+        // specimens.
+        String planValue = AAO_ProcessContracts.planTypeOf(deal.Id);
+        if (String.isBlank(planValue)) {
             o.notes.add(
-                'This deal carries no Type, so no plan can be resolved through the vendor\'s ' +
-                'mapping. Nothing written, and nothing guessed.'
+                'The org\'s plan-type pointer does not resolve a value on this deal, so no plan ' +
+                'can be given. Nothing written, and nothing guessed.'
             );
             return null;
         }
         List<ALTF__Sales_Process_Mapping__c> maps = [
             SELECT ALTF__Sales_Process__c, ALTF__Sales_Process__r.Name
             FROM ALTF__Sales_Process_Mapping__c
-            WHERE ALTF__Record_Type__c = :deal.Type
+            WHERE ALTF__Record_Type__c = :planValue
             LIMIT 1
         ];
         if (maps.isEmpty()) {
             o.notes.add(
-                'No sales-process mapping in this org covers the Type "' + deal.Type +
-                '", so this deal has no plan to be given. A stated refusal, never a guess.'
+                'No sales-process mapping in this org covers the plan-type value "' +
+                planValue + '", so this deal has no plan to be given. A stated refusal, ' +
+                'never a guess.'
             );
             return null;
         }

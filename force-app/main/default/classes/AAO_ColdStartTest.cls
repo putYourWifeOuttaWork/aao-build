@@ -14,7 +14,7 @@ private class AAO_ColdStartTest {
         System.assertEquals(false, o.wrapperCreated);
         System.assertEquals(false, o.planAssigned);
         System.assert(
-            String.join(o.notes, ' ').contains('no Type'),
+            String.join(o.notes, ' ').contains('does not resolve a value'),
             'Absence with its reason, never a silent nothing. Got: ' + o.notes
         );
         System.assertEquals(0, [
@@ -33,7 +33,7 @@ private class AAO_ColdStartTest {
         System.assertEquals(false, o.planAssigned);
         System.assert(
             String.join(o.notes, ' ').contains('New Customer'),
-            'The refusal names the Type it could not resolve, so a reader can fix the mapping ' +
+            'The refusal names the VALUE it could not map, so a reader can fix the mapping ' +
             'rather than guess what went wrong. Got: ' + o.notes
         );
     }
@@ -92,6 +92,14 @@ private class AAO_ColdStartTest {
     private static Id deal(String type) {
         AAO_Ingest.AUTO = false;
         AAO_Synthetic.MARK = true;
+        // THE ORG'S POINTER, SEEDED, because a test context sees no custom setting and the
+        // module now walks the pointer rather than assuming `Type`. Seeding it is the honest
+        // fixture: without one the chain genuinely cannot be walked, and the module says so.
+        if ([SELECT COUNT() FROM ALTF__Opportunity_Manager_Settings__c] == 0) {
+            insert new ALTF__Opportunity_Manager_Settings__c(
+                ALTF__Opportunity_Plan_Type__c = 'Type'
+            );
+        }
         Account a = new Account(Name = 'AAO Cold Start Test');
         insert a;
         Opportunity o = new Opportunity(

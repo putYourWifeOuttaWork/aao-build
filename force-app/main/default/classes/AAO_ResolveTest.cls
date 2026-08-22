@@ -365,4 +365,22 @@ private class AAO_ResolveTest {
             );
         }
     }
+    @IsTest
+    static void THEROSTERKEYCOMPARISONISCASEINSENSITIVEBYCONSTRUCTION() {
+        // THE NINTH RECOGNITION SPECIMEN, one character wide. Ingest writes roster keys
+        // lowercase; the reads carry the speaker label exactly as the transcript writes it. The
+        // membership check compared them byte for byte, so "Sam" was refused as not on a roster
+        // that plainly held "sam" - invisible until the first RAW transcript arrived, because
+        // every demo transcript had been pre-normalised for us.
+        //
+        // A key format and its membership predicate are one mechanism in two places. This holds
+        // them together: whatever casing either side produces, the comparison sees one form.
+        System.assertEquals('sam', AAO_Resolve.rosterKeyOf('Sam'));
+        System.assertEquals('sam', AAO_Resolve.rosterKeyOf('SAM'));
+        System.assertEquals('sam', AAO_Resolve.rosterKeyOf('  Sam  '),
+            'A label with trailing whitespace is the same defect wearing different bytes.');
+        System.assertEquals('sam', AAO_Resolve.rosterKeyOf('sam'));
+        System.assertEquals(null, AAO_Resolve.rosterKeyOf(null));
+    }
+
 }

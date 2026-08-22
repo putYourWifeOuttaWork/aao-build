@@ -182,13 +182,15 @@ public with sharing class AAO_Resolve {
             if (String.isBlank(p.AAO_About_Designator__c)) {
                 // Leg 2 · the byte lookup. The speaker key was computed at location; the
                 // roster resolves it. This is the whole of what 59 callouts used to buy.
-                AAO_Participant__c speaker = roster.get(p.AAO_Speaker_Key__c);
+                AAO_Participant__c speaker = roster.get(rosterKeyOf(p.AAO_Speaker_Key__c));
                 if (speaker == null) {
                     throw new ResolveException(
                         'Pair ' + p.AAO_Pair_Ref__c + ' sits in turn of speaker key "' +
                         p.AAO_Speaker_Key__c + '", which is not on the roster. ' +
-                        'Participation is written at ingest; this is an ingest defect, ' +
-                        'never a quiet None.'
+                        'The roster holds: ' + String.join(new List<String>(roster.keySet()), ', ') +
+                        '. Participation is written at ingest, and this refuses loudly rather ' +
+                        'than dropping the pair - a quiet None here would thin the run and ' +
+                        'look like a pass.'
                     );
                 }
                 rows.add(disposition(p, src, runKey, 'Identified', speaker.Id, corr,
@@ -697,6 +699,27 @@ public with sharing class AAO_Resolve {
 
     // ==================================================================== the roster leg
 
+    /**
+     * ===== ONE NORMALISER, BOTH SIDES OF THE COMPARISON.
+     *
+     * The ninth recognition specimen, found by the first RAW transcript: ingest writes roster
+     * keys lowercase, the reads carry the speaker label exactly as the transcript writes it
+     * (`"Sam"`), and this membership check compared them byte for byte. `"Sam" != "sam"`, so a
+     * person plainly on the roster was refused as absent - one character wide, and invisible
+     * until input arrived that the demo kit had not pre-normalised for us.
+     *
+     * A key format and the predicate that tests membership in it are ONE MECHANISM IN TWO
+     * PLACES. Normalising at both ends of the comparison makes the drift unexpressible rather
+     * than caught: there is no casing either side can hold that the other does not.
+     *
+     * Trimming rides along for the same reason - a label with trailing whitespace is the same
+     * defect wearing different bytes.
+     */
+    @TestVisible
+    private static String rosterKeyOf(String key) {
+        return key == null ? null : key.trim().toLowerCase();
+    }
+
     private static Map<String, AAO_Participant__c> rosterByKey(Id sourceId) {
         Map<String, AAO_Participant__c> out = new Map<String, AAO_Participant__c>();
         for (AAO_Participant__c p : [
@@ -705,7 +728,7 @@ public with sharing class AAO_Resolve {
             FROM AAO_Participant__c
             WHERE AAO_Source__c = :sourceId
         ]) {
-            out.put(p.AAO_Roster_Key__c, p);
+            out.put(rosterKeyOf(p.AAO_Roster_Key__c), p);
         }
         if (out.isEmpty()) {
             throw new ResolveException(

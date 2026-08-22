@@ -88,6 +88,7 @@ public class AAO_PassQueueable implements Queueable, Database.AllowsCallouts {
      */
     public static final String S_COLD_START = 'cold start';
 
+    @TestVisible
     private static final List<String> ORDER = new List<String>{
         S_COLD_START, S_RESOLVE, S_READ1, S_READ2, S_DETERMINISTIC, S_MODEL_LEG,
         S_VERIFY, S_CRITERION_MATCH, S_JOIN, S_COMPUTE, S_PROJECT, S_PROMOTION, S_CARDS,
@@ -97,6 +98,16 @@ public class AAO_PassQueueable implements Queueable, Database.AllowsCallouts {
     private final Id sourceId;
     private final String runKey;
     private final String stage;
+
+    /**
+     * WHERE THIS RUN WILL BEGIN, exposed so a test can hold the DOOR against the ORDER. The
+     * drift that cost the first cold rehearsal was invisible precisely because nothing could
+     * compare the two.
+     */
+    @TestVisible
+    private String startsAt() {
+        return stage;
+    }
     /** How many times this stage has re-enqueued itself, so a loop cannot run away. */
     private final Integer pass;
     /**
@@ -122,8 +133,21 @@ public class AAO_PassQueueable implements Queueable, Database.AllowsCallouts {
 
     private static final Integer MAX_PASSES_PER_STAGE = 12;
 
+    /**
+     * THE RUN STARTS AT THE ORDER'S OWN FIRST STAGE, and this is a repair.
+     *
+     * This constructor named `S_RESOLVE` directly. When `S_COLD_START` was added to `ORDER` as
+     * the new head, the ORDER knew and the DOOR did not - so the first cold rehearsal ran
+     * eleven stages beginning at call 0, the cold start never executed, and the wrapper was
+     * created 82 seconds later by a human opening the UI. Nothing errored. The stage list and
+     * the entry point were one mechanism in two places, which is the recognition pattern on the
+     * stage plane, and this is the fifth surface it has appeared on.
+     *
+     * Reading `ORDER[0]` makes the drift unexpressible rather than caught: there is no second
+     * place to forget, because the door now asks the order where it begins.
+     */
     public AAO_PassQueueable(Id sourceId, String runKey) {
-        this(sourceId, runKey, S_RESOLVE, 0, true, false);
+        this(sourceId, runKey, ORDER[0], 0, true, false);
     }
 
     /**

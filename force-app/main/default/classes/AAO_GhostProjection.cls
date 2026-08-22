@@ -34,6 +34,8 @@ public with sharing class AAO_GhostProjection {
     public static final String WRITER = 'AAO_Ghost_Projection';
     public static final String WRITER_VERSION = '1.0.0';
     private static final String KEY = 'AAO|RMP|';
+    /** The vendor's own word for a slot that is not yet a person. Adopted, not invented. */
+    private static final String PLACEHOLDER = 'Placeholder';
 
     public class Outcome {
         public Integer created = 0;
@@ -66,6 +68,9 @@ public with sharing class AAO_GhostProjection {
         return o;
     }
 
+    /** One ledger entry per VALUE, because the value is the unit the vendor gave us to own. */
+    private static final String LEG = 'persona-ghost';
+
     private static Outcome project(Id opportunityId, String runKey) {
         Outcome o = new Outcome();
         if (opportunityId == null) {
@@ -90,118 +95,135 @@ public with sharing class AAO_GhostProjection {
             wanted.add(g.persona);
         }
 
-        // ===== ONE ROW PER MAP, MULTI-VALUED. The vendor refused the other grain.
+        // ===== ONE ROW PER MAP, AND OWNERSHIP AT THE VALUE GRAIN.
         //
-        // The hundred-fifty-second ratified one row per persona, on the reasoning that ghosts
-        // must graduate INDEPENDENTLY - a contact matching Executive Sponsor must not clear a
-        // standing Procurement Lead. The reasoning is right; the grain was not available.
-        // Measured by being refused:
+        // The vendor holds ONE persona row per map - a second row with a different persona is
+        // refused, one row with three values is accepted - so the row is not a unit anyone can
+        // own. Under row-grain ownership a map whose single row a human touched first could
+        // never carry our cast at all, which is most real deals in most real orgs: the flagship
+        // People feature silently absent exactly where sellers work.
         //
-        //   FIRST ROW accepted
-        //   SECOND ROW, different persona, same map: REFUSED
-        //   ONE ROW carrying three personas: ACCEPTED
+        // So the hundred-seventy-fifth moves ownership to the VALUE: **we ADD values and
+        // enumerate each one we added; we REMOVE only values we enumerated; a human's values
+        // are never touched, reordered, or removed; and a human deleting the row deletes ours
+        // with it, because the human wins.** The precedent is standing - the machine already
+        // adds to `ALTF__Contact__c`'s persona multipicklist and never removes a human's.
         //
-        // `Cannot insert duplicate Relationship Map Personas` is the vendor holding ONE persona
-        // row per map, which is what its multipicklist was always for. **Independence survives
-        // the change**: adding a ghost adds a value, graduating one removes that value, and the
-        // others are untouched either way. It is a field edit rather than a row delete, and the
-        // 154th's withdrawal rule reads the same.
+        // The line against the WHEN1 incident, so it stays usable: writing INTO a human's
+        // content alters what they expressed; adding a value beside theirs on a field whose
+        // vendor-defined grain is shared does not.
         List<ALTF__Relationship_Map_Persona__c> rows = [
-            SELECT Id, ALTF__Persona__c, ALTF__AltifyId__c
+            SELECT Id, ALTF__Persona__c, ALTF__Functional_Role__c
             FROM ALTF__Relationship_Map_Persona__c
             WHERE ALTF__Opportunity__c = :opportunityId
             ORDER BY CreatedDate ASC
         ];
 
-        Set<String> enumerated = new Set<String>();
-        for (AAO_Created_Row__c r : [
-            SELECT AAO_Target_Id__c FROM AAO_Created_Row__c
-            WHERE AAO_Target_Object__c = 'ALTF__Relationship_Map_Persona__c'
-              AND AAO_Disowned__c = false
-        ]) {
-            enumerated.add(r.AAO_Target_Id__c);
-        }
-
-        if (rows.isEmpty()) {
-            if (wanted.isEmpty()) {
-                return o;
-            }
-            ALTF__Relationship_Map_Persona__c fresh = new ALTF__Relationship_Map_Persona__c(
-                ALTF__Account__c = deal.AccountId,
-                ALTF__Opportunity__c = opportunityId,
-                ALTF__Persona__c = String.join(new List<String>(wanted), ';'),
-                ALTF__AltifyId__c = KEY + String.valueOf(opportunityId).substring(0, 15)
-            );
-            insert fresh;
-            o.created = wanted.size();
-            AAO_CreatedRows.record(
-                fresh.Id, WRITER + '@' + WRITER_VERSION, 'persona-ghost',
-                'The cast this deal\'s rubric demands, standing from call one as lead-time ' +
-                'nodes rather than flags.',
-                runKey == null ? null : AAO_Receipt.sourceForRun(runKey), runKey
-            );
-            return o;
-        }
-
-        ALTF__Relationship_Map_Persona__c row = rows[0];
-        String rowId = String.valueOf(row.Id);
-        Boolean ours = enumerated.contains(rowId) || enumerated.contains(rowId.substring(0, 15));
+        ALTF__Relationship_Map_Persona__c row = rows.isEmpty() ? null : rows[0];
         Set<String> standing = new Set<String>();
-        if (String.isNotBlank(row.ALTF__Persona__c)) {
+        if (row != null && String.isNotBlank(row.ALTF__Persona__c)) {
             for (String v : row.ALTF__Persona__c.split(';')) {
                 standing.add(v.trim());
             }
         }
-
-        if (!ours) {
-            // SOMEBODY ELSE'S ROW. We may still need a ghost it does not carry, but the row is
-            // theirs and this writer does not edit it - the same discipline the qualifier
-            // surface learned on Matthew's WHEN1 tick, and the vendor allows no second row to
-            // put ours beside it.
-            for (String persona : wanted) {
-                if (!standing.contains(persona)) {
-                    o.notes.add(
-                        'Ghost ' + persona + ' is owed but the map\'s only persona row was ' +
-                        'written by somebody else, and the vendor allows just one. Held whole ' +
-                        'rather than edited, and said out loud.'
-                    );
+        // OUR VALUES, by the ledger rather than by resemblance.
+        Set<String> oursByLedger = new Set<String>();
+        if (row != null) {
+            String rowId15 = String.valueOf(row.Id).substring(0, 15);
+            for (AAO_Created_Row__c r : [
+                SELECT AAO_Leg__c, AAO_Target_Id__c FROM AAO_Created_Row__c
+                WHERE AAO_Target_Object__c = 'ALTF__Relationship_Map_Persona__c'
+                  AND AAO_Disowned__c = false
+            ]) {
+                if (String.isBlank(r.AAO_Target_Id__c) ||
+                        !r.AAO_Target_Id__c.startsWith(rowId15)) {
+                    continue;
+                }
+                if (String.isNotBlank(r.AAO_Leg__c) && r.AAO_Leg__c.startsWith(LEG + ':')) {
+                    oursByLedger.add(r.AAO_Leg__c.substringAfter(LEG + ':'));
                 }
             }
-            o.unchanged = standing.size();
-            return o;
         }
 
-        Set<String> after = new Set<String>(wanted);
-        Integer added = 0;
-        Integer withdrawn = 0;
+        Set<String> toAdd = new Set<String>();
         for (String persona : wanted) {
             if (!standing.contains(persona)) {
-                added++;
+                toAdd.add(persona);
+            }
+        }
+        Set<String> toRemove = new Set<String>();
+        for (String persona : standing) {
+            // ONLY VALUES WE ENUMERATED. A human's value is never removed, and a value standing
+            // on the row that no ledger entry claims is somebody else's by definition.
+            if (!wanted.contains(persona) && oursByLedger.contains(persona)) {
+                toRemove.add(persona);
             }
         }
         for (String persona : standing) {
-            if (!wanted.contains(persona)) {
-                // A GHOST THAT GRADUATED IS WITHDRAWN, one value at a time, leaving the rest
-                // standing. A ghost beside the person who fills it is a lie the map tells
-                // forever.
-                withdrawn++;
+            if (!wanted.contains(persona) && !oursByLedger.contains(persona)) {
+                o.notes.add(
+                    persona + ' stands on this map and no ledger entry of ours claims it, so it ' +
+                    'is left exactly where it is.'
+                );
             }
         }
-        if (added == 0 && withdrawn == 0) {
+
+        if (toAdd.isEmpty() && toRemove.isEmpty()) {
             o.unchanged = standing.size();
             return o;
         }
-        if (after.isEmpty()) {
+
+        Set<String> after = new Set<String>(standing);
+        after.addAll(toAdd);
+        after.removeAll(toRemove);
+
+        if (row == null) {
+            ALTF__Relationship_Map_Persona__c fresh = new ALTF__Relationship_Map_Persona__c(
+                ALTF__Account__c = deal.AccountId,
+                ALTF__Opportunity__c = opportunityId,
+                ALTF__Persona__c = String.join(new List<String>(after), ';'),
+                // THE VENDOR'S OWN PLACEHOLDER, adopted rather than invented. Its entire value
+                // set is the single value `Placeholder`, which is strong evidence it already
+                // holds the concept of an expected slot that is not yet a person. Whether it
+                // renders differently is UNVERIFIED and is Matthew's to see; setting it costs
+                // nothing and adopting the vendor's vocabulary is the same discipline that made
+                // us write answers under their conventions instead of ours.
+                ALTF__Functional_Role__c = PLACEHOLDER,
+                ALTF__AltifyId__c = KEY + String.valueOf(opportunityId).substring(0, 15)
+            );
+            insert fresh;
+            row = fresh;
+        } else if (after.isEmpty()) {
+            // Every value on the row was ours and none is wanted. The row goes with them.
             delete row;
-            o.withdrawn = withdrawn;
+            o.withdrawn = toRemove.size();
             return o;
+        } else {
+            update new ALTF__Relationship_Map_Persona__c(
+                Id = row.Id, ALTF__Persona__c = String.join(new List<String>(after), ';')
+            );
         }
-        update new ALTF__Relationship_Map_Persona__c(
-            Id = row.Id, ALTF__Persona__c = String.join(new List<String>(after), ';')
-        );
-        o.created = added;
-        o.withdrawn = withdrawn;
-        o.unchanged = standing.size() - withdrawn;
+
+        // ONE LEDGER ENTRY PER VALUE ADDED, naming the value, so withdrawal is exact.
+        List<AAO_Created_Row__c> entries = new List<AAO_Created_Row__c>();
+        for (String persona : toAdd) {
+            entries.add(new AAO_Created_Row__c(
+                AAO_Target_Id__c = String.valueOf(row.Id),
+                AAO_Target_Object__c = 'ALTF__Relationship_Map_Persona__c',
+                AAO_Source_Form__c = WRITER + '@' + WRITER_VERSION,
+                AAO_Leg__c = LEG + ':' + persona,
+                AAO_Reason__c =
+                    'A persona this deal\'s rubric demands, standing from call one as a ' +
+                    'lead-time node rather than a flag.',
+                AAO_Run_Key__c = runKey
+            ));
+        }
+        if (!entries.isEmpty()) {
+            insert entries;
+        }
+        o.created = toAdd.size();
+        o.withdrawn = toRemove.size();
+        o.unchanged = standing.size() - toRemove.size();
         return o;
     }
 }

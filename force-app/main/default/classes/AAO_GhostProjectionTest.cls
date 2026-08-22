@@ -70,10 +70,13 @@ private class AAO_GhostProjectionTest {
     }
 
     @IsTest
-    static void SOMEBODYELSESROWISHELDWHOLEANDTHEGAPISSAIDOUTLOUD() {
-        // Ownership is a record of having acted, not a key that looks like ours. And because
-        // the vendor allows only ONE row, a ghost we owe cannot be put beside theirs - so the
-        // honest move is to hold their row and NAME what is missing.
+    static void OURVALUESJOINAHUMANSROWWITHOUTTOUCHINGTHEIRS() {
+        // RULED AT THE HUNDRED-SEVENTY-FIFTH, and it reverses what this test used to assert.
+        // Row-grain ownership held a human's row whole and raised nothing - correct under the
+        // standing law, and it meant the full-horizon cast could NEVER appear on any deal a
+        // human or the vendor touched first, which is most real deals. The vendor's storage
+        // grain leaves no row to own, so ownership moves to the VALUE: we add ours, enumerate
+        // each one by name, and never touch, reorder or remove theirs.
         Id oppId = deal('Stage 1');
         stub(new Map<String, Decimal>{ 'Procurement Lead' => 5 });
         Id acctId = [SELECT AccountId FROM Opportunity WHERE Id = :oppId].AccountId;
@@ -86,16 +89,63 @@ private class AAO_GhostProjectionTest {
         AAO_GhostProjection.Outcome o = AAO_GhostProjection.run(oppId);
         Test.stopTest();
 
-        System.assertEquals(0, o.created);
-        System.assertEquals(0, o.withdrawn, 'Their row is never edited or removed.');
+        System.assertEquals(1, o.created, String.valueOf(o));
+        Set<String> after = new Set<String>([
+            SELECT ALTF__Persona__c FROM ALTF__Relationship_Map_Persona__c
+            WHERE ALTF__Opportunity__c = :oppId
+        ].ALTF__Persona__c.split(';'));
+        System.assert(after.contains('CEO'),
+            'Their value is never touched, reordered or removed. Human edits beat the machine.');
+        System.assert(after.contains('Procurement Lead'), 'And ours stands beside it.');
+        System.assertEquals(1, [
+            SELECT COUNT() FROM AAO_Created_Row__c
+            WHERE AAO_Leg__c = 'persona-ghost:Procurement Lead'
+        ], 'The ledger entry names the VALUE, because the value is the unit we own.');
+    }
+
+    @IsTest
+    static void AVALUENOLEDGERENTRYCLAIMSISNEVERWITHDRAWN() {
+        // Withdrawal is exact BECAUSE enumeration is per value. A human's persona on the same
+        // row survives a graduation that removes ours.
+        Id oppId = deal('Stage 1');
+        stub(new Map<String, Decimal>{ 'Procurement Lead' => 5 });
+        Id acctId = [SELECT AccountId FROM Opportunity WHERE Id = :oppId].AccountId;
+        insert new ALTF__Relationship_Map_Persona__c(
+            ALTF__Account__c = acctId, ALTF__Opportunity__c = oppId,
+            ALTF__Persona__c = 'CEO', ALTF__AltifyId__c = 'SOMEBODY-ELSES-ROW'
+        );
+        AAO_GhostProjection.run(oppId);
+
+        Test.startTest();
+        stub(new Map<String, Decimal>());
+        AAO_GhostProjection.Outcome o = AAO_GhostProjection.run(oppId);
+        Test.stopTest();
+
+        System.assertEquals(1, o.withdrawn, String.valueOf(o));
         System.assertEquals('CEO', [
             SELECT ALTF__Persona__c FROM ALTF__Relationship_Map_Persona__c
             WHERE ALTF__Opportunity__c = :oppId
-        ].ALTF__Persona__c);
-        System.assert(
-            String.join(o.notes, ' ').contains('Procurement Lead'),
-            'The owed ghost is named rather than silently dropped. Got: ' + o.notes
-        );
+        ].ALTF__Persona__c, 'Ours went; theirs stayed; the row survived because theirs is on it.');
+    }
+
+    @IsTest
+    static void AROWWECREATECARRIESTHEVENDORSOWNPLACEHOLDER() {
+        // `ALTF__Functional_Role__c` holds exactly one value - `Placeholder` - which is strong
+        // evidence the vendor already models an expected slot that is not yet a person. We
+        // adopt their vocabulary rather than inventing a visual language beside it, the same
+        // discipline that made us write answers under their conventions. Whether it RENDERS
+        // differently is unverified and is Matthew's to see.
+        Id oppId = deal('Stage 1');
+        stub(new Map<String, Decimal>{ 'Executive Sponsor' => 4 });
+
+        Test.startTest();
+        AAO_GhostProjection.run(oppId);
+        Test.stopTest();
+
+        System.assertEquals('Placeholder', [
+            SELECT ALTF__Functional_Role__c FROM ALTF__Relationship_Map_Persona__c
+            WHERE ALTF__Opportunity__c = :oppId
+        ].ALTF__Functional_Role__c);
     }
 
     @IsTest

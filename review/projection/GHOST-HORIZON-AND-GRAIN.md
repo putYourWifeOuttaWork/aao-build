@@ -72,3 +72,63 @@ insert. Testing it properly showed the real rule is per MAP - the earlier probe 
 created the blocking row one statement before. **A probe that changes the state it measures is
 the instrument reading its own fingerprints**, and it cost one wrong conclusion before the
 cleaner experiment replaced it.
+
+---
+
+# The value grain, the Placeholder, and where the second projection already is
+
+## Ownership at the value grain, built to the 175th's item 3
+
+Deal 2's single persona row is a human's. Under row-grain ownership our cast could never appear
+there - and the 175th named the cost correctly: that is most real deals in most real orgs, the
+flagship People feature silently absent exactly where sellers work.
+
+Proven on that row:
+
+```
+BEFORE (theirs): "Executive Sponsor;Sales Leader"
+RUN 1: created 1 | Sales Leader stands on this map and no ledger entry of ours claims it,
+                   so it is left exactly where it is.
+AFTER:           "Executive Sponsor;Procurement Lead;Sales Leader"
+RUN 2:           created 0, unchanged 3     (idempotent)
+ledger:          persona-ghost:Procurement Lead
+```
+
+**The ledger entry names the VALUE**, because the value is the unit the vendor left us to own.
+Withdrawal is exact for the same reason: a test graduates our ghost and the human's `CEO`
+survives on the same row. And `Executive Sponsor` was WANTED and already standing as theirs - so
+it is counted unchanged rather than claimed, because a value a human put there is not ours
+however much we also want it.
+
+## The Placeholder, adopted rather than invented
+
+`ALTF__Functional_Role__c` holds exactly one value. Rows we create now carry it, and the vendor
+accepts it. **Whether it renders differently is UNVERIFIED and is Matthew's to see** - the probe
+proves the write, never the screen, exactly as (c)'s render was owed at the 154th.
+
+**One limitation the value grain creates, named because it undercuts the 175th's own mitigation:**
+`Functional_Role` is a field on the ROW, and on a human's row we do not touch their fields. So on
+any map where a human owns the row, our ghost values sit there **without** the Placeholder marking
+them - the visual separation the 175th counted on as the cost mitigation is exactly the thing
+value-grain ownership cannot deliver. Deal 2 is in that state now. Not a defect and not fixable
+by writing harder; it is the shape of sharing a row.
+
+## The second projection is already in the order
+
+Checked from the executable text rather than assumed:
+
+```
+... S_JOIN, S_COMPUTE, S_PROJECT, S_PROMOTION, S_CARDS,
+    S_ASSESSMENT, S_GHOSTS, S_QUALIFIERS, S_DONE
+```
+
+`AAO_QualifierCompute` reads `ALTF__Contact_Map_Details__c` and `ALTF__Insight_Card_Contact__c` -
+**the projected records**, written by `S_PROJECT` and `S_CARDS` earlier in the same run. So
+Process grades what actually LANDED rather than our in-memory intent, and its own results project
+in a second phase, which is the 168th's item 1(iii) shape.
+
+**One difference from the specification, stated rather than smoothed:** design described it as ONE
+additional stage; it is three, because Process projects to three surfaces. The shape is the same
+and the cost is three queueable hops rather than one. **Whether that satisfies "the second
+projection stage" as written is design's to confirm - I am not declaring the acceptance bar met
+on my own reading of it.**

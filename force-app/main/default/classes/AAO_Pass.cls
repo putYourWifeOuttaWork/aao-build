@@ -182,6 +182,21 @@ public with sharing class AAO_Pass {
         Integer attempts = 0;
         while (true) {
             attempts++;
+            // ===== THE RETRY VARIES SOMETHING, because an identical retry against a
+            // deterministic pathology is the instrument reading its own fingerprints.
+            //
+            // Both attempts on the blocked run emitted the same shape: a genuine transcript
+            // quote with meta-commentary stapled to it, INSIDE the quote string, which the byte
+            // check refused twice for the same reason. Re-asking the same question the same way
+            // and expecting a different answer is not a retry, it is a repetition.
+            //
+            // What varies is EFFORT. Call 0 inherits the read class's `low` from
+            // `inventorySpec` - measured at the hundred-forty-first, where low produced three
+            // quote-law violations in fourteen and high produced none in four. So the second
+            // attempt asks harder rather than asking again.
+            if (attempts > 1) {
+                spec.effort = 'high';
+            }
             r.call = AAO_Extract.callStage(
                 spec, AAO_ResolverCharter.systemPrompt(), body, schema
             );
@@ -209,6 +224,47 @@ public with sharing class AAO_Pass {
                     );
                 }
                 // fall through to the single retry
+            }
+        }
+
+        // ===== THE RUN-INTEGRITY GUARD. The resolved deal must be the SOURCE'S OWN deal.
+        //
+        // The 178th's finding, and it outranks the error that surfaced it: on the blocked run
+        // call 0 answered `d6` - a SIBLING deal - reasoning from "the largest overlap of
+        // participants." The demo kit reuses one cast across sibling deals, so participant
+        // overlap is a TIE, and the model breaks it toward the deal with more history, which is
+        // systematically the older one and systematically the wrong one. Had the quote located,
+        // the run would have scoped to another deal and rebuilt the cross-deal split-brain the
+        // 153rd and 155th spent a day unwinding.
+        //
+        // The paste path KNOWS the deal by construction - the transcript arrived on it - so a
+        // resolver disagreement is not a judgment to defer to, it is a contradiction to refuse.
+        // Both names are printed, because a refusal that does not say what it disagreed with
+        // cannot be acted on.
+        //
+        // NO SILENT COERCION. We do not quietly re-point the run at the source's deal: the
+        // model believed something false about this call, and that is worth stopping for.
+        if (src.AAO_Opportunity__c != null &&
+                r.verdict.opportunity != AAO_ResolverCharter.NO_DEAL &&
+                r.verdict.opportunity != AAO_ResolverCharter.AMBIGUOUS) {
+            Id resolved = oppByHandle.get(r.verdict.opportunity);
+            if (resolved != null && resolved != src.AAO_Opportunity__c) {
+                Map<Id, Opportunity> named = new Map<Id, Opportunity>([
+                    SELECT Name FROM Opportunity
+                    WHERE Id IN (:resolved, :src.AAO_Opportunity__c)
+                ]);
+                throw new PassException(
+                    'Call 0 resolved this call to "' +
+                    (named.get(resolved) == null ? String.valueOf(resolved)
+                        : named.get(resolved).Name) +
+                    '" but the transcript arrived on "' +
+                    (named.get(src.AAO_Opportunity__c) == null
+                        ? String.valueOf(src.AAO_Opportunity__c)
+                        : named.get(src.AAO_Opportunity__c).Name) +
+                    '". A run whose evidence and answers would land on two different deals is ' +
+                    'the split-brain shape, and it stops here rather than routing. The source ' +
+                    'knows which deal this call arrived on; the resolver disagreed with it.'
+                );
             }
         }
 

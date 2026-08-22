@@ -1422,4 +1422,29 @@ private class AAO_ExtractTest {
             'And the result carries what was sent, so a probe can evidence it.'
         );
     }
+    @IsTest
+    static void theCEILINGGUARDNAMESWHICHFAILUREITCAUGHT() {
+        // The 179th's instruction. "Raise the cap" is right for a genuinely large output and
+        // WRONG for a degenerate repetition, where a raised cap buys a longer ramble at higher
+        // cost - the reader pays for the failure twice, once in tokens and once in the wrong
+        // fix. The tail is the tell.
+        String loop = '';
+        for (Integer i = 0; i < 60; i++) {
+            loop += 'JSON only. Wait ';
+        }
+        System.assertEquals(true, AAO_Extract.looksDegenerate(loop),
+            'A tail that is one short pattern repeated to the ceiling is a loop, not an answer.');
+
+        String prose = 'The customer described a long and genuinely detailed set of decision ' +
+            'criteria across several areas, none of which repeats, and the response simply ran ' +
+            'out of room before it finished enumerating them all in the structured output it ' +
+            'was asked to produce for this particular opportunity and its many stakeholders.';
+        System.assertEquals(false, AAO_Extract.looksDegenerate(prose),
+            'Ordinary long prose must not be called a loop, or the guard sends the reader to ' +
+            'the wrong fix in the other direction.');
+
+        System.assertEquals(false, AAO_Extract.looksDegenerate(null));
+        System.assertEquals(false, AAO_Extract.looksDegenerate('short'));
+    }
+
 }

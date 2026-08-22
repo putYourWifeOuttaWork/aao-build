@@ -958,10 +958,26 @@ public class AAO_Extract {
             );
         }
         if (c.stopReason == 'max_tokens') {
+            // ===== SAY WHICH FAILURE THIS IS, because the two need opposite responses.
+            //
+            // This message used to read "Raise AAO_Max_Output_Tokens__c on the config record"
+            // for every ceiling hit. That is right for a genuinely large output and WRONG for a
+            // degenerate repetition, where a raised cap buys a longer ramble at higher cost -
+            // the reader pays for the failure twice, once in tokens and once in the wrong fix.
+            //
+            // The tail is the tell: a loop repeats one short pattern to the ceiling. The check
+            // is a HEURISTIC and is named as one; it never changes behaviour, only the sentence
+            // the reader gets.
+            String tailText = firstTextBlock(root);
             throw new ExtractException(
-                'The response hit max_tokens and the JSON is truncated, so it cannot be ' +
-                'parsed. Raise AAO_Max_Output_Tokens__c on the config record. ' +
-                c.usage
+                (looksDegenerate(tailText)
+                    ? 'The response hit max_tokens by REPEATING ITSELF to the ceiling, not by ' +
+                      'producing too much answer. Raising the cap would buy a longer loop at ' +
+                      'higher cost; this is a model failure to retry differently, not a ' +
+                      'configuration too small.'
+                    : 'The response hit max_tokens and the JSON is truncated, so it cannot be ' +
+                      'parsed. Raise AAO_Max_Output_Tokens__c on the config record.') +
+                ' ' + c.usage
             );
         }
 
@@ -1048,6 +1064,37 @@ public class AAO_Extract {
      * display setting, so the first block is routinely not the one we want. Take the first
      * text block that actually has text in it.
      */
+    /**
+     * IS THIS TAIL A LOOP? A degenerate response repeats one short pattern hundreds of times;
+     * a genuinely large one does not.
+     *
+     * Deliberately crude and deliberately bounded: it reads the last stretch only, tries a few
+     * pattern lengths, and asks whether that stretch is one pattern repeated. **It decides
+     * nothing** - the run fails either way - so a false negative costs a less precise sentence
+     * and a false positive costs a misleading one, and neither costs a row.
+     */
+    @TestVisible
+    private static Boolean looksDegenerate(String text) {
+        if (String.isBlank(text) || text.length() < 200) {
+            return false;
+        }
+        String tail = text.substring(Math.max(0, text.length() - 400));
+        for (Integer k = 2; k <= 40; k++) {
+            String unit = tail.substring(tail.length() - k);
+            Integer repeats = 0;
+            Integer at = tail.length() - k;
+            while (at >= 0 && tail.substring(at, at + k) == unit) {
+                repeats++;
+                at -= k;
+            }
+            // Enough of the tail is one pattern that no ordinary prose would look like it.
+            if (repeats * k >= 200) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private static String firstTextBlock(Map<String, Object> root) {
         Object content = root.get('content');
         if (!(content instanceof List<Object>)) {
